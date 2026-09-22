@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip --version)",
+      "Bash(python -c \"import mkdocs, material; print\\('mkdocs ok'\\)\")",
+      "Bash(git --version)"
+    ]
+  }
+}

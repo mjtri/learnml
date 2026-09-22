@@ -1,0 +1,62 @@
+#separator:tab
+#html:true
+#tags column:3
+A batch of 16 RGB images, 224×224, in PyTorch order. What is the shape, and what does each axis mean?	<code>(16, 3, 224, 224)</code>: batch, channels, height, width. Batch first; PyTorch puts channels before height and width.	learnml week-01 week-01-day-1
+State the broadcasting rule from memory. What is the result of combining (8, 1, 5) with (4, 5)?	Align shapes from the right; each pair must be equal, or one is 1 or missing; the size-1/missing axis is virtually copied. Result: <code>(8, 4, 5)</code>.	learnml week-01 week-01-day-1
+Why is <code>pred - target</code> with shapes (100, 1) and (100,) dangerous, and what is the fix?	It broadcasts to <code>(100, 100)</code>, every prediction minus every target, with no error message, so the loss is silently wrong. Fix: make the shapes identical first, e.g. <code>pred.squeeze(1)</code> or <code>target.unsqueeze(1)</code>.	learnml week-01 week-01-day-1
+Inputs have shape (32, 64) and you want 10 outputs per example. What shape is W, and what shape is <code>x @ W.T</code>?	<code>W</code> is <code>(10, 64)</code>, one row (template) per output. <code>x @ W.T</code> is <code>(32, 64) @ (64, 10) → (32, 10)</code>: the inner 64s match and vanish.	learnml week-01 week-01-day-2
+Give the two non-geometric readings of a dot product.	A weighted sum of the inputs; and a similarity score that is largest when the input points the same way as the weight vector, which makes the weight vector a template.	learnml week-01 week-01-day-2
+What do the columns of a 2×2 matrix tell you, and what happens when they are parallel?	They show where the two unit arrows land, which fixes what happens to every other point. If they are parallel the plane is squashed onto a line: area becomes 0, different inputs collide, and the information cannot be recovered.	learnml week-01 week-01-day-2
+Estimate the derivative of f(x) = x³ at x = 2 using h = 0.1. What does the number mean?	\((2.1^3 - 2^3)/0.1 = (9.261 - 8)/0.1 = 12.61\) (exact: 12). Near \(x = 2\), the output changes about 12 times as fast as the input.	learnml week-01 week-01-day-3
+The derivative at the current setting is −4. Which way do you move x to lower f, and what do you expect from a step of 0.1?	Raise \(x\). The slope is negative, so increasing \(x\) decreases \(f\): you move against the sign. Forecast: \(f\) drops by about \(4 \times 0.1 = 0.4\).	learnml week-01 week-01-day-3
+Why not train networks with numerical gradients, and what are they still good for?	They cost one extra run of the model per parameter, which is hopeless with millions of parameters. They remain the trusted way to check that a faster gradient method is correct.	learnml week-01 week-01-day-3
+For L = (a·b + c)² with a = 2, b = −3, c = 10, compute ∂L/∂a step by step.	Forward: \(d=-6,\ e=4\). Backward: \(\partial L/\partial e = 2e = 8\); the add passes 8 to \(d\); the multiply swaps: \(8 \times b = -24\).	learnml week-01 week-01-day-4
+How does a gradient pass through an add box, and through a multiply box?	Add copies the incoming gradient to both inputs unchanged. Multiply gives each input the incoming gradient times the other input's value.	learnml week-01 week-01-day-4
+Why does backpropagation run backward from the error instead of nudging each parameter?	One backward pass gives the sensitivity of the single output to every parameter for about the cost of one more forward pass. Nudging needs a separate run per parameter, which is millions of runs per learning step.	learnml week-01 week-01-day-4
+Write the gradient descent update from memory and name every symbol.	\(\theta \leftarrow \theta - \eta \nabla_\theta L\): parameters; learning rate (step size); gradient of the loss with respect to the parameters. Minus because the gradient points uphill.	learnml week-01 week-01-day-5
+A loss curve reads 2.1, 1.9, 2.6, 4.8, 31, NaN. What happened, and what is the first thing to try?	Training diverged: steps overshoot the valley and each overshoot is larger. Lower the learning rate by 3–10× first.	learnml week-01 week-01-day-5
+Why is plain gradient descent slow in a ravine?	The steep direction limits how large the learning rate can be; at that rate the shallow direction makes tiny progress, so the path zig-zags across while creeping along.	learnml week-01 week-01-day-5
+What does <b>tensor</b> mean?	A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.	learnml week-01 vocab
+What does <b>scalar</b> mean?	A single number; a tensor with no axes. Its shape is empty: ().	learnml week-01 vocab
+What does <b>vector</b> mean?	A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.	learnml week-01 vocab
+What does <b>matrix</b> mean?	A table of numbers with rows and columns; a tensor with two axes.	learnml week-01 vocab
+What does <b>shape</b> mean?	The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.	learnml week-01 vocab
+What does <b>axis</b> mean?	One direction you can index a tensor along, such as rows, columns, colour channels or time. Also called a dimension.	learnml week-01 vocab
+What does <b>batch</b> mean?	A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).	learnml week-01 vocab
+What does <b>broadcasting</b> mean?	The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.	learnml week-01 vocab
+What does <b>dtype</b> mean?	The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.	learnml week-01 vocab
+What does <b>PyTorch</b> mean?	The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.	learnml week-01 vocab
+What does <b>element-wise</b> mean?	An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.	learnml week-01 vocab
+What does <b>dot product</b> mean?	Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.	learnml week-01 vocab
+What does <b>matmul</b> mean?	Matrix multiplication. Each output number is the dot product of one row of the first matrix with one column of the second. Written A @ B in Python.	learnml week-01 vocab
+What does <b>weight</b> mean?	A learnable number that says how strongly one input contributes to one output. A model&#x27;s knowledge lives in its weights.	learnml week-01 vocab
+What does <b>parameter</b> mean?	Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.	learnml week-01 vocab
+What does <b>linear layer</b> mean?	A layer that computes each output as a weighted sum of its inputs: one matrix multiply (plus an optional constant offset).	learnml week-01 vocab
+What does <b>feature</b> mean?	One number that describes something about an input, such as a pixel&#x27;s brightness or, deeper in a network, how strongly a learned pattern is present.	learnml week-01 vocab
+What does <b>function</b> mean?	A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.	learnml week-01 vocab
+What does <b>derivative</b> mean?	How much a function&#x27;s output changes per tiny change of one input, at one particular point. A sensitivity. Zero means nudging the input does nothing.	learnml week-01 vocab
+What does <b>slope</b> mean?	Rise over run: how steep a curve is at a point. The derivative is the slope of the curve at that point.	learnml week-01 vocab
+What does <b>numerical gradient</b> mean?	A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.	learnml week-01 vocab
+What does <b>chain rule</b> mean?	When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.	learnml week-01 vocab
+What does <b>computation graph</b> mean?	A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.	learnml week-01 vocab
+What does <b>forward pass</b> mean?	Running the calculation from inputs to output, storing intermediate values along the way.	learnml week-01 vocab
+What does <b>backward pass</b> mean?	Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.	learnml week-01 vocab
+What does <b>gradient</b> mean?	The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.	learnml week-01 vocab
+What does <b>local derivative</b> mean?	The derivative of a single operation&#x27;s output with respect to its own direct input, ignoring the rest of the graph.	learnml week-01 vocab
+What does <b>autograd</b> mean?	PyTorch&#x27;s system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().	learnml week-01 vocab
+What does <b>backpropagation</b> mean?	The backward pass applied to a neural network: the chain rule run from the loss back to every weight, reusing shared work so it costs about one extra forward pass.	learnml week-01 vocab
+What does <b>loss</b> mean?	One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.	learnml week-01 vocab
+What does <b>gradient descent</b> mean?	The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.	learnml week-01 vocab
+What does <b>learning rate</b> mean?	The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.	learnml week-01 vocab
+What does <b>converge</b> mean?	To settle down: the loss stops improving meaningfully because the parameters have reached a low point.	learnml week-01 vocab
+What does <b>diverge</b> mean?	To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.	learnml week-01 vocab
+What does <b>local minimum</b> mean?	A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.	learnml week-01 vocab
+What does <b>loss surface</b> mean?	The loss pictured as a landscape: each position is one setting of the parameters, and height is how wrong the model is there.	learnml week-01 vocab
+What does <b>training</b> mean?	Repeatedly adjusting a model&#x27;s parameters to lower the loss on example data.	learnml week-01 vocab
+What does <b>model</b> mean?	A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.	learnml week-01 vocab
+What does <b>NaN</b> mean?	Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.	learnml week-01 vocab
+What does <b>MSE</b> mean?	Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.	learnml week-01 vocab
+What does <b>neural network</b> mean?	A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.	learnml week-01 vocab
+What does <b>layer</b> mean?	One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.	learnml week-01 vocab
+What does <b>inference</b> mean?	Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.	learnml week-01 vocab
+What does <b>Colab</b> mean?	Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.	learnml week-01 vocab

@@ -1,0 +1,11 @@
+# built site
+site/
+
+# private: free-text surprise notes never leave this machine
+progress/notes.jsonl
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
