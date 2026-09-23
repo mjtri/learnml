@@ -51,6 +51,15 @@ Rules
 - Just-in-time math: introduce a math concept only in the lesson that needs it, with the smallest example that works (2×2, three numbers).
 - Any link that could not be verified gets "(verify)" after it.
 
+## Styling rule: prose stays inline
+
+Every glossary term in a page becomes its own `<abbr>` element, and every backtick becomes a `<code>` element, so a
+sentence is many inline nodes. **Never put `display: flex` or `display: grid` on an element that contains prose**
+(paragraphs, list items, `summary` titles, table cells, admonition titles). Flex/grid turns each node into a separate box and
+the words scatter across the line. Get tap-target height from `padding` or `min-height` alone. Flex/grid belong only on
+layout containers whose children are blocks (`.stats`, `.bar`, button rows). `check_lessons.py` fails the build if
+`extra.css` breaks this.
+
 ## Glossary: `glossary/terms.jsonl`
 
 One JSON object per line: `{"term", "aliases", "def", "lesson", "card"}`. `build_glossary.py` turns it into tap-to-define

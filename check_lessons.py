@@ -84,6 +84,14 @@ def main() -> int:
         if 'name="viewport"' not in text:
             errors.append(f"visuals/{v.name}: missing viewport meta tag")
 
+    # Prose holders must never be flex/grid: glossary <abbr>s would become separate boxes and text scatters.
+    PROSE = r"(summary|p|li|td|th|h[1-6]|blockquote|\.md-typeset|\.admonition-title)"
+    css = (c.DOCS / "stylesheets" / "extra.css").read_text(encoding="utf-8")
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+        if re.search(r"display\s*:\s*(inline-)?(flex|grid)", body) and re.search(PROSE + r"\s*(,|$|\s*>?\s*$)", selector.strip()):
+            errors.append(f"extra.css: '{selector.strip()}' is flex/grid but holds inline prose (see LESSON_FORMAT.md)")
+
     for w in warnings:
         print("warn :", w)
     for e in errors:

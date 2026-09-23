@@ -77,4 +77,6 @@
 
 /* lesson furniture */
 .md-typeset .recall { font-size: 0.76rem; color: var(--md-default-fg-color--light); border-left: 3px solid var(--md-accent-fg-color); padding-left: 0.7rem; }
-.md-typeset details.question > summary { min-height: 44px; display: flex; align-items: center; }
+/* Tap height via padding only. Never flex/grid an element that holds inline prose:
+   glossary <abbr>s and <code> would become separate boxes and the text scatters. */
+.md-typeset details.question > summary { padding-top: 0.55em; padding-bottom: 0.55em; }
