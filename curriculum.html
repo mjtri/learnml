@@ -1,0 +1,975 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Just enough ML to use and modify models — 12 weeks, phone-first.">
+      
+      
+      
+        <link rel="canonical" href="https://mjtri.github.io/learnml/curriculum.html">
+      
+      
+        <link rel="prev" href="glossary.html">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Curriculum - LearnML</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="stylesheets/extra.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#curriculum-just-enough-ml-to-use-and-modify-models" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="LearnML" class="md-header__button md-logo" aria-label="LearnML" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnML
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Curriculum
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mjtri/learnml" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="LearnML" class="md-nav__button md-logo" aria-label="LearnML" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LearnML
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mjtri/learnml" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Today
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Week 1 · Tensors → gradients
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Week 1 · Tensors → gradients
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="week-01/day-1.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 1 · Tensors & shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="week-01/day-2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 2 · Matmul as mixing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="week-01/day-3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 3 · Derivative = sensitivity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="week-01/day-4.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 4 · Chain rule on a graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="week-01/day-5.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 5 · Gradient descent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="week-01/build.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build · Gradients by hand
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="curriculum.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Curriculum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<!-- Generated from /curriculum.md by build_today.py. Edit the root file, not this one. -->
+
+<h1 id="curriculum-just-enough-ml-to-use-and-modify-models">Curriculum: just enough ML to use and modify <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr></h1>
+<p><strong>12 weeks · 5 phone days (~20 min) + 1 build day (~3 h, free <abbr title="Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.">Colab</abbr>) per week.</strong>
+Goal: read a modern paper, fine-tune or modify a small <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr>, run a small controlled experiment. Not: become a theorist.</p>
+<p>How it is organised
+- <strong>Just-in-time math.</strong> A math idea appears only in the week a lesson needs it, with the smallest example that works.
+- <strong>Canvas-aligned.</strong> Each week names cards from the Obsidian canvas <em>AI Research Roadmap</em>: ② Technical Core (<code>core-*</code>), ① Lineage (<code>lin-*</code>), ③ Build pipeline (<code>build-step*</code>), ⑤ Bridges (<code>bridge-*</code>). Each lesson's ledger prompt says which card the entry belongs next to.
+- <strong>Predict, then run.</strong> Every build notebook makes you write the expected result first (canvas steps 7–8). The surprise is the output.
+- <strong>One week at a time.</strong> Only week 1 exists at the start. <code>python gen_week.py N</code> prints the prompt that generates week N, using your ratings from week N−1. Day topics below are the plan, not a promise; they bend to what you found hard.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Weeks</th>
+<th>You can, by the end</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A · Mechanics</td>
+<td>1–3</td>
+<td>explain and code the <abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> loop: <abbr title="A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.">tensors</abbr> → <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr> → a small MLP that learns</td>
+</tr>
+<tr>
+<td>B · Transformers</td>
+<td>4–6</td>
+<td>build a tiny GPT, change one part, and explain the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> change</td>
+</tr>
+<tr>
+<td>C · Pretrained <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr></td>
+<td>7–9</td>
+<td>load, probe, <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr>-fine-tune and evaluate a pretrained <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr>; use CLIP embeddings</td>
+</tr>
+<tr>
+<td>D · Your experiment</td>
+<td>10–12</td>
+<td>design, run and write up a small controlled experiment tied to sensory substitution</td>
+</tr>
+</tbody>
+</table>
+<p>Core resources used throughout
+- Karpathy, <em>Neural Networks: Zero to Hero</em>: <a href="https://karpathy.ai/zero-to-hero.html">https://karpathy.ai/zero-to-hero.html</a>
+- 3Blue1Brown topics: <a href="https://www.3blue1brown.com/topics/neural-networks"><abbr title="A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.">neural networks</abbr></a>, <a href="https://www.3blue1brown.com/topics/linear-algebra">linear algebra</a>, <a href="https://www.3blue1brown.com/topics/calculus">calculus</a>
+- Prince, <em>Understanding Deep Learning</em> (UDL, free PDF): <a href="https://udlbook.github.io/udlbook/">https://udlbook.github.io/udlbook/</a>
+- <em>Dive into Deep Learning</em> (d2l): <a href="https://d2l.ai/">https://d2l.ai/</a>
+- The Annotated Transformer: <a href="https://nlp.seas.harvard.edu/annotated-transformer/">https://nlp.seas.harvard.edu/annotated-transformer/</a>
+- Hugging Face LLM course: <a href="https://huggingface.co/learn/llm-course/chapter1/1">https://huggingface.co/learn/llm-course/chapter1/1</a></p>
+<hr />
+<h1 id="phase-a-mechanics-weeks-13">Phase A · Mechanics (weeks 1–3)</h1>
+<h2 id="week-1-tensors-gradients">Week 1 — <abbr title="A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.">Tensors</abbr> → <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr></h2>
+<p><strong>Objectives</strong>
+- Read and predict <abbr title="A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.">tensor</abbr> <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr>, including <abbr title="The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.">broadcasting</abbr>.
+- See a <abbr title="Matrix multiplication. Each output number is the dot product of one row of the first matrix with one column of the second. Written A @ B in Python.">matrix multiply</abbr> as "every output is a weighted mix of the inputs" (a hand-designed image→sound mapping is exactly this).
+- Explain a <abbr title="How much a function's output changes per tiny change of one input, at one particular point. A sensitivity. Zero means nudging the input does nothing.">derivative</abbr> as sensitivity, the <abbr title="When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.">chain rule</abbr> as multiplying sensitivities along a path, and <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">gradient descent</abbr> as repeated small downhill steps.</p>
+<p><strong>Just-in-time math:</strong> <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr> and indexing; <abbr title="Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.">dot product</abbr>; <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr> × <abbr title="A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.">vector</abbr>; <abbr title="Rise over run: how steep a curve is at a point. The derivative is the slope of the curve at that point.">slope</abbr>/<abbr title="How much a function's output changes per tiny change of one input, at one particular point. A sensitivity. Zero means nudging the input does nothing.">derivative</abbr> by nudging; <abbr title="When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.">chain rule</abbr> on a graph. Nothing else yet.</p>
+<p><strong>Days</strong>
+1. <abbr title="A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.">Tensors</abbr> &amp; <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr>; <abbr title="The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.">broadcasting</abbr>
+2. <abbr title="Matrix multiplication. Each output number is the dot product of one row of the first matrix with one column of the second. Written A @ B in Python.">Matmul</abbr> as mixing; <abbr title="Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.">dot product</abbr> as similarity
+3. <abbr title="How much a function's output changes per tiny change of one input, at one particular point. A sensitivity. Zero means nudging the input does nothing.">Derivative</abbr> = sensitivity (nudge and measure)
+4. <abbr title="When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.">Chain rule</abbr> on a <abbr title="A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.">computation graph</abbr> (what <abbr title="PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().">autograd</abbr> automates)
+5. <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">Gradient descent</abbr> and the <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr>
+6. <strong>Build:</strong> <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr> by hand, then by machine. <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">Shapes</abbr> drills → a vOICe-style image→sound <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr> → numerical vs <abbr title="PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().">autograd</abbr> <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr> → fit a line with hand-written <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">gradient descent</abbr> → break it with a bad <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr>.</p>
+<p><strong>Done when:</strong> given a small expression graph you can compute every <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr> by hand, confirm it with <code>torch.autograd</code>, and predict what doubling the <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> does before you run it.</p>
+<p><strong>Canvas cards:</strong> <code>core-linalg</code> (first two bullets only), <code>core-calc</code>; lineage read <code>lin-bitter</code> (short essay, sets up why we learn mappings instead of designing them). <em>Suggestion: the canvas has no <abbr title="The backward pass applied to a neural network: the chain rule run from the loss back to every weight, reusing shared work so it costs about one extra forward pass.">backprop</abbr>-era card; consider adding Rumelhart, Hinton &amp; Williams (1986).</em></p>
+<p><strong>Resources</strong>
+- 3Blue1Brown: <a href="https://www.3blue1brown.com/lessons/linear-transformations">Linear transformations</a>, <a href="https://www.3blue1brown.com/lessons/dot-products"><abbr title="Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.">Dot products</abbr></a>, <a href="https://www.3blue1brown.com/lessons/derivatives"><abbr title="How much a function's output changes per tiny change of one input, at one particular point. A sensitivity. Zero means nudging the input does nothing.">Derivatives</abbr></a>, <a href="https://www.3blue1brown.com/lessons/gradient-descent"><abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">Gradient descent</abbr></a>
+- d2l: <a href="https://d2l.ai/chapter_preliminaries/ndarray.html">2.1 Data manipulation</a>, <a href="https://d2l.ai/chapter_preliminaries/calculus.html">2.4 Calculus</a>, <a href="https://d2l.ai/chapter_preliminaries/autograd.html">2.5 Automatic differentiation</a>
+- <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr>: <a href="https://pytorch.org/docs/stable/notes/broadcasting.html"><abbr title="The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.">Broadcasting</abbr> semantics</a>, <a href="https://pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html"><abbr title="A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.">Tensors</abbr> tutorial</a>
+- Karpathy: <a href="https://www.youtube.com/watch?v=VMj-3S1tku0">micrograd video</a>, first 40 minutes only
+- Sutton, <a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html">The Bitter Lesson</a>
+- Rumelhart, Hinton &amp; Williams (1986), <a href="https://www.nature.com/articles/323533a0">Learning representations by back-propagating errors</a> (skim the abstract and figure 1)</p>
+<h2 id="week-2-autograd-from-scratch-micrograd">Week 2 — <abbr title="PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().">Autograd</abbr> from scratch (micrograd)</h2>
+<p><strong>Objectives</strong>
+- Build a <abbr title="A single number; a tensor with no axes. Its shape is empty: ().">scalar</abbr> <abbr title="PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().">autograd</abbr> engine: a <code>Value</code> that remembers how it was made, and a <abbr title="Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.">backward pass</abbr> that walks the graph in reverse.
+- Define a neuron, a <abbr title="One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.">layer</abbr> and an MLP on top of it; understand what a nonlinearity buys you.
+- Write a <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr>, run the loop <em>forward → <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> → zero <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">grads</abbr> → backward → update</em>, and watch it learn.</p>
+<p><strong>Just-in-time math:</strong> <abbr title="The derivative of a single operation's output with respect to its own direct input, ignoring the rest of the graph.">local derivatives</abbr> of <code>+</code>, <code>×</code>, <code>tanh</code>/ReLU; topological order; why <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr> <strong>add</strong> when a value is used twice; <abbr title="Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.">mean squared error</abbr>.</p>
+<p><strong>Days</strong>
+1. A <code>Value</code> object and the graph it builds
+2. <abbr title="Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.">Backward pass</abbr>: <abbr title="The derivative of a single operation's output with respect to its own direct input, ignoring the rest of the graph.">local derivative</abbr> × upstream <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr>
+3. The accumulation bug (<code>+=</code>) and why you zero <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr>
+4. Neuron → <abbr title="One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.">layer</abbr> → MLP; why a nonlinearity is needed (XOR)
+5. <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">Loss</abbr> <abbr title="A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.">functions</abbr> and the five-line <abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> loop
+6. <strong>Build:</strong> rebuild micrograd, train a 2-<abbr title="One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.">layer</abbr> MLP on XOR and on a 2-D "moons" toy set; compare every <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr> with <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr>.</p>
+<p><strong>Done when:</strong> you have rebuilt micrograd from memory and trained a 2-<abbr title="One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.">layer</abbr> MLP on XOR with it (the <code>core-calc</code> criterion).</p>
+<p><strong>Canvas cards:</strong> <code>core-calc</code>; move card <code>move-discrete-continuous</code> (soft, differentiable everything is what makes this work).</p>
+<p><strong>Resources</strong>
+- Karpathy: <a href="https://www.youtube.com/watch?v=VMj-3S1tku0">micrograd video</a> (whole), <a href="https://github.com/karpathy/micrograd">micrograd repo</a>
+- 3Blue1Brown: <a href="https://www.3blue1brown.com/lessons/backpropagation">What is <abbr title="The backward pass applied to a neural network: the chain rule run from the loss back to every weight, reusing shared work so it costs about one extra forward pass.">backpropagation</abbr> really doing?</a>, <a href="https://www.3blue1brown.com/lessons/backpropagation-calculus"><abbr title="The backward pass applied to a neural network: the chain rule run from the loss back to every weight, reusing shared work so it costs about one extra forward pass.">Backpropagation</abbr> calculus</a>
+- Olah, <a href="https://colah.github.io/posts/2015-08-Backprop/">Calculus on computational graphs</a>
+- UDL ch. 7 (<abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">Gradients</abbr> and initialization), sections 7.1–7.4</p>
+<h2 id="week-3-pytorch-training-loop-a-small-mlp-that-generalises">Week 3 — <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr> <abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> loop → a small MLP that generalises</h2>
+<p><strong>Objectives</strong>
+- Move from your engine to <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr>: <code>nn.Module</code>, <code>Dataset</code>/<code>DataLoader</code>, optimizer, the standard loop.
+- Classify with softmax + cross-entropy; read a <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> curve; split train/validation and recognise overfitting.
+- Make a net fail and fix it: <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr>, initialization, normalization.</p>
+<p><strong>Just-in-time math:</strong> softmax; cross-entropy as "surprise at the right answer" (negative log-likelihood); mini-<abbr title="A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).">batch</abbr> noise; momentum and Adam as running averages; variance of activations (why init scale matters).</p>
+<p><strong>Days</strong>
+1. <code>nn.Module</code>, <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr> and the canonical loop
+2. Softmax + cross-entropy; logits
+3. Mini-<abbr title="A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).">batches</abbr>, SGD → momentum → Adam
+4. Train vs validation; overfitting; regularization in one page
+5. When <abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> breaks: <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr>, init, normalization, residual connections
+6. <strong>Build:</strong> an MLP on MNIST or Fashion-MNIST (&gt; 97 % / &gt; 88 %), then make it <abbr title="To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.">diverge</abbr> and fix it three ways, predicting which fix works first.</p>
+<p><strong>Done when:</strong> you can make a small net <abbr title="To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.">diverge</abbr> and fix it three ways (LR, init, norm) and predict which fix works before trying (the <code>core-optim</code> criterion).</p>
+<p><strong>Canvas cards:</strong> <code>core-optim</code>, <code>core-dl</code> (first two bullets), <code>core-tooling</code> (first bullet); lineage <code>lin-resnet</code> (why deeper trained worse, and the residual fix you will meet again inside the transformer).</p>
+<p><strong>Resources</strong>
+- Karpathy: <a href="https://www.youtube.com/watch?v=TCH_1BHY58I">makemore 2: MLP</a>, <a href="https://www.youtube.com/watch?v=P6sfmUTpUmc">makemore 3: activations, <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr>, BatchNorm</a>
+- Karpathy, <a href="https://karpathy.github.io/2019/04/25/recipe/">A recipe for <abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> <abbr title="A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.">neural networks</abbr></a>
+- <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr>: <a href="https://pytorch.org/tutorials/beginner/basics/intro.html">Learn the basics</a>
+- UDL ch. 5 (<abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">Loss</abbr> <abbr title="A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.">functions</abbr>), 6 (Fitting <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr>), 8 (Measuring performance); d2l <a href="https://d2l.ai/chapter_multilayer-perceptrons/index.html">ch. 5 MLPs</a>
+- Papers: <a href="https://arxiv.org/abs/1512.03385">ResNet</a>, <a href="https://arxiv.org/abs/1412.6980">Adam</a> (abstract + algorithm 1)</p>
+<hr />
+<h1 id="phase-b-transformers-weeks-46">Phase B · Transformers (weeks 4–6)</h1>
+<h2 id="week-4-embeddings-and-attention">Week 4 — Embeddings and attention</h2>
+<p><strong>Objectives</strong>
+- Explain why words became <abbr title="A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.">vectors</abbr>, and what "similar direction = similar meaning" buys you.
+- Compute single-head attention by hand on three tokens: queries, keys, values, scaled <abbr title="Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.">dot products</abbr>, softmax, weighted sum.
+- Explain the causal mask, and why attention needs position information injected.</p>
+<p><strong>Just-in-time math:</strong> cosine similarity; softmax temperature; why divide by √d; probability distributions as rows that sum to 1.</p>
+<p><strong>Days</strong>
+1. Embeddings: a lookup table that learns (word2vec in one page)
+2. Next-token prediction: the bigram <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> and its <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr>
+3. Attention as soft lookup: query, key, value
+4. Scaled dot-product attention by hand; the causal mask
+5. Multi-head attention and position encodings
+6. <strong>Build:</strong> bigram language <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> → add one self-attention head (first half of "Let's build GPT"), with <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shape</abbr> predictions at every step.</p>
+<p><strong>Done when:</strong> you can compute attention <abbr title="A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.">weights</abbr> for a 3-token example on paper, and say what each of Q, K, V contributes in your own words.</p>
+<p><strong>Canvas cards:</strong> <code>core-transformer</code> (bullets 1–2), <code>core-prob</code> (cross-entropy bullet); lineage chain 1: <code>lin-word2vec</code> → <code>lin-seq2seq</code> → <code>lin-attention</code>; move <code>move-discrete-continuous</code>.</p>
+<p><strong>Resources</strong>
+- 3Blue1Brown: <a href="https://www.3blue1brown.com/lessons/gpt">Transformers, the tech behind LLMs</a>, <a href="https://www.3blue1brown.com/lessons/attention">Attention in transformers</a>
+- Karpathy: <a href="https://www.youtube.com/watch?v=PaCmpygFfXo">makemore 1: bigrams</a>, <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">Let's build GPT</a> (to ~1:02:00)
+- Alammar, <a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a>
+- Papers: <a href="https://arxiv.org/abs/1301.3781">word2vec</a>, <a href="https://arxiv.org/abs/1409.0473">Bahdanau attention</a> (sections 1–3)</p>
+<h2 id="week-5-the-transformer-block-and-nanogpt">Week 5 — The transformer block and nanoGPT</h2>
+<p><strong>Objectives</strong>
+- Assemble a block: attention + MLP + residual stream + LayerNorm; say what each part is for.
+- Train a character-level GPT on a tiny corpus in <abbr title="Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.">Colab</abbr>; sample from it; read the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> curve.
+- Read <em>Attention Is All You Need</em> and map every box in figure 1 to code you ran.</p>
+<p><strong>Just-in-time math:</strong> LayerNorm (mean/variance per token); the residual stream as a running sum; <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameter</abbr> counting.</p>
+<p><strong>Days</strong>
+1. The residual stream: blocks read from and write to one running sum
+2. The MLP block and LayerNorm placement (pre- vs post-norm)
+3. Stacking blocks; counting <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr>; where the compute goes
+4. Sampling: temperature, top-k, and why outputs vary
+5. Reading the Transformer paper with a map
+6. <strong>Build:</strong> finish "Let's build GPT" / nanoGPT on tiny Shakespeare (T4, ~15 min runs); log val <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> with config + seed.</p>
+<p><strong>Done when:</strong> you have trained nanoGPT on a tiny corpus and can point to the line of code for every box in the paper's figure 1.</p>
+<p><strong>Canvas cards:</strong> <code>core-transformer</code>; lineage <code>lin-resnet</code> → <code>lin-transformer</code>; move <code>move-inductive-bias</code>.</p>
+<p><strong>Resources</strong>
+- Karpathy: <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY">Let's build GPT</a> (rest), <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a>
+- <a href="https://nlp.seas.harvard.edu/annotated-transformer/">The Annotated Transformer</a>
+- Interactive: <a href="https://poloclub.github.io/transformer-explainer/">Transformer Explainer</a>, <a href="https://bbycroft.net/llm">LLM visualization</a>
+- UDL ch. 12 (Transformers); paper: <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a></p>
+<h2 id="week-6-tokenization-scaling-intuition-first-ablation">Week 6 — Tokenization, scaling intuition, first ablation</h2>
+<p><strong>Objectives</strong>
+- Explain BPE tokenization and name three odd <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> behaviours it causes.
+- State the scaling-law picture in plain words: <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> falls smoothly with <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr>, data and compute; Chinchilla's correction.
+- Run your first ablation: remove or change one component of nanoGPT and explain the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> difference.</p>
+<p><strong>Just-in-time math:</strong> log–log plots and power laws; tokens vs <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr> vs FLOPs (the 6·N·D rule of thumb).</p>
+<p><strong>Days</strong>
+1. Tokenization: bytes → BPE merges
+2. Tokenizer artefacts (numbers, spaces, non-English text such as Korean)
+3. Scaling laws: reading a log–log plot
+4. Chinchilla, and what "compute-optimal" means for a small lab
+5. Encoder vs decoder: BERT and GPT as two uses of the same block
+6. <strong>Build:</strong> ablate one nanoGPT component (position encoding, LayerNorm, or number of heads), 2 seeds each; plus a three-size mini scaling run.</p>
+<p><strong>Done when:</strong> you have ablated one component and explained the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> change (the <code>core-transformer</code> criterion), with your prediction logged first.</p>
+<p><strong>Canvas cards:</strong> <code>core-transformer</code>, <code>core-dl</code> (inductive bias); lineage chain 2: <code>lin-bert</code> → <code>lin-gpt3</code> → <code>lin-kaplan</code> → <code>lin-chinchilla</code>; moves <code>move-scale</code>, <code>move-free-supervision</code>.</p>
+<p><strong>Resources</strong>
+- Karpathy: <a href="https://www.youtube.com/watch?v=zduSFxRajkE">Let's build the GPT tokenizer</a>; playground: <a href="https://tiktokenizer.vercel.app/">Tiktokenizer</a>
+- HF LLM course, <a href="https://huggingface.co/learn/llm-course/chapter6/1">ch. 6 Tokenizers</a>
+- Papers: <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://arxiv.org/abs/2005.14165">GPT-3</a> (sections 1–2), <a href="https://arxiv.org/abs/2001.08361">Scaling laws</a> (figures 1–4), <a href="https://arxiv.org/abs/2203.15556">Chinchilla</a> (abstract, figure 1)</p>
+<hr />
+<h1 id="phase-c-pretrained-models-weeks-79">Phase C · Pretrained <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr> (weeks 7–9)</h1>
+<h2 id="week-7-using-pretrained-models-with-hugging-face">Week 7 — Using pretrained <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr> with Hugging Face</h2>
+<p><strong>Objectives</strong>
+- Load a <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> and tokenizer from the Hub; inspect config, <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameter</abbr> count, <abbr title="One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.">layers</abbr>; run generation and extract hidden states.
+- Understand the pretrain → fine-tune pattern and when you need neither (prompting, embeddings + a linear probe).
+- Reproduce a repo's setup: read its config, pin versions, set seeds, log a run.</p>
+<p><strong>Just-in-time math:</strong> none new; consolidation week.</p>
+<p><strong>Days</strong>
+1. The Hub, <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> cards, and what a checkpoint contains
+2. <code>AutoTokenizer</code> / <code>AutoModel</code>: <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr> in, <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr> out
+3. Hidden states as <abbr title="One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.">features</abbr>; the linear probe
+4. Full fine-tuning in outline; memory arithmetic (why a T4 runs out)
+5. Reproducibility basics: seeds, configs, run logs
+6. <strong>Build:</strong> load a small LM (e.g. SmolLM2-135M/360M), probe its hidden states on a small classification task, log everything to a CSV with config + seed + git hash.</p>
+<p><strong>Done when:</strong> you can load any Hub <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr>, state its input/output <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr> and <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameter</abbr> count, and log a run someone else could repeat.</p>
+<p><strong>Canvas cards:</strong> <code>core-tooling</code>; lineage <code>lin-bert</code> (fine-tune pattern), <code>lin-gpt3</code> (in-context alternative); move <code>move-adapters</code>.</p>
+<p><strong>Resources</strong>
+- HF LLM course <a href="https://huggingface.co/learn/llm-course/chapter1/1">ch. 1–3</a>; <a href="https://huggingface.co/docs/transformers/index">Transformers docs</a>
+- <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">Model</abbr>: <a href="https://huggingface.co/HuggingFaceTB/SmolLM2-360M">SmolLM2-360M</a>
+- <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr>, <a href="https://pytorch.org/docs/stable/notes/randomness.html">Reproducibility notes</a></p>
+<h2 id="week-8-lora-fine-tuning">Week 8 — <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr> fine-tuning</h2>
+<p><strong>Objectives</strong>
+- Explain <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr>'s ΔW = BA: what is frozen, what trains, why rank r matters, where adapters attach.
+- Fine-tune a small LM with PEFT on a free T4; compare against the base <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> on held-out data.
+- Run a rank ablation and read it honestly.</p>
+<p><strong>Just-in-time math:</strong> rank and <abbr title="A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.">low-rank</abbr> factorization; SVD in pictures (a <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr> as a sum of a few simple stretches). This is where week 1's "squashing" <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr> pays off.</p>
+<p><strong>Days</strong>
+1. Rank: how many independent directions a <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr> really uses
+2. SVD in pictures; <abbr title="A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.">low-rank</abbr> approximation of an image
+3. <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr>: freeze W, learn BA; <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameter</abbr> arithmetic
+4. PEFT in practice: target modules, alpha, dropout, merging
+5. Fine-tuning failure modes: forgetting, leakage, overfitting tiny datasets
+6. <strong>Build:</strong> <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr>-tune SmolLM2-360M (or Qwen2.5-0.5B) on a small instruction/style set; ablate r ∈ {1, 4, 16} with 2 seeds; predict the ordering first.</p>
+<p><strong>Done when:</strong> you can explain <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr>'s ΔW = BA and why rank r matters (the <code>core-linalg</code> criterion), and show a before/after evaluation you trust.</p>
+<p><strong>Canvas cards:</strong> <code>core-linalg</code> (<abbr title="A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.">low-rank</abbr> bullets), <code>core-tooling</code>; lineage <code>lin-lora</code>; bridge <code>bridge-adaptation</code> (learner = frozen <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr>, device mapping = adapter).</p>
+<p><strong>Resources</strong>
+- Paper: <a href="https://arxiv.org/abs/2106.09685"><abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr></a> (sections 1–4, table 6 on rank)
+- HF <a href="https://huggingface.co/docs/peft/index">PEFT docs</a>, <a href="https://huggingface.co/docs/peft/main/en/conceptual_guides/lora"><abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr> conceptual guide</a>
+- 3Blue1Brown linear algebra: <a href="https://www.3blue1brown.com/lessons/inverse-matrices">Inverse <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrices</abbr>, column space and null space</a> (covers rank)
+- <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">Model</abbr>: <a href="https://huggingface.co/Qwen/Qwen2.5-0.5B">Qwen2.5-0.5B</a></p>
+<h2 id="week-9-clip-multimodal-embeddings-evaluation">Week 9 — CLIP, multimodal embeddings, evaluation</h2>
+<p><strong>Objectives</strong>
+- Explain contrastive learning (InfoNCE) as "pick your partner out of the <abbr title="A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).">batch</abbr>", and why it yields a shared image–text space.
+- Use CLIP for zero-shot classification and retrieval; inspect the similarity <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr>.
+- Evaluate properly: metrics, held-out splits, confidence intervals from seeds or bootstrap, and the question "what baseline makes this go away?"</p>
+<p><strong>Just-in-time math:</strong> cosine similarity <abbr title="A table of numbers with rows and columns; a tensor with two axes.">matrix</abbr>; cross-entropy over a <abbr title="A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).">batch</abbr> (InfoNCE); mean ± standard error; bootstrap in ten lines.</p>
+<p><strong>Days</strong>
+1. Contrastive learning: positives, negatives, temperature
+2. CLIP: two encoders, one space; text as the label set
+3. ViT in one page: patches as tokens
+4. Evaluation: metrics, splits, leakage
+5. Uncertainty: seeds, standard error, bootstrap; how to read a results table sceptically
+6. <strong>Build:</strong> zero-shot CIFAR-10 with OpenCLIP, prompt-template ablation, bootstrap CIs; then image↔text retrieval on a small custom set (your own XR/haptics images welcome).</p>
+<p><strong>Done when:</strong> given a new architecture you can name its inductive bias (the <code>core-dl</code> criterion), and you can report a result as "mean ± uncertainty vs a named baseline".</p>
+<p><strong>Canvas cards:</strong> <code>core-dl</code>, <code>core-prob</code> (entropy/KL bullets as needed); lineage chain 3: <code>lin-cpc</code> → <code>lin-simclr</code> → <code>lin-clip</code> → <code>lin-imagebind</code>, plus <code>lin-vit</code>; bridge <code>bridge-crossmodal</code>.</p>
+<p><strong>Resources</strong>
+- Papers: <a href="https://arxiv.org/abs/2103.00020">CLIP</a> (sections 1–3.1), <a href="https://arxiv.org/abs/2002.05709">SimCLR</a> (figure 2, section 2), <a href="https://arxiv.org/abs/2010.11929">ViT</a> (figure 1), <a href="https://arxiv.org/abs/2305.05665">ImageBind</a> (abstract, figure 2)
+- Code: <a href="https://github.com/mlfoundations/open_clip">OpenCLIP</a>, <a href="https://github.com/openai/CLIP">openai/CLIP</a>
+- UDL ch. 8 (Measuring performance)</p>
+<hr />
+<h1 id="phase-d-your-experiment-weeks-1012">Phase D · Your experiment (weeks 10–12)</h1>
+<h2 id="week-10-experiment-design">Week 10 — Experiment design</h2>
+<p><strong>Objectives</strong>
+- Turn an intuition into a falsifiable prediction: "on task T, A beats B by ≥ X on metric M" (canvas steps 1–5).
+- Choose baselines that could embarrass you; plan ablations that isolate one lever; decide seeds and compute budget up front.
+- Know the common ways small ML experiments fool their authors.</p>
+<p><strong>Just-in-time math:</strong> variance across seeds; effect size vs noise; how many seeds for the difference you care about (rule-of-thumb level, reusing what you know from user studies).</p>
+<p><strong>Days</strong>
+1. One lever at a time: data, architecture, objective, optimization, <abbr title="Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.">inference</abbr>
+2. Baselines: trivial, strong, and "same compute"
+3. Ablations and controls: what an ML paper owes the reader
+4. Seeds, variance and honest tables; tuning the baseline as hard as your method
+5. Pre-registration for yourself: the one-page experiment plan
+6. <strong>Build:</strong> run two candidate ideas through canvas steps 1–5; write the one-page plan for week 12; build the data pipeline (a vOICe-style sonifier or the haptic-grid downsampler) and sanity-check it.</p>
+<p><strong>Done when:</strong> your week-12 plan names task, metric, baseline B, prediction with a number, ablation, seeds and a compute budget ≤ a few T4-hours.</p>
+<p><strong>Canvas cards:</strong> ③ <code>build-step1</code> … <code>build-step6</code>; ④ Move Library (name the 1–2 moves your idea uses); <code>core-tooling</code>.</p>
+<p><strong>Resources</strong>
+- Henderson et al., <a href="https://arxiv.org/abs/1709.06560">Deep reinforcement learning that matters</a> (the seeds-and-variance lesson, applies beyond RL)
+- Dodge et al., <a href="https://arxiv.org/abs/1909.03004">Show your work</a> (reporting with compute budgets)
+- Lipton &amp; Steinhardt, <a href="https://arxiv.org/abs/1807.03341">Troubling trends in machine learning scholarship</a>
+- Karpathy, <a href="https://karpathy.github.io/2019/04/25/recipe/">A recipe for <abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> <abbr title="A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.">neural networks</abbr></a> (re-read)</p>
+<h2 id="week-11-reproduce-one-number-from-a-paper">Week 11 — Reproduce one number from a paper</h2>
+<p><strong>Objectives</strong>
+- Read a paper in three passes; extract exactly what is needed to reproduce one table cell.
+- Clone or reassemble the setup, reproduce the number within tolerance, and explain any gap.</p>
+<p><strong>Default target (small, leads into week 12):</strong> a zero-shot accuracy cell from the CLIP paper using OpenCLIP <abbr title="A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.">weights</abbr> on a free T4. Alternatives: the rank row of the <abbr title="Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.">LoRA</abbr> paper at small scale; nanoGPT's tiny-Shakespeare validation <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> from its README.</p>
+<p><strong>Days</strong>
+1. Three-pass paper reading; where the details hide (appendix, config, footnotes)
+2. From paper to checklist: data, preprocessing, <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr>, metric
+3. Reading someone else's repo: entry point, config, data flow
+4. When the number does not match: a debugging order
+5. Writing the one-paragraph reproduction report
+6. <strong>Build:</strong> reproduce the number; log prediction, result, gap and explanation.</p>
+<p><strong>Done when:</strong> you can clone a paper repo, reproduce one table row, and log your own run with config + seed (the <code>core-tooling</code> criterion).</p>
+<p><strong>Canvas cards:</strong> <code>core-tooling</code>; the <code>lin-*</code> card of the paper you reproduce (add a ledger entry next to it).</p>
+<p><strong>Resources</strong>
+- Keshav, <a href="http://ccr.sigcomm.org/online/files/p83-keshavA.pdf">How to read a paper</a>
+- <a href="https://huggingface.co/papers">HF Papers</a> and <a href="https://huggingface.co/papers/trending">HF trending papers</a> (Papers with Code has shut down and now redirects here)
+- The paper and repo you pick</p>
+<h2 id="week-12-a-small-sensory-substitution-experiment">Week 12 — A small sensory-substitution experiment</h2>
+<p><strong>Objectives</strong>
+- Run the week-10 plan: A vs B, one ablation, ≥ 3 seeds, predictions logged first (canvas steps 6–9).
+- Write the one-page result: claim, setup, plot, surprise, decision (kill / pivot / scale up), and ask an ML collaborator "what baseline would make this go away?" (step 10).</p>
+<p><strong>Two ready-made options (choose in week 10)</strong>
+- <strong>Cross-modal embedding</strong> (<code>bridge-crossmodal</code>): sonify small images with a fixed vOICe-style mapping (column → time, row → pitch, brightness → loudness); train a tiny contrastive <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> between image patches and their sound spectrograms. Prediction example: "embedding distance predicts <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shape</abbr> confusability better than pixel distance by ≥ X rank correlation." A later human study can test it.
+- <strong>Learned image→sound/touch codec</strong> (<code>bridge-codec</code>): an autoencoder whose bottleneck is shaped like a real display (e.g. 4×4 actuators with 8 levels, or a band-limited 1-D signal); compare reconstruction and <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shape</abbr>-classification-from-code against the fixed hand-designed mapping at equal bandwidth.</p>
+<p><strong>Just-in-time math:</strong> the autoencoder/VAE objective in one page (only if you choose the codec); rank correlation (only if you choose the embedding).</p>
+<p><strong>Days</strong>
+1. Your chosen family in one page (contrastive recap <em>or</em> autoencoder → VAE)
+2. Shaping a bottleneck like a display: quantization and the straight-through trick (<em>or</em> audio front-ends: spectrograms as images)
+3. Reading your own curves: is it learning, memorising, or broken?
+4. From <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> metric to human prediction: what a follow-up user study would test
+5. The one-page write-up
+6. <strong>Build:</strong> run, compare to prediction, decide, write up.</p>
+<p><strong>Done when:</strong> a one-page write-up exists with a plot, a baseline, an ablation, seeds, the logged prediction, the surprise, and a decision.</p>
+<p><strong>Canvas cards:</strong> ③ <code>build-step6</code> … <code>build-step10</code>; ⑤ <code>bridge-crossmodal</code> or <code>bridge-codec</code>; lineage <code>lin-vae</code>, <code>lin-clip</code>, <code>lin-perceiver</code>.</p>
+<p><strong>Resources</strong>
+- Papers: <a href="https://arxiv.org/abs/1312.6114">VAE</a> (sections 1–2.3), <a href="https://arxiv.org/abs/2103.00020">CLIP</a>, <a href="https://arxiv.org/abs/2103.03206">Perceiver</a> (figure 1)
+- UDL ch. 17 (Variational autoencoders); <a href="https://www.seeingwithsound.com/">The vOICe</a> for the reference mapping
+- Data: MNIST / Fashion-MNIST / simple rendered <abbr title="The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.">shapes</abbr> (Unity or matplotlib); <a href="https://github.com/karolpiczak/ESC-50">ESC-50</a> if real audio is needed</p>
+<hr />
+<h2 id="after-week-12">After week 12</h2>
+<p>Pick the next canvas chain by need, not by order: generative (<code>lin-vae</code> → <code>lin-ddpm</code> → <code>lin-ldm</code>) if the codec worked; world <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr> (<code>lin-worldmodels</code> → <code>lin-dreamer</code>) for <code>bridge-active</code>; post-<abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">training</abbr> (<code>lin-instructgpt</code> → <code>lin-dpo</code>) if you start steering language <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr> for assistive agents (<code>bridge-vr</code>).</p>
+<!-- Generated by build_glossary.py from glossary/terms.jsonl. Do not edit. -->
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="glossary.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Glossary">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Glossary
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.footer", "navigation.top", "toc.integrate", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="javascripts/glossary-map.js"></script>
+      
+        <script src="javascripts/glossary.js"></script>
+      
+        <script src="javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gradient descent on a loss surface</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on,button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;max-width:420px;margin:0 auto;touch-action:manipulation;border-radius:10px;cursor:crosshair}
+.hint{font-size:12px;color:var(--mut);margin:6px 0;text-align:center}
+.lr{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center}
+.lr input{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.lrv{text-align:center;font-size:13px;color:var(--mut);margin-bottom:2px}
+.lrv b{font:700 16px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.read{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 6px}
+.read div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;font:14px ui-monospace,Menlo,Consolas,monospace}
+.read span{display:block;font:11px system-ui,sans-serif;color:var(--mut)}
+.status{font-size:13.5px;min-height:40px;padding:8px 10px;border-radius:10px;background:var(--card)}
+.status.bad{color:var(--bad);font-weight:700}.status.good{color:var(--ok);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Walk downhill: step = − learning rate × gradient</h1>
+<div class="row" id="surf"></div>
+<canvas id="cv" aria-label="Contour map of a loss surface. Tap to choose a start point."></canvas>
+<div class="hint">Dark = low loss. Tap the map to choose where to start.</div>
+<div class="lrv">learning rate <b id="lrv"></b></div>
+<div class="lr"><button id="lrm" aria-label="learning rate minus 0.01">−</button><input id="lr" type="range" min="0.01" max="1.2" step="0.01" value="0.1" aria-label="learning rate"><button id="lrp" aria-label="learning rate plus 0.01">+</button></div>
+<div class="read"><div><span>steps</span><b id="rs">0</b></div><div><span>loss</span><b id="rl"></b></div><div><span>position</span><b id="rp"></b></div></div>
+<div class="row"><button class="pri" id="run">Run ▶</button><button id="one">One step</button><button id="rst">Back to start</button></div>
+<div class="status" id="st" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>loss surface</dt><dd>Each position is one setting of two parameters; darkness shows how low the loss is there.</dd>
+<dt>gradient</dt><dd>The uphill direction and steepness at your current position. We step the opposite way.</dd>
+<dt>learning rate</dt><dd>How far to step for a given steepness. Too big and you overshoot the valley.</dd>
+<dt>diverge</dt><dd>Each step lands higher than the last; the loss explodes.</dd>
+</dl></details>
+<script>
+(function(){
+var SURF=[
+ {n:"Bowl",f:function(x,y){return x*x+y*y},g:function(x,y){return[2*x,2*y]},s:[-2.5,2]},
+ {n:"Ravine",f:function(x,y){return x*x+10*y*y},g:function(x,y){return[2*x,20*y]},s:[-2.6,1.2]},
+ {n:"Two valleys",f:function(x,y){return .25*x*x*x*x-x*x+.3*x+y*y+1.44},g:function(x,y){return[x*x*x-2*x+.3,2*y]},s:[2.6,2]}];
+var cur=0,R=3,N=170,cv=document.getElementById("cv"),ctx=cv.getContext("2d"),size=300,bgc=document.createElement("canvas");
+var start=SURF[0].s.slice(),path=[],timer=null,dead=false;
+var lr=document.getElementById("lr");
+var sb=document.getElementById("surf");
+SURF.forEach(function(s,i){var b=document.createElement("button");b.textContent=s.n;b.onclick=function(){cur=i;start=s.s.slice();paintBg();reset()};sb.appendChild(b)});
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function dark(){return document.documentElement.dataset.theme==="dark"}
+function paintBg(){
+  var S=SURF[cur],img,i,j,fmax=0,vals=new Float32Array(N*N);
+  bgc.width=bgc.height=N;var b=bgc.getContext("2d");img=b.createImageData(N,N);
+  for(j=0;j<N;j++)for(i=0;i<N;i++){var v=S.f(-R+2*R*i/(N-1),R-2*R*j/(N-1));vals[j*N+i]=v;if(v>fmax)fmax=v}
+  var lo=dark()?[26,30,58]:[52,66,160],hi=dark()?[176,186,226]:[240,243,252];
+  for(i=0;i<N*N;i++){var t=Math.log(1+4*vals[i])/Math.log(1+4*fmax),band=Math.floor(t*16),k=band%2?.93:1;
+    img.data[4*i]=(lo[0]+(hi[0]-lo[0])*t)*k;img.data[4*i+1]=(lo[1]+(hi[1]-lo[1])*t)*k;img.data[4*i+2]=(lo[2]+(hi[2]-lo[2])*t)*k;img.data[4*i+3]=255}
+  b.putImageData(img,0,0);
+}
+function fit(){var w=Math.min(cv.parentNode.clientWidth-26,420),r=window.devicePixelRatio||1;size=w;cv.style.height=w+"px";cv.width=w*r;cv.height=w*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function px(p){return[size/2+p[0]/R*size/2,size/2-p[1]/R*size/2]}
+function draw(){
+  var S=SURF[cur],acc2=css("--acc2"),fg=dark()?"#fff":"#111";
+  Array.prototype.forEach.call(sb.children,function(b,i){b.className=i===cur?"on":""});
+  ctx.imageSmoothingEnabled=true;ctx.drawImage(bgc,0,0,size,size);
+  ctx.save();ctx.beginPath();ctx.rect(0,0,size,size);ctx.clip();
+  ctx.strokeStyle=acc2;ctx.lineWidth=2;ctx.beginPath();
+  path.forEach(function(p,i){var q=px([Math.max(-50,Math.min(50,p[0])),Math.max(-50,Math.min(50,p[1]))]);if(i)ctx.lineTo(q[0],q[1]);else ctx.moveTo(q[0],q[1])});ctx.stroke();
+  path.forEach(function(p,i){var q=px(p);ctx.beginPath();ctx.arc(q[0],q[1],i===path.length-1?6:3,0,7);ctx.fillStyle=i===path.length-1?fg:acc2;ctx.fill();
+    if(i===path.length-1){ctx.lineWidth=2;ctx.strokeStyle=acc2;ctx.stroke()}});
+  ctx.restore();
+  var p=path[path.length-1],L=S.f(p[0],p[1]);
+  document.getElementById("lrv").textContent=(+lr.value).toFixed(2);
+  document.getElementById("rs").textContent=path.length-1;
+  document.getElementById("rl").textContent=!isFinite(L)||L>1e6?"exploded":L<1e-4?L.toExponential(1):L.toFixed(3);
+  document.getElementById("rp").textContent=Math.abs(p[0])>99||Math.abs(p[1])>99?"off the map":z(p[0])+", "+z(p[1]);
+}
+window.redraw=function(){paintBg();draw()};
+function z(v){return(Math.abs(v)<.005?0:v).toFixed(2)}
+function say(t,c){var s=document.getElementById("st");s.textContent=t;s.className="status"+(c?" "+c:"")}
+function stop(){if(timer){clearInterval(timer);timer=null}document.getElementById("run").textContent="Run ▶"}
+function reset(){stop();dead=false;path=[start.slice()];say("Predict the path for this learning rate, then press Run.");draw()}
+function stepOnce(){
+  if(dead)return false;
+  var S=SURF[cur],p=path[path.length-1],g=S.g(p[0],p[1]),e=+lr.value,q=[p[0]-e*g[0],p[1]-e*g[1]];
+  path.push(q);
+  var L0=S.f(path[0][0],path[0][1]),L=S.f(q[0],q[1]),gn=Math.hypot.apply(null,S.g(q[0],q[1]));
+  if(!isFinite(L)||L>1e4*Math.max(1,L0)){dead=true;say("Diverged after "+(path.length-1)+" steps: every step overshoots further. In real training the loss would now read NaN. Lower the learning rate.","bad");draw();return false}
+  if(gn<1e-3){dead=true;say("Converged in "+(path.length-1)+" steps: the ground is flat here (gradient ≈ 0), so the steps have shrunk to nothing.","good");draw();return false}
+  if(path.length>120){dead=true;say("120 steps and still not settled. Bouncing between walls, or crawling? Look at the path, then change the learning rate.");draw();return false}
+  say(L>S.f(p[0],p[1])?"Loss went UP on that step: overshoot.":"Stepping downhill…");draw();return true;
+}
+document.getElementById("one").onclick=function(){stop();stepOnce()};
+document.getElementById("run").onclick=function(){if(timer){stop();return}if(dead)reset();this.textContent="Pause ❚❚";timer=setInterval(function(){if(!stepOnce())stop()},90)};
+document.getElementById("rst").onclick=reset;
+lr.oninput=function(){reset()};
+function bump(d){lr.value=Math.max(.01,Math.min(1.2,Math.round((+lr.value+d)*100)/100));reset()}
+document.getElementById("lrm").onclick=function(){bump(-.01)};document.getElementById("lrp").onclick=function(){bump(.01)};
+cv.addEventListener("click",function(e){var r=cv.getBoundingClientRect();start=[((e.clientX-r.left)/r.width*2-1)*R,-((e.clientY-r.top)/r.height*2-1)*R];reset()});
+addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;var t=d?"dark":"light";if(root.dataset.theme===t)return;root.dataset.theme=t;if(path.length)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+paintBg();reset();fit();
+})();
+</script>
+</body>
+</html>

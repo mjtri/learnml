@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nudge and measure</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.fns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;height:250px;touch-action:pan-y;border-radius:10px;background:var(--card);cursor:ew-resize}
+label{display:grid;grid-template-columns:74px 1fr 58px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.sec{color:var(--ok);font-weight:700}.tan{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Slope by nudging: shrink h and the <span class="sec">green</span> line becomes the <span class="tan">orange</span> tangent</h1>
+<div class="fns" id="fns"></div>
+<canvas id="cv" aria-label="Curve with a tangent line and a nudge line. Drag sideways to move x."></canvas>
+<label>x (where)<input id="sx" type="range" min="-3" max="3" step="0.05" value="1.5"><output id="ox"></output></label>
+<label>h (nudge)<input id="sh" type="range" min="0" max="1" step="0.01" value="0"><output id="oh"></output></label>
+<div class="read">
+  <span class="k">f(x)</span><span id="r1"></span>
+  <span class="k">f(x + h)</span><span id="r2"></span>
+  <span class="k">nudge estimate (f(x+h) − f(x)) / h</span><span id="r3" class="sec"></span>
+  <span class="k">exact slope</span><span id="r4" class="tan"></span>
+  <span class="k">estimate is off by</span><span id="r5"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>derivative / slope</dt><dd>How fast f changes per unit change of x, at this x. The steepness of the orange tangent line.</dd>
+<dt>numerical gradient</dt><dd>The green estimate: nudge x by h, measure the change in f, divide by h.</dd>
+<dt>ReLU</dt><dd>max(0, x): zero for negative inputs, the input itself otherwise. The most common “bend” in neural networks.</dd>
+</dl></details>
+<script>
+(function(){
+var FNS=[
+ {n:"x²",f:function(x){return x*x},d:function(x){return 2*x},y:[-1.5,9.5]},
+ {n:"sin x",f:Math.sin,d:Math.cos,y:[-1.8,1.8]},
+ {n:"ReLU",f:function(x){return Math.max(0,x)},d:function(x){return x>0?1:0},y:[-1,3.4]},
+ {n:"tanh x",f:Math.tanh,d:function(x){var t=Math.tanh(x);return 1-t*t},y:[-1.8,1.8]},
+ {n:"x³ − 3x",f:function(x){return x*x*x-3*x},d:function(x){return 3*x*x-3},y:[-6,6]}];
+var cur=0,cv=document.getElementById("cv"),ctx=cv.getContext("2d"),Wd=300,Ht=250,sx=document.getElementById("sx"),sh=document.getElementById("sh");
+var XR=[-3.3,3.3];
+var box=document.getElementById("fns");
+FNS.forEach(function(fn,i){var b=document.createElement("button");b.textContent=fn.n;b.onclick=function(){cur=i;draw()};box.appendChild(b)});
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function hval(){return Math.pow(10,-2*(+sh.value))}
+function fit(){var r=window.devicePixelRatio||1;Wd=cv.clientWidth;Ht=cv.clientHeight;cv.width=Wd*r;cv.height=Ht*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function draw(){
+  var F=FNS[cur],x=+sx.value,h=hval(),fx=F.f(x),fh=F.f(x+h),est=(fh-fx)/h,ex=F.d(x);
+  Array.prototype.forEach.call(box.children,function(b,i){b.className=i===cur?"on":""});
+  function X(v){return(v-XR[0])/(XR[1]-XR[0])*Wd}
+  function Y(v){return Ht-(v-F.y[0])/(F.y[1]-F.y[0])*Ht}
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok");
+  ctx.clearRect(0,0,Wd,Ht);
+  ctx.lineWidth=1;ctx.strokeStyle=ln;ctx.beginPath();
+  for(var g=-3;g<=3;g++){ctx.moveTo(X(g),0);ctx.lineTo(X(g),Ht)}ctx.stroke();
+  ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(0,Y(0));ctx.lineTo(Wd,Y(0));ctx.moveTo(X(0),0);ctx.lineTo(X(0),Ht);ctx.stroke();
+  ctx.strokeStyle=acc;ctx.lineWidth=2.5;ctx.beginPath();
+  for(var i=0;i<=200;i++){var v=XR[0]+(XR[1]-XR[0])*i/200;if(i)ctx.lineTo(X(v),Y(F.f(v)));else ctx.moveTo(X(v),Y(F.f(v)))}ctx.stroke();
+  function through(m,col,dash,w){ctx.save();ctx.beginPath();ctx.rect(0,0,Wd,Ht);ctx.clip();ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.beginPath();
+    ctx.moveTo(X(XR[0]),Y(fx+m*(XR[0]-x)));ctx.lineTo(X(XR[1]),Y(fx+m*(XR[1]-x)));ctx.stroke();ctx.restore()}
+  through(ex,acc2,[],2);through(est,ok,[7,5],2);
+  ctx.setLineDash([3,3]);ctx.strokeStyle=mut;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(x),Y(fx));ctx.lineTo(X(x+h),Y(fx));ctx.lineTo(X(x+h),Y(fh));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=ok;ctx.beginPath();ctx.arc(X(x+h),Y(fh),5,0,7);ctx.fill();
+  ctx.fillStyle=fg;ctx.beginPath();ctx.arc(X(x),Y(fx),6.5,0,7);ctx.fill();
+  function n(v,p){return(Math.abs(v)<5e-5?0:v).toFixed(p==null?3:p)}
+  document.getElementById("ox").textContent=n(x,2);
+  document.getElementById("oh").textContent=h>=.1?n(h,2):n(h,3);
+  document.getElementById("r1").textContent=n(fx);document.getElementById("r2").textContent=n(fh);
+  document.getElementById("r3").textContent=n(est);document.getElementById("r4").textContent=n(ex);
+  document.getElementById("r5").textContent=n(Math.abs(est-ex));
+}
+window.redraw=draw;
+sx.oninput=draw;sh.oninput=draw;
+var dragging=false;
+function setX(e){var r=cv.getBoundingClientRect(),v=XR[0]+(e.clientX-r.left)/r.width*(XR[1]-XR[0]);sx.value=Math.max(-3,Math.min(3,Math.round(v*20)/20));draw()}
+cv.addEventListener("pointerdown",function(e){dragging=true;cv.setPointerCapture(e.pointerId);setX(e)});
+cv.addEventListener("pointermove",function(e){if(dragging)setX(e)});
+cv.addEventListener("pointerup",function(){dragging=false});cv.addEventListener("pointercancel",function(){dragging=false});
+addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>

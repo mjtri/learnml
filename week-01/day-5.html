@@ -1,0 +1,858 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Just enough ML to use and modify models — 12 weeks, phone-first.">
+      
+      
+      
+        <link rel="canonical" href="https://mjtri.github.io/learnml/week-01/day-5.html">
+      
+      
+        <link rel="prev" href="day-4.html">
+      
+      
+        <link rel="next" href="build.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Day 5 · Gradient descent - LearnML</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#day-5-gradient-descent" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="LearnML" class="md-header__button md-logo" aria-label="LearnML" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnML
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Day 5 · Gradient descent
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mjtri/learnml" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="LearnML" class="md-nav__button md-logo" aria-label="LearnML" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LearnML
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mjtri/learnml" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Today
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Week 1 · Tensors → gradients
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Week 1 · Tensors → gradients
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="day-1.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 1 · Tensors & shapes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="day-2.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 2 · Matmul as mixing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="day-3.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 3 · Derivative = sensitivity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="day-4.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 4 · Chain rule on a graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 5 · Gradient descent
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="day-5.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Day 5 · Gradient descent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Idea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanism
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieval
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ledger-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ledger prompt
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="build.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build · Gradients by hand
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../curriculum.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Curriculum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="day-5-gradient-descent">Day 5 · <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">Gradient descent</abbr></h1>
+<p class="recall"><strong>Yesterday in one sentence:</strong> one <abbr title="Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.">backward pass</abbr> through the graph gives the sensitivity of the output to every knob: the <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr>.</p>
+<h2 id="idea">Idea</h2>
+<p>Give the <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr>'s wrongness a single number, the <strong><abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr></strong>. Yesterday's machinery tells us, for every <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameter</abbr>, which way makes the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> go <em>up</em>. So step the other way, a little. Then do it again, thousands of times. That is <strong><abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">gradient descent</abbr></strong>; everything from a line fit to a large language <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr> is trained by a variant of it. The size of the step, the <strong><abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr></strong>, is the single most important knob you will tune in the next eleven weeks.</p>
+<h2 id="mechanism">Mechanism</h2>
+<div class="arithmatex">\[ \theta \leftarrow \theta - \eta \, \nabla_\theta L \]</div>
+<p><span class="arithmatex">\(\theta\)</span> is every <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameter</abbr> of the <strong><abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">model</abbr></strong>; <span class="arithmatex">\(\nabla_\theta L\)</span> is the <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr> of the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> with respect to them (day 4); <span class="arithmatex">\(\eta\)</span> is the <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr>. The minus sign is day 3's "move against the sign". <strong><abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">Training</abbr></strong> is this loop: <abbr title="Running the calculation from inputs to output, storing intermediate values along the way.">forward pass</abbr> → <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> → <abbr title="Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.">backward pass</abbr> → update → repeat.</p>
+<p>Picture the <strong><abbr title="The loss pictured as a landscape: each position is one setting of the parameters, and height is how wrong the model is there.">loss surface</abbr></strong>: each position is one setting of the <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr>, height is the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr>. <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">Gradient descent</abbr> is walking downhill blindfolded, feeling only the tilt of the ground under your feet. You have local information, no map. Two consequences follow.</p>
+<p><strong>You find a nearby valley, not the best one.</strong> Start somewhere else and you may <strong><abbr title="To settle down: the loss stops improving meaningfully because the parameters have reached a low point.">converge</abbr></strong> to a different <strong><abbr title="A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.">local minimum</abbr></strong>. (For large networks this turns out to matter less than the 2-D picture suggests; flat plateaus and narrow ravines are the practical trouble.)</p>
+<p><strong>Step length decides everything.</strong> Too short and you crawl. Too long and you step clean across the valley onto the opposite wall, higher than where you started; the next step is bigger still, and the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> <strong><abbr title="To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.">diverges</abbr></strong>, typically ending in <strong><abbr title="Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.">NaN</abbr></strong>. You know this behaviour from control loops: a tracking correction with too much gain oscillates and then runs away. That comparison is exact. On a bowl-shaped <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr>, <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">gradient descent</abbr> <em>is</em> a discrete feedback loop, stable only while <span class="arithmatex">\(\eta\)</span> times the curvature stays below 2.</p>
+<p>That gives you a number to test. For <span class="arithmatex">\(L = x^2\)</span> the <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr> is <span class="arithmatex">\(2x\)</span>, so each update multiplies <span class="arithmatex">\(x\)</span> by <span class="arithmatex">\((1 - 2\eta)\)</span>. With <span class="arithmatex">\(\eta = 0.1\)</span> that factor is 0.8: smooth decay. At <span class="arithmatex">\(\eta = 0.5\)</span> you land on the minimum in one step. At <span class="arithmatex">\(\eta = 1\)</span> the factor is −1: you bounce between two walls forever. Above 1, every bounce is bigger.</p>
+<p>Now the <strong>ravine</strong>: <span class="arithmatex">\(L = x^2 + 10y^2\)</span>, steep across, shallow along. The steep direction caps the <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> at 0.1; at that cap the shallow direction barely moves. The path zig-zags across the ravine while creeping along it. Real <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> surfaces are full of ravines, which is why week 3 introduces momentum and Adam.</p>
+<p>Where the picture breaks: real <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr> have millions of dimensions, and real <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradients</abbr> are noisy estimates from small <abbr title="A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).">batches</abbr>. The cartoon still predicts what your <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> curves will do.</p>
+<div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">],</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>    <span class="c1"># the ravine</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>            <span class="c1"># the update is not part of the graph</span>
+        <span class="n">w</span> <span class="o">-=</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">w</span><span class="o">.</span><span class="n">grad</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>               <span class="c1"># gradients accumulate: reset them</span>
+</code></pre></div>
+<h2 id="try-it">Try it</h2>
+<div class="visual"><iframe src="../visuals/gradient-descent-2d.html" title="Gradient descent on a 2D loss surface" loading="lazy"></iframe></div>
+
+<p>Predict first, then run:</p>
+<ol>
+<li><strong>Bowl</strong>, <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> 0.1, then 0.5, then 1.0, then 1.05. Predict each path from the <span class="arithmatex">\((1 - 2\eta)\)</span> factor before pressing Run.</li>
+<li><strong>Ravine</strong>: predict the largest <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> that does not <abbr title="To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.">diverge</abbr>, then find it. Watch which direction misbehaves first.</li>
+<li><strong>Two valleys</strong>: tap two different start points. Do they end in the same place? Can a <em>large</em> <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> jump you out of the shallow valley?</li>
+</ol>
+<h2 id="retrieval">Retrieval</h2>
+<details class="question">
+<summary>Write the <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">gradient descent</abbr> update from memory and name every symbol.</summary>
+<p><span class="arithmatex">\(\theta \leftarrow \theta - \eta \nabla_\theta L\)</span>: <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr>; <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> (step size); <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr> of the <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> with respect to the <abbr title="Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.">parameters</abbr>. Minus because the <abbr title="The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.">gradient</abbr> points uphill.</p>
+</details>
+<details class="question">
+<summary>A <abbr title="One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.">loss</abbr> curve reads 2.1, 1.9, 2.6, 4.8, 31, <abbr title="Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.">NaN</abbr>. What happened, and what is the first thing to try?</summary>
+<p><abbr title="Repeatedly adjusting a model's parameters to lower the loss on example data.">Training</abbr> <abbr title="To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.">diverged</abbr>: steps overshoot the valley and each overshoot is larger. Lower the <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> by 3–10× first.</p>
+</details>
+<details class="question">
+<summary>Why is plain <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">gradient descent</abbr> slow in a ravine?</summary>
+<p>The steep direction limits how large the <abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr> can be; at that rate the shallow direction makes tiny progress, so the path zig-zags across while creeping along.</p>
+</details>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://www.3blue1brown.com/lessons/gradient-descent">3Blue1Brown: <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">Gradient descent</abbr>, how <abbr title="A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.">neural networks</abbr> learn</a>: 21 min.</li>
+<li><a href="https://d2l.ai/chapter_optimization/gd.html">d2l 12.3 <abbr title="The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.">Gradient descent</abbr></a>: sections 12.3.1–12.3.2, the learning-rate pictures, 10 min.</li>
+<li><a href="https://udlbook.github.io/udlbook/">Understanding Deep Learning</a>, chapter 6 "Fitting <abbr title="A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.">models</abbr>", section 6.1.</li>
+<li>Lineage read for the week: Sutton, <a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html">The Bitter Lesson</a>, 5 min.</li>
+</ul>
+<h2 id="ledger-prompt">Ledger prompt</h2>
+<blockquote>
+<p>Next to <code>core-optim</code>: where in your own systems is there a "<abbr title="The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.">learning rate</abbr>", a gain or adaptation step that crawls when too low and oscillates when too high? How did you tune it?</p>
+</blockquote>
+<p><strong>Tomorrow (build day):</strong> do all five days by hand in <abbr title="Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.">Colab</abbr>, then let <abbr title="The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.">PyTorch</abbr> do it for you.</p>
+<!-- Generated by build_glossary.py from glossary/terms.jsonl. Do not edit. -->
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="day-4.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Day 4 · Chain rule on a graph">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Day 4 · Chain rule on a graph
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="build.html" class="md-footer__link md-footer__link--next" aria-label="Next: Build · Gradients by hand">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Build · Gradients by hand
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.top", "toc.integrate", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/glossary-map.js"></script>
+      
+        <script src="../javascripts/glossary.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
