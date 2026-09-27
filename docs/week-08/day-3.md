@@ -32,8 +32,9 @@ class LoRALinear(nn.Module):
     def __init__(self, base, r):
         super().__init__()
         self.base = base.requires_grad_(False)   # frozen W
-        self.A = nn.Parameter(torch.randn(r, base.in_features) * 0.01)
-        self.B = nn.Parameter(torch.zeros(base.out_features, r))
+        d_in, d_out = base.in_features, base.out_features
+        self.A = nn.Parameter(torch.randn(r, d_in) * 0.01)
+        self.B = nn.Parameter(torch.zeros(d_out, r))
     def forward(self, x):
         return self.base(x) + x @ self.A.T @ self.B.T
 ```

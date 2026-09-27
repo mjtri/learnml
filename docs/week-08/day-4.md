@@ -31,7 +31,7 @@ The library turns lesson 3 into four config decisions: *which* matrices get an a
 ```python
 from peft import LoraConfig, get_peft_model
 cfg = LoraConfig(r=8, lora_alpha=16, lora_dropout=0.05,
-                 target_modules=["q_proj", "v_proj"])
+                 target_modules=["q_proj"])
 model = get_peft_model(base, cfg)
 model.print_trainable_parameters()
 # trainable params: 524,288 || all params: 1,236,338,688

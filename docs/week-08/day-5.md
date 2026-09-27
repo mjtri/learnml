@@ -28,8 +28,8 @@ The fixes conflict: more steps and higher rank fight memorising but worsen forge
 seen = {h(t) for t in train_texts}
 leaked = [t for t in test_texts if h(t) in seen]
 print(len(leaked), "test items also in train")   # must be 0
-# forgetting: loss on a fixed plain paragraph, before vs after
-# memorising: per-step loss on train vs on unseen prompts
+# forgetting: loss on a fixed paragraph, before vs after
+# memorising: loss on train vs unseen prompts, per step
 ```
 
 One test prompt is copied into the training set on purpose; after training its loss sits far below its neighbours. That gap, at the scale of a dataset, is a paper that will not replicate.

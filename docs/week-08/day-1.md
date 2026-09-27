@@ -29,12 +29,12 @@ That is **low rank**: \(2dr\) numbers instead of \(d^2\). At \(d = 4096\) and \(
 ```python
 W = torch.randn(4096, 8) @ torch.randn(8, 4096)
 print(torch.linalg.matrix_rank(W))   # tensor(8)
-print(W.numel())                     # 16777216 stored, 65536 needed
+print(W.numel())        # 16777216 stored; 65536 needed
 ```
 
 A random \(4096 \times 4096\) matrix has rank 4096, and a trained weight matrix usually does too. What the LoRA paper found is that the *change* fine-tuning makes to it is nearly low rank; lesson 3 exploits that.
 
-An honest analogy from your bench: a haptic sleeve with sixteen actuators driven by two control signals through a fixed mixing matrix can only produce a two-dimensional family of patterns. The mixing matrix has rank two; no sensation outside that plane is reachable. Where it breaks: actuators saturate and skin responds nonlinearly, while rank describes a linear map alone.
+An honest analogy from your bench: a haptic sleeve with sixteen actuators driven by two input channels through a fixed mixing matrix can only produce a two-dimensional family of patterns. The mixing matrix has rank two; no sensation outside that plane is reachable. Where it breaks: actuators saturate and skin responds nonlinearly, while rank describes a linear map alone.
 
 ## Try it
 
@@ -61,7 +61,7 @@ Before you drag, guess:
 
 - [3Blue1Brown: Inverse matrices, column space and null space](https://www.3blue1brown.com/lessons/inverse-matrices): from "rank" to the end, about 5 min.
 - [LoRA paper](https://arxiv.org/abs/2106.09685): section 1 only, the "low intrinsic rank" hypothesis, 5 min.
-- [`torch.linalg.matrix_rank`](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.matrix_rank.html): the tolerance argument, 3 min.
+- [`torch.linalg.matrix_rank`](https://docs.pytorch.org/docs/2.14/generated/torch.linalg.matrix_rank.html): the `atol` and `rtol` arguments, 3 min.
 
 ## Ledger prompt
 
