@@ -1,6 +1,6 @@
 ---
 title: Lesson 4 · Scaled dot-product attention by hand; the causal mask
-terms: [scaled dot-product, √d scaling, causal mask]
+terms: [scaled dot-product, √d scaling, causal mask, nanoGPT]
 card: core-transformer
 ---
 
@@ -24,7 +24,7 @@ Two engineering details make attention trainable, both inside one line of code. 
 
 Row 3, "pulse", by hand: \((4, 0, 2) / \sqrt{2} = (2.83, 0, 1.41)\). Exponentials \(16.9, 1, 4.1\), sum \(22.0\). Weights \((0.77, 0.05, 0.19)\). Output \(0.77\,(3,0) + 0.05\,(0,3) + 0.19\,(1,1) = (2.49, 0.32)\). Do rows 1 and 2 yourself.
 
-**√d scaling.** If the entries of \(q\) and \(k\) are around size 1 and unrelated, \(q \cdot k\) adds \(d\) terms with random signs, and such a sum has typical size \(\sqrt{d}\): scores near 1.4 at \(d = 2\), near 8 at \(d = 64\), near 23 at \(d = 512\). Softmax of \((23, 0, 12)\) is \((1.00, 0.00, 0.00)\): a hard pick, through which almost no gradient flows, so the head never learns. Dividing by \(\sqrt{d}\) keeps typical scores near 1 whatever \(d\) is. Any divisor here acts as a temperature, sharp when small and flat when large; \(\sqrt{d}\) keeps it moderate.
+**√d scaling.** If the entries of \(q\) and \(k\) are around size 1 and unrelated, \(q \cdot k\) adds \(d\) terms with random signs, and such a sum has typical size \(\sqrt{d}\): scores near 1.4 at \(d = 2\), near 8 at \(d = 64\), near 23 at \(d = 512\). Softmax of \((23, 0, 12)\) is \((1.00, 0.00, 0.00)\): a hard pick, through which almost no gradient flows, so the head never learns. Dividing by \(\sqrt{d}\) keeps typical scores near 1 whatever \(d\) is. Any divisor here acts as a sharpness dial, sharp when small and flat when large; \(\sqrt{d}\) keeps it moderate.
 
 **Causal mask.** Before the softmax, set every score with \(j > i\) to \(-\infty\). \(e^{-\infty} = 0\), so the row renormalises over the past only and the weight matrix comes out lower-triangular. Rows 1 and 2 become \((1, 0, 0)\) and \((0.80, 0.20, 0)\); row 3 already sees only the past. Why it is not optional: training predicts all \(T\) positions in one pass, and without the mask position \(i\) reads token \(i + 1\), its own label. The loss collapses toward zero while generation produces garbage; you do this bug on purpose in the build session.
 

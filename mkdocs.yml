@@ -64,6 +64,13 @@ nav:
       - "Lesson 4 · Chain rule on a graph": week-01/day-4.md
       - "Lesson 5 · Gradient descent": week-01/day-5.md
       - "Build · Gradients by hand, then by machine": week-01/build.md
+  - "Track A · Week 4 · Embeddings and attention":
+      - "Lesson 1 · Embeddings: a lookup table that learns": week-04/day-1.md
+      - "Lesson 2 · Next-token prediction: the bigram model and its loss": week-04/day-2.md
+      - "Lesson 3 · Attention as soft lookup: query, key, value": week-04/day-3.md
+      - "Lesson 4 · Scaled dot-product attention by hand; the causal mask": week-04/day-4.md
+      - "Lesson 5 · Multi-head attention and position encodings": week-04/day-5.md
+      - "Build · Bigram to one attention head": week-04/build.md
   - "Track A · Week 5 · The transformer block and nanoGPT":
       - "Lesson 1 · The residual stream": week-05/day-1.md
       - "Lesson 2 · The MLP block and where LayerNorm goes": week-05/day-2.md

@@ -26,7 +26,7 @@ How near is near? Take week 1's dot product and divide out length. **Cosine simi
 
 runs from 1 (same direction) through 0 (unrelated) to −1 (opposite). Smallest example: \(a = (1, 2)\), \(b = (2, 4)\). Dot product 10, lengths \(\sqrt{5}\) and \(\sqrt{20}\), cosine \(10 / 10 = 1\): different length, same meaning.
 
-**In practice.** In PyTorch the table is `nn.Embedding(V, d)`; the docs call it exactly that, "a simple lookup table that stores embeddings of a fixed dictionary and size". In nanoGPT it is `self.transformer.wte(idx)`. Not only for words: a haptics study with twelve stimulus types can give each a row and let the model discover that two of them are effectively the same stimulus.
+**In practice.** In PyTorch the table is `nn.Embedding(V, d)`; the docs call it exactly that, "a simple lookup table that stores embeddings of a fixed dictionary and size". In Karpathy's GPT code it is `self.transformer.wte(idx)`. Not only for words: a haptics study with twelve stimulus types can give each a row and let the model discover that two of them are effectively the same stimulus.
 
 The honest perceptual analogy is colour space: CIELAB places colours so that distance roughly matches perceived difference. Where it breaks: CIELAB was fitted to human judgements, while word2vec only sees co-occurrence, so "close" means *used in the same slots* and "hot" sits near "cold".
 

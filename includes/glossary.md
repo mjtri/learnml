@@ -36,6 +36,20 @@
 *[Approval policy]: Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
 *[approval policies]: Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
 *[Approval policies]: Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
+*[attention]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[Attention]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[self-attention]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[Self-attention]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[attention head]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[Attention head]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[attention heads]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[Attention heads]: A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+*[attention weights]: The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
+*[Attention weights]: The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
+*[attention weight]: The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
+*[Attention weight]: The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
+*[attention pattern]: The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
+*[Attention pattern]: The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
 *[auto memory]: Notes the agent writes for itself across sessions: your preferences, corrections, project facts. Loaded every session but never enforced; Claude Code and Codex both keep them on your machine.
 *[Auto memory]: Notes the agent writes for itself across sessions: your preferences, corrections, project facts. Loaded every session but never enforced; Claude Code and Codex both keep them on your machine.
 *[auto memories]: Notes the agent writes for itself across sessions: your preferences, corrections, project facts. Loaded every session but never enforced; Claude Code and Codex both keep them on your machine.
@@ -67,6 +81,12 @@
 *[Batch]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 *[batches]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 *[Batches]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
+*[bigram]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[Bigram]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[bigrams]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[Bigrams]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[bigram model]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[Bigram model]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[broadcasting]: The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
 *[Broadcasting]: The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
 *[broadcast]: The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
@@ -81,6 +101,12 @@
 *[Bypass permissions mode]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
 *[bypass permissions]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
 *[Bypass permissions]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
+*[causal mask]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+*[Causal mask]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+*[causal masks]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+*[Causal masks]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+*[causal masking]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+*[Causal masking]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 *[chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
 *[Chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
 *[character-level model]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
@@ -124,6 +150,12 @@
 *[Computation graphs]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 *[computational graph]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 *[Computational graph]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
+*[context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
+*[Context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
+*[context lengths]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
+*[Context lengths]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
+*[block size]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
+*[Block size]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[context window]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 *[Context window]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 *[context windows]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
@@ -136,6 +168,10 @@
 *[Converged]: To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
 *[convergence]: To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
 *[Convergence]: To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
+*[cosine similarity]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
+*[Cosine similarity]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
+*[cosine]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
+*[Cosine]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
 *[Deep Research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
 *[deep research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
 *[Deep research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
@@ -177,6 +213,16 @@
 *[Element-wise]: An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
 *[elementwise]: An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
 *[Elementwise]: An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
+*[embedding]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[Embedding]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[embeddings]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[Embeddings]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[embedding vector]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[Embedding vector]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[embedding vectors]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[Embedding vectors]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[embedding layer]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[Embedding layer]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
 *[fast mode]: A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
 *[Fast mode]: A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
 *[feature]: One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.
@@ -224,6 +270,12 @@
 *[Instruction file]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[Instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
+*[key]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[Key]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[language model]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
+*[Language model]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
+*[language models]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
+*[Language models]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
 *[layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[Layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[layers]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
@@ -252,6 +304,12 @@
 *[Local minimum]: A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
 *[local minima]: A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
 *[Local minima]: A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
+*[lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
+*[Lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
+*[lookup tables]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
+*[Lookup tables]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
+*[embedding table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
+*[Embedding table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[LoRA]: Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.
 *[loss]: One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.
 *[Loss]: One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.
@@ -298,6 +356,14 @@
 *[MSE]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
 *[mean squared error]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
 *[Mean squared error]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
+*[multi-head attention]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[Multi-head attention]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[multi-head]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[Multi-head]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[multi-headed attention]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[Multi-headed attention]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[multihead attention]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+*[Multihead attention]: Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
 *[NaN]: Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.
 *[nanoGPT]: Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
 *[NanoGPT]: Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
@@ -309,6 +375,10 @@
 *[Neural net]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[Network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
+*[next-token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
+*[Next-token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
+*[next token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
+*[Next token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
 *[numerical gradient]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
 *[Numerical gradient]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
 *[numerical derivative]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
@@ -347,6 +417,22 @@
 *[Plugin]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 *[plugins]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 *[Plugins]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
+*[positional encoding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Positional encoding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[positional encodings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Positional encodings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[position encoding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Position encoding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[position encodings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Position encodings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[position embedding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Position embedding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[position embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Position embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[positional embedding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Positional embedding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[positional embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[Positional embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[pre-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[Pre-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
@@ -366,6 +452,8 @@
 *[cache misses]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 *[Cache misses]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 *[PyTorch]: The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.
+*[query]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[Query]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 *[Remote Control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[Remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
@@ -389,6 +477,14 @@
 *[Scalar]: A single number; a tensor with no axes. Its shape is empty: ().
 *[scalars]: A single number; a tensor with no axes. Its shape is empty: ().
 *[Scalars]: A single number; a tensor with no axes. Its shape is empty: ().
+*[scaled dot-product]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
+*[Scaled dot-product]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
+*[scaled dot-product attention]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
+*[Scaled dot-product attention]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
+*[sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
+*[Sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
+*[sequences]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
+*[Sequences]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[shape]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 *[Shape]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 *[shapes]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
@@ -462,6 +558,8 @@
 *[session window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
 *[Session window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
 *[5-hour window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
+*[value]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+*[Value]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
 *[vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[Vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
@@ -476,9 +574,12 @@
 *[Weight]: A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
 *[weights]: A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
 *[Weights]: A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
+*[word2vec]: The 2013 method that learns word embeddings by predicting a word from its neighbours in raw text. The vectors are a by-product; nothing was labelled by hand.
+*[Word2vec]: The 2013 method that learns word embeddings by predicting a word from its neighbours in raw text. The vectors are a by-product; nothing was labelled by hand.
 *[worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[Worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[worktrees]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[Worktrees]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[Git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
+*[√d scaling]: Dividing attention scores by the square root of the vector size, so that scores stay moderate as vectors get longer and the softmax does not turn into a hard pick.

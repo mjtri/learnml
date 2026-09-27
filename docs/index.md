@@ -53,8 +53,13 @@ hide:
 ??? note "Week 3 · PyTorch training loop → a small MLP that generalises · not generated yet"
     `python gen_week.py 3` prints the prompt that builds it.
 
-??? note "Week 4 · Embeddings and attention · not generated yet"
-    `python gen_week.py 4` prints the prompt that builds it.
+??? note "⬜ Week 4 · Embeddings and attention · 0/6"
+    - ⬜ [Lesson 1 · Embeddings: a lookup table that learns](week-04/day-1.md)
+    - ⬜ [Lesson 2 · Next-token prediction: the bigram model and its loss](week-04/day-2.md)
+    - ⬜ [Lesson 3 · Attention as soft lookup: query, key, value](week-04/day-3.md)
+    - ⬜ [Lesson 4 · Scaled dot-product attention by hand; the causal mask](week-04/day-4.md)
+    - ⬜ [Lesson 5 · Multi-head attention and position encodings](week-04/day-5.md)
+    - ⬜ [Build · Bigram to one attention head](week-04/build.md)
 
 ??? note "⬜ Week 5 · The transformer block and nanoGPT · 0/6"
     - ⬜ [Lesson 1 · The residual stream](week-05/day-1.md)
@@ -131,4 +136,4 @@ hide:
 
 Stuck on a word? Tap any dotted-underlined term, or open the [glossary](glossary.md).
 
-<small>Generated 2026-09-27 (KST) by `build_today.py`. Do not edit by hand.</small>
+<small>Generated 2026-09-28 (KST) by `build_today.py`. Do not edit by hand.</small>

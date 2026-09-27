@@ -20,7 +20,7 @@ Take a calculation small enough to hold in your head:
 
 Drawn as boxes and arrows this is a **computation graph**. The **forward pass** fills in values. With \(a=2,\ b=-3,\ c=10\): \(d=-6\), \(e=4\), \(L=16\).
 
-The **backward pass** starts at the output and asks of each value, "how sensitive is \(L\) to you?"
+The **backward pass** starts at the output and asks of each number in the graph, "how sensitive is \(L\) to you?"
 
 1. \(L\) to itself: 1.
 2. \(L = e^2\), so \(\partial L/\partial e = 2e = 8\).
@@ -33,7 +33,7 @@ Every step used one rule:
 
 Each box only needs to know its own tiny derivative (the table in lesson 3). The graph does the rest. The full list of sensitivities, \((-24, 16, 8)\) here, is the **gradient** of \(L\).
 
-Two patterns cover most of what you will see. **Add distributes:** it copies the incoming gradient to both inputs unchanged. **Multiply swaps:** each input receives the incoming gradient times the *other* input's value. So if \(b = 0\), \(a\) gets gradient 0: it has no way to influence the result right now, and cannot learn.
+Two patterns cover most of what you will see. **Add distributes:** it copies the incoming gradient to both inputs unchanged. **Multiply swaps:** each input receives the incoming gradient times the *other* input's number. So if \(b = 0\), \(a\) gets gradient 0: it has no way to influence the result right now, and cannot learn.
 
 Here the analogy is the same mathematics, not just a likeness. Think of a signal chain: tracker → filter → renderer → display. The end-to-end sensitivity of what the eye sees to a head movement is the product of the stage gains. One stage with zero gain (saturated, clipped) and nothing upstream matters. Several stages with gain above 1 and small changes blow up. Deep networks suffer both: vanishing and exploding gradients.
 
@@ -65,7 +65,7 @@ Predict first, then step:
     Forward: \(d=-6,\ e=4\). Backward: \(\partial L/\partial e = 2e = 8\); the add passes 8 to \(d\); the multiply swaps: \(8 \times b = -24\).
 
 ??? question "How does a gradient pass through an add box, and through a multiply box?"
-    Add copies the incoming gradient to both inputs unchanged. Multiply gives each input the incoming gradient times the other input's value.
+    Add copies the incoming gradient to both inputs unchanged. Multiply gives each input the incoming gradient times the other input's number.
 
 ??? question "Why does backpropagation run backward from the error instead of nudging each parameter?"
     One backward pass gives the sensitivity of the single output to every parameter for about the cost of one more forward pass. Nudging needs a separate run per parameter, which is millions of runs per learning step.

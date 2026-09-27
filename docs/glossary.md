@@ -84,6 +84,22 @@ Codex's rule for when it must ask: on-request asks only to step outside the sand
 <small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="attention" markdown>
+**attention** <small>(also: self-attention, attention head, attention heads)</small>
+
+A soft lookup: each token asks for what it needs, every token advertises what it has, and the match decides how much of each token's content is mixed in.
+
+<small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
+</div>
+
+<div class="gl-entry" id="attention-weights" markdown>
+**attention weights** <small>(also: attention weight, attention pattern)</small>
+
+The numbers that say how much one token looks at each other token: one row per query, every entry at least zero, each row summing to 1.
+
+<small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
+</div>
+
 <div class="gl-entry" id="auto-memory" markdown>
 **auto memory** <small>(also: auto memories, Codex memories)</small>
 
@@ -150,6 +166,14 @@ A group of examples processed together, stacked along the first axis. 32 images 
 <small>first met in [week-01/day-1](week-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="bigram" markdown>
+**bigram** <small>(also: bigrams, bigram model)</small>
+
+The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+
+<small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
+</div>
+
 <div class="gl-entry" id="broadcasting" markdown>
 **broadcasting** <small>(also: broadcast, broadcasts)</small>
 
@@ -167,6 +191,14 @@ Claude Code permission mode that skips prompts and safety checks entirely. For t
 </div>
 
 ## C
+
+<div class="gl-entry" id="causal-mask" markdown>
+**causal mask** <small>(also: causal masks, causal masking)</small>
+
+Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+
+<small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
+</div>
 
 <div class="gl-entry" id="chain-rule" markdown>
 **chain rule**
@@ -272,6 +304,14 @@ A drawing of a calculation as boxes (operations) joined by arrows (values). PyTo
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="context-length" markdown>
+**context length** <small>(also: context lengths, block size)</small>
+
+How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
+
+<small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
+</div>
+
 <div class="gl-entry" id="context-window" markdown>
 **context window** <small>(also: context windows)</small>
 
@@ -286,6 +326,14 @@ Everything the model can see at once: instructions, your messages, tool results,
 To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="cosine-similarity" markdown>
+**cosine similarity** <small>(also: cosine)</small>
+
+The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
+
+<small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
 </div>
 
 ## D
@@ -362,6 +410,14 @@ How much thinking a Claude model does per request (low to max). Higher effort co
 An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
 
 <small>first met in [week-01/day-1](week-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="embedding" markdown>
+**embedding** <small>(also: embeddings, embedding vector, embedding vectors, embedding layer)</small>
+
+A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+
+<small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
 </div>
 
 ## F
@@ -468,7 +524,25 @@ A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and w
 <small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
 </div>
 
+## K
+
+<div class="gl-entry" id="key" markdown>
+**key**
+
+In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+
+<small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
+</div>
+
 ## L
+
+<div class="gl-entry" id="language-model" markdown>
+**language model** <small>(also: language models)</small>
+
+A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
+
+<small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
+</div>
 
 <div class="gl-entry" id="layer" markdown>
 **layer** <small>(also: layers)</small>
@@ -516,6 +590,14 @@ The derivative of a single operation's output with respect to its own direct inp
 A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="lookup-table" markdown>
+**lookup table** <small>(also: lookup tables, embedding table)</small>
+
+A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
+
+<small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
 </div>
 
 <div class="gl-entry" id="lora" markdown>
@@ -607,6 +689,14 @@ Mean squared error: average of (prediction minus target) squared. The standard l
 <small>first met in [week-01/build](week-01/build.md) · canvas card `core-optim`</small>
 </div>
 
+<div class="gl-entry" id="multi-head-attention" markdown>
+**multi-head attention** <small>(also: multi-head, multi-headed attention, multihead attention)</small>
+
+Several small attention heads run side by side on slices of the vector, each with its own weights pattern, then their outputs are joined end to end.
+
+<small>first met in [week-04/day-5](week-04/day-5.md) · canvas card `core-transformer`</small>
+</div>
+
 ## N
 
 <div class="gl-entry" id="nan" markdown>
@@ -622,7 +712,7 @@ Not a Number: what arithmetic returns after overflow or invalid operations. A lo
 
 Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
 
-<small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
+<small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="neural-network" markdown>
@@ -631,6 +721,14 @@ Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its
 A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="next-token-prediction" markdown>
+**next-token prediction** <small>(also: next token prediction)</small>
+
+The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
+
+<small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
 </div>
 
 <div class="gl-entry" id="numerical-gradient" markdown>
@@ -709,6 +807,14 @@ A directory of skills, agents, hooks and MCP servers installed as one unit from 
 <small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="positional-encoding" markdown>
+**positional encoding** <small>(also: positional encodings, position encoding, position encodings, position embedding, position embeddings, positional embedding, positional embeddings)</small>
+
+A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+
+<small>first met in [week-04/day-5](week-04/day-5.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="pre-norm" markdown>
 **pre-norm** <small>(also: post-norm, pre-norm/post-norm)</small>
 
@@ -747,6 +853,16 @@ Reuse of an already-processed conversation prefix so the next turn is cheaper. I
 The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-tooling`</small>
+</div>
+
+## Q
+
+<div class="gl-entry" id="query" markdown>
+**query**
+
+In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+
+<small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
 </div>
 
 ## R
@@ -799,6 +915,22 @@ An enforced boundary around what an agent's commands can touch on disk and netwo
 A single number; a tensor with no axes. Its shape is empty: ().
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="scaled-dot-product" markdown>
+**scaled dot-product** <small>(also: scaled dot-product attention)</small>
+
+The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
+
+<small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="sequence" markdown>
+**sequence** <small>(also: sequences)</small>
+
+An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
+
+<small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
 </div>
 
 <div class="gl-entry" id="shape" markdown>
@@ -951,6 +1083,14 @@ A rolling 5-hour period with a fixed allowance of usage; when it is spent you wa
 
 ## V
 
+<div class="gl-entry" id="value" markdown>
+**value**
+
+In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+
+<small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
+</div>
+
 <div class="gl-entry" id="vector" markdown>
 **vector** <small>(also: vectors)</small>
 
@@ -977,10 +1117,28 @@ A learnable number that says how strongly one input contributes to one output. A
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="word2vec" markdown>
+**word2vec**
+
+The 2013 method that learns word embeddings by predicting a word from its neighbours in raw text. The vectors are a by-product; nothing was labelled by hand.
+
+<small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
+</div>
+
 <div class="gl-entry" id="worktree" markdown>
 **worktree** <small>(also: worktrees, git worktree)</small>
 
 A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 
 <small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
+</div>
+
+## √
+
+<div class="gl-entry" id="d-scaling" markdown>
+**√d scaling**
+
+Dividing attention scores by the square root of the vector size, so that scores stay moderate as vectors get longer and the softmax does not turn into a hard pick.
+
+<small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
 </div>

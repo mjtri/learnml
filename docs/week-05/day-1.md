@@ -1,12 +1,12 @@
 ---
 title: Lesson 1 · The residual stream
-terms: [residual stream, transformer block, nanoGPT, tiny Shakespeare, character-level model]
+terms: [residual stream, transformer block, tiny Shakespeare, character-level model]
 card: lin-resnet
 ---
 
 # Lesson 1 · The residual stream
 
-<p class="recall" markdown>**Previously:** words became vectors, similar direction meant similar meaning, and attention let each token mix in the vectors of the tokens before it, weighted by relevance.</p>
+<p class="recall" markdown>**Previously:** tokens become learned vectors, and each token mixes in the earlier tokens it asks for, weighted by a softmax over query·key scores.</p>
 
 ## Idea
 

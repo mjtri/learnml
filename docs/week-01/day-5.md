@@ -10,7 +10,7 @@ card: core-optim
 
 ## Idea
 
-Give the model's wrongness a single number, the **loss**. The previous lesson's machinery tells us, for every parameter, which way makes the loss go *up*. So step the other way, a little. Then do it again, thousands of times. That is **gradient descent**; everything from a line fit to a large language model is trained by a variant of it. The size of the step, the **learning rate**, is the single most important knob you will tune in the next eleven weeks.
+Give the model's wrongness a single number, the **loss**. The previous lesson's machinery tells us, for every parameter, which way makes the loss go *up*. So step the other way, a little. Then do it again, thousands of times. That is **gradient descent**; everything from a line fit to a large LLM is trained by a variant of it. The size of the step, the **learning rate**, is the single most important knob you will tune in the next eleven weeks.
 
 ## Mechanism
 
