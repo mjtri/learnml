@@ -69,7 +69,7 @@ function show(){var c=C[i];$("prog").textContent="card "+(i+1)+" of "+C.length;
  $("bp").disabled=false;$("bs").disabled=false;$("next").textContent=i===C.length-1?"See the tally":"Next card"}
 function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 function answer(pass){if(answered)return;answered=true;var c=C[i],right=(pass===c[2]);
- if(right)score++;if(!c[2]&&!pass)fakes++;if(c[2])reals++;
+ if(right)score++;if(!c[2]&&pass===false)fakes++;if(c[2])reals++;
  $("v").className="verdict "+(right?"right":"wrong");$("v").textContent=(right?"Right. ":"Not quite. ")+c[3];
  $("bp").disabled=true;$("bs").disabled=true;$("sc").textContent=score;$("sf").textContent=fakes;$("sl").textContent=reals}
 $("bp").onclick=function(){answer(true)};$("bs").onclick=function(){answer(false)};

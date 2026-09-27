@@ -14,11 +14,11 @@ Drafting waste is re-explaining: the TM format, the journal's tone, which Korean
 
 ## How it works
 
-**ChatGPT Projects.** Instructions "apply only within that project and override your global custom instructions". Business projects hold up to 40 files. Project-only memory keeps chats from referencing anything outside the project; shared projects are always project-only. Deep Research works inside on paid plans ([Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt){ .src data-checked="2026-09-27" }).
+**ChatGPT Projects.** Instructions "apply only within that project and override your global custom instructions". Business projects hold up to 40 files. Project-only memory keeps chats from referencing anything outside the project; shared projects are always project-only. Paid plans may include Deep Research inside ([Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt){ .src data-checked="2026-09-27" }).
 
 **Claude Projects.** Instructions apply to every chat in the project; knowledge files expand "by up to 10x" with retrieval on paid plans ([what are projects](https://support.claude.com/en/articles/9517075-what-are-projects){ .src data-checked="2026-09-27" }); each project has "its own separate memory space" ([memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context){ .src data-checked="2026-09-27" }). Sharing is Team and Enterprise only.
 
-**Which plan holds the draft.** Business: "No training on your business data by default" ([pricing](https://learn.chatgpt.com/docs/pricing){ .src data-checked="2026-09-27" }). Max: chats train Claude only when Model Improvement is on in Privacy Settings; incognito chats never ([training policy](https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training){ .src data-checked="2026-09-27" }).
+**Which plan holds the draft.** Business: "No training on your business data by default" ([pricing](https://learn.chatgpt.com/docs/pricing){ .src data-checked="2026-09-27" }). Max: chats train Claude when Model Improvement is on in Privacy Settings; incognito chats never ([training policy](https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training){ .src data-checked="2026-09-27" }).
 
 **Record mode.** The ChatGPT macOS app transcribes a meeting into canvas notes: 4 hours per session, audio deleted after transcription, Business transcripts excluded from training by default, "works best in English today" ([ChatGPT Record](https://help.openai.com/en/articles/11487532-chatgpt-record){ .src data-checked="2026-09-27" }). Not on Windows; a Korean lab meeting is a test, not a given.
 
