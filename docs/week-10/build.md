@@ -14,7 +14,7 @@ card: build-step6
 
 ## The rule of the session
 
-Every experiment cell is preceded by a **predict cell**; the notebook refuses an empty prediction. A `SMOKE` flag near the top keeps the notebook under five minutes on CPU; `False` runs the full seed sweep in Part D.
+Every experiment cell is preceded by a **predict cell**; the notebook refuses an empty prediction. A `SMOKE` flag near the top keeps the notebook under five minutes on CPU; `False` runs the full sweep, still under a minute.
 
 ## The choice
 
