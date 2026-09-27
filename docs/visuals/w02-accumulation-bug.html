@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The accumulation bug</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on,button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.k{font-size:12.5px;color:var(--mut)}
+label{display:grid;grid-template-columns:24px 1fr 52px;align-items:center;gap:8px;font:700 14px ui-monospace,Menlo,Consolas,monospace}
+label output{text-align:right;font-weight:400}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;height:150px;border-radius:10px;background:var(--card);margin-top:6px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read .k{align-self:center;font:12.5px system-ui,sans-serif}
+.read .g{color:var(--acc2);font-weight:700}
+.say{background:var(--card);border-radius:10px;padding:10px;font-size:13.5px;min-height:64px;margin-top:6px}
+.say b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{display:block;min-height:44px;line-height:44px;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>L = (a × b + c)², learning a and b. Two ways to get the gradient wrong.</h1>
+<div class="k">the closures write with</div>
+<div class="btns"><button id="m0">=</button><button id="m1" class="on">+=</button></div>
+<div class="k">zero the gradients at the start of each step</div>
+<div class="btns"><button id="z1" class="on">on</button><button id="z0">off</button></div>
+<label>lr<input id="lr" type="range" min="0.002" max="0.03" step="0.002" value="0.01"><output id="olr"></output></label>
+<div class="btns"><button id="bw" class="pri">Backward</button><button id="up">Update a, b</button><button id="st">Step ×3</button><button id="rs">Reset</button></div>
+<canvas id="cv" aria-label="Loss per step: this run solid, previous run dashed"></canvas>
+<div class="k" style="text-align:center">loss per step · this run solid · previous run dashed · log scale</div>
+<div class="read">
+  <span class="k">step</span><span id="r0"></span>
+  <span class="k">a · b (c = 10 fixed)</span><span id="r1"></span>
+  <span class="k">e = a × b + c</span><span id="r2"></span>
+  <span class="k">L = e²</span><span id="r3"></span>
+  <span class="k">e.grad (true: 2e)</span><span id="r4" class="g"></span>
+  <span class="k">a.grad (true: 2e × b)</span><span id="r5" class="g"></span>
+  <span class="k">b.grad (true: 2e × a)</span><span id="r6" class="g"></span>
+</div>
+<div class="say" id="say" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>gradient accumulation</dt><dd>Closures add into .grad (+=) so that a value used twice collects both shares. Correct, but it never stops adding.</dd>
+<dt>zero_grad</dt><dd>Setting every .grad back to 0 before a backward pass, so this step's gradient is not stacked on last step's.</dd>
+<dt>closure (_backward)</dt><dd>The small function on each node that hands each parent local derivative × the node's gradient.</dd>
+<dt>loss curve</dt><dd>Loss against step. Falling: learning. Turning upward: the update is too big, here because stale gradients pile up.</dd>
+</dl></details>
+<script>
+(function(){
+var C=10,S,prev=[],mode=1,zero=true,cv=document.getElementById("cv"),ctx=cv.getContext("2d"),say=document.getElementById("say");
+function init(){S={a:2,b:-3,ga:0,gb:0,ge:0,step:0,hist:[],haveGrad:false,L:16,e:4}}
+function f(n,p){if(Math.abs(n)<5e-5)n=0;return n.toFixed(p==null?3:p)}
+function lr(){return+document.getElementById("lr").value}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function backward(){
+  var e=S.a*S.b+C,L=e*e,msg;S.e=e;S.L=L;
+  var stale=[S.ga,S.gb,S.ge];
+  if(zero){S.ga=0;S.gb=0;S.ge=0}
+  if(mode===0){S.ge=e*1;S.ge=e*1;S.ga=S.b*S.ge;S.gb=S.a*S.ge;
+    msg="<b>=</b> mode: L = e × e runs <b>e.grad = e × 1</b> twice and the second write overwrites the first, so e.grad = "+f(e)+" instead of "+f(2*e)+". Then a.grad = b × "+f(e)+" = <b>"+f(S.ga)+"</b>: exactly half of the true "+f(2*e*S.b)+". Direction right, size wrong; with = there is nothing to accumulate, so zeroing makes no difference."}
+  else{S.ge+=e*1;S.ge+=e*1;S.ga+=S.b*S.ge;S.gb+=S.a*S.ge;
+    msg="<b>+=</b> mode: e.grad = "+f(e)+" + "+f(e)+" = <b>"+f(2*e)+"</b>; a.grad gets b × "+f(2*e)+" = "+f(2*e*S.b)+", b.grad gets a × "+f(2*e)+" = "+f(2*e*S.a)+".";
+    if(!zero&&S.step>0)msg+=" Zeroing is <b>off</b>, so these were ADDED onto last step's leftovers: a.grad = "+f(stale[0])+" + "+f(2*e*S.b)+" = <b>"+f(S.ga)+"</b>. The update will use that sum."}
+  S.haveGrad=true;render(msg)}
+function update(){
+  if(!S.haveGrad){render("No gradient yet this step: press Backward first (grads are "+f(S.ga)+", "+f(S.gb)+")");return}
+  S.hist.push(S.L);var na=S.a-lr()*S.ga,nb=S.b-lr()*S.gb;
+  var msg="a ← "+f(S.a)+" − "+f(lr())+" × "+f(S.ga)+" = <b>"+f(na)+"</b>; b ← "+f(S.b)+" − "+f(lr())+" × "+f(S.gb)+" = <b>"+f(nb)+"</b>. Step "+(S.step+1)+" done; press Backward for the next.";
+  S.a=na;S.b=nb;S.step++;S.haveGrad=false;
+  if(!isFinite(S.a)||Math.abs(S.a)>1e6){msg="The parameters blew up: NaN territory. Reset, and compare the dashed curve.";S.a=NaN}
+  render(msg)}
+function step3(){for(var i=0;i<3;i++){if(!isFinite(S.a))break;backward();update()}var e=S.a*S.b+C;render("Three full steps (zero → backward → update). Current a = <b>"+f(S.a)+"</b>, b = <b>"+f(S.b)+"</b>, loss now "+f(e*e)+". a.grad is what the next Backward will start from: <b>"+f(zero?0:S.ga)+"</b>.")}
+function reset(){prev=S.hist.slice();init();render("Reset. The previous run is kept as the dashed curve so you can compare.")}
+function draw(){
+  var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,W,H);
+  var all=S.hist.concat(prev).filter(function(v){return isFinite(v)&&v>0});
+  var n=Math.max(20,S.hist.length,prev.length),lo=Math.log10(Math.max(1e-4,Math.min.apply(null,all.length?all:[1]))),hi=Math.log10(Math.max.apply(null,all.length?all:[16]));if(hi-lo<2)hi=lo+2;
+  function X(i){return 30+(W-40)*i/(n-1)}function Y(v){return H-16-(H-28)*(Math.log10(Math.max(v,1e-4))-lo)/(hi-lo)}
+  ctx.strokeStyle=css("--line");ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(30,8);ctx.lineTo(30,H-16);ctx.lineTo(W-10,H-16);ctx.stroke();
+  ctx.fillStyle=css("--mut");ctx.font="11px system-ui,sans-serif";ctx.fillText("step",W-36,H-3);ctx.fillText("loss",2,14);
+  function line(h,col,dash){if(h.length<1)return;ctx.save();ctx.setLineDash(dash);ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath();
+    h.forEach(function(v,i){var x=X(i),y=isFinite(v)?Y(v):8;if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y)});ctx.stroke();ctx.restore()}
+  line(prev,css("--mut"),[5,4]);line(S.hist,css("--acc2"),[]);
+  if(S.hist.length){var v=S.hist[S.hist.length-1];ctx.fillStyle=css("--acc2");ctx.beginPath();ctx.arc(X(S.hist.length-1),isFinite(v)?Y(v):8,4,0,7);ctx.fill()}}
+function render(msg){
+  var e=isFinite(S.a)?S.a*S.b+C:NaN;
+  document.getElementById("olr").textContent=f(lr(),3);
+  document.getElementById("r0").textContent=S.step;document.getElementById("r1").textContent=f(S.a)+" · "+f(S.b);
+  document.getElementById("r2").textContent=f(e);document.getElementById("r3").textContent=f(e*e);
+  document.getElementById("r4").textContent=S.haveGrad?f(S.ge):"?";document.getElementById("r5").textContent=S.haveGrad?f(S.ga):"?";document.getElementById("r6").textContent=S.haveGrad?f(S.gb):"?";
+  document.getElementById("m0").className=mode===0?"on":"";document.getElementById("m1").className=mode===1?"on":"";
+  document.getElementById("z1").className=zero?"on":"";document.getElementById("z0").className=zero?"":"on";
+  document.getElementById("up").disabled=!S.haveGrad;
+  if(msg)say.innerHTML=msg;draw()}
+document.getElementById("m0").onclick=function(){mode=0;reset()};document.getElementById("m1").onclick=function(){mode=1;reset()};
+document.getElementById("z1").onclick=function(){zero=true;reset()};document.getElementById("z0").onclick=function(){zero=false;reset()};
+document.getElementById("bw").onclick=backward;document.getElementById("up").onclick=update;document.getElementById("st").onclick=step3;document.getElementById("rs").onclick=reset;
+document.getElementById("lr").oninput=function(){render()};
+addEventListener("resize",draw);
+window.redraw=function(){render()};
+init();render("Start: a = 2, b = −3, c = 10, so e = 4 and L = 16. Predict e.grad and a.grad for the current settings, then press Backward. Step ×3 runs three whole steps.");
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

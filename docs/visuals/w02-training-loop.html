@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The training loop, one stage at a time</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on,button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.next{border-color:var(--ok);border-width:2px}
+button:disabled{opacity:.45;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
+.k{font-size:12.5px;color:var(--mut)}
+label{display:grid;grid-template-columns:24px 1fr 52px;align-items:center;gap:8px;font:700 14px ui-monospace,Menlo,Consolas,monospace}
+label output{text-align:right;font-weight:400}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;height:150px;border-radius:10px;background:var(--card);margin-top:6px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read .k{align-self:center}
+.read .g{color:var(--acc2);font-weight:700}
+.say{background:var(--card);border-radius:10px;padding:10px;font-size:13.5px;min-height:64px;margin-top:6px}
+.say b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{display:block;min-height:44px;line-height:44px;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Fit pred = w·x + b to four points. Press the five stages in order, then let it run.</h1>
+<div class="btns" id="stages"><button data-s="1">1 forward</button><button data-s="2">2 loss</button><button data-s="3">3 zero grads</button><button data-s="4">4 backward</button><button data-s="5">5 update</button></div>
+<div class="btns"><button id="run" class="pri">Run 60 steps</button><button id="zt">zero grads: on</button><button id="reset">Reset</button></div>
+<label>lr<input id="lr" type="range" min="0.01" max="1" step="0.01" value="0.1"><output id="olr"></output></label>
+<canvas id="cv" aria-label="Loss per step, log scale"></canvas>
+<div class="k" style="text-align:center">loss per step · log scale · green line = the noise floor</div>
+<div class="read">
+  <span class="k">step</span><span id="r0"></span>
+  <span class="k">w · b</span><span id="r1"></span>
+  <span class="k">preds for x = −1, 0, 1, 2</span><span id="r2"></span>
+  <span class="k">targets</span><span id="r3"></span>
+  <span class="k">loss (MSE)</span><span id="r4"></span>
+  <span class="k">w.grad · b.grad</span><span id="r5" class="g"></span>
+  <span class="k">last stage run</span><span id="r6"></span>
+</div>
+<div class="say" id="say" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>training loop</dt><dd>forward → loss → zero grads → backward → update, repeated. The order is the content.</dd>
+<dt>MSE</dt><dd>Mean squared error: the average of (prediction − target)² over the four points.</dd>
+<dt>zero grads</dt><dd>Reset w.grad and b.grad to 0 before backward. Off, and each backward adds onto the last one.</dd>
+<dt>loss curve</dt><dd>Loss against step. Falling: learning. Zig-zag: steps too big. Turning upward: something is wrong with a stage.</dd>
+</dl></details>
+<script>
+(function(){
+var X=[-1,0,1,2],Yv=[-3.1,-0.9,1.2,2.8],S,zero=true,timer=null;
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),say=document.getElementById("say");
+var FLOOR=(function(){var n=4,sx=0,sy=0,sxx=0,sxy=0;for(var i=0;i<n;i++){sx+=X[i];sy+=Yv[i];sxx+=X[i]*X[i];sxy+=X[i]*Yv[i]}var w=(n*sxy-sx*sy)/(n*sxx-sx*sx),b=(sy-w*sx)/n,l=0;for(i=0;i<n;i++)l+=Math.pow(w*X[i]+b-Yv[i],2);return l/n})();
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function f(n,p){if(!isFinite(n))return"NaN";if(Math.abs(n)<5e-5)n=0;return n.toFixed(p==null?3:p)}
+function lr(){return+document.getElementById("lr").value}
+function init(){S={w:0,b:0,preds:null,loss:null,gw:0,gb:0,step:0,hist:[],expect:1,last:"none",lossFresh:false,gradFresh:false}}
+function stage(s,quiet){var msg="",warn="";
+  if(s!==S.expect&&!quiet)warn="<b>Out of order</b> (expected stage "+S.expect+"). ";
+  if(s===1){S.preds=X.map(function(x){return S.w*x+S.b});S.lossFresh=false;msg="Forward: preds = ["+S.preds.map(function(p){return f(p,2)}).join(", ")+"] from w = "+f(S.w)+", b = "+f(S.b)+".";S.expect=2}
+  else if(s===2){if(!S.preds){msg="No forward pass yet: nothing to score.";}else{var l=0;for(var i=0;i<4;i++)l+=Math.pow(S.preds[i]-Yv[i],2);S.loss=l/4;S.lossFresh=true;msg="Loss: mean of (pred − target)² = <b>"+f(S.loss)+"</b>.";S.expect=3}}
+  else if(s===3){if(zero){S.gw=0;S.gb=0;msg="Zero grads: w.grad = b.grad = 0. Whatever last step left is gone."}else msg="Zeroing is <b>off</b>: this stage does nothing. w.grad still holds "+f(S.gw)+".";S.expect=4}
+  else if(s===4){if(!S.lossFresh){msg="Backward needs this step's loss first (stages 1 and 2)."}else{var gw=0,gb=0;for(var j=0;j<4;j++){var e=S.preds[j]-Yv[j];gw+=2*e*X[j]/4;gb+=2*e/4}
+      var old=[S.gw,S.gb];S.gw+=gw;S.gb+=gb;S.gradFresh=true;msg="Backward: w.grad = mean(2·err·x) = "+f(gw)+", b.grad = mean(2·err) = "+f(gb)+"."+((old[0]||old[1])?" Added onto the stale "+f(old[0])+", "+f(old[1])+": now <b>"+f(S.gw)+", "+f(S.gb)+"</b>.":"");S.expect=5}}
+  else if(s===5){if(!S.gradFresh)msg=(S.gw||S.gb)?"Update with a <b>stale</b> gradient (backward has not run this step): w moved along last step's direction.":"Update with grads 0: <b>w and b did not move</b>. Nothing was computed for them to follow.";
+    else msg="Update: w ← "+f(S.w)+" − "+f(lr(),2)+" × "+f(S.gw)+" = <b>"+f(S.w-lr()*S.gw)+"</b>; b ← "+f(S.b)+" − "+f(lr(),2)+" × "+f(S.gb)+" = <b>"+f(S.b-lr()*S.gb)+"</b>.";
+    if(S.lossFresh)S.hist.push(S.loss);S.w-=lr()*S.gw;S.b-=lr()*S.gb;S.step++;S.gradFresh=false;S.lossFresh=false;S.expect=1;
+    if(!isFinite(S.w)||Math.abs(S.w)>1e9){msg="Diverged: the loss ran away to NaN. Lower the learning rate (or turn zeroing back on) and Reset."}}
+  S.last=["","forward","loss","zero grads","backward","update"][s];if(!quiet)render(warn+msg);return msg}
+function fullStep(){stage(1,true);stage(2,true);stage(3,true);stage(4,true);stage(5,true)}
+function run(){if(timer)return;var n=0;document.getElementById("run").disabled=true;
+  timer=setInterval(function(){for(var i=0;i<3&&n<60;i++){fullStep();n++}
+    var bad=!isFinite(S.w)||Math.abs(S.w)>1e9;
+    render(bad?"Diverged after "+S.step+" steps: each update overshot more than the last. Reset and lower the learning rate."+(zero?"":" Or turn zeroing back on: the stale gradients were adding up."):"Ran "+n+" steps. loss = "+f(S.loss)+", w = "+f(S.w)+", b = "+f(S.b)+". The floor is the noise the four points contain: "+f(FLOOR)+".");
+    if(n>=60||bad){clearInterval(timer);timer=null;document.getElementById("run").disabled=false}},40)}
+function draw(){
+  var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,W,H);
+  var h=S.hist.filter(function(v){return isFinite(v)&&v>0}),n=Math.max(20,S.hist.length);
+  var lo=Math.log10(Math.min(FLOOR*0.5,h.length?Math.min.apply(null,h):1)),hi=Math.log10(Math.max(10,h.length?Math.max.apply(null,h):10));
+  function Xp(i){return 30+(W-40)*i/(n-1)}function Yp(v){return H-16-(H-28)*(Math.log10(Math.max(v,1e-6))-lo)/(hi-lo)}
+  ctx.strokeStyle=css("--line");ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(30,8);ctx.lineTo(30,H-16);ctx.lineTo(W-10,H-16);ctx.stroke();
+  ctx.strokeStyle=css("--ok");ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(30,Yp(FLOOR));ctx.lineTo(W-10,Yp(FLOOR));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=css("--mut");ctx.font="11px system-ui,sans-serif";ctx.fillText("step",W-36,H-3);ctx.fillText("loss",2,14);
+  ctx.strokeStyle=css("--acc2");ctx.lineWidth=2;ctx.beginPath();S.hist.forEach(function(v,i){var x=Xp(i),y=isFinite(v)?Yp(v):8;if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y)});ctx.stroke();
+  if(S.hist.length){var v=S.hist[S.hist.length-1];ctx.fillStyle=css("--acc2");ctx.beginPath();ctx.arc(Xp(S.hist.length-1),isFinite(v)?Yp(v):8,4,0,7);ctx.fill()}}
+function render(msg){
+  document.getElementById("olr").textContent=f(lr(),2);
+  document.getElementById("r0").textContent=S.step;document.getElementById("r1").textContent=f(S.w)+" · "+f(S.b);
+  document.getElementById("r2").textContent=S.preds?S.preds.map(function(p){return f(p,2)}).join(", "):"?";
+  document.getElementById("r3").textContent=Yv.join(", ");document.getElementById("r4").textContent=S.loss===null?"?":f(S.loss);
+  document.getElementById("r5").textContent=f(S.gw)+" · "+f(S.gb);document.getElementById("r6").textContent=S.last;
+  Array.prototype.forEach.call(document.getElementById("stages").children,function(b){b.className=+b.getAttribute("data-s")===S.expect?"next":""});
+  document.getElementById("zt").textContent="zero grads: "+(zero?"on":"off");document.getElementById("zt").className=zero?"on":"";
+  if(msg)say.innerHTML=msg;draw()}
+Array.prototype.forEach.call(document.getElementById("stages").children,function(b){b.onclick=function(){if(!timer)stage(+b.getAttribute("data-s"))}});
+document.getElementById("run").onclick=run;
+document.getElementById("zt").onclick=function(){zero=!zero;render("Zero grads is now <b>"+(zero?"on":"off")+"</b>."+(zero?"":" Stage 3 will do nothing; each backward adds onto the previous gradient. Predict the step at which the curve turns upward, then Run."))};
+document.getElementById("reset").onclick=function(){if(timer){clearInterval(timer);timer=null;document.getElementById("run").disabled=false}init();render("Reset: w = b = 0, grads 0, curve cleared.")};
+document.getElementById("lr").oninput=function(){render()};
+addEventListener("resize",draw);
+window.redraw=function(){render()};
+init();render("Start: w = 0, b = 0. Press <b>1 forward</b> and read each stage's numbers. The green-outlined button is the stage the loop expects next.");
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
