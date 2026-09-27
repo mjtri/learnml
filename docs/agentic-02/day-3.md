@@ -58,6 +58,6 @@ Predict first: which of the eight cards belong in memory? The readout says what 
 
 ## Ledger prompt
 
-> In **Instructions**: one line that moved from memory into `AGENTS.md`, and one you deleted from either.
+> In **Instructions**: one line moved from memory into `AGENTS.md`, and one deleted from either.
 
-**Next:** the apply task: an instruction file the Unity project can build from, and one prompt rewritten and measured.
+**Next:** the apply task: an AGENTS.md the Unity project can build from, and one prompt rewritten and measured.
