@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Logits to surprise</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc2);border-color:var(--acc2);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;align-items:center}
+.row .k{font-size:13px;color:var(--mut);padding-right:4px}
+.sl{display:block;font-size:13px;color:var(--mut);margin:2px 0}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.sl input[type=range]{display:block;width:100%;height:44px;margin:0;accent-color:var(--acc)}
+table{width:100%;border-collapse:collapse;font:13px ui-monospace,Menlo,Consolas,monospace;margin:6px 0}
+th{font:11px system-ui,sans-serif;color:var(--mut);text-align:right;padding:2px 4px;font-weight:400}
+td{text-align:right;padding:3px 4px;border-top:1px solid var(--line)}
+td:first-child,th:first-child{text-align:left}
+tr.t td{color:var(--acc2);font-weight:700}
+.bars{margin:6px 0}
+.bar{height:26px;margin:3px 0;background:var(--card);border-radius:6px;position:relative;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:6px;transition:width .12s}
+.bar.t i{background:var(--acc2)}
+.bar b{position:absolute;left:8px;top:0;line-height:26px;font:13px/26px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.meter{margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--card)}
+.meter .k{font-size:12px;color:var(--mut)}
+.meter b{font:22px ui-monospace,Menlo,Consolas,monospace;display:block}
+.meter .g{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--ok),#e8b400,var(--bad));position:relative;margin-top:6px}
+.meter .g i{position:absolute;top:-4px;width:4px;height:18px;background:var(--fg);border-radius:2px;margin-left:-2px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Logits → softmax → probabilities → surprise at the right answer</h1>
+<label class="sl"><span>logit A</span><output id="oa"></output><input id="za" type="range" min="-5" max="5" step="0.1" value="2"></label>
+<label class="sl"><span>logit B</span><output id="ob"></output><input id="zb" type="range" min="-5" max="5" step="0.1" value="1"></label>
+<label class="sl"><span>logit C</span><output id="oc"></output><input id="zc" type="range" min="-5" max="5" step="0.1" value="0"></label>
+<label class="sl"><span>logit scale (sharpness) ×</span><output id="os"></output><input id="sc" type="range" min="0.25" max="4" step="0.25" value="1"></label>
+<div class="row"><span class="k">true class:</span><button id="ta" class="on">A</button><button id="tb">B</button><button id="tc">C</button></div>
+<div class="bars" id="bars"></div>
+<div class="meter"><span class="k">loss = −ln p(true class)</span><b id="loss"></b><div class="g"><i id="pin"></i></div></div>
+<table><thead><tr><th>class</th><th>z·scale</th><th>e^z</th><th>p</th><th>one-hot</th><th>grad p−y</th></tr></thead><tbody id="rows"></tbody></table>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>logits</dt><dd>The raw scores, one per class, any real number. Only their gaps matter.</dd>
+<dt>softmax</dt><dd>e to each score, divided by the total. Positive numbers that add to one.</dd>
+<dt>one-hot</dt><dd>The label as a vector: one at the true class, zero elsewhere.</dd>
+<dt>cross-entropy</dt><dd>Minus the natural log of the probability given to the true class. The surprise.</dd>
+</dl></details>
+<script>
+(function(){
+var S=["za","zb","zc"].map(function(id){return document.getElementById(id)}),sc=document.getElementById("sc"),T=["ta","tb","tc"].map(function(id){return document.getElementById(id)});
+var t=0,names=["A","B","C"],bars=document.getElementById("bars"),tb=document.getElementById("rows");
+names.forEach(function(n){var d=document.createElement("div");d.className="bar";d.innerHTML="<i></i><b></b>";bars.appendChild(d)});
+function f(v,p){return v.toFixed(p==null?3:p)}
+function draw(){
+  var k=+sc.value,z=S.map(function(s){return +s.value*k}),m=Math.max.apply(null,z);
+  var e=z.map(function(v){return Math.exp(v-m)}),sum=e.reduce(function(a,b){return a+b},0),p=e.map(function(v){return v/sum});
+  var er=z.map(function(v){return Math.exp(v)});
+  ["oa","ob","oc"].forEach(function(id,i){document.getElementById(id).textContent=f(+S[i].value,1)});
+  document.getElementById("os").textContent=f(k,2);
+  T.forEach(function(b,i){b.className=i===t?"on":""});
+  Array.prototype.forEach.call(bars.children,function(d,i){d.className="bar"+(i===t?" t":"");d.firstChild.style.width=(p[i]*100)+"%";d.lastChild.textContent=names[i]+(i===t?" (true) ":" ")+f(p[i]*100,1)+"%"});
+  var L=-Math.log(p[t]);
+  document.getElementById("loss").textContent=f(L)+(L<0.05?"  certain and right":L>2.3?"  confidently wrong":"");
+  document.getElementById("pin").style.left=Math.min(100,L/5*100)+"%";
+  tb.innerHTML="";
+  names.forEach(function(n,i){var tr=document.createElement("tr");if(i===t)tr.className="t";
+    tr.innerHTML="<td>"+n+"</td><td>"+f(z[i],2)+"</td><td>"+(er[i]>9999?er[i].toExponential(1):f(er[i],2))+"</td><td>"+f(p[i])+"</td><td>"+(i===t?1:0)+"</td><td>"+(p[i]-(i===t?1:0)>=0?"+":"")+f(p[i]-(i===t?1:0))+"</td>";tb.appendChild(tr)});
+}
+S.forEach(function(s){s.oninput=draw});sc.oninput=draw;
+T.forEach(function(b,i){b.onclick=function(){t=i;draw()}});
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
