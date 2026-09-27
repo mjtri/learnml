@@ -1,12 +1,12 @@
 ---
-title: Day 3 · Derivative = sensitivity
+title: Lesson 3 · Derivative = sensitivity
 terms: [function, derivative, slope, numerical gradient]
 card: core-calc
 ---
 
-# Day 3 · Derivative = sensitivity
+# Lesson 3 · Derivative = sensitivity
 
-<p class="recall" markdown>**Yesterday in one sentence:** a layer is a matrix multiply, each output a weighted mix of the inputs, and learning means choosing the weights.</p>
+<p class="recall" markdown>**Previously:** a layer is a matrix multiply, each output a weighted mix of the inputs, and learning means choosing the weights.</p>
 
 ## Idea
 
@@ -28,7 +28,7 @@ Three facts to keep:
 
 The perception analogy is psychophysics. On a stimulus–response curve, the slope at the operating point says how much the response changes per unit of stimulus: steep means small differences are discriminable, flat (saturation) means changes go unnoticed. A model has the same problem: where the derivative is zero it cannot "feel" that knob, so it gets no learning signal from it. Where the analogy breaks: a JND is the threshold of a noisy observer, while a derivative is an exact, noiseless slope.
 
-The nudge recipe works on anything, even a whole network treated as a black box; the result is called a **numerical gradient**. Its flaw is cost: one extra run of the model *per knob*, so a million weights means a million runs per learning step. Tomorrow's trick gets them all from roughly one extra run. The numerical version survives as the gold-standard check; you will use it on build day.
+The nudge recipe works on anything, even a whole network treated as a black box; the result is called a **numerical gradient**. Its flaw is cost: one extra run of the model *per knob*, so a million weights means a million runs per learning step. The next lesson's trick gets them all from roughly one extra run. The numerical version survives as the gold-standard check; you will use it in the build session.
 
 Slopes worth knowing by heart; software handles the rest.
 
@@ -47,7 +47,7 @@ print((f(x + h) - f(x)) / h)   # 6.0001
 
 ## Try it
 
-<div class="visual"><iframe src="../visuals/slope-slider.html" title="Nudge and measure: secant becomes tangent" loading="lazy"></iframe></div>
+<div class="visual"><iframe src="../visuals/w01-slope-slider.html" title="Nudge and measure: secant becomes tangent" loading="lazy"></iframe></div>
 
 Predict first, then drag:
 
@@ -76,4 +76,4 @@ Predict first, then drag:
 
 > Next to `core-calc`: name one quantity in your own research that is really a sensitivity (output change per input change). Where is its flat region, and what cannot be learned or perceived there?
 
-**Tomorrow:** many knobs in a chain, and the trick that makes deep learning affordable.
+**Next:** many knobs in a chain, and the trick that makes deep learning affordable.

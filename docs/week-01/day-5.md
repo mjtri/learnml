@@ -1,22 +1,22 @@
 ---
-title: Day 5 · Gradient descent
+title: Lesson 5 · Gradient descent
 terms: [loss, gradient descent, learning rate, converge, diverge, local minimum, loss surface, training, model, NaN]
 card: core-optim
 ---
 
-# Day 5 · Gradient descent
+# Lesson 5 · Gradient descent
 
-<p class="recall" markdown>**Yesterday in one sentence:** one backward pass through the graph gives the sensitivity of the output to every knob: the gradient.</p>
+<p class="recall" markdown>**Previously:** one backward pass through the graph gives the sensitivity of the output to every knob: the gradient.</p>
 
 ## Idea
 
-Give the model's wrongness a single number, the **loss**. Yesterday's machinery tells us, for every parameter, which way makes the loss go *up*. So step the other way, a little. Then do it again, thousands of times. That is **gradient descent**; everything from a line fit to a large language model is trained by a variant of it. The size of the step, the **learning rate**, is the single most important knob you will tune in the next eleven weeks.
+Give the model's wrongness a single number, the **loss**. The previous lesson's machinery tells us, for every parameter, which way makes the loss go *up*. So step the other way, a little. Then do it again, thousands of times. That is **gradient descent**; everything from a line fit to a large language model is trained by a variant of it. The size of the step, the **learning rate**, is the single most important knob you will tune in the next eleven weeks.
 
 ## Mechanism
 
 \[ \theta \leftarrow \theta - \eta \, \nabla_\theta L \]
 
-\(\theta\) is every parameter of the **model**; \(\nabla_\theta L\) is the gradient of the loss with respect to them (day 4); \(\eta\) is the learning rate. The minus sign is day 3's "move against the sign". **Training** is this loop: forward pass → loss → backward pass → update → repeat.
+\(\theta\) is every parameter of the **model**; \(\nabla_\theta L\) is the gradient of the loss with respect to them (lesson 4); \(\eta\) is the learning rate. The minus sign is day 3's "move against the sign". **Training** is this loop: forward pass → loss → backward pass → update → repeat.
 
 Picture the **loss surface**: each position is one setting of the parameters, height is the loss. Gradient descent is walking downhill blindfolded, feeling only the tilt of the ground under your feet. You have local information, no map. Two consequences follow.
 
@@ -42,7 +42,7 @@ for step in range(100):
 
 ## Try it
 
-<div class="visual"><iframe src="../visuals/gradient-descent-2d.html" title="Gradient descent on a 2D loss surface" loading="lazy"></iframe></div>
+<div class="visual"><iframe src="../visuals/w01-gradient-descent-2d.html" title="Gradient descent on a 2D loss surface" loading="lazy"></iframe></div>
 
 Predict first, then run:
 
@@ -72,4 +72,4 @@ Predict first, then run:
 
 > Next to `core-optim`: where in your own systems is there a "learning rate", a gain or adaptation step that crawls when too low and oscillates when too high? How did you tune it?
 
-**Tomorrow (build day):** do all five days by hand in Colab, then let PyTorch do it for you.
+**Next:** do all five lessons by hand in Colab, then let PyTorch do it for you.

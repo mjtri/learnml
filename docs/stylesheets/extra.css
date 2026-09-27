@@ -75,6 +75,11 @@
 .bar progress::-webkit-progress-value { background: var(--md-accent-fg-color); }
 .bar progress::-moz-progress-bar { background: var(--md-accent-fg-color); }
 
+/* checked-date badge on Track B source links */
+.md-typeset a.src::after { content: "checked " attr(data-checked); font-size: 0.62rem; margin-left: 0.3em; padding: 0.05em 0.4em; border-radius: 6px; background: var(--md-default-fg-color--lightest); color: var(--md-default-fg-color--light); white-space: nowrap; vertical-align: 0.1em; }
+.today-card.agentic { border-left: 4px solid var(--md-primary-fg-color); }
+.today-card.ml { border-left: 4px solid var(--md-accent-fg-color); }
+
 /* lesson furniture */
 .md-typeset .recall { font-size: 0.76rem; color: var(--md-default-fg-color--light); border-left: 3px solid var(--md-accent-fg-color); padding-left: 0.7rem; }
 /* Tap height via padding only. Never flex/grid an element that holds inline prose:

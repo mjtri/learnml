@@ -1,0 +1,4 @@
+{"term": "low rank", "aliases": ["low-rank"], "def": "A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.", "lesson": "", "card": "core-linalg"}
+{"term": "LoRA", "aliases": [], "def": "Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.", "lesson": "", "card": "lin-lora"}
+{"term": "MCP", "aliases": ["MCP server", "MCP servers", "connector", "connectors"], "def": "Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.", "lesson": ""}
+{"term": "worktree", "aliases": ["worktrees"], "def": "A second checkout of the same git repo in its own folder, so two agents can work in parallel without overwriting each other.", "lesson": ""}

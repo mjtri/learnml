@@ -1,13 +1,13 @@
 # Curriculum: just enough ML to use and modify models
 
-**12 weeks · 5 phone days (~20 min) + 1 build day (~3 h, free Colab) per week.**
+**12 weeks · 5 phone lessons (~20 min each) + 1 build session (~3 h, free Colab) per week. Self-paced: a "week" is a unit of content, not a calendar week.**
 Goal: read a modern paper, fine-tune or modify a small model, run a small controlled experiment. Not: become a theorist.
 
 How it is organised
 - **Just-in-time math.** A math idea appears only in the week a lesson needs it, with the smallest example that works.
 - **Canvas-aligned.** Each week names cards from the Obsidian canvas *AI Research Roadmap*: ② Technical Core (`core-*`), ① Lineage (`lin-*`), ③ Build pipeline (`build-step*`), ⑤ Bridges (`bridge-*`). Each lesson's ledger prompt says which card the entry belongs next to.
 - **Predict, then run.** Every build notebook makes you write the expected result first (canvas steps 7–8). The surprise is the output.
-- **One week at a time.** Only week 1 exists at the start. `python gen_week.py N` prints the prompt that generates week N, using your ratings from week N−1. Day topics below are the plan, not a promise; they bend to what you found hard.
+- **Self-paced.** Every week exists from the start; go as fast or slow as the material allows. `python gen_week.py N` prints the prompt to regenerate a week if you want it rewritten (e.g. after low ratings).
 
 | Phase | Weeks | You can, by the end |
 |---|---|---|
@@ -37,7 +37,7 @@ Core resources used throughout
 
 **Just-in-time math:** shapes and indexing; dot product; matrix × vector; slope/derivative by nudging; chain rule on a graph. Nothing else yet.
 
-**Days**
+**Lessons**
 1. Tensors & shapes; broadcasting
 2. Matmul as mixing; dot product as similarity
 3. Derivative = sensitivity (nudge and measure)
@@ -66,7 +66,7 @@ Core resources used throughout
 
 **Just-in-time math:** local derivatives of `+`, `×`, `tanh`/ReLU; topological order; why gradients **add** when a value is used twice; mean squared error.
 
-**Days**
+**Lessons**
 1. A `Value` object and the graph it builds
 2. Backward pass: local derivative × upstream gradient
 3. The accumulation bug (`+=`) and why you zero gradients
@@ -93,7 +93,7 @@ Core resources used throughout
 
 **Just-in-time math:** softmax; cross-entropy as "surprise at the right answer" (negative log-likelihood); mini-batch noise; momentum and Adam as running averages; variance of activations (why init scale matters).
 
-**Days**
+**Lessons**
 1. `nn.Module`, parameters and the canonical loop
 2. Softmax + cross-entropy; logits
 3. Mini-batches, SGD → momentum → Adam
@@ -125,7 +125,7 @@ Core resources used throughout
 
 **Just-in-time math:** cosine similarity; softmax temperature; why divide by √d; probability distributions as rows that sum to 1.
 
-**Days**
+**Lessons**
 1. Embeddings: a lookup table that learns (word2vec in one page)
 2. Next-token prediction: the bigram model and its loss
 3. Attention as soft lookup: query, key, value
@@ -152,7 +152,7 @@ Core resources used throughout
 
 **Just-in-time math:** LayerNorm (mean/variance per token); the residual stream as a running sum; parameter counting.
 
-**Days**
+**Lessons**
 1. The residual stream: blocks read from and write to one running sum
 2. The MLP block and LayerNorm placement (pre- vs post-norm)
 3. Stacking blocks; counting parameters; where the compute goes
@@ -179,7 +179,7 @@ Core resources used throughout
 
 **Just-in-time math:** log–log plots and power laws; tokens vs parameters vs FLOPs (the 6·N·D rule of thumb).
 
-**Days**
+**Lessons**
 1. Tokenization: bytes → BPE merges
 2. Tokenizer artefacts (numbers, spaces, non-English text such as Korean)
 3. Scaling laws: reading a log–log plot
@@ -209,7 +209,7 @@ Core resources used throughout
 
 **Just-in-time math:** none new; consolidation week.
 
-**Days**
+**Lessons**
 1. The Hub, model cards, and what a checkpoint contains
 2. `AutoTokenizer` / `AutoModel`: shapes in, shapes out
 3. Hidden states as features; the linear probe
@@ -235,7 +235,7 @@ Core resources used throughout
 
 **Just-in-time math:** rank and low-rank factorization; SVD in pictures (a matrix as a sum of a few simple stretches). This is where week 1's "squashing" matrix pays off.
 
-**Days**
+**Lessons**
 1. Rank: how many independent directions a matrix really uses
 2. SVD in pictures; low-rank approximation of an image
 3. LoRA: freeze W, learn BA; parameter arithmetic
@@ -262,7 +262,7 @@ Core resources used throughout
 
 **Just-in-time math:** cosine similarity matrix; cross-entropy over a batch (InfoNCE); mean ± standard error; bootstrap in ten lines.
 
-**Days**
+**Lessons**
 1. Contrastive learning: positives, negatives, temperature
 2. CLIP: two encoders, one space; text as the label set
 3. ViT in one page: patches as tokens
@@ -292,7 +292,7 @@ Core resources used throughout
 
 **Just-in-time math:** variance across seeds; effect size vs noise; how many seeds for the difference you care about (rule-of-thumb level, reusing what you know from user studies).
 
-**Days**
+**Lessons**
 1. One lever at a time: data, architecture, objective, optimization, inference
 2. Baselines: trivial, strong, and "same compute"
 3. Ablations and controls: what an ML paper owes the reader
@@ -318,7 +318,7 @@ Core resources used throughout
 
 **Default target (small, leads into week 12):** a zero-shot accuracy cell from the CLIP paper using OpenCLIP weights on a free T4. Alternatives: the rank row of the LoRA paper at small scale; nanoGPT's tiny-Shakespeare validation loss from its README.
 
-**Days**
+**Lessons**
 1. Three-pass paper reading; where the details hide (appendix, config, footnotes)
 2. From paper to checklist: data, preprocessing, model, metric
 3. Reading someone else's repo: entry point, config, data flow
@@ -347,7 +347,7 @@ Core resources used throughout
 
 **Just-in-time math:** the autoencoder/VAE objective in one page (only if you choose the codec); rank correlation (only if you choose the embedding).
 
-**Days**
+**Lessons**
 1. Your chosen family in one page (contrastive recap *or* autoencoder → VAE)
 2. Shaping a bottleneck like a display: quantization and the straight-through trick (*or* audio front-ends: spectrograms as images)
 3. Reading your own curves: is it learning, memorising, or broken?
@@ -368,3 +368,163 @@ Core resources used throughout
 
 ## After week 12
 Pick the next canvas chain by need, not by order: generative (`lin-vae` → `lin-ddpm` → `lin-ldm`) if the codec worked; world models (`lin-worldmodels` → `lin-dreamer`) for `bridge-active`; post-training (`lin-instructgpt` → `lin-dpo`) if you start steering language models for assistive agents (`bridge-vr`).
+
+
+---
+
+# Track B · Agentic workflows (8 weeks, in parallel)
+
+**3 phone lessons (~15 min) per week + one ~60 min "apply" task in the build session. Self-paced.**
+Goal: get full value from a **Claude Code Max 20x** subscription and a **ChatGPT Business** plan (already using chat + Codex) without wasting usage, for four kinds of work: Unity/C# XR development, research paperwork (papers, reviewer responses, ETRI TM reports, KR/EN), experiments & data analysis, and this repo. The ledger for this track is the [playbook](agentic/playbook.md): your own rules, each backed by something you measured.
+
+How it is organised
+- **Dated, not eternal.** Every claim about a feature, limit, price or policy links to the official page with a `checked YYYY-MM-DD` badge. `python gen_refresh.py` prints a monthly re-verification prompt; changes land in the [changelog](agentic/changelog.md).
+- **Both tools, every week.** Each lesson says what Claude Code does, what Codex/ChatGPT does, and when to use which. Where the answer is "measure it", the apply task measures it.
+- **Habits over features.** A feature earns a lesson only if it changes a weekly habit.
+
+| Week | Theme | Apply task (build session, ~60 min) |
+|---|---|---|
+| B1 | Budget & mental model | `/usage` habit; AGENTS.md + CLAUDE.md for this repo; same task in both tools, measured |
+| B2 | Instructions & memory | AGENTS.md for the Unity project; prompt shape Goal/Context/Constraints/Done-when |
+| B3 | Verification & permissions | Stop hook that runs `check_lessons.py`; Unity compile check as the agent's oracle |
+| B4 | Delegation | `/gen-week` skill + reviewer subagent; Codex adversarial review of a Claude PR |
+| B5 | Automation & phone | Weekly routine (check + deploy); log a lesson from the phone via Remote Control |
+| B6 | Research paperwork | Mini literature review in both tools, then cross-verified citations |
+| B7 | Experiments & data | Long-running-agent harness scaffolded for ML weeks 10–12 |
+| B8 | Your operating system | Playbook v1 installed as global rules; weekly review ritual |
+
+## B1 — Budget & mental model
+
+**Objectives**
+- Hold the right mental model: an agent is a loop over a finite context; every tool result and every correction spends it.
+- Know what Max 20x and Business actually give you (windows, caps, pools, credits) and where to read the meters.
+- Have a first-cut map of which tool to reach for, per kind of task.
+
+**Lessons**
+1. An agent is a loop; context is the budget
+2. What you actually pay for: Max 20x and Business, side by side
+3. Which tool for which job, v1
+4. **Apply:** `/usage` habit; write `AGENTS.md` for LearnML and `CLAUDE.md` = `@AGENTS.md` + Claude-specific lines; run the same small task in Claude Code and Codex; log time, usage delta and quality.
+
+**Done when:** you can say, without looking, how your usage windows work and which pool a given session draws from; and your playbook has its first three measured lines.
+
+**Sources:** Claude Code costs/usage docs, Max plan page, mobile docs; ChatGPT Business pricing/limits pages; Anthropic "effective context engineering".
+
+## B2 — Instructions & memory
+
+**Objectives**
+- Keep one durable instruction file (AGENTS.md) that both tools read; keep it short and pruned.
+- Use plan mode and the Goal / Context / Constraints / Done-when prompt shape by default.
+- Know what memory, rules directories and `@imports` are for, and what they are not for.
+
+**Lessons**
+1. One instruction file: AGENTS.md, `@AGENTS.md` in CLAUDE.md, precedence and size limits
+2. Plan first: plan mode, `/plan`, and the four-part prompt
+3. Memory vs instructions vs context: what belongs where
+4. **Apply:** AGENTS.md for the Unity project (build/test commands, folder map, conventions, "never touch" list); rewrite one recent prompt in the four-part shape and compare results.
+
+**Done when:** a fresh session in either tool can build and test the Unity project from the instruction file alone.
+
+**Sources:** Claude Code memory docs and best practices; Codex AGENTS.md docs and best-practice guide.
+
+## B3 — Verification & permissions
+
+**Objectives**
+- Give the agent a check it can run: tests, a build, a linter, a "done when" the agent can evaluate.
+- Choose permission modes deliberately (Claude Code modes vs Codex sandbox + approval policy) and loosen only for trusted repos.
+- Use hooks for rules that must always hold, instead of hoping the instruction file is obeyed.
+
+**Lessons**
+1. The agent needs an oracle: tests, builds, checkers
+2. Permission modes and sandboxes: what each one risks
+3. Hooks: deterministic guard rails
+4. **Apply:** a Stop hook that runs `check_lessons.py` in this repo; a Unity compile check the agent must pass before it reports done.
+
+**Done when:** an agent in either tool cannot report "done" on this repo without the checker passing.
+
+**Sources:** Claude Code hooks, permission modes, best practices; Codex sandboxing docs.
+
+## B4 — Delegation
+
+**Objectives**
+- Split work across subagents, skills, plugins and worktrees so the main context stays small.
+- Separate the doer from the grader: reviews by a different agent or a different vendor.
+- Know the token cost of delegation and when it is not worth it.
+
+**Lessons**
+1. Subagents and skills: summaries in, context saved
+2. Worktrees and background agents: parallel without collisions
+3. Doer ≠ grader: `/code-review`, ultra review, `codex-plugin-cc` adversarial review
+4. **Apply:** a `/gen-week` skill and a reviewer subagent for this repo; have Codex review a Claude-made PR and log what it caught.
+
+**Done when:** generating and reviewing a LearnML week is two commands, and a review from the other vendor has caught at least one real issue.
+
+**Sources:** Claude Code subagents, skills, plugins, worktrees, code review docs; openai/codex-plugin-cc.
+
+## B5 — Automation & phone
+
+**Objectives**
+- Know the three kinds of scheduling (`/loop`, desktop scheduled tasks, cloud routines) and what each costs.
+- Drive a local session from the phone (Remote Control, Codex Remote) and know what cannot be done from the phone.
+- Decide when automation pays: only once the manual version is reliable.
+
+**Lessons**
+1. `/loop`, scheduled tasks, routines: three clocks
+2. From the phone: Remote Control, Codex Remote, cloud sessions
+3. Automation that pays vs automation that burns usage
+4. **Apply:** a weekly routine that runs the checker and deploys; log a lesson from the phone via Remote Control.
+
+**Done when:** one automation runs on its own and you can name its weekly usage cost.
+
+**Sources:** Claude Code scheduled tasks, routines, remote control, mobile docs; Codex Remote docs.
+
+## B6 — Research paperwork
+
+**Objectives**
+- Run a literature review with Deep Research and with Claude's research tooling; verify every citation before it enters a document.
+- Draft and revise papers, reviewer responses and TM reports in Projects with a stable instruction set; handle KR↔EN.
+- Keep sensitive drafts inside the right plan (Business: no training on your data by default; Claude: check the current policy).
+
+**Lessons**
+1. Literature review pipeline: search, dedupe, verify, summarise
+2. Drafting and revision in Projects: reviewer responses, TM reports, KR↔EN
+3. Citation and fact verification as a separate pass
+4. **Apply:** a mini literature review on one sensory-substitution question in both tools; cross-verify the union of citations; log precision per tool.
+
+**Done when:** you have a repeatable review pipeline with a measured citation precision, and a Project template for TM reports.
+
+**Sources:** ChatGPT Deep Research / Projects docs; Claude Projects and research docs; Anthropic dynamic workflows post.
+
+## B7 — Experiments & data
+
+**Objectives**
+- Set up a harness for long-running agent work: progress file, CHANGELOG with failed approaches, commit per unit, test oracles.
+- Use an agent for analysis scripts, plots and statistics with reproducibility (seeds, pinned versions, run logs).
+- Connect this to Track A weeks 10–12.
+
+**Lessons**
+1. The long-running harness: progress file, changelog, commit per unit
+2. Analysis with an agent: scripts, plots, stats you can defend
+3. Reproducibility: seeds, configs, run logs, and what the agent must never do silently
+4. **Apply:** scaffold the harness for the Track A week 10–12 experiment (repo layout, CHANGELOG, run log, checker).
+
+**Done when:** the week-12 experiment folder exists with a harness an agent can run unattended for one unit of work.
+
+**Sources:** Anthropic "effective harnesses for long-running agents", "long-running Claude for scientific computing".
+
+## B8 — Your operating system
+
+**Objectives**
+- Measure what each tool did for you (time, usage, quality) and set budgets: usage credits, fast mode, Premium seats.
+- Run a weekly review ritual and prune the playbook.
+- Install the playbook as global rules in both tools.
+
+**Lessons**
+1. Reading your own meters: what a week of usage says
+2. Budgets and escape hatches: credits, fast mode, limit resets, seat types
+3. The weekly review and the playbook v1
+4. **Apply:** playbook v1 installed as global `CLAUDE.md` / `~/.codex/AGENTS.md`; first weekly review logged.
+
+**Done when:** the playbook has ≤ 20 rules, each with a source or a measurement, and both tools load it.
+
+**Sources:** Claude Code costs docs; ChatGPT Business pricing; your own `progress/` and playbook data.

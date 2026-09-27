@@ -1,12 +1,12 @@
 ---
-title: Day 1 · Tensors & shapes
+title: Lesson 1 · Tensors & shapes
 terms: [tensor, scalar, vector, matrix, shape, axis, batch, broadcasting, element-wise, dtype, PyTorch]
 card: core-linalg
 ---
 
-# Day 1 · Tensors & shapes
+# Lesson 1 · Tensors & shapes
 
-<p class="recall" markdown>**Why this week:** every model you will ever touch is numbers in boxes, pushed through arithmetic, then nudged to be less wrong. This week builds those three pieces: boxes (today), arithmetic (day 2), nudging (days 3–5).</p>
+<p class="recall" markdown>**Previously:** this is the first lesson. **Why this week:** every model you will ever touch is numbers in boxes, pushed through arithmetic, then nudged to be less wrong. This week builds those three pieces: boxes (today), arithmetic (lesson 2), nudging (lessons 3–5).</p>
 
 ## Idea
 
@@ -50,7 +50,7 @@ The **dtype** is the other half of a tensor's identity. The numbers flowing thro
 
 ## Try it
 
-<div class="visual"><iframe src="../visuals/tensor-shapes.html" title="Broadcasting shape checker" loading="lazy"></iframe></div>
+<div class="visual"><iframe src="../visuals/w01-tensor-shapes.html" title="Broadcasting shape checker" loading="lazy"></iframe></div>
 
 Predict first, then tap:
 
@@ -79,4 +79,4 @@ Predict first, then tap:
 
 > Next to `core-linalg`: write the shapes of three data streams from your own XR/haptics work (a head-pose trace, a depth frame, an actuator pattern…) and name every axis.
 
-**Tomorrow:** the one operation that does almost all the work inside a neural network.
+**Next:** the one operation that does almost all the work inside a neural network.

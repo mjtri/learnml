@@ -42,5 +42,3 @@
 {"term": "layer", "aliases": ["layers"], "def": "One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.", "lesson": "week-01/day-2"}
 {"term": "inference", "aliases": [], "def": "Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.", "lesson": "week-01/day-4"}
 {"term": "Colab", "aliases": [], "def": "Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.", "lesson": "week-01/build", "card": "core-tooling"}
-{"term": "low rank", "aliases": ["low-rank"], "def": "A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.", "lesson": "", "card": "core-linalg"}
-{"term": "LoRA", "aliases": [], "def": "Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.", "lesson": "", "card": "lin-lora"}

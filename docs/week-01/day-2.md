@@ -1,12 +1,12 @@
 ---
-title: Day 2 · Matmul as mixing
+title: Lesson 2 · Matmul as mixing
 terms: [dot product, matmul, weight, parameter, linear layer, feature, neural network, layer]
 card: core-linalg
 ---
 
-# Day 2 · Matmul as mixing
+# Lesson 2 · Matmul as mixing
 
-<p class="recall" markdown>**Yesterday in one sentence:** everything is a tensor with a shape, and broadcasting lines shapes up from the right.</p>
+<p class="recall" markdown>**Previously:** everything is a tensor with a shape, and broadcasting lines shapes up from the right.</p>
 
 ## Idea
 
@@ -26,7 +26,7 @@ Stack several templates as the rows of a matrix \(W\) and you get **matmul**:
 
 The shape rule: `(m, n) @ (n, p) → (m, p)`. Inner sizes must match, and they vanish. A **linear layer** is exactly this, with \(W\) as its **parameters**: it turns \(n\) input **features** into \(m\) output features.
 
-Here the analogy to your field is exact, not loose. The vOICe maps an image column to a sound: each pixel row owns a sine wave, brightness sets its loudness, and the ear gets the sum. For a column of 64 brightness values \(x\), the audio snippet is \(y = Wx\), where each *column* of \(W\) holds one row's sine wave. **A hand-designed sensory-substitution mapping is a fixed matrix.** The proposal of machine learning is small and radical: make \(W\) learnable, and let data and an objective choose it. You build this matrix on build day and learn one in week 12.
+Here the analogy to your field is exact, not loose. The vOICe maps an image column to a sound: each pixel row owns a sine wave, brightness sets its loudness, and the ear gets the sum. For a column of 64 brightness values \(x\), the audio snippet is \(y = Wx\), where each *column* of \(W\) holds one row's sine wave. **A hand-designed sensory-substitution mapping is a fixed matrix.** The proposal of machine learning is small and radical: make \(W\) learnable, and let data and an objective choose it. You build this matrix in the build session and learn one in week 12.
 
 Reading three is geometric. A 2×2 matrix moves the whole plane, and its **columns are where the two unit arrows land**. That gives you rotation, stretch and shear for free. It also gives you the *squash*: when the two columns line up, the plane collapses onto a line. Different inputs now land on the same output, and no later **layer** can pull them apart. Keep that picture; in week 8 it becomes "low rank", the idea behind LoRA.
 
@@ -43,7 +43,7 @@ y = x @ W.T              # (32, 64) @ (64, 10) -> (32, 10)
 
 ## Try it
 
-<div class="visual"><iframe src="../visuals/matmul-transform.html" title="Drag a 2x2 matrix and watch space move" loading="lazy"></iframe></div>
+<div class="visual"><iframe src="../visuals/w01-matmul-transform.html" title="Drag a 2x2 matrix and watch space move" loading="lazy"></iframe></div>
 
 Predict first, then drag:
 
@@ -72,4 +72,4 @@ Predict first, then drag:
 
 > Next to `core-linalg`: describe one hand-designed mapping from your own work (a sonification, a haptic rendering, a retargeting) as a matrix. What are its rows? What would it mean to *learn* it?
 
-**Tomorrow:** how a model finds out which way to turn a weight: sensitivity.
+**Next:** how a model finds out which way to turn a weight: sensitivity.

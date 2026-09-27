@@ -1,6 +1,7 @@
 """Export a week's retrieval questions and new glossary terms as Anki cards.
 
     python build_anki.py week-01      ->  anki/week-01.txt
+    python build_anki.py agentic-01   ->  anki/agentic-01.txt
 
 Import in Anki: File > Import, the header lines set tab separator, HTML and the tags column.
 """
@@ -20,7 +21,7 @@ def clean(text: str) -> str:
 
 
 def main() -> int:
-    if len(sys.argv) != 2 or not re.fullmatch(r"week-\d\d", sys.argv[1]):
+    if len(sys.argv) != 2 or not re.fullmatch(r"(week|agentic)-\d\d", sys.argv[1]):
         print(__doc__)
         return 1
     week = sys.argv[1]

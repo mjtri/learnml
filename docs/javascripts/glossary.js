@@ -63,7 +63,7 @@
     document.querySelectorAll(".md-content h2, .md-content abbr[title]").forEach(function (el) {
       if (el.tagName === "H2") { seen = {}; return; }
       var key = map[el.textContent.trim()] || el.textContent.trim().toLowerCase();
-      if (!seen[key] && !el.closest("h1, h2, h3, summary")) { seen[key] = true; el.classList.add("gl-first"); }
+      if (!seen[key] && !el.closest("h1, h2, h3, summary, .today-kicker")) { seen[key] = true; el.classList.add("gl-first"); }
       el.setAttribute("tabindex", el.classList.contains("gl-first") ? "0" : "-1");
       el.setAttribute("role", "button");
       el.setAttribute("data-def", el.getAttribute("title"));

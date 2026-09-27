@@ -25,7 +25,7 @@ Every experiment cell is preceded by a **predict cell**. Write what you expect, 
 | A | Shape drills: predict result shapes and one silent broadcasting bug | 25 min |
 | B | Build a vOICe-style image→sound **matrix**, play the sound, then squash it | 35 min |
 | C | Nudge-and-measure vs autograd on the same function | 20 min |
-| D | Day 4's graph by hand on paper, then checked three ways | 30 min |
+| D | Lesson 4's graph by hand on paper, then checked three ways | 30 min |
 | E | Fit a line with hand-written gradient descent and an **MSE** loss; then break it with the learning rate | 45 min |
 | F | Stretch: a 25-line `Value` class with `+` and `×` that does its own backward pass (next week's seed) | 25 min |
 

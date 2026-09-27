@@ -16,11 +16,19 @@ ROOT = Path(__file__).resolve().parent
 DOCS = ROOT / "docs"
 LOG = ROOT / "progress" / "log.jsonl"      # committed: date, lesson, minutes, rating
 NOTES = ROOT / "progress" / "notes.jsonl"  # git-ignored: date, lesson, note
-TERMS = ROOT / "glossary" / "terms.jsonl"
+GLOSSARY_DIR = ROOT / "glossary"   # terms-<week-dir>.jsonl shards + terms-core.jsonl
 
-TOTAL_WEEKS = 12
-LESSONS_PER_WEEK = 6  # day-1..day-5 + build
-WEEK_SLOTS = ["day-1", "day-2", "day-3", "day-4", "day-5", "build"]
+# Two parallel tracks. A lesson id is "<dir>/<slot>", e.g. "week-01/day-2" or "agentic-01/apply".
+TRACKS = {
+    "ml": {"label": "Track A · ML", "prefix": "week", "weeks": 12,
+           "slots": ["day-1", "day-2", "day-3", "day-4", "day-5", "build"], "long": "build"},
+    "agentic": {"label": "Track B · Agentic workflows", "prefix": "agentic", "weeks": 8,
+                "slots": ["day-1", "day-2", "day-3", "apply"], "long": "apply"},
+}
+# Backwards-compatible aliases for the ML track.
+TOTAL_WEEKS = TRACKS["ml"]["weeks"]
+LESSONS_PER_WEEK = len(TRACKS["ml"]["slots"])
+WEEK_SLOTS = TRACKS["ml"]["slots"]
 
 # Korea has no DST, so a fixed offset is exact and avoids needing tzdata on Windows.
 KST = timezone(timedelta(hours=9), "KST")
@@ -30,17 +38,32 @@ def today_kst() -> str:
     return datetime.now(KST).date().isoformat()
 
 
-def week_dir(n: int) -> str:
-    return f"week-{n:02d}"
+def week_dir(n: int, track: str = "ml") -> str:
+    return f"{TRACKS[track]['prefix']}-{n:02d}"
 
 
-def lesson_ids() -> list[str]:
-    """All lessons that exist on disk, in study order, e.g. 'week-01/day-2'."""
+def track_of(lesson_id: str) -> str:
+    prefix = lesson_id.split("-", 1)[0]
+    for name, t in TRACKS.items():
+        if t["prefix"] == prefix:
+            return name
+    raise ValueError(f"unknown track for lesson id {lesson_id!r}")
+
+
+def week_of(lesson_id: str) -> int:
+    return int(lesson_id.split("/")[0].rsplit("-", 1)[1])
+
+
+def lesson_ids(track: str | None = None) -> list[str]:
+    """Lessons that exist on disk, in study order, e.g. 'week-01/day-2'. ML track first, then agentic."""
     ids = []
-    for wdir in sorted(DOCS.glob("week-[0-9][0-9]")):
-        for slot in WEEK_SLOTS:
-            if (wdir / f"{slot}.md").exists():
-                ids.append(f"{wdir.name}/{slot}")
+    for name, t in TRACKS.items():
+        if track and name != track:
+            continue
+        for wdir in sorted(DOCS.glob(f"{t['prefix']}-[0-9][0-9]")):
+            for slot in t["slots"]:
+                if (wdir / f"{slot}.md").exists():
+                    ids.append(f"{wdir.name}/{slot}")
     return ids
 
 
@@ -106,8 +129,39 @@ def retrieval_questions(body: str) -> list[tuple[str, str]]:
 
 
 def load_terms() -> list[dict]:
-    """Glossary entries: {term, aliases[], def, lesson, card?}."""
-    return read_jsonl(TERMS)
+    """Glossary entries from every shard: {term, aliases[], def, lesson, card?, shard}."""
+    out = []
+    for shard in sorted(GLOSSARY_DIR.glob("terms*.jsonl")):
+        for row in read_jsonl(shard):
+            row["shard"] = shard.name
+            out.append(row)
+    return out
+
+
+def lesson_index(lesson_id: str) -> tuple[str, int, int]:
+    """Sortable position of a lesson inside its track: (track, week, slot index)."""
+    track = track_of(lesson_id)
+    slot = lesson_id.split("/")[1]
+    return track, week_of(lesson_id), TRACKS[track]["slots"].index(slot)
+
+
+def week_title(week_dir: str) -> str:
+    """Human title of a week from curriculum.md, e.g. 'Tensors → gradients'."""
+    track = track_of(week_dir + "/x")
+    n = int(week_dir.rsplit("-", 1)[1])
+    head = rf"^## Week {n} — (.+)$" if track == "ml" else rf"^## B{n} — (.+)$"
+    m = re.search(head, (ROOT / "curriculum.md").read_text(encoding="utf-8"), re.M)
+    return m.group(1).strip() if m else week_dir
+
+
+def week_summary(week_dir: str) -> str:
+    """The 'This week in one sentence' line from build.md / apply.md, or ''."""
+    track = track_of(week_dir + "/x")
+    path = DOCS / week_dir / f"{TRACKS[track]['long']}.md"
+    if not path.exists():
+        return ""
+    m = re.search(r"\*\*This week in one sentence:\*\*\s*(.+?)</p>", path.read_text(encoding="utf-8"))
+    return m.group(1).strip() if m else ""
 
 
 def slug(term: str) -> str:
@@ -119,4 +173,5 @@ def word_count(body: str) -> int:
     body = re.sub(r"```.*?```", " ", body, flags=re.S)
     body = re.sub(r"<[^>]+>", " ", body)
     body = re.sub(r"https?://\S+", " ", body)
+    body = re.sub(r"\{[^}\n]*\}", " ", body)  # attr_list stamps like { .src data-checked="..." }
     return len(re.findall(r"[A-Za-z0-9][A-Za-z0-9'’\-]*", body))

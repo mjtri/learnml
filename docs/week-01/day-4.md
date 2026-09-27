@@ -1,12 +1,12 @@
 ---
-title: Day 4 · Chain rule on a graph
+title: Lesson 4 · Chain rule on a graph
 terms: [chain rule, computation graph, forward pass, backward pass, gradient, local derivative, autograd, backpropagation, inference]
 card: core-calc
 ---
 
-# Day 4 · Chain rule on a graph
+# Lesson 4 · Chain rule on a graph
 
-<p class="recall" markdown>**Yesterday in one sentence:** a derivative is a local sensitivity; nudge-and-measure finds it, but costs one model run per knob.</p>
+<p class="recall" markdown>**Previously:** a derivative is a local sensitivity; nudge-and-measure finds it, but costs one model run per knob.</p>
 
 ## Idea
 
@@ -31,7 +31,7 @@ Every step used one rule:
 
 \[ \text{gradient of my input} = \textbf{local derivative} \times \text{gradient of my output} \]
 
-Each box only needs to know its own tiny derivative (yesterday's table). The graph does the rest. The full list of sensitivities, \((-24, 16, 8)\) here, is the **gradient** of \(L\).
+Each box only needs to know its own tiny derivative (the table in lesson 3). The graph does the rest. The full list of sensitivities, \((-24, 16, 8)\) here, is the **gradient** of \(L\).
 
 Two patterns cover most of what you will see. **Add distributes:** it copies the incoming gradient to both inputs unchanged. **Multiply swaps:** each input receives the incoming gradient times the *other* input's value. So if \(b = 0\), \(a\) gets gradient 0: it has no way to influence the result right now, and cannot learn.
 
@@ -51,7 +51,7 @@ print(a.grad, b.grad, c.grad)   # -24, 16, 8
 
 ## Try it
 
-<div class="visual"><iframe src="../visuals/chain-rule-graph.html" title="Step through a backward pass" loading="lazy"></iframe></div>
+<div class="visual"><iframe src="../visuals/w01-chain-rule-graph.html" title="Step through a backward pass" loading="lazy"></iframe></div>
 
 Predict first, then step:
 
@@ -80,4 +80,4 @@ Predict first, then step:
 
 > Next to `core-calc`: draw a three-stage pipeline from your own work as a graph. If the last stage saturates (local derivative ≈ 0), what upstream can no longer be tuned by feedback?
 
-**Tomorrow:** we have the gradient. Now use it to learn.
+**Next:** we have the gradient. Now use it to learn.

@@ -8,6 +8,22 @@ Every dotted-underlined word in a lesson opens its definition when tapped. This 
 
 ## A
 
+<div class="gl-entry" id="agent" markdown>
+**agent** <small>(also: agents)</small>
+
+A model that runs in a loop: read the situation, pick a tool, act, read the result, repeat until a goal is met. Claude Code and Codex are agents.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="agents-md" markdown>
+**AGENTS.md**
+
+The cross-tool instruction file convention read by Codex and, when no CLAUDE.md exists, by Claude Code. One source of truth for repo rules.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="autograd" markdown>
 **autograd**
 
@@ -68,6 +84,54 @@ When one quantity affects another through a chain of steps, the overall sensitiv
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="chatgpt-business" markdown>
+**ChatGPT Business** <small>(also: Business plan, ChatGPT Business plan)</small>
+
+OpenAI's team subscription (formerly Team). Seats share one usage pool across ChatGPT and Codex; business data is not used for training by default.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="claude-md" markdown>
+**CLAUDE.md**
+
+Claude Code's project instruction file, loaded into every session. Keep it short; it can import other files with @path.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="cloud-session" markdown>
+**cloud session** <small>(also: cloud sessions, Claude Code on the web)</small>
+
+Claude Code running on Anthropic's servers against your GitHub repo, started from claude.ai/code or the mobile app.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="codex" markdown>
+**Codex**
+
+OpenAI's coding agent, available as a CLI, an IDE extension, a desktop app and a cloud service; included in ChatGPT Business.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="codex-cloud" markdown>
+**Codex cloud** <small>(also: cloud task, cloud tasks)</small>
+
+Codex running in an isolated cloud environment on a copy of your repo, started from the web, GitHub or the phone, finishing in a pull request.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="codex-remote" markdown>
+**Codex Remote**
+
+Starting, steering and approving Codex on your own computer from the ChatGPT mobile app. The computer must stay awake.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="colab" markdown>
 **Colab**
 
@@ -76,12 +140,28 @@ Google Colaboratory: free hosted Python notebooks in the browser, with an option
 <small>first met in [week-01/build](week-01/build.md) · canvas card `core-tooling`</small>
 </div>
 
+<div class="gl-entry" id="compaction" markdown>
+**compaction** <small>(also: auto-compaction)</small>
+
+Summarising the conversation so far to free context. Claude Code does it automatically near the limit; /compact does it on demand.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="computation-graph" markdown>
 **computation graph** <small>(also: computation graphs, computational graph)</small>
 
 A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="context-window" markdown>
+**context window** <small>(also: context windows)</small>
+
+Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="converge" markdown>
@@ -93,6 +173,14 @@ To settle down: the loss stops improving meaningfully because the parameters hav
 </div>
 
 ## D
+
+<div class="gl-entry" id="deep-research" markdown>
+**Deep Research** <small>(also: deep research)</small>
+
+ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="derivative" markdown>
 **derivative** <small>(also: derivatives)</small>
@@ -128,6 +216,14 @@ The number type stored in a tensor, such as 32-bit float or 64-bit integer. Mode
 
 ## E
 
+<div class="gl-entry" id="effort-level" markdown>
+**effort level** <small>(also: effort levels)</small>
+
+How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="element-wise" markdown>
 **element-wise** <small>(also: elementwise)</small>
 
@@ -137,6 +233,14 @@ An operation applied separately to each matching pair of numbers in two tensors,
 </div>
 
 ## F
+
+<div class="gl-entry" id="fast-mode" markdown>
+**fast mode**
+
+A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
 
 <div class="gl-entry" id="feature" markdown>
 **feature** <small>(also: features)</small>
@@ -206,6 +310,14 @@ One stage of a neural network: it takes a tensor in, applies a simple parameteri
 The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="limit-reset" markdown>
+**limit reset** <small>(also: limit resets)</small>
+
+An occasional free reset of a spent usage window, applied from Settings > Usage on claude.ai.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="linear-layer" markdown>
@@ -282,6 +394,21 @@ A table of numbers with rows and columns; a tensor with two axes.
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="max-plan" markdown>
+**Max plan** <small>(also: Max 20x, Max plan 20x)</small>
+
+Anthropic's top individual subscription. The 20x tier gives twenty times Pro's per-window allowance plus a weekly cap.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="mcp" markdown>
+**MCP** <small>(also: MCP server, MCP servers, connector, connectors)</small>
+
+Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
+
+</div>
+
 <div class="gl-entry" id="model" markdown>
 **model** <small>(also: models)</small>
 
@@ -324,6 +451,16 @@ A derivative estimated by brute force: nudge the input a tiny bit, measure the o
 <small>first met in [week-01/day-3](week-01/day-3.md) · canvas card `core-calc`</small>
 </div>
 
+## O
+
+<div class="gl-entry" id="oracle" markdown>
+**oracle** <small>(also: oracles, test oracle)</small>
+
+A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
 ## P
 
 <div class="gl-entry" id="parameter" markdown>
@@ -334,6 +471,46 @@ Any number inside a model that training is allowed to change. Weights are parame
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="permission-mode" markdown>
+**permission mode** <small>(also: permission modes)</small>
+
+Claude Code's setting for what the agent may do without asking: manual, accept edits, plan, auto or bypass.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="plan-mode" markdown>
+**plan mode**
+
+A Claude Code mode where the agent may read and propose but not edit or run, so you approve an approach before work starts.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="playbook" markdown>
+**playbook**
+
+Your own page of workflow rules, each backed by a source or a measurement. The ledger for Track B.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="premium-seat" markdown>
+**Premium seat** <small>(also: Premium seats)</small>
+
+A higher-priced ChatGPT Business seat with much more usage and no 5-hour window. Seats can be mixed and reassigned.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="prompt-cache" markdown>
+**prompt cache** <small>(also: prompt caching, cache miss, cache misses)</small>
+
+Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="pytorch" markdown>
 **PyTorch**
 
@@ -342,7 +519,25 @@ The Python library this course uses for tensors, automatic gradients and neural 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-tooling`</small>
 </div>
 
+## R
+
+<div class="gl-entry" id="remote-control" markdown>
+**Remote Control** <small>(also: remote control)</small>
+
+Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
 ## S
+
+<div class="gl-entry" id="sandbox" markdown>
+**sandbox** <small>(also: sandboxing, sandboxed)</small>
+
+An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.
+
+<small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="scalar" markdown>
 **scalar** <small>(also: scalars)</small>
@@ -368,6 +563,14 @@ Rise over run: how steep a curve is at a point. The derivative is the slope of t
 <small>first met in [week-01/day-3](week-01/day-3.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="subagent" markdown>
+**subagent** <small>(also: subagents)</small>
+
+A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
 ## T
 
 <div class="gl-entry" id="tensor" markdown>
@@ -378,12 +581,54 @@ A box of numbers arranged along zero or more axes. A single number, a list, a ta
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="token" markdown>
+**token** <small>(also: tokens)</small>
+
+The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="tool-call" markdown>
+**tool call** <small>(also: tool calls, tool use)</small>
+
+The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
+
+<small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="training" markdown>
 **training**
 
 Repeatedly adjusting a model's parameters to lower the loss on example data.
 
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
+</div>
+
+## U
+
+<div class="gl-entry" id="usage-credits" markdown>
+**usage credits** <small>(also: extra usage)</small>
+
+Pay-as-you-go balance that Claude Code can draw on once plan limits are spent, managed with /usage-credits and an optional spend cap.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="usage-pool" markdown>
+**usage pool** <small>(also: usage pools)</small>
+
+One shared allowance drawn on by several surfaces. On Claude Max one pool covers claude.ai, Claude Code, desktop and mobile; Opus and Sonnet have separate limits.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="usage-window" markdown>
+**usage window** <small>(also: usage windows, session window, 5-hour window)</small>
+
+A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
 
 ## V
@@ -398,10 +643,25 @@ A list of numbers; a tensor with one axis. Like one frame of readings from a row
 
 ## W
 
+<div class="gl-entry" id="weekly-cap" markdown>
+**weekly cap** <small>(also: weekly limit, weekly caps)</small>
+
+A second, larger allowance that spans seven days and applies across all models; it resets at a fixed time set per account.
+
+<small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="weight" markdown>
 **weight** <small>(also: weights)</small>
 
 A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
 
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="worktree" markdown>
+**worktree** <small>(also: worktrees)</small>
+
+A second checkout of the same git repo in its own folder, so two agents can work in parallel without overwriting each other.
+
 </div>
