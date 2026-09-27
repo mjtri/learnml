@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Citation check cards</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.prog{font-size:12px;color:var(--mut);margin:0 0 4px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.ref{min-height:44px;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;margin:6px 0}
+.ref .id{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;margin-top:6px;word-break:break-all}
+.ans{display:flex;gap:6px;margin:6px 0}
+.ans button{flex:1;font:inherit;font-size:13px;min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.ans button.p{border-color:var(--ok)}.ans button.s{border-color:var(--acc2)}
+.verdict{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.verdict.right{border-left:4px solid var(--ok)}.verdict.wrong{border-left:4px solid var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 6px}
+.stat{text-align:center;padding:6px 2px;border-radius:10px;border:1px solid var(--line)}
+.stat b{display:block;font-size:18px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:10px;color:var(--mut)}
+.next{font:inherit;font-size:13px;min-height:44px;width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;margin-top:6px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Pattern passes, or suspicious?</h1>
+<p class="hint">Each card is a reference as a research report might print it. Judge the identifier pattern only, then read what a real lookup returned. Real cards were resolved on Crossref or arXiv on 2026-09-27; the others were invented for this game.</p>
+<div class="prog" id="prog"></div>
+<div class="ref" id="ref"></div>
+<div class="ans"><button class="p" id="bp">Pattern passes</button><button class="s" id="bs">Suspicious</button></div>
+<div class="verdict" id="v"></div>
+<div class="stats"><div class="stat"><b id="sc">0</b><span>correct</span></div><div class="stat"><b id="sf">0</b><span>fakes caught</span></div><div class="stat"><b id="sl">0</b><span>real, still need lookup</span></div></div>
+<button class="next" id="next">Next card</button>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>DOI</dt><dd>A permanent label like 10.1038/221963a0. The prefix names the publisher: 10.1145 ACM, 10.1109 IEEE, 10.1007 Springer, 10.1038 Nature, 10.1016 Elsevier.</dd>
+<dt>arXiv ID</dt><dd>Year and month, a dot, a serial: 1706.03762 is June 2017. A month above 12, or a year after the paper's, cannot be.</dd>
+<dt>fused reference</dt><dd>A real title attached to another paper's real identifier. The lookup resolves, but to the wrong paper: the verdict "differs".</dd>
+<dt>lookup</dt><dd>Asking Crossref for a DOI or arXiv for an ID. Only this proves a paper exists; a passed pattern never does.</dd>
+</dl></details>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+/* [reference text, identifier, real?, verdict text]. Real: resolved 2026-09-27. Fake: invented for this game. */
+var C=[
+ ["Bach-y-Rita et al. (1969). Vision substitution by tactile image projection. Nature 221.","doi:10.1038/221963a0",true,"Pattern passes: 10.1038 is Nature. Crossref returned Bach-y-Rita, Nature, 1969. The lookup proved it; the pattern only failed to reject it."],
+ ["Park & Lee (2023). Spatial acuity of electrotactile encodings in XR. Proc. CHI 2023.","doi:10.1109/CHI.2023.0451",false,"Suspicious: CHI is an ACM venue, so its DOIs start 10.1145, not 10.1109 (IEEE). Invented for this game; a lookup returns nothing."],
+ ["Meijer (1992). An experimental system for auditory image representations. IEEE Trans. Biomed. Eng. 39(2).","doi:10.1109/10.121642",true,"Pattern passes: 10.1109 is IEEE. Crossref returned Meijer, IEEE TBME, 1992: the vOICe paper."],
+ ["Nguyen et al. (2024). A survey of vibrotactile display resolution. arXiv preprint.","arXiv:2413.04567",false,"Suspicious: 2413 would be month 13 of 2024. Invented; the arXiv API returns an empty feed."],
+ ["Ward & Meijer (2010). Visual experiences in the blind induced by an auditory sensory substitution device. Consciousness and Cognition 19.","doi:10.1016/j.concog.2009.10.006",true,"Pattern passes: 10.1016 is Elsevier and the journal-coded suffix is their style. Crossref returned Ward, Consciousness and Cognition, 2010."],
+ ["Silva (2021). Cross-modal plasticity in haptic substitution. Nature Neuroscience.","doi:10.1145/1234567.1234568",false,"Suspicious twice: a Nature journal with an ACM prefix, and consecutive round serials. Invented."],
+ ["Kaczmarek et al. (1991). Electrotactile and vibrotactile displays for sensory substitution systems. IEEE Trans. Biomed. Eng. 38(1).","doi:10.1109/10.68204",true,"Pattern passes. Crossref returned Kaczmarek, IEEE TBME, 1991. Older IEEE DOIs look short and odd; the lookup, not the look, decides."],
+ ["Okafor & Chen (2019). Tactile pixel density limits for wearable displays. arXiv preprint.","arXiv:2206.01234",false,"Suspicious: an ID from June 2022 on a paper dated 2019. Invented; the year tell caught it without a network call."],
+ ["Vaswani et al. (2017). Attention is all you need. arXiv preprint.","arXiv:1706.03762",true,"Pattern passes: June 2017 matches the year. The arXiv API returned the entry, published 2017-06-12."],
+ ["Bach-y-Rita et al. (1969). Vision substitution by tactile image projection. Nature 221.","doi:10.1109/10.121642",false,"Suspicious: Nature with an IEEE prefix. This DOI resolves, but to Meijer 1992: a fused reference. The script prints differs; one title search fixes it."],
+ ["Kristjánsson et al. (2016). Designing sensory-substitution devices: principles, pitfalls and potential. Restorative Neurology and Neuroscience 34.","doi:10.3233/RNN-160647",true,"Pattern passes: 10.3233 is IOS Press, this journal's publisher. Crossref returned Kristjánsson, 2016. An unfamiliar prefix is not a tell."]
+];
+var i=0,score=0,fakes=0,reals=0,answered=false;
+function show(){var c=C[i];$("prog").textContent="card "+(i+1)+" of "+C.length;
+ $("ref").innerHTML=esc(c[0])+"<span class=id>"+esc(c[1])+"</span>";
+ $("v").className="verdict";$("v").textContent="Tap a verdict.";answered=false;
+ $("bp").disabled=false;$("bs").disabled=false;$("next").textContent=i===C.length-1?"See the tally":"Next card"}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function answer(pass){if(answered)return;answered=true;var c=C[i],right=(pass===c[2]);
+ if(right)score++;if(!c[2]&&!pass)fakes++;if(c[2])reals++;
+ $("v").className="verdict "+(right?"right":"wrong");$("v").textContent=(right?"Right. ":"Not quite. ")+c[3];
+ $("bp").disabled=true;$("bs").disabled=true;$("sc").textContent=score;$("sf").textContent=fakes;$("sl").textContent=reals}
+$("bp").onclick=function(){answer(true)};$("bs").onclick=function(){answer(false)};
+$("next").onclick=function(){if(!answered&&i<C.length-1){answer(null)}
+ if(i<C.length-1){i++;show()}else{
+  var nf=C.filter(function(c){return!c[2]}).length;
+  $("ref").innerHTML="<b>Tally.</b> "+score+" of "+C.length+" right. Pattern tells caught "+fakes+" of "+nf+" fakes for free; the "+reals+" real cards passed every pattern and still needed a lookup. One invented reference in a paper is one too many, so the script runs on all of them.";
+  $("v").className="verdict";$("v").textContent="Restart to try again.";$("prog").textContent="done";
+  $("bp").disabled=true;$("bs").disabled=true;$("next").textContent="Restart";
+  $("next").onclick=function(){location.reload()}}};
+show();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
