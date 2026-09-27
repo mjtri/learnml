@@ -49,8 +49,8 @@ Predict first, then tap:
 
 ## Retrieval
 
-??? question "Same seed, same code, same data, a different GPU: will the accuracy match to every decimal? Why?"
-    Not guaranteed. The seed pins the random choices, not the arithmetic; GPU kernels sum in different orders, so the numbers agree closely but not bit for bit.
+??? question "Same seed, same code, same data, a different GPU: how closely should the two accuracies agree, and what causes the difference?"
+    Closely, but not bit for bit. The seed pins the random choices, not the arithmetic; GPU kernels sum in different orders, so the last decimals can differ.
 
 ??? question "A colleague sends 'acc = 0.83, seed 1'. Name four more fields you need before you can repeat the run."
     Any four of: model id and revision, layer and pooling, split fraction and example count, learning rate and steps, the git hash, library versions.

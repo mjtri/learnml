@@ -24,7 +24,7 @@ enc = tok(["Gravity is", "The glove buzzed twice"],
 enc["input_ids"].shape           # (2, 5)        B × T
 out = model(**enc, output_hidden_states=True)
 out.last_hidden_state.shape      # (2, 5, 576)   B × T × d
-len(out.hidden_states)           # 31 = embedding + 30 layers
+len(out.hidden_states)           # 31: embedding + 30 layers
 ```
 
 Read it top down. The tokenizer returns a batch \(B\) of \(T\) ids, the shorter text padded to the same length, plus an `attention_mask` of the same shape: 1 on real tokens, 0 on padding. The model returns a **hidden state** per token per layer, the residual stream of week 5 caught after every block, each shaped \((B, T, d)\). Index 0 is the embedding before any block; index 30 is the last.

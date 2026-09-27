@@ -33,9 +33,9 @@ Read the per-layer curve, not one number. The embedding probes poorly, because i
 
 ```python
 H = out.hidden_states[layer]          # (B, T, d)
-m = enc["attention_mask"][..., None]  # (B, T, 1): 1 on real tokens
-feat = (H * m).sum(1) / m.sum(1)      # mean over real tokens: (B, d)
-probe = torch.nn.Linear(d, 2)         # the only trainable part
+m = enc["attention_mask"][..., None]  # (B, T, 1), 1 = real
+feat = (H * m).sum(1) / m.sum(1)      # masked mean: (B, d)
+probe = torch.nn.Linear(d, 2)         # the only trained bit
 ```
 
 Without the mask, padding pulls every short sentence's mean towards the same point, and the probe learns sentence length instead of sentiment.

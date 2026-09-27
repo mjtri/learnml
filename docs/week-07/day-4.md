@@ -19,9 +19,9 @@ Fine-tuning is week 1's training loop pointed at a loaded checkpoint instead of 
 ```python
 model = AutoModelForCausalLM.from_pretrained(ckpt)
 opt = torch.optim.AdamW(model.parameters(), lr=2e-5)
-for batch in loader:                  # your texts, tokenized
+for batch in loader:                  # your texts, as ids
     out = model(**batch, labels=batch["input_ids"])
-    out.loss.backward()               # next-token loss on your data
+    out.loss.backward()               # next-token loss
     opt.step(); opt.zero_grad()
 ```
 
