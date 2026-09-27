@@ -1,6 +1,6 @@
 ---
 title: Lesson 3 · Ablations and controls
-terms: [control, ablation study]
+terms: [control condition, ablation study]
 card: build-step6
 ---
 

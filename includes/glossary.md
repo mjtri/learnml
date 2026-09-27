@@ -16,6 +16,10 @@
 *[Ablated]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
 *[ablating]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
 *[Ablating]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[ablation study]: A table of runs where you remove or swap one part of your method at a time, keeping everything else fixed, to show which parts carry the gain.
+*[Ablation study]: A table of runs where you remove or swap one part of your method at a time, keeping everything else fixed, to show which parts carry the gain.
+*[ablation studies]: A table of runs where you remove or swap one part of your method at a time, keeping everything else fixed, to show which parts carry the gain.
+*[Ablation studies]: A table of runs where you remove or swap one part of your method at a time, keeping everything else fixed, to show which parts carry the gain.
 *[accept-edits mode]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
 *[Accept-edits mode]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
 *[acceptEdits]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
@@ -118,6 +122,10 @@
 *[Backprop]: The backward pass applied to a neural network: the chain rule run from the loss back to every weight, reusing shared work so it costs about one extra forward pass.
 *[backward pass]: Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.
 *[Backward pass]: Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.
+*[baseline]: The method B your idea must beat. A result only means something relative to a baseline, and the baseline you choose decides how much it means.
+*[Baseline]: The method B your idea must beat. A result only means something relative to a baseline, and the baseline you choose decides how much it means.
+*[baselines]: The method B your idea must beat. A result only means something relative to a baseline, and the baseline you choose decides how much it means.
+*[Baselines]: The method B your idea must beat. A result only means something relative to a baseline, and the baseline you choose decides how much it means.
 *[batch]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 *[Batch]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 *[batches]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
@@ -229,6 +237,10 @@
 *[Computation graphs]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 *[computational graph]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 *[Computational graph]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
+*[compute budget]: The total training time you allow an experiment, counted in GPU-hours: runs times seeds times minutes per run. Decide it before the first run.
+*[Compute budget]: The total training time you allow an experiment, counted in GPU-hours: runs times seeds times minutes per run. Decide it before the first run.
+*[compute budgets]: The total training time you allow an experiment, counted in GPU-hours: runs times seeds times minutes per run. Decide it before the first run.
+*[Compute budgets]: The total training time you allow an experiment, counted in GPU-hours: runs times seeds times minutes per run. Decide it before the first run.
 *[compute-optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[Compute-optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
@@ -247,6 +259,10 @@
 *[Context window]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 *[context windows]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 *[Context windows]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
+*[control condition]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
+*[Control condition]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
+*[control conditions]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
+*[Control conditions]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
 *[converge]: To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
 *[Converge]: To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
 *[converges]: To settle down: the loss stops improving meaningfully because the parameters have reached a low point.
@@ -324,6 +340,10 @@
 *[Dtypes]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[early stopping]: Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
 *[Early stopping]: Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
+*[effect size]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
+*[Effect size]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
+*[effect sizes]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
+*[Effect sizes]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
 *[effort level]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 *[Effort level]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 *[effort levels]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
@@ -354,6 +374,12 @@
 *[Exploding gradient]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[Exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
+*[falsifiable prediction]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
+*[Falsifiable prediction]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
+*[falsifiable predictions]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
+*[Falsifiable predictions]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
+*[falsifiable]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
+*[Falsifiable]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
 *[fast mode]: A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
 *[Fast mode]: A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
 *[feature]: One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.
@@ -516,6 +542,10 @@
 *[Learning rate]: The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
 *[learning rates]: The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
 *[Learning rates]: The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
+*[lever]: The one thing an idea changes: data (what is seen), architecture (what structure is assumed), objective (what is optimized), optimization (how it is trained) or inference (how it is used).
+*[Lever]: The one thing an idea changes: data (what is seen), architecture (what structure is assumed), objective (what is optimized), optimization (how it is trained) or inference (how it is used).
+*[levers]: The one thing an idea changes: data (what is seen), architecture (what structure is assumed), objective (what is optimized), optimization (how it is trained) or inference (how it is used).
+*[Levers]: The one thing an idea changes: data (what is seen), architecture (what structure is assumed), objective (what is optimized), optimization (how it is trained) or inference (how it is used).
 *[limit reset]: An occasional free reset of a spent usage window, offered in Settings > Usage on claude.ai web or desktop (not from Claude Code or the mobile app).
 *[Limit reset]: An occasional free reset of a spent usage window, offered in Settings > Usage on claude.ai web or desktop (not from Claude Code or the mobile app).
 *[limit resets]: An occasional free reset of a spent usage window, offered in Settings > Usage on claude.ai web or desktop (not from Claude Code or the mobile app).
@@ -822,6 +852,14 @@
 *[Post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[pre-norm/post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[Pre-norm/post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+*[pre-registration]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[Pre-registration]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[pre-registered]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[Pre-registered]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[pre-register]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[Pre-register]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[preregistration]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+*[Preregistration]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
 *[precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 *[Precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 *[Premium seat]: A higher-priced ChatGPT Business seat: 5x the usage, no 5-hour window, weekly reset. Seats can be mixed and reassigned.
@@ -914,6 +952,12 @@
 *[Run log]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
 *[run logs]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
 *[Run logs]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
+*[same-compute baseline]: The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
+*[Same-compute baseline]: The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
+*[same-compute baselines]: The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
+*[Same-compute baselines]: The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
+*[same-compute]: The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
+*[Same-compute]: The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
 *[sampling]: Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
 *[Sampling]: Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
 *[sandbox]: An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.
@@ -970,6 +1014,10 @@
 *[Spend limit]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 *[spend limits]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 *[Spend limits]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
+*[strong baseline]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
+*[Strong baseline]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
+*[strong baselines]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
+*[Strong baselines]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
 *[subagent]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[Subagent]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
@@ -1117,6 +1165,10 @@
 *[Vanishing gradient]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
 *[vanishing gradients]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
 *[Vanishing gradients]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
+*[variance across seeds]: How much the same setup's result changes when only the random seed changes: initial weights, data order, dropout. Measure it before comparing two methods.
+*[Variance across seeds]: How much the same setup's result changes when only the random seed changes: initial weights, data order, dropout. Measure it before comparing two methods.
+*[seed variance]: How much the same setup's result changes when only the random seed changes: initial weights, data order, dropout. Measure it before comparing two methods.
+*[Seed variance]: How much the same setup's result changes when only the random seed changes: initial weights, data order, dropout. Measure it before comparing two methods.
 *[vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[Vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.

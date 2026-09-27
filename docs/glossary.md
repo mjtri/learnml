@@ -62,6 +62,14 @@ An experiment that removes or replaces one component of a model, keeps everythin
 <small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="ablation-study" markdown>
+**ablation study** <small>(also: ablation studies)</small>
+
+A table of runs where you remove or swap one part of your method at a time, keeping everything else fixed, to show which parts carry the gain.
+
+<small>first met in [week-10/day-3](week-10/day-3.md) · canvas card `build-step6`</small>
+</div>
+
 <div class="gl-entry" id="accept-edits-mode" markdown>
 **accept-edits mode** <small>(also: acceptEdits, accept edits mode)</small>
 
@@ -254,6 +262,14 @@ The backward pass applied to a neural network: the chain rule run from the loss 
 Walking the computation graph from the output back to the inputs, computing how sensitive the output is to each value on the way.
 
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="baseline" markdown>
+**baseline** <small>(also: baselines)</small>
+
+The method B your idea must beat. A result only means something relative to a baseline, and the baseline you choose decides how much it means.
+
+<small>first met in [week-10/day-2](week-10/day-2.md) · canvas card `build-step5`</small>
 </div>
 
 <div class="gl-entry" id="batch" markdown>
@@ -482,6 +498,14 @@ A drawing of a calculation as boxes (operations) joined by arrows (values). PyTo
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="compute-budget" markdown>
+**compute budget** <small>(also: compute budgets)</small>
+
+The total training time you allow an experiment, counted in GPU-hours: runs times seeds times minutes per run. Decide it before the first run.
+
+<small>first met in [week-10/day-5](week-10/day-5.md) · canvas card `build-step6`</small>
+</div>
+
 <div class="gl-entry" id="compute-optimal" markdown>
 **compute-optimal** <small>(also: compute optimal)</small>
 
@@ -512,6 +536,14 @@ How many previous tokens a model may look at when predicting the next one. A big
 Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="control-condition" markdown>
+**control condition** <small>(also: control conditions)</small>
+
+A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
+
+<small>first met in [week-10/day-3](week-10/day-3.md) · canvas card `build-step6`</small>
 </div>
 
 <div class="gl-entry" id="converge" markdown>
@@ -662,6 +694,14 @@ Watch the validation loss during training and keep the parameters from the step 
 <small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
 </div>
 
+<div class="gl-entry" id="effect-size" markdown>
+**effect size** <small>(also: effect sizes)</small>
+
+How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
+
+<small>first met in [week-10/day-4](week-10/day-4.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="effort-level" markdown>
 **effort level** <small>(also: effort levels)</small>
 
@@ -711,6 +751,14 @@ Gradients that grow layer by layer on the way back, until updates are huge and t
 </div>
 
 ## F
+
+<div class="gl-entry" id="falsifiable-prediction" markdown>
+**falsifiable prediction** <small>(also: falsifiable predictions, falsifiable)</small>
+
+A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
+
+<small>first met in [week-10/day-1](week-10/day-1.md) · canvas card `build-step5`</small>
+</div>
 
 <div class="gl-entry" id="fast-mode" markdown>
 **fast mode**
@@ -976,6 +1024,14 @@ A layer that normalizes across the features of each single example, independent 
 The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="lever" markdown>
+**lever** <small>(also: levers)</small>
+
+The one thing an idea changes: data (what is seen), architecture (what structure is assumed), objective (what is optimized), optimization (how it is trained) or inference (how it is used).
+
+<small>first met in [week-10/day-1](week-10/day-1.md) · canvas card `build-step2`</small>
 </div>
 
 <div class="gl-entry" id="limit-reset" markdown>
@@ -1458,6 +1514,14 @@ Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residua
 <small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="pre-registration" markdown>
+**pre-registration** <small>(also: pre-registered, pre-register, preregistration)</small>
+
+Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
+
+<small>first met in [week-10/day-5](week-10/day-5.md) · canvas card `build-step5`</small>
+</div>
+
 <div class="gl-entry" id="precedence" markdown>
 **precedence**
 
@@ -1624,6 +1688,14 @@ One row appended per experiment run: time, code version, config, seed, library v
 
 ## S
 
+<div class="gl-entry" id="same-compute-baseline" markdown>
+**same-compute baseline** <small>(also: same-compute baselines, same-compute)</small>
+
+The baseline given exactly the training time, data and model size your method used. It separates a real idea from simply spending more.
+
+<small>first met in [week-10/day-2](week-10/day-2.md) · canvas card `build-step5`</small>
+</div>
+
 <div class="gl-entry" id="sampling" markdown>
 **sampling**
 
@@ -1742,6 +1814,14 @@ Turns a list of scores into probabilities that add to one: exponentiate each sco
 A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 
 <small>first met in [agentic-08/day-2](agentic-08/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="strong-baseline" markdown>
+**strong baseline** <small>(also: strong baselines)</small>
+
+The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
+
+<small>first met in [week-10/day-2](week-10/day-2.md) · canvas card `build-step5`</small>
 </div>
 
 <div class="gl-entry" id="subagent" markdown>
@@ -1996,6 +2076,14 @@ In attention, the vector a token hands over once it is matched. The output is th
 Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
 
 <small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="variance-across-seeds" markdown>
+**variance across seeds** <small>(also: seed variance)</small>
+
+How much the same setup's result changes when only the random seed changes: initial weights, data order, dropout. Measure it before comparing two methods.
+
+<small>first met in [week-10/day-4](week-10/day-4.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="vector" markdown>

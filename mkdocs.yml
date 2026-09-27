@@ -113,6 +113,13 @@ nav:
       - "Lesson 4 · PEFT in practice: where, how hard, and folding it back": week-08/day-4.md
       - "Lesson 5 · Fine-tuning failure modes": week-08/day-5.md
       - "Build · LoRA by hand, then with PEFT, then a rank ablation": week-08/build.md
+  - "Track A · Week 10 · Experiment design":
+      - "Lesson 1 · One lever at a time": week-10/day-1.md
+      - "Lesson 2 · Baselines that could embarrass you": week-10/day-2.md
+      - "Lesson 3 · Ablations and controls": week-10/day-3.md
+      - "Lesson 4 · Seeds, variance and honest tables": week-10/day-4.md
+      - "Lesson 5 · Pre-registration for yourself": week-10/day-5.md
+      - "Build · Two candidates, one plan, one pipeline": week-10/build.md
   - "Track B · 1 · Budget & mental model":
       - "B1 · Lesson 1 · An agent is a loop; context is the budget": agentic-01/day-1.md
       - "B1 · Lesson 2 · What you actually pay for": agentic-01/day-2.md

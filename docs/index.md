@@ -106,8 +106,13 @@ hide:
 ??? note "Week 9 · CLIP, multimodal embeddings, evaluation · not generated yet"
     `python gen_week.py 9` prints the prompt that builds it.
 
-??? note "Week 10 · Experiment design · not generated yet"
-    `python gen_week.py 10` prints the prompt that builds it.
+??? note "⬜ Week 10 · Experiment design · 0/6"
+    - ⬜ [Lesson 1 · One lever at a time](week-10/day-1.md)
+    - ⬜ [Lesson 2 · Baselines that could embarrass you](week-10/day-2.md)
+    - ⬜ [Lesson 3 · Ablations and controls](week-10/day-3.md)
+    - ⬜ [Lesson 4 · Seeds, variance and honest tables](week-10/day-4.md)
+    - ⬜ [Lesson 5 · Pre-registration for yourself](week-10/day-5.md)
+    - ⬜ [Build · Two candidates, one plan, one pipeline](week-10/build.md)
 
 ??? note "Week 11 · Reproduce one number from a paper · not generated yet"
     `python gen_week.py 11` prints the prompt that builds it.
