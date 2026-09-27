@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Permission-mode risk matrix</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.tool{display:flex;gap:6px;margin:0 0 6px}
+.tool button{flex:1;font:inherit;font-size:13px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.tool button.on{border:2px solid var(--acc);font-weight:700}
+.modes{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.modes button{font:inherit;font-size:12px;min-height:44px;padding:4px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;line-height:1.2}
+.modes button.on{border:2px solid var(--acc);font-weight:700}
+.modes button.warn.on{border-color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:7px 6px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+th{font-size:11px;color:var(--mut);font-weight:600;border-top:0;padding-top:0}
+td.s{width:42%}
+.chip{display:inline-block;min-width:82px;white-space:nowrap;text-align:center;padding:4px 8px;border-radius:8px;font-size:12px;font-weight:700}
+.chip.run{background:color-mix(in srgb,var(--ok) 25%,var(--card));color:var(--ok)}
+.chip.ask{background:color-mix(in srgb,var(--acc) 22%,var(--card));color:var(--acc)}
+.chip.cls{background:color-mix(in srgb,var(--acc2) 25%,var(--card));color:var(--acc2)}
+.chip.deny,.chip.blk{background:color-mix(in srgb,var(--bad) 20%,var(--card));color:var(--bad)}
+td .n{display:block;font-size:11.5px;color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 6px}
+.stats div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center}
+.stats b{display:block;font-size:20px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.stats span{display:block;font-size:11px;color:var(--mut)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);border-left:4px solid var(--acc)}
+.status.bad{border-left-color:var(--bad)}
+.status p{margin:2px 0}
+.status .why{color:var(--mut);font-size:12.5px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Tap a mode: what runs without asking?</h1>
+<p class="hint">Six everyday actions. Guess how many run unasked before you tap. Notes under a chip are the exceptions the docs list.</p>
+<div class="tool" id="tool"><button data-t="claude" class="on">Claude Code modes</button><button data-t="codex">Codex sandbox + approvals</button></div>
+<div class="modes" id="modes"></div>
+<table><thead><tr><th>Action</th><th>In this mode</th></tr></thead><tbody id="rows"></tbody></table>
+<div class="stats"><div><b id="c-run">0</b><span>run unasked</span></div><div><b id="c-ask">0</b><span>ask you</span></div><div><b id="c-cls">0</b><span>classifier</span></div><div><b id="c-deny">0</b><span>denied</span></div></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>permission mode</dt><dd>Claude Code's per-session setting for what the agent may do without asking.</dd>
+<dt>classifier</dt><dd>In auto mode, a separate model that reviews each action instead of you and blocks the risky ones.</dd>
+<dt>allowlist</dt><dd>Command patterns pre-approved in settings, such as Bash(git commit *); deny rules override it in every mode.</dd>
+<dt>approval policy</dt><dd>Codex's rule for when it asks: on-request asks only to leave the sandbox; never asks nothing. Paired with a sandbox mode.</dd>
+</dl></details>
+<script>
+(function(){
+var ACT=["Read files in the repo","Edit files in the repo","Run a shell command (build, tests)","Reach the network","Write outside the repo or to a protected path","Force-delete (rm -rf, Remove-Item -Recurse)"];
+var LABEL={run:"runs",ask:"asks you",cls:"classifier",deny:"denied",blk:"blocked"};
+var M={
+ claude:[
+  {n:"Manual (default)",v:["run","ask","ask|built-in read-only commands run","ask","ask","ask"],who:"You, at every prompt.",why:"Sensitive work, or a repo you do not trust yet."},
+  {n:"Accept edits",v:["run","run","ask|mkdir, mv, cp run","ask","ask","ask"],who:"You, for commands and the network.",why:"Iterating on code you are reviewing: edits flow, commands still stop."},
+  {n:"Plan",v:["run","blk|until you approve the plan","cls|exploring commands, when auto mode is available","ask","blk","ask|critical-path removals always prompt"],who:"You, once, at the plan.",why:"Explore and propose before anything changes."},
+  {n:"Auto",v:["run","run","cls","cls|sandboxed commands name the hosts they need","ask|protected paths are never auto-approved","cls|blocks targets it cannot verify"],who:"The classifier; you again after 3 blocks in a row or 20 in total.",why:"Long tasks in a repo with an oracle and git. The starting mode on recent versions."},
+  {n:"dontAsk",v:["run","deny|unless an allow rule matches","deny|unless allowlisted","deny","deny","deny|critical paths denied even if allowed"],who:"Your allowlist; nothing prompts.",why:"Scripts and CI: claude -p ... --permission-mode dontAsk --allowedTools ..."},
+  {n:"Bypass",warn:1,v:["run","run","run","run","run|protected paths included","ask|only rm -rf / and rm -rf ~ still prompt"],who:"Nobody. Deny rules still apply.",why:"Isolated containers and VMs only; no protection against prompt injection."}
+ ],
+ codex:[
+  {n:"read-only + on-request",v:["run","ask","ask","ask","ask","ask"],who:"You, plus the OS sandbox.",why:"Inspect a repo you do not trust yet."},
+  {n:"workspace-write + on-request (Auto, default)",v:["run","run|inside the workspace","run|inside the sandbox","ask","ask|outside the workspace","run|inside the workspace: git is your undo"],who:"The OS sandbox at the boundary; you beyond it. With Approve for me, a reviewer agent answers eligible prompts.",why:"The default for a git folder."},
+  {n:"Full access (danger-full-access + never)",warn:1,v:["run","run","run","run","run","run"],who:"Nobody.",why:"--dangerously-bypass-approvals-and-sandbox: use caution, controlled environments only."}
+ ]};
+var tool="claude",idx=1;
+var modes=document.getElementById("modes"),rows=document.getElementById("rows"),st=document.getElementById("st");
+document.getElementById("tool").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;tool=b.dataset.t;idx=tool==="claude"?1:1;
+ Array.prototype.forEach.call(this.children,function(x){x.className=x===b?"on":""});buildModes();draw()});
+function buildModes(){modes.innerHTML="";M[tool].forEach(function(m,i){var b=document.createElement("button");b.textContent=m.n;if(m.warn)b.className="warn";b.onclick=function(){idx=i;draw()};modes.appendChild(b)})}
+function draw(){
+ var m=M[tool][idx],cnt={run:0,ask:0,cls:0,deny:0};
+ Array.prototype.forEach.call(modes.children,function(b,i){b.className=(M[tool][i].warn?"warn":"")+(i===idx?" on":"")});
+ rows.innerHTML="";
+ m.v.forEach(function(v,i){var p=v.split("|"),k=p[0];cnt[k==="blk"?"deny":k]++;
+  var tr=document.createElement("tr");
+  var a=document.createElement("td");a.textContent=ACT[i];
+  var s=document.createElement("td");s.className="s";var c=document.createElement("span");c.className="chip "+k;c.textContent=LABEL[k];s.appendChild(c);
+  if(p[1]){var n=document.createElement("span");n.className="n";n.textContent=p[1];s.appendChild(n)}
+  tr.appendChild(a);tr.appendChild(s);rows.appendChild(tr)});
+ ["run","ask","cls","deny"].forEach(function(k){document.getElementById("c-"+k).textContent=cnt[k]});
+ st.className="status"+(m.warn?" bad":"");
+ st.innerHTML="<p><b>"+cnt.run+" of 6</b> run unasked. Who stops a bad one: "+m.who+"</p><p class='why'>"+m.why+"</p>";
+}
+buildModes();draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
