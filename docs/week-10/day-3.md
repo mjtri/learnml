@@ -39,7 +39,7 @@ A plan for week 12 needs one ablation, not five: the one that tests your lever d
 Six runs of a shape–sound experiment. Before tapping, guess how many pairs differ in exactly one column.
 
 1. Tap two rows. The readout names every column that differs and says whether the pair is fair.
-2. Find the row that looks like an ablation but silently changed the steps too. Fix it with the **steps** control and watch the pair turn fair.
+2. Find the row that looks like an ablation but silently changed the steps too. Fix it with the **steps** button and watch the pair turn fair.
 3. Build the smallest row set that isolates the objective lever. How many runs at three seeds each?
 
 ## Retrieval
@@ -47,8 +47,8 @@ Six runs of a shape–sound experiment. Before tapping, guess how many pairs dif
 ??? question "Your ablation removes the sound branch, which also halves the parameter count. Why is this two levers, and what swap control fixes it?"
     Removing the branch changes objective and architecture at once. Keep the branch but freeze it with random weights: same parameter count, only the learned sound signal is gone.
 
-??? question "Write the one ablation that tests the codec candidate's lever (architecture: a display-shaped bottleneck), with a number."
-    Replace the 4×4-by-8-level bottleneck with an unconstrained one of the same width, everything else fixed. Prediction: shape accuracy from the code drops by at most 3 points.
+??? question "Write the one ablation that tests the codec candidate's lever (architecture: a display-shaped code), with a number."
+    Replace the 4×4-by-8-level code with an unconstrained one of the same width, everything else fixed. Prediction: shape accuracy from the code drops by at most 3 points.
 
 ??? question "A colleague's table has rows 'full' and 'no augmentation', trained for 3000 and 2000 steps. What can the reader conclude?"
     Nothing about augmentation. The rows differ in two things, so the gap could be steps alone. Re-run the second row at 3000 steps with the same seed.

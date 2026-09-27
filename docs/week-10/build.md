@@ -18,14 +18,14 @@ Every experiment cell is preceded by a **predict cell**; the notebook refuses an
 
 ## The choice
 
-The data pipeline **defaults to the cross-modal contrastive embedding** (`OPTION = "contrastive"`): 16×16 rendered shapes → vOICe-style sonifier → spectrogram-like vectors. The alternative (`OPTION = "codec"`) feeds the same shapes to a 4×4, 8-level haptic-grid downsampler. Both go into `week10_data.npz` (images, sound vectors, haptic codes, labels), the file weeks 11–12 and Track B week 7 read.
+The data pipeline **defaults to the cross-modal contrastive embedding** (`OPTION = "contrastive"`): 16×16 rendered shapes → vOICe-style sonifier → pitch-by-time energy vectors. The alternative (`OPTION = "codec"`) feeds the same shapes to a 4×4, 8-level haptic-grid downsampler. Both go into `week10_data.npz` (images, sound vectors, haptic codes, labels), the file weeks 11–12 and Track B week 7 read.
 
 ## Parts
 
 | Part | What you do | Time |
 |---|---|---|
 | A | Render 20 shape classes at 16×16 with jitter; both candidates through canvas steps 1–5 | 30 min |
-| B | Sonifier: image → column snippets → spectrogram-like vector; round-trip check | 35 min |
+| B | Sonifier: image → column snippets → pitch-by-time energy vector; round-trip check | 35 min |
 | C | Haptic-grid downsampler: 16×16 → 4×4 × 8 levels; count code collisions | 20 min |
 | D | Seeds vs noise: a tiny probe per representation over seeds; spread, effect size, \(16/\Delta^2\) | 45 min |
 | E | Choose; fill the one-page plan; budget computed; save `week10_plan.md` | 30 min |

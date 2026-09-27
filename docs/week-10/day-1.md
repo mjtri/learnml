@@ -19,10 +19,10 @@ Every training run is five decisions; an idea changes exactly one:
 | Lever | The question it answers | Week 12 example |
 |---|---|---|
 | data | what does the model see? | more shapes; jittered positions |
-| architecture | what structure is assumed? | a bottleneck shaped like a 4×4 actuator grid |
+| architecture | what structure is assumed? | a code shaped like a 4×4 actuator grid |
 | objective | what is optimized? | contrastive image–sound loss instead of pixel loss |
 | optimization | how is it trained? | learning-rate schedule, steps, batch size |
-| inference | how is it used? | averaging several sonifications at test time |
+| inference | how is it used? | averaging several sound renderings at test time |
 
 The canvas card is blunt: *pick one; if it is two, split the idea.* The lever also fixes what stays frozen: change the objective and you owe the reader the same data, architecture, steps and seeds.
 
@@ -32,7 +32,7 @@ Once the lever is named, the intuition becomes a **falsifiable prediction**, can
 
 Four blanks, all mandatory. \(T\): a task you can run this month. \(M\): one number. \(B\): a method you would be embarrassed to lose to. \(X\): a size chosen before any run. A prediction with no \(X\) cannot fail, and what cannot fail cannot teach.
 
-**In practice**, one of this week's two candidates through the blanks. Intuition: "a sonified shape should be confusable with the shapes it *sounds* like, not the ones it *looks* like." Lever: objective (the image encoder learns to match sound clips, not pixels). Prediction: on 20 rendered shapes, distance in the learned image–sound space predicts which pairs a listener confuses better than pixel distance does, by at least 0.2 on an agreement score between orderings. The other candidate, a learned image→touch code with a display-shaped bottleneck, has lever *architecture*; its blanks are yours in the build session.
+**In practice**, one of this week's two candidates through the blanks. Intuition: "a sonified shape should be confusable with the shapes it *sounds* like, not the ones it *looks* like." Lever: objective (the image encoder learns to match sound clips, not pixels). Prediction: on 20 rendered shapes, distance in the learned image–sound space predicts which pairs a listener confuses better than pixel distance does, by at least 0.2 on an agreement score between orderings. The other candidate, a learned image→touch code shaped like the display, has lever *architecture*; its blanks are yours in the build session.
 
 The user-study analogy is close: lever = independent variable, frozen levers = what you counter-balance, \(M\) = dependent measure, \(B\) = comparison condition. Where it breaks: a participant cannot be copied, but a model can be re-run with a new random draw, so "how many participants" becomes "how many seeds" (lesson 4). One symptom of a double lever: the prediction contains "and".
 

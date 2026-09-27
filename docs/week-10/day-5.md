@@ -53,7 +53,7 @@ The page prevents Gelman's garden of forking paths: at each fork (metric, seed, 
 
 <div class="visual"><iframe src="../visuals/w10-plan-builder.html" title="One-page plan builder with a compute budget readout" loading="lazy"></iframe></div>
 
-Before touching the seeds and minutes controls, guess the budget in T4-hours.
+Before touching the seeds and minutes sliders, guess the budget in T4-hours.
 
 1. Rows 4, seeds 5, minutes 5. Read the budget and the smallest detectable effect.
 2. Push minutes to 40. Find the seed count that brings the budget under 3 hours, and what it costs in detectable effect.

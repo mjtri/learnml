@@ -18,7 +18,7 @@ A ladder with three rungs, climbed in order; each answers a different objection.
 
 **Rung 1, the trivial baseline.** Predict the most common class; predict the mean; use raw pixel distance; use the hand-designed mapping you already have. It costs minutes and answers "is the task even hard?" Karpathy's recipe puts it before any model: on 10 shapes, "always say circle" scores 10 %, and a model at 12 % is a broken pipeline, not a result.
 
-**Rung 2, the strong baseline.** The best simple method that already exists for the task, tuned with the *same care* as your method. A **strong baseline** for the week-12 embedding is a plain image encoder trained with the ordinary pixel-reconstruction loss, its learning rate swept exactly as widely as yours. Musgrave's metric-learning check re-ran a decade of "state of the art" with fairly tuned baselines and found the gains had mostly been tuning.
+**Rung 2, the strong baseline.** The best simple method that already exists for the task, tuned with the *same care* as your method. A **strong baseline** for the week-12 embedding is a plain image encoder trained with the ordinary pixel loss, its learning rate swept exactly as widely as yours. Musgrave's metric-learning check re-ran a decade of "state of the art" with fairly tuned baselines and found the gains had mostly been tuning.
 
 **Rung 3, the same-compute baseline.** Whatever your method spends, give B the same: steps, data passes, model size, tuning budget. A **same-compute baseline** separates "my objective is better" from "I trained longer". Dodge et al. make it a reporting rule: show the best result as a function of compute.
 
