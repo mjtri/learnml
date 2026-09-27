@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ΔW = BA calculator</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;height:150px;border-radius:10px;background:var(--card)}
+label{display:grid;grid-template-columns:96px 1fr 62px;align-items:center;gap:8px;font-size:13px;color:var(--mut);margin-top:4px}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.pct{font-weight:700;color:var(--acc2)}.warn{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>One weight matrix W and its LoRA change B·A: how many numbers train?</h1>
+<div class="row" id="presets"></div>
+<canvas id="cv" aria-label="Rectangles drawn to scale: the full matrix W, the tall thin B and the short wide A."></canvas>
+<label>d_out (rows)<input id="so" type="range" min="6" max="14" step="1" value="10"><output id="oo"></output></label>
+<label>d_in (columns)<input id="si" type="range" min="6" max="14" step="1" value="10"><output id="oi"></output></label>
+<label>rank r<input id="sr" type="range" min="0" max="10" step="1" value="3"><output id="or"></output></label>
+<div class="read">
+  <span class="k">W has d_out × d_in numbers (frozen)</span><span id="r1"></span>
+  <span class="k">B is d_out × r, A is r × d_in</span><span id="r2"></span>
+  <span class="k">trainable, r·(d_out + d_in)</span><span id="r3"></span>
+  <span class="k">share of W that trains</span><span id="r4" class="pct"></span>
+  <span class="k">W is this many times bigger</span><span id="r5"></span>
+  <span class="k">adapter size for this matrix, 32-bit</span><span id="r6"></span>
+  <span class="k">r where B·A stops saving anything</span><span id="r7"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>W</dt><dd>The pretrained weight matrix of one linear layer, d_out rows by d_in columns. Frozen: it gets no gradient.</dd>
+<dt>B, A</dt><dd>The two thin trainable matrices. Their product B·A has the same shape as W but only rank r.</dd>
+<dt>rank r</dt><dd>The width of the thin matrices: how many independent directions the change may use.</dd>
+<dt>crossover</dt><dd>When r·(d_out + d_in) reaches d_out·d_in the adapter is no smaller than W: r = d_out·d_in / (d_out + d_in).</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var cv=$("cv"),ctx=cv.getContext("2d");
+var PRESETS=[["tiny glove 128×128",128,128,4],["Qwen2.5-0.5B q_proj 896×896",896,896,8],["SmolLM2-360M v_proj 320×960",320,960,8],["Llama-3-8B q_proj 4096×4096",4096,4096,8],["GPT-3 12288×12288",12288,12288,4]];
+var DIM={};
+function nearest(v){return Math.round(Math.log2(v))}
+PRESETS.forEach(function(p){var b=document.createElement("button");b.textContent=p[0];b.onclick=function(){DIM.o=p[1];DIM.i=p[2];$("so").value=nearest(p[1]);$("si").value=nearest(p[2]);$("sr").value=Math.log2(p[3]);draw()};$("presets").appendChild(b)});
+function fmt(n){return n>=1e9?(n/1e9).toFixed(2)+" B":n>=1e6?(n/1e6).toFixed(2)+" M":n>=1e3?(n/1e3).toFixed(1)+" K":String(n)}
+function bytes(n){var b=n*4;return b>=1e9?(b/1e9).toFixed(2)+" GB":b>=1e6?(b/1e6).toFixed(1)+" MB":(b/1e3).toFixed(1)+" KB"}
+function draw(){
+  var o=DIM.o||Math.pow(2,+$("so").value),i=DIM.i||Math.pow(2,+$("si").value),r=Math.pow(2,+$("sr").value);DIM={};
+  $("oo").textContent=o;$("oi").textContent=i;$("or").textContent=r;
+  var full=o*i,lora=r*(o+i),cross=Math.floor(full/(o+i));
+  $("r1").textContent=fmt(full);$("r2").textContent=fmt(o*r)+" + "+fmt(r*i);$("r3").textContent=fmt(lora);
+  var e=$("r4");e.textContent=(100*lora/full).toFixed(lora/full<0.01?2:1)+" %";e.className=lora>=full?"warn":"pct";
+  $("r5").textContent=(full/lora).toFixed(1)+"×";$("r6").textContent=bytes(lora);$("r7").textContent=cross;
+  var dpr=window.devicePixelRatio||1,Wd=cv.clientWidth,Ht=cv.clientHeight;cv.width=Wd*dpr;cv.height=Ht*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,Wd,Ht);var acc=css("--acc"),acc2=css("--acc2"),fg=css("--fg"),mut=css("--mut");
+  var maxd=Math.max(o,i),sc=(Ht-30)/maxd,w=i*sc,h=o*sc,rr=Math.max(3,r*sc),x0=10,y0=20;
+  ctx.fillStyle=mut;ctx.globalAlpha=0.35;ctx.fillRect(x0,y0,w,h);ctx.globalAlpha=1;
+  ctx.fillStyle=fg;ctx.font="12px system-ui,sans-serif";ctx.fillText("W  "+o+"×"+i+"  frozen",x0,y0-6);
+  var x1=x0+w+26;ctx.fillStyle=acc;ctx.fillRect(x1,y0,rr,h);ctx.fillStyle=fg;ctx.fillText("B "+o+"×"+r,x1,y0-6);
+  var x2=x1+rr+26;ctx.fillStyle=acc2;ctx.fillRect(x2,y0,Math.min(w,Wd-x2-10),rr);ctx.fillStyle=fg;ctx.fillText("A "+r+"×"+i,x2,y0-6);
+  ctx.fillStyle=mut;ctx.font="16px system-ui,sans-serif";ctx.fillText("+",x0+w+7,y0+h/2+6);ctx.fillText("·",x1+rr+9,y0+h/2+6);
+}
+window.redraw=draw;["so","si","sr"].forEach(function(id){$(id).oninput=draw});addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
