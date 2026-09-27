@@ -6,7 +6,7 @@ playbook: research
 
 # B6 · Lesson 1 · Literature review: search, dedupe, verify, summarise
 
-<p class="recall" markdown>**Previously:** week 5 named the three clocks (`/loop`, desktop scheduled tasks, cloud routines), what each costs, and what the phone can and cannot drive.</p>
+<p class="recall" markdown>**Previously:** three clocks can fire an agent turn nobody watches, the phone only drives a process that runs elsewhere, and automation pays only for a boring manual workflow whose cost per run you can name.</p>
 
 ## Idea
 
@@ -57,6 +57,6 @@ Predict first: two tools find 18 and 14 references; how many reach the summary i
 
 ## Ledger prompt
 
-> In **Research**: which tool found more references on your question, how long each run took, and what each cost on its meter.
+> In **Research**: which tool found more references, how long each run took, and what each cost.
 
-**Next:** the drafting side: Projects, standing instructions, TM reports and reviewer responses.
+**Next:** the drafting side: Projects, standing instructions, TM reports, reviewer responses.

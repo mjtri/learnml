@@ -1,0 +1,19 @@
+#separator:tab
+#html:true
+#tags column:3
+Why does a <code>/loop</code> in a long session cost more each time it fires?	Each fire re-sends the entire conversation: a session holding 100k tokens pays about 100k per fire.	learnml agentic-05 agentic-05-day-1
+A desktop task was due at 9 am while the laptop slept all day. What happens at 11 pm?	One catch-up run for the most recent missed time; older misses are dropped.	learnml agentic-05 agentic-05-day-1
+Which clock runs without permission prompts, and what bounds its cost?	A cloud routine: normal subscription usage under a daily cap on runs; one-off runs are exempt.	learnml agentic-05 agentic-05-day-1
+Where does the code run under Remote Control, and what happens when the terminal closes?	On your machine. It goes offline; a stopped server returns within about four hours with --continue.	learnml agentic-05 agentic-05-day-2
+Which direction is <code>--teleport</code>, and what must be true before it works?	Cloud to terminal. A clean tree, the same repository checked out, the branch pushed, the same account.	learnml agentic-05 agentic-05-day-2
+Name two things the Claude app cannot do to a Remote Control session.	Start its server on the laptop, pick Auto or Bypass, run /plugin or /resume, or keep it alive after the laptop's process stops.	learnml agentic-05 agentic-05-day-2
+A routine's run list shows green. What do you know, and what do you not?	The session exited without an infrastructure error. Not whether the task succeeded: read the transcript.	learnml agentic-05 agentic-05-day-3
+Two ways to get a Claude review on every PR; who pays for each?	Managed Code Review: Team and Enterprise, about $15–25 in usage credits per review. The GitHub Action with a subscription token: your plan plus GitHub minutes.	learnml agentic-05 agentic-05-day-3
+Why is an hourly routine on a repo that changes weekly a bad trade?	Most fires find nothing changed but each costs a fresh session, and nobody reads 168 transcripts.	learnml agentic-05 agentic-05-day-3
+What does <b>/loop</b> mean?	A Claude Code command that re-runs a prompt on an interval inside the open session. Session-scoped: it stops with the session and expires after seven days.	learnml agentic-05 vocab
+What does <b>desktop scheduled task</b> mean?	A prompt the Claude Desktop app starts on a schedule as a fresh session on your own machine. Runs only while the app is open and the computer awake.	learnml agentic-05 vocab
+What does <b>cloud routine</b> mean?	A saved Claude Code prompt plus repositories that runs as a cloud session whenever a trigger fires, laptop closed, without permission prompts. Research preview; spends your subscription usage.	learnml agentic-05 vocab
+What does <b>trigger</b> mean?	What starts a cloud routine&#x27;s run: a schedule (hourly at most), an HTTP call to the routine&#x27;s own endpoint, or a GitHub event such as a pull request opening.	learnml agentic-05 vocab
+What does <b>teleport</b> mean?	Pulling a cloud session, its branch and its conversation into your terminal with claude --teleport. Needs a clean tree, the same repository and the same account.	learnml agentic-05 vocab
+What does <b>--cloud</b> mean?	The Claude Code flag that starts a new cloud session for the current repository: claude --cloud &quot;task&quot; clones the GitHub remote at your branch, so push first.	learnml agentic-05 vocab
+What does <b>GitHub Code Review action</b> mean?	A review that runs on GitHub when a pull request opens: Anthropic&#x27;s managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.	learnml agentic-05 vocab

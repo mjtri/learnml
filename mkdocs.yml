@@ -112,6 +112,16 @@ nav:
       - "B4 · Lesson 2 · Worktrees and background agents: parallel without collisions": agentic-04/day-2.md
       - "B4 · Lesson 3 · Doer ≠ grader: /code-review, ultrareview, adversarial review": agentic-04/day-3.md
       - "B4 · Apply · Two commands per week, and the other vendor grades": agentic-04/apply.md
+  - "Track B · 5 · Automation & phone":
+      - "B5 · Lesson 1 · Three clocks: /loop, desktop tasks, cloud routines": agentic-05/day-1.md
+      - "B5 · Lesson 2 · From the phone: Remote Control, Codex Remote, cloud sessions": agentic-05/day-2.md
+      - "B5 · Lesson 3 · Automation that pays vs automation that burns usage": agentic-05/day-3.md
+      - "B5 · Apply · One routine that checks and deploys, one lesson logged from the couch": agentic-05/apply.md
+  - "Track B · 6 · Research paperwork":
+      - "B6 · Lesson 1 · Literature review: search, dedupe, verify, summarise": agentic-06/day-1.md
+      - "B6 · Lesson 2 · Drafting in Projects: TM reports, reviewer responses, KR↔EN": agentic-06/day-2.md
+      - "B6 · Lesson 3 · Citation verification is its own pass": agentic-06/day-3.md
+      - "B6 · Apply · One question, two tools, one verified reference list": agentic-06/apply.md
   - "Track B · Playbook": agentic/playbook.md
   - "Track B · Changelog": agentic/changelog.md
   - Glossary: glossary.md

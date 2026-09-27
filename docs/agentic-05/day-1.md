@@ -6,7 +6,7 @@ playbook: automation
 
 # B5 · Lesson 1 · Three clocks: /loop, desktop tasks, cloud routines
 
-<p class="recall" markdown>**Previously:** week 4 split work across subagents, skills and worktrees to keep the main window small, and let a different agent, ideally another vendor, grade it.</p>
+<p class="recall" markdown>**Previously:** delegate to subagents, skills and worktrees so the main window stays small, pay for each spawned window knowingly, and let a different agent, ideally a different vendor, grade the work.</p>
 
 ## Idea
 

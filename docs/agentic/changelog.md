@@ -6,6 +6,11 @@ title: Changelog
 
 Track B lessons cite features, limits and prices that change monthly. Each claim carries a `checked` date. `python gen_refresh.py` prints a monthly prompt that re-verifies them; whatever changed is logged here, newest first, so a lesson you read in the past can be corrected in one glance.
 
+## 2026-09-28
+
+- Found while writing B5 (automation & phone): the Codex cloud page now lists web, GitHub/GitLab, Linear and Slack as task sources and no longer mentions the phone; B1 Lesson 3's "started from … your phone" is softened to "or the ChatGPT app via Codex Remote". Since a July 2026 update a bare "@claude review" no longer subscribes a PR to push-triggered reviews (use "@claude review always"). `--remote` is a deprecated alias of `--cloud`.
+- Found while writing B6 (research paperwork): the ChatGPT pricing page now lists GPT-6 Luna per-5-hour ranges and GPT-5.6 Sol promo pricing to 2026-11-21, so B1 Lesson 2's "15–150 messages per 5 hours" needs re-checking against the current Business column at the next refresh. ChatGPT connectors are presented as "connected apps" under Settings › Plugins; full MCP write support is beta for Business/Enterprise/Edu and only admins can enable developer mode. Claude's "using research" help article now redirects to an Academy tutorial without limits. OpenAI's Deep Research page no longer publishes a monthly task count (in-product counter only).
+
 ## 2026-09-27
 
 - Found while writing B3 (verification & permissions): Claude Code's built-in starting permission mode for terminal/VS Code sessions is now **auto** (v2.1.283+); B1 Lesson 3's "plan mode first" remains the recommended habit, not the default. Codex's "untrusted" approval policy is no longer selectable and "on-failure" is deprecated (on-request / never remain). Codex now ships lifecycle hooks (`.codex/hooks.json`) and a native Windows sandbox. Claude Code's Bash sandbox is WSL2-only on Windows.

@@ -132,8 +132,11 @@ hide:
     - ⬜ [B5 · Lesson 3 · Automation that pays vs automation that burns usage](agentic-05/day-3.md)
     - ⬜ [B5 · Apply · One routine that checks and deploys, one lesson logged from the couch](agentic-05/apply.md)
 
-??? note "Week 6 · Research paperwork · not generated yet"
-    `python gen_week.py agentic 6` prints the prompt that builds it.
+??? note "⬜ Week 6 · Research paperwork · 0/4"
+    - ⬜ [B6 · Lesson 1 · Literature review: search, dedupe, verify, summarise](agentic-06/day-1.md)
+    - ⬜ [B6 · Lesson 2 · Drafting in Projects: TM reports, reviewer responses, KR↔EN](agentic-06/day-2.md)
+    - ⬜ [B6 · Lesson 3 · Citation verification is its own pass](agentic-06/day-3.md)
+    - ⬜ [B6 · Apply · One question, two tools, one verified reference list](agentic-06/apply.md)
 
 ??? note "Week 7 · Experiments & data · not generated yet"
     `python gen_week.py agentic 7` prints the prompt that builds it.

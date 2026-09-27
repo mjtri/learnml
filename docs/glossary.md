@@ -6,7 +6,25 @@ title: Glossary
 
 Every dotted-underlined word in a lesson opens its definition when tapped. This page is the same list, A–Z, with the lesson that introduced each word.
 
+## -
+
+<div class="gl-entry" id="cloud" markdown>
+**--cloud**
+
+The Claude Code flag that starts a new cloud session for the current repository: claude --cloud "task" clones the GitHub remote at your branch, so push first.
+
+<small>first met in [agentic-05/day-2](agentic-05/day-2.md)</small>
+</div>
+
 ## /
+
+<div class="gl-entry" id="loop" markdown>
+**/loop**
+
+A Claude Code command that re-runs a prompt on an interval inside the open session. Session-scoped: it stops with the session and expires after seven days.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
+</div>
 
 <div class="gl-entry" id="plan" markdown>
 **/plan**
@@ -106,6 +124,14 @@ Tools or command patterns pre-approved in a settings file, like Bash(git commit 
 Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
 
 <small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="arxiv-id" markdown>
+**arXiv ID** <small>(also: arXiv IDs, arXiv identifier)</small>
+
+The label of an arXiv preprint: two digits of year, two of month, a dot, then a serial number, like 1706.03762. A month above 12 cannot exist.
+
+<small>first met in [agentic-06/day-1](agentic-06/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="attention" markdown>
@@ -264,12 +290,28 @@ A saved copy of a model's weights (and often optimizer state) at one moment of t
 <small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="citation-verification" markdown>
+**citation verification** <small>(also: citation check, citation checks, verify pass)</small>
+
+A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
+
+<small>first met in [agentic-06/day-3](agentic-06/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="claude-md" markdown>
 **CLAUDE.md**
 
 Claude Code's project instruction file, loaded into every session. Keep it short; it can import other files with @path.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="cloud-routine" markdown>
+**cloud routine** <small>(also: cloud routines)</small>
+
+A saved Claude Code prompt plus repositories that runs as a cloud session whenever a trigger fires, laptop closed, without permission prompts. Research preview; spends your subscription usage.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="cloud-session" markdown>
@@ -291,7 +333,7 @@ OpenAI's coding agent, available as a CLI, an IDE extension, a desktop app and a
 <div class="gl-entry" id="codex-cloud" markdown>
 **Codex cloud** <small>(also: cloud task, cloud tasks)</small>
 
-Codex running in an isolated cloud environment on a copy of your repo, started from the web, GitHub or the phone, finishing in a pull request.
+Codex running in an isolated cloud environment on a copy of your repo, started from the web, GitHub or a connected app, finishing in a pull request.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
 </div>
@@ -410,6 +452,14 @@ How much a function's output changes per tiny change of one input, at one partic
 <small>first met in [week-01/day-3](week-01/day-3.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="desktop-scheduled-task" markdown>
+**desktop scheduled task** <small>(also: desktop scheduled tasks, local scheduled task, local scheduled tasks)</small>
+
+A prompt the Claude Desktop app starts on a schedule as a fresh session on your own machine. Runs only while the app is open and the computer awake.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="diverge" markdown>
 **diverge** <small>(also: diverges, diverged, divergence)</small>
 
@@ -424,6 +474,14 @@ To blow up: each step makes the loss larger, usually because the learning rate i
 The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor's model.
 
 <small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="doi" markdown>
+**DOI** <small>(also: DOIs)</small>
+
+Digital Object Identifier: a permanent label for a publication, like 10.1038/221963a0. The prefix names the publisher; a lookup service returns the record or nothing at all.
+
+<small>first met in [agentic-06/day-1](agentic-06/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="dontask" markdown>
@@ -568,6 +626,14 @@ How well a model does on examples it never trained on. The only thing that matte
 <small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
 </div>
 
+<div class="gl-entry" id="github-code-review-action" markdown>
+**GitHub Code Review action** <small>(also: Code Review action)</small>
+
+A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
+
+<small>first met in [agentic-05/day-3](agentic-05/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="gradient" markdown>
 **gradient** <small>(also: gradients, grad, grads)</small>
 
@@ -662,6 +728,14 @@ In attention, the vector a token advertises: what do I have? A query that matche
 <small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
 </div>
 
+<div class="gl-entry" id="kr-en-glossary" markdown>
+**KR↔EN glossary** <small>(also: KR-EN glossary, bilingual glossary)</small>
+
+A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
+
+<small>first met in [agentic-06/day-2](agentic-06/day-2.md)</small>
+</div>
+
 ## L
 
 <div class="gl-entry" id="language-model" markdown>
@@ -710,6 +784,14 @@ An occasional free reset of a spent usage window, applied from Settings > Usage 
 A layer that computes each output as a weighted sum of its inputs: one matrix multiply (plus an optional constant offset).
 
 <small>first met in [week-01/day-2](week-01/day-2.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="literature-review-pipeline" markdown>
+**literature review pipeline** <small>(also: lit-review pipeline)</small>
+
+A fixed sequence for a paper search: search in both tools, merge and dedupe the reference lists, verify every citation, then summarise only what survived. Nothing enters a document earlier.
+
+<small>first met in [agentic-06/day-1](agentic-06/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="local-derivative" markdown>
@@ -811,10 +893,11 @@ Anthropic's top individual subscription. The 20x tier gives twenty times Pro's p
 </div>
 
 <div class="gl-entry" id="mcp" markdown>
-**MCP** <small>(also: MCP server, MCP servers, connector, connectors)</small>
+**MCP** <small>(also: Model Context Protocol, MCP server, MCP servers, connector, connectors, custom connector, custom connectors)</small>
 
-Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
+Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
 
+<small>first met in [agentic-06/day-1](agentic-06/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="micrograd" markdown>
@@ -1095,6 +1178,22 @@ A higher-priced ChatGPT Business seat with much more usage and no 5-hour window.
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="project-instructions" markdown>
+**project instructions**
+
+The standing text a Projects workspace adds to every chat inside it: role, audience, format, language rules. Written once, applied to every draft.
+
+<small>first met in [agentic-06/day-2](agentic-06/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="projects" markdown>
+**Projects**
+
+A workspace in ChatGPT or Claude that keeps its own chats, files, instructions and memory together, so every new chat starts with the same context.
+
+<small>first met in [agentic-06/day-2](agentic-06/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="prompt-cache" markdown>
 **prompt cache** <small>(also: prompt caching, cache miss, cache misses)</small>
 
@@ -1122,6 +1221,14 @@ In attention, the vector a token uses to ask: what am I looking for? Compared by
 </div>
 
 ## R
+
+<div class="gl-entry" id="record-mode" markdown>
+**record mode** <small>(also: ChatGPT record, ChatGPT Record)</small>
+
+The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
+
+<small>first met in [agentic-06/day-2](agentic-06/day-2.md)</small>
+</div>
 
 <div class="gl-entry" id="regularization" markdown>
 **regularization** <small>(also: regularisation, regularizer, regularizers)</small>
@@ -1161,6 +1268,14 @@ Add a block's input to its output, so the block only learns a correction. Gives 
 The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
 
 <small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `lin-resnet`</small>
+</div>
+
+<div class="gl-entry" id="reviewer-response" markdown>
+**reviewer response** <small>(also: reviewer responses, response to reviewers)</small>
+
+The point-by-point reply to a paper review: each comment quoted, then the change made or the reason it was not, with where it lives in the revision.
+
+<small>first met in [agentic-06/day-2](agentic-06/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="rules-directory" markdown>
@@ -1279,6 +1394,14 @@ The S-shaped activation function that squashes any number into the range minus o
 <small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="teleport" markdown>
+**teleport** <small>(also: --teleport, /teleport)</small>
+
+Pulling a cloud session, its branch and its conversation into your terminal with claude --teleport. Needs a clean tree, the same repository and the same account.
+
+<small>first met in [agentic-05/day-2](agentic-05/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="temperature" markdown>
 **temperature** <small>(also: sampling temperature)</small>
 
@@ -1301,6 +1424,14 @@ A box of numbers arranged along zero or more axes. A single number, a list, a ta
 A one-megabyte text file of Shakespeare's plays, about a million characters. The standard tiny corpus for training a first language model in minutes.
 
 <small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="tm-report-template" markdown>
+**TM report template** <small>(also: TM template)</small>
+
+Your fixed section list and rules for an ETRI Technical Memo, stored as project instructions so every TM draft starts in the right shape and language.
+
+<small>first met in [agentic-06/day-2](agentic-06/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="token" markdown>
@@ -1365,6 +1496,14 @@ The five steps repeated to train any model: forward pass, loss, zero the gradien
 One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
 
 <small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="trigger" markdown>
+**trigger**
+
+What starts a cloud routine's run: a schedule (hourly at most), an HTTP call to the routine's own endpoint, or a GitHub event such as a pull request opening.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
 </div>
 
 ## U

@@ -1,0 +1,23 @@
+#separator:tab
+#html:true
+#tags column:3
+What can you change about a Deep Research run before and during it?	Edit the plan first, restrict or prioritise sites, interrupt to refocus, change which sources it may use.	learnml agentic-06 agentic-06-day-1
+Why does Claude Research drain a usage window faster than chat, and by roughly how much?	A lead agent, subagents and a citation agent run; agents use about 4× chat's tokens, multi-agent runs about 15×.	learnml agentic-06 agentic-06-day-1
+A citation agent attached a source to every claim. What is still unproven?	That the paper exists and says that. Only a lookup by DOI or arXiv ID proves it: Lesson 3.	learnml agentic-06 agentic-06-day-1
+How far do ChatGPT project instructions reach, and what does project-only memory add?	Only inside that project, overriding global custom instructions; project-only memory keeps chats inside and outside apart.	learnml agentic-06 agentic-06-day-2
+Where may an unpublished result be drafted on your two plans?	In a ChatGPT Business project (no training by default), or in Claude with Model Improvement off or an incognito chat.	learnml agentic-06 agentic-06-day-2
+Name three limits of record mode.	macOS app only, 4 hours per session, English works best; audio is deleted after transcription.	learnml agentic-06 agentic-06-day-2
+What are the three verdicts of a verify pass, and what happens to each?	Resolves and matches: keep. Resolves but differs: one title search, fix, re-run. Nothing returned: drop.	learnml agentic-06 agentic-06-day-3
+Why is the session that produced the reference list the wrong one to check it?	It grades its own work. A fresh session, ideally the other vendor, runs the script.	learnml agentic-06 agentic-06-day-3
+A reference passes every pattern tell. What do you know?	Only that a lookup is still needed; patterns reject fakes cheaply but never confirm one exists.	learnml agentic-06 agentic-06-day-3
+What does <b>literature review pipeline</b> mean?	A fixed sequence for a paper search: search in both tools, merge and dedupe the reference lists, verify every citation, then summarise only what survived. Nothing enters a document earlier.	learnml agentic-06 vocab
+What does <b>MCP</b> mean?	Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.	learnml agentic-06 vocab
+What does <b>DOI</b> mean?	Digital Object Identifier: a permanent label for a publication, like 10.1038/221963a0. The prefix names the publisher; a lookup service returns the record or nothing at all.	learnml agentic-06 vocab
+What does <b>arXiv ID</b> mean?	The label of an arXiv preprint: two digits of year, two of month, a dot, then a serial number, like 1706.03762. A month above 12 cannot exist.	learnml agentic-06 vocab
+What does <b>Projects</b> mean?	A workspace in ChatGPT or Claude that keeps its own chats, files, instructions and memory together, so every new chat starts with the same context.	learnml agentic-06 vocab
+What does <b>project instructions</b> mean?	The standing text a Projects workspace adds to every chat inside it: role, audience, format, language rules. Written once, applied to every draft.	learnml agentic-06 vocab
+What does <b>record mode</b> mean?	The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.	learnml agentic-06 vocab
+What does <b>TM report template</b> mean?	Your fixed section list and rules for an ETRI Technical Memo, stored as project instructions so every TM draft starts in the right shape and language.	learnml agentic-06 vocab
+What does <b>reviewer response</b> mean?	The point-by-point reply to a paper review: each comment quoted, then the change made or the reason it was not, with where it lives in the revision.	learnml agentic-06 vocab
+What does <b>KR↔EN glossary</b> mean?	A short table of your field&#x27;s terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.	learnml agentic-06 vocab
+What does <b>citation verification</b> mean?	A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.	learnml agentic-06 vocab
