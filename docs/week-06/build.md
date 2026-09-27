@@ -12,7 +12,7 @@ card: core-transformer
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mjtri/learnml/blob/main/notebooks/week-06.ipynb)
 
-If the badge 404s, run `python setup_repo.py <user> <repo>` once, or upload `notebooks/week-06.ipynb` to **Colab** by hand (File → Upload notebook).
+If the badge 404s, run `python setup_repo.py <user> <repo>` once, or upload the notebook to **Colab** by hand.
 
 ## The rule of the session
 
@@ -28,8 +28,6 @@ Every experiment cell is preceded by a **predict cell**. This week the rule *is*
 | D | **The ablation:** one component, two random starts, effect vs seed spread; then the mask | 60 min |
 | E | Three sizes, same tokens: loss vs parameters on log–log axes, fitted slope, 6ND | 40 min |
 | Wrap | `reveal()` and the ledger | 10 min |
-
-The real run trains nine small models, about 40 seconds each on a T4; write the predictions while you wait.
 
 ## Done when
 
