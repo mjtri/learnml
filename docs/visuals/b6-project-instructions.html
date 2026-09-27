@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project instructions builder</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;margin:0 0 8px}
+.presets button{flex:1;font:inherit;font-size:12px;min-height:44px;padding:0 4px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.presets button.on{font-weight:700;border-width:2px;border-color:var(--acc)}
+.blk{display:block;width:100%;text-align:left;font:inherit;min-height:44px;padding:8px 10px;margin:4px 0;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.blk.on{border-width:2px;border-color:var(--acc)}
+.blk.on.big{border-color:var(--acc2)}
+.blk .n{font-size:13px}
+.blk .d{font-size:11px;color:var(--mut)}
+.blk .w{float:right;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 6px}
+.stat{text-align:center;padding:6px 2px;border-radius:10px;border:1px solid var(--line)}
+.stat b{display:block;font-size:18px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:10px;color:var(--mut)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.bad{border-left:4px solid var(--bad)}.status.warn{border-left:4px solid var(--acc2)}.status.ok{border-left:4px solid var(--ok)}
+pre{font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;max-height:260px;overflow:auto}
+.copy{font:inherit;font-size:13px;min-height:44px;width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Build the instructions block</h1>
+<p class="hint">Pick a preset, tap blocks on or off, read the size. Instructions ride along on every turn of every chat in the workspace, so each word is paid many times.</p>
+<div class="presets" id="presets"><button class="on" data-p="tm">TM report</button><button data-p="rr">Reviewer response</button><button data-p="pp">Paper draft</button></div>
+<div id="blocks"></div>
+<div class="stats"><div class="stat"><b id="w">0</b><span>words</span></div><div class="stat"><b id="t">0</b><span>≈ tokens per turn</span></div><div class="stat"><b id="c">0</b><span>≈ tokens, 20-turn chat</span></div></div>
+<div class="status" id="st"></div>
+<pre id="out"></pre>
+<button class="copy" id="copy">Copy the block</button>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>project instructions</dt><dd>The standing text a Projects workspace adds to every chat inside it. Written once, paid on every turn.</dd>
+<dt>token</dt><dd>The unit models read in; roughly three-quarters of an English word, and more per Korean character. The estimate here is words × 1.4.</dd>
+<dt>project files</dt><dd>Knowledge the workspace can retrieve when relevant: examples, past reports, the KR↔EN glossary. The right home for anything long.</dd>
+</dl></details>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+/* id, label, note, text, big? */
+var B=[
+ ["role","Role and audience","who writes, for whom","Role: ETRI researcher writing a Technical Memo (TM) for an internal review board."],
+ ["rolerr","Role: reviewer response","who writes, to whom","Role: corresponding author replying to peer reviewers of an HCI paper. Courteous, specific, never defensive."],
+ ["rolepp","Role: paper draft","who writes, for whom","Role: HCI researcher drafting a CHI-style paper on sensory substitution in XR. Plain academic English, active voice."],
+ ["lang","Language rules KR↔EN","body language, term source","Language: Korean body; English for figure labels, code and cited titles. Translate terms only from glossary.md; flag any term missing from it with [용어?]."],
+ ["langen","Language: English only","term source","Language: English. Korean terms in my notes are translated only from glossary.md; flag anything missing from it with [term?]."],
+ ["sec","TM sections in order","fixed outline","Sections, in this order: 개요, 배경 및 목적, 방법, 결과, 고찰, 향후 계획, 참고문헌."],
+ ["tab","Reviewer comment table","reply from a table","First produce a table: comment · our change · where in the revision · status. Draft each reply from that table, quoting the comment. Never answer from memory."],
+ ["num","Numbers rule","no invented results","Numbers: copy from the notes or tables I give you; never estimate a result."],
+ ["ref","References rule","verified list only","References: only items from refs-verified.md; anything else is written as [verify]."],
+ ["len","Length","budget","Length: 2 pages; bullets over prose in 방법 and 결과."],
+ ["ask","Ask before writing","stop on missing input","Ask before writing if a section has no source material."],
+ ["ex","Style examples (long)","belongs in a file","Style examples: (three paragraphs of a past TM pasted here, about 240 words, repeated on every turn: this is what project files are for)",true]
+];
+var P={tm:["role","lang","sec","num","ref","len","ask"],rr:["rolerr","lang","tab","num","ref","ask"],pp:["rolepp","langen","num","ref","len","ask"]};
+var on={};
+var host=$("blocks");
+B.forEach(function(b){var el=document.createElement("button");el.className="blk"+(b[4]?" big":"");el.dataset.id=b[0];
+ el.innerHTML="<span class=w>"+words(b[3])+(b[4]?"+240":"")+" w</span><span class=n>"+b[1]+"</span><br><span class=d>"+b[2]+"</span>";
+ el.onclick=function(){on[b[0]]=!on[b[0]];draw()};host.appendChild(el)});
+function words(s){return s.split(/\s+/).filter(Boolean).length}
+function preset(p){on={};P[p].forEach(function(k){on[k]=true});Array.prototype.forEach.call($("presets").children,function(x){x.className=x.dataset.p===p?"on":""});draw()}
+$("presets").addEventListener("click",function(e){var b=e.target.closest("button");if(b)preset(b.dataset.p)});
+function draw(){var txt=[],w=0;
+ B.forEach(function(b){var el=host.querySelector('[data-id="'+b[0]+'"]');el.className="blk"+(on[b[0]]?" on":"")+(b[4]?" big":"");
+  if(on[b[0]]){txt.push(b[3]);w+=words(b[3])+(b[4]?240:0)}});
+ var t=Math.round(w*1.4);$("w").textContent=w;$("t").textContent=t;$("c").textContent=(t*20).toLocaleString();
+ $("out").textContent=txt.join("\n");
+ var st=$("st");
+ if(!w){st.className="status";st.textContent="Nothing selected. A workspace with no instructions is just a folder of chats."}
+ else if(on.ex){st.className="status bad";st.textContent="About "+w+" words, mostly examples. Every turn re-sends them; move the examples to project files and keep one line that points at them."}
+ else if(w<=150){st.className="status ok";st.textContent=w+" words: rules only. A 20-turn chat pays about "+(t*20).toLocaleString()+" tokens for them, less than one long draft."}
+ else{st.className="status warn";st.textContent=w+" words. Still rules, but check each line earns its place on every turn; examples and glossaries belong in files."}
+ $("copy").textContent=txt.length?"Copy the block ("+txt.length+" lines)":"Copy the block"}
+$("copy").onclick=function(){var s=$("out").textContent;try{navigator.clipboard.writeText(s).then(function(){$("copy").textContent="Copied"})}catch(e){var r=document.createRange();r.selectNodeContents($("out"));var sel=getSelection();sel.removeAllRanges();sel.addRange(r);$("copy").textContent="Selected: copy it"}};
+preset("tm");
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
