@@ -9,3 +9,6 @@ progress/notes.jsonl
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# agent worktrees
+.claude/worktrees/
