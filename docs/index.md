@@ -47,11 +47,21 @@ hide:
     - ⬜ [Lesson 5 · Gradient descent](week-01/day-5.md)
     - ⬜ [Build · Gradients by hand, then by machine](week-01/build.md)
 
-??? note "Week 2 · Autograd from scratch (micrograd) · not generated yet"
-    `python gen_week.py 2` prints the prompt that builds it.
+??? note "⬜ Week 2 · Autograd from scratch (micrograd) · 0/6"
+    - ⬜ [Lesson 1 · A Value that remembers its history](week-02/day-1.md)
+    - ⬜ [Lesson 2 · Backward: local × upstream, in order](week-02/day-2.md)
+    - ⬜ [Lesson 3 · Gradients add, so you must zero them](week-02/day-3.md)
+    - ⬜ [Lesson 4 · Neuron → layer → MLP, and why the bend matters](week-02/day-4.md)
+    - ⬜ [Lesson 5 · The five-line training loop](week-02/day-5.md)
+    - ⬜ [Build · Rebuild micrograd, train it on XOR and moons](week-02/build.md)
 
-??? note "Week 3 · PyTorch training loop → a small MLP that generalises · not generated yet"
-    `python gen_week.py 3` prints the prompt that builds it.
+??? note "⬜ Week 3 · PyTorch training loop → a small MLP that generalises · 0/6"
+    - ⬜ [Lesson 1 · nn.Module and the canonical loop](week-03/day-1.md)
+    - ⬜ [Lesson 2 · Softmax and cross-entropy](week-03/day-2.md)
+    - ⬜ [Lesson 3 · Mini-batches, momentum, Adam](week-03/day-3.md)
+    - ⬜ [Lesson 4 · Train, validate, overfit](week-03/day-4.md)
+    - ⬜ [Lesson 5 · When training breaks](week-03/day-5.md)
+    - ⬜ [Build · An MLP that generalises, broken and fixed](week-03/build.md)
 
 ??? note "⬜ Week 4 · Embeddings and attention · 0/6"
     - ⬜ [Lesson 1 · Embeddings: a lookup table that learns](week-04/day-1.md)

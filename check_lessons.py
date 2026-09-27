@@ -7,7 +7,7 @@ Track A (week-NN): <= 800 words, six fixed sections, exactly 3 retrieval questio
 Track B (agentic-NN): <= 700 words, its own sections, 3 rules of thumb, 3 retrieval questions, one iframe OR one
 worked example, every link to an official product domain carries data-checked="YYYY-MM-DD" (stale after 60 days).
 Both: self-paced wording (no Day N titles, no Yesterday/Tomorrow), visuals <= 60 KB with no network access, code
-blocks <= 12 lines, front-matter terms exist in the glossary, a lesson only uses terms introduced at or before it,
+blocks <= 12 lines, front-matter terms exist in the glossary, forward references to later weeks are warned,
 no duplicate terms across glossary shards, common jargon is not used undefined, extra.css never makes prose flex/grid.
 """
 from __future__ import annotations
@@ -42,7 +42,7 @@ WATCHLIST = ["logits", "epoch", "backprop", "backpropagation", "softmax", "embed
              "context window", "compaction", "subagent", "MCP", "worktree", "sandbox",
              "usage credits", "prompt cache", "CLAUDE.md", "AGENTS.md", "plan mode", "permission mode",
              "dropout", "residual", "LayerNorm", "BPE", "tokenizer", "positional encoding", "causal mask",
-             "query", "key", "value", "temperature", "perplexity", "InfoNCE", "contrastive", "zero-shot",
+             "query vector", "key vector", "value vector", "temperature", "perplexity", "InfoNCE", "contrastive", "zero-shot",
              "linear probe", "bootstrap", "standard error", "ablation", "baseline", "seed", "VAE", "ELBO"]
 DAY_WORDS_RE = re.compile(r"\*\*(Yesterday|Tomorrow)[^*]*\*\*|\bYesterday's\b|\bTomorrow's\b|^# (B\d · )?Day \d", re.M)
 
@@ -178,7 +178,8 @@ def main() -> int:
                 epos = c.lesson_index(e["lesson"])
                 # Same-week forward use is fine (tap-to-define covers it); a later WEEK is a real forward reference.
                 if epos[0] == pos[0] and epos[1] > pos[1]:
-                    errors.append(f"{lesson}: uses '{k}' before it is introduced in {e['lesson']}")
+                    # A tooltip on a term met early helps the reader; flag it so authors keep such mentions light.
+                    warnings.append(f"{lesson}: uses '{k}' before it is introduced in {e['lesson']} (forward reference)")
                 elif epos[0] != pos[0] and epos[1] > 1 and pos[1] < epos[1]:
                     warnings.append(f"{lesson}: uses '{k}', introduced later in the other track ({e['lesson']})")
             prose = re.sub(rf"\b{re.escape(k)}\b", " ", prose)

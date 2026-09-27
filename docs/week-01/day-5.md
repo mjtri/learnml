@@ -26,7 +26,7 @@ Picture the **loss surface**: each position is one setting of the parameters, he
 
 That gives you a number to test. For \(L = x^2\) the gradient is \(2x\), so each update multiplies \(x\) by \((1 - 2\eta)\). With \(\eta = 0.1\) that factor is 0.8: smooth decay. At \(\eta = 0.5\) you land on the minimum in one step. At \(\eta = 1\) the factor is −1: you bounce between two walls forever. Above 1, every bounce is bigger.
 
-Now the **ravine**: \(L = x^2 + 10y^2\), steep across, shallow along. The steep direction caps the learning rate at 0.1; at that cap the shallow direction barely moves. The path zig-zags across the ravine while creeping along it. Real loss surfaces are full of ravines, which is why week 3 introduces momentum and Adam.
+Now the **ravine**: \(L = x^2 + 10y^2\), steep across, shallow along. The steep direction caps the learning rate at 0.1; at that cap the shallow direction barely moves. The path zig-zags across the ravine while creeping along it. Real loss surfaces are full of ravines, which is why week 3 introduces smarter update rules.
 
 Where the picture breaks: real models have millions of dimensions, and real gradients are noisy estimates from small batches. The cartoon still predicts what your loss curves will do.
 

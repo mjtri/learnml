@@ -6,7 +6,7 @@ card: core-tooling
 
 # Lesson 1 · nn.Module and the canonical loop
 
-<p class="recall" markdown>**Previously:** you built a scalar autograd engine, a `Value` that remembers how it was made and a backward pass that walks the graph in reverse, then an MLP on top of it and the five-line loop on XOR.</p>
+<p class="recall" markdown>**Previously:** a Value remembers its history, the backward walk fills every gradient, and five repeated lines turn an MLP into a learner.</p>
 
 ## Idea
 

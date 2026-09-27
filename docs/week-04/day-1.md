@@ -6,7 +6,7 @@ card: lin-word2vec
 
 # Lesson 1 · Embeddings: a lookup table that learns
 
-<p class="recall" markdown>**Previously:** week 3 moved your engine into PyTorch: `nn.Module`, `Dataset`/`DataLoader`, an optimizer, the standard loop, and a small MLP that generalises. **Why this week:** a transformer is tokens becoming vectors (this lesson) and vectors looking at each other (lessons 3–5).</p>
+<p class="recall" markdown>**Previously:** the same five-line loop with PyTorch names, scored by surprise, fed in noisy batches, judged on data it never saw, and kept alive by learning rate, init and normalization.</p>
 
 ## Idea
 

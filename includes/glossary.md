@@ -9,6 +9,14 @@
 *[AcceptEdits]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
 *[accept edits mode]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
 *[Accept edits mode]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
+*[accuracy]: The fraction of examples the model labels correctly. What you report; the loss is what you train on, because accuracy has no useful gradient.
+*[Accuracy]: The fraction of examples the model labels correctly. What you report; the loss is what you train on, because accuracy has no useful gradient.
+*[activation function]: The fixed bend applied to a neuron's weighted sum, such as tanh or ReLU. It has no parameters; it is what stops a stack of layers collapsing into one.
+*[Activation function]: The fixed bend applied to a neuron's weighted sum, such as tanh or ReLU. It has no parameters; it is what stops a stack of layers collapsing into one.
+*[activation functions]: The fixed bend applied to a neuron's weighted sum, such as tanh or ReLU. It has no parameters; it is what stops a stack of layers collapsing into one.
+*[Activation functions]: The fixed bend applied to a neuron's weighted sum, such as tanh or ReLU. It has no parameters; it is what stops a stack of layers collapsing into one.
+*[Adam]: The default optimizer for deep learning. Keeps running averages of each gradient and of its square, then steps each parameter by roughly the learning rate regardless of its gradient's size.
+*[AdamW]: The default optimizer for deep learning. Keeps running averages of each gradient and of its square, then steps each parameter by roughly the learning rate regardless of its gradient's size.
 *[adversarial review]: A read-only review told to argue against the chosen design and its assumptions, not only hunt bugs. In codex-plugin-cc: /codex:adversarial-review with focus text.
 *[Adversarial review]: A read-only review told to argue against the chosen design and its assumptions, not only hunt bugs. In codex-plugin-cc: /codex:adversarial-review with focus text.
 *[adversarial reviews]: A read-only review told to argue against the chosen design and its assumptions, not only hunt bugs. In codex-plugin-cc: /codex:adversarial-review with focus text.
@@ -81,6 +89,12 @@
 *[Batch]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 *[batches]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 *[Batches]: A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
+*[BatchNorm]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+*[batch normalization]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+*[Batch normalization]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+*[batch norm]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+*[Batch norm]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+*[BatchNorm1d]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
 *[bigram]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[Bigram]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[bigrams]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
@@ -172,6 +186,18 @@
 *[Cosine similarity]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
 *[cosine]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
 *[Cosine]: The dot product of two vectors after dividing out their lengths: 1 means same direction, 0 unrelated, minus 1 opposite. Length no longer matters.
+*[cross-entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+*[Cross-entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+*[cross entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+*[Cross entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+*[DataLoader]: The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks them into batches, one batch per loop iteration.
+*[DataLoaders]: The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks them into batches, one batch per loop iteration.
+*[data loader]: The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks them into batches, one batch per loop iteration.
+*[Data loader]: The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks them into batches, one batch per loop iteration.
+*[Dataset]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
+*[dataset]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
+*[datasets]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
+*[Datasets]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 *[Deep Research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
 *[deep research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
 *[Deep research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
@@ -201,10 +227,14 @@
 *[Dot product]: Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.
 *[dot products]: Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.
 *[Dot products]: Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.
+*[dropout]: During training, randomly zero a fraction of a layer's outputs on every step, so no unit can rely on another. Switched off for evaluation.
+*[Dropout]: During training, randomly zero a fraction of a layer's outputs on every step, so no unit can rely on another. Switched off for evaluation.
 *[dtype]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[Dtype]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[dtypes]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[Dtypes]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
+*[early stopping]: Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
+*[Early stopping]: Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
 *[effort level]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 *[Effort level]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 *[effort levels]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
@@ -223,6 +253,14 @@
 *[Embedding vectors]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
 *[embedding layer]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
 *[Embedding layer]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
+*[Epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
+*[epochs]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
+*[Epochs]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
+*[exploding gradient]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
+*[Exploding gradient]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
+*[exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
+*[Exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[fast mode]: A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
 *[Fast mode]: A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.
 *[feature]: One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.
@@ -250,6 +288,22 @@
 *[Function]: A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.
 *[functions]: A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.
 *[Functions]: A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.
+*[generalisation]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalisation]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalization]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalization]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalise]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalise]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalize]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalize]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalises]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalises]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalizes]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalizes]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalising]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalising]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[generalizing]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[Generalizing]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
 *[gradient]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[Gradient]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[gradients]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
@@ -258,20 +312,48 @@
 *[Grad]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[grads]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[Grads]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
+*[gradient accumulation]: Gradients are added into a stored slot, never overwritten. Needed when a value feeds two places; a bug when last step's gradient is still in the slot.
+*[Gradient accumulation]: Gradients are added into a stored slot, never overwritten. Needed when a value feeds two places; a bug when last step's gradient is still in the slot.
 *[gradient descent]: The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.
 *[Gradient descent]: The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.
 *[greedy decoding]: Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
 *[Greedy decoding]: Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
+*[hidden layer]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[Hidden layer]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[hidden layers]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[Hidden layers]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[hidden units]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[Hidden units]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[hidden unit]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[Hidden unit]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
 *[hook]: A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
 *[Hook]: A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
+*[hyperparameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+*[Hyperparameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+*[hyperparameters]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+*[Hyperparameters]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+*[hyper-parameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+*[Hyper-parameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[inference]: Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
 *[Inference]: Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
+*[initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[init]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Init]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Xavier]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Kaiming]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Xavier initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[Kaiming initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
 *[instruction file]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[Instruction file]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[Instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
-*[key]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
-*[Key]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[key vector]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[Key vector]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[key vectors]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[Key vectors]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
 *[language model]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
 *[Language model]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
 *[language models]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
@@ -280,6 +362,11 @@
 *[Layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[layers]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[Layers]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
+*[LayerNorm]: A layer that normalizes across the features of each single example, independent of the batch. The normalization used inside transformers.
+*[layer normalization]: A layer that normalizes across the features of each single example, independent of the batch. The normalization used inside transformers.
+*[Layer normalization]: A layer that normalizes across the features of each single example, independent of the batch. The normalization used inside transformers.
+*[layer norm]: A layer that normalizes across the features of each single example, independent of the batch. The normalization used inside transformers.
+*[Layer norm]: A layer that normalizes across the features of each single example, independent of the batch. The normalization used inside transformers.
 *[learning rate]: The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
 *[Learning rate]: The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
 *[learning rates]: The step-size knob of gradient descent. Too small: learning crawls. Too large: steps overshoot and the loss bounces or explodes.
@@ -304,6 +391,10 @@
 *[Local minimum]: A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
 *[local minima]: A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
 *[Local minima]: A valley that is lower than its surroundings but not the lowest point overall. Gradient descent can settle there because every direction looks uphill.
+*[logits]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
+*[Logits]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
+*[logit]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
+*[Logit]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
 *[lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[Lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[lookup tables]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
@@ -317,6 +408,10 @@
 *[Losses]: One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.
 *[loss function]: One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.
 *[Loss function]: One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.
+*[loss curve]: The loss plotted against training steps. The first thing anyone looks at: falling means learning, flat means stuck, rising means the step is too big.
+*[Loss curve]: The loss plotted against training steps. The first thing anyone looks at: falling means learning, flat means stuck, rising means the step is too big.
+*[loss curves]: The loss plotted against training steps. The first thing anyone looks at: falling means learning, flat means stuck, rising means the step is too big.
+*[Loss curves]: The loss plotted against training steps. The first thing anyone looks at: falling means learning, flat means stuck, rising means the step is too big.
 *[loss surface]: The loss pictured as a landscape: each position is one setting of the parameters, and height is how wrong the model is there.
 *[Loss surface]: The loss pictured as a landscape: each position is one setting of the parameters, and height is how wrong the model is there.
 *[loss landscape]: The loss pictured as a landscape: each position is one setting of the parameters, and height is how wrong the model is there.
@@ -347,12 +442,32 @@
 *[Connector]: Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
 *[connectors]: Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
 *[Connectors]: Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
+*[micrograd]: Karpathy's 100-line autograd engine that works on single numbers. Rebuilding it from memory is this week's goal, because PyTorch does the same thing on tensors.
+*[Micrograd]: Karpathy's 100-line autograd engine that works on single numbers. Rebuilding it from memory is this week's goal, because PyTorch does the same thing on tensors.
+*[mini-batch]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[Mini-batch]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[mini-batches]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[Mini-batches]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[minibatch]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[Minibatch]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[minibatches]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[Minibatches]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+*[MLP]: Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
+*[MLPs]: Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
+*[multi-layer perceptron]: Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
+*[Multi-layer perceptron]: Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
+*[multilayer perceptron]: Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
+*[Multilayer perceptron]: Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
 *[MLP block]: The second half of a transformer block: the same small two-layer network applied to every token on its own, widening to four times the stream width and back.
 *[MLP blocks]: The second half of a transformer block: the same small two-layer network applied to every token on its own, widening to four times the stream width and back.
+*[MNIST]: 70,000 small grey images of handwritten digits, 28 by 28 pixels, ten classes. The standard first classification dataset. Fashion-MNIST swaps digits for clothing items.
+*[Fashion-MNIST]: 70,000 small grey images of handwritten digits, 28 by 28 pixels, ten classes. The standard first classification dataset. Fashion-MNIST swaps digits for clothing items.
 *[model]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[Model]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[models]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[Models]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
+*[momentum]: An optimizer trick: keep a running average of past gradients and step along that instead. Smooths mini-batch noise and speeds up travel along long shallow valleys.
+*[Momentum]: An optimizer trick: keep a running average of past gradients and step along that instead. Smooths mini-batch noise and speeds up travel along long shallow valleys.
 *[MSE]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
 *[mean squared error]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
 *[Mean squared error]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
@@ -367,6 +482,11 @@
 *[NaN]: Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.
 *[nanoGPT]: Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
 *[NanoGPT]: Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
+*[negative log-likelihood]: Minus the log of the probability the model gave the right answer. Probability one gives zero; probability near zero gives a huge number. Cross-entropy is its average.
+*[Negative log-likelihood]: Minus the log of the probability the model gave the right answer. Probability one gives zero; probability near zero gives a huge number. Cross-entropy is its average.
+*[NLL]: Minus the log of the probability the model gave the right answer. Probability one gives zero; probability near zero gives a huge number. Cross-entropy is its average.
+*[log-likelihood]: Minus the log of the probability the model gave the right answer. Probability one gives zero; probability near zero gives a huge number. Cross-entropy is its average.
+*[Log-likelihood]: Minus the log of the probability the model gave the right answer. Probability one gives zero; probability near zero gives a huge number. Cross-entropy is its average.
 *[neural network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[Neural network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[neural networks]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
@@ -375,10 +495,32 @@
 *[Neural net]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[Network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
+*[neuron]: The smallest unit of a neural network: a weighted sum of its inputs plus an offset, pushed through a bend such as tanh.
+*[Neuron]: The smallest unit of a neural network: a weighted sum of its inputs plus an offset, pushed through a bend such as tanh.
+*[neurons]: The smallest unit of a neural network: a weighted sum of its inputs plus an offset, pushed through a bend such as tanh.
+*[Neurons]: The smallest unit of a neural network: a weighted sum of its inputs plus an offset, pushed through a bend such as tanh.
 *[next-token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
 *[Next-token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
 *[next token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
 *[Next token prediction]: The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
+*[nn.Module]: PyTorch's building block: a Python class that owns parameters and defines a forward function. Modules nest, and model.parameters() walks the whole tree.
+*[Nn.Module]: PyTorch's building block: a Python class that owns parameters and defines a forward function. Modules nest, and model.parameters() walks the whole tree.
+*[nonlinearity]: Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+*[Nonlinearity]: Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+*[nonlinearities]: Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+*[Nonlinearities]: Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+*[non-linearity]: Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+*[Non-linearity]: Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+*[normalization]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[Normalization]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[normalisation]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[Normalisation]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[normalized]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[Normalized]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[normalised]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[Normalised]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[normalizing]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+*[Normalizing]: Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
 *[numerical gradient]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
 *[Numerical gradient]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
 *[numerical derivative]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
@@ -387,6 +529,18 @@
 *[Finite difference]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
 *[finite differences]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
 *[Finite differences]: A derivative estimated by brute force: nudge the input a tiny bit, measure the output change, divide. Slow but a trustworthy check.
+*[one-hot]: A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+*[One-hot]: A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+*[one-hot vector]: A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+*[One-hot vector]: A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+*[one-hot encoding]: A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+*[One-hot encoding]: A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+*[optimizer]: The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
+*[Optimizer]: The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
+*[optimizers]: The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
+*[Optimizers]: The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
+*[optimiser]: The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
+*[Optimiser]: The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
 *[opusplan]: A Claude Code model setting that uses Opus while in plan mode and switches to Sonnet for the edits: the costly model thinks, the cheaper one types.
 *[Opusplan]: A Claude Code model setting that uses Opus while in plan mode and switches to Sonnet for the edits: the costly model thinks, the cheaper one types.
 *[oracle]: A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.
@@ -395,6 +549,14 @@
 *[Oracles]: A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.
 *[test oracle]: A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.
 *[Test oracle]: A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.
+*[overfitting]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[Overfitting]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[overfit]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[Overfit]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[overfits]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[Overfits]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[overfitted]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[Overfitted]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
 *[parameter]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
 *[Parameter]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
 *[parameters]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
@@ -452,11 +614,30 @@
 *[cache misses]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 *[Cache misses]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 *[PyTorch]: The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.
-*[query]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
-*[Query]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[Query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[query vectors]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[Query vectors]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[regularization]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[Regularization]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[regularisation]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[Regularisation]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[regularizer]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[Regularizer]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[regularizers]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[Regularizers]: Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+*[ReLU]: The activation function max(0, x): negative inputs become zero, positive inputs pass unchanged. Cheap, and its slope is exactly 0 or 1.
 *[Remote Control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[Remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
+*[residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[Residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[residual connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[Residual connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[skip connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[Skip connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[skip connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+*[Skip connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[residual stream]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
 *[Residual stream]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
 *[residual streams]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
@@ -485,6 +666,9 @@
 *[Sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[sequences]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[Sequences]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
+*[SGD]: Stochastic gradient descent: gradient descent where each step uses the gradient of one mini-batch instead of all the data.
+*[stochastic gradient descent]: Stochastic gradient descent: gradient descent where each step uses the gradient of one mini-batch instead of all the data.
+*[Stochastic gradient descent]: Stochastic gradient descent: gradient descent where each step uses the gradient of one mini-batch instead of all the data.
 *[shape]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 *[Shape]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 *[shapes]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
@@ -500,10 +684,14 @@
 *[Slope]: Rise over run: how steep a curve is at a point. The derivative is the slope of the curve at that point.
 *[slopes]: Rise over run: how steep a curve is at a point. The derivative is the slope of the curve at that point.
 *[Slopes]: Rise over run: how steep a curve is at a point. The derivative is the slope of the curve at that point.
+*[softmax]: Turns a list of scores into probabilities that add to one: exponentiate each score, then divide by the total. Bigger gaps between scores give sharper probabilities.
+*[Softmax]: Turns a list of scores into probabilities that add to one: exponentiate each score, then divide by the total. Bigger gaps between scores give sharper probabilities.
 *[subagent]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[Subagent]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[Subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
+*[tanh]: The S-shaped activation function that squashes any number into the range minus one to one. Steep near zero, flat far out, so large inputs stop passing gradient.
+*[Tanh]: The S-shaped activation function that squashes any number into the range minus one to one. Steep near zero, flat far out, so large inputs stop passing gradient.
 *[temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
 *[Temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
 *[sampling temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
@@ -528,8 +716,30 @@
 *[Top-k]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
 *[top-k sampling]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
 *[Top-k sampling]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
+*[topological order]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[Topological order]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[topological sort]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[Topological sort]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[topo order]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[Topo order]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[train/validation/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[Train/validation/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[train/val/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[Train/val/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[training set]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[Training set]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[validation set]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[Validation set]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[validation data]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[Validation data]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[test set]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+*[Test set]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
 *[training]: Repeatedly adjusting a model's parameters to lower the loss on example data.
 *[Training]: Repeatedly adjusting a model's parameters to lower the loss on example data.
+*[training loop]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
+*[Training loop]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
+*[training loops]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
+*[Training loops]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
 *[transformer block]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
 *[Transformer block]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
 *[transformer blocks]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
@@ -538,6 +748,12 @@
 *[Ultrareview]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 *[ultra review]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 *[Ultra review]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
+*[underfitting]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
+*[Underfitting]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
+*[underfit]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
+*[Underfit]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
+*[underfits]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
+*[Underfits]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
 *[Unity batch-mode compile]: Running the Unity Editor from the command line with no window, so it imports and compiles a project, writes a log and quits with an exit code. A build oracle.
 *[batch-mode compile]: Running the Unity Editor from the command line with no window, so it imports and compiles a project, writes a log and quits with an exit code. A build oracle.
 *[Batch-mode compile]: Running the Unity Editor from the command line with no window, so it imports and compiles a project, writes a log and quits with an exit code. A build oracle.
@@ -558,8 +774,16 @@
 *[session window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
 *[Session window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
 *[5-hour window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
-*[value]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
-*[Value]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+*[Value object]: A single number wrapped in a tiny class that also remembers which numbers made it and how. The building block of micrograd; a one-number cousin of a tensor.
+*[Value objects]: A single number wrapped in a tiny class that also remembers which numbers made it and how. The building block of micrograd; a one-number cousin of a tensor.
+*[value vector]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+*[Value vector]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+*[value vectors]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+*[Value vectors]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
+*[vanishing gradient]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
+*[Vanishing gradient]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
+*[vanishing gradients]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
+*[Vanishing gradients]: Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
 *[vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[Vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
@@ -574,6 +798,8 @@
 *[Weight]: A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
 *[weights]: A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
 *[Weights]: A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
+*[weight decay]: Shrink every weight slightly towards zero on each update, so only weights the data keeps pushing up stay large. A regularizer; AdamW applies it separately from the gradient.
+*[Weight decay]: Shrink every weight slightly towards zero on each update, so only weights the data keeps pushing up stay large. A regularizer; AdamW applies it separately from the gradient.
 *[word2vec]: The 2013 method that learns word embeddings by predicting a word from its neighbours in raw text. The vectors are a by-product; nothing was labelled by hand.
 *[Word2vec]: The 2013 method that learns word embeddings by predicting a word from its neighbours in raw text. The vectors are a by-product; nothing was labelled by hand.
 *[worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
@@ -582,4 +808,11 @@
 *[Worktrees]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[Git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
+*[XOR]: Exclusive-or: true when exactly one of two inputs is on. Four points that no single straight line can split, so no single neuron can learn them.
+*[zero_grad]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
+*[Zero_grad]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
+*[zero the gradients]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
+*[Zero the gradients]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
+*[zeroing the gradients]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
+*[Zeroing the gradients]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
 *[√d scaling]: Dividing attention scores by the square root of the vector size, so that scores stay moderate as vectors get longer and the softmax does not turn into a hard pick.

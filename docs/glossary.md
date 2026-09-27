@@ -36,6 +36,30 @@ Claude Code permission mode that runs file edits and simple file commands withou
 <small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="accuracy" markdown>
+**accuracy**
+
+The fraction of examples the model labels correctly. What you report; the loss is what you train on, because accuracy has no useful gradient.
+
+<small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="activation-function" markdown>
+**activation function** <small>(also: activation functions)</small>
+
+The fixed bend applied to a neuron's weighted sum, such as tanh or ReLU. It has no parameters; it is what stops a stack of layers collapsing into one.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="adam" markdown>
+**Adam** <small>(also: AdamW)</small>
+
+The default optimizer for deep learning. Keeps running averages of each gradient and of its square, then steps each parameter by roughly the learning rate regardless of its gradient's size.
+
+<small>first met in [week-03/day-3](week-03/day-3.md) · canvas card `core-optim`</small>
+</div>
+
 <div class="gl-entry" id="adversarial-review" markdown>
 **adversarial review** <small>(also: adversarial reviews)</small>
 
@@ -164,6 +188,14 @@ Walking the computation graph from the output back to the inputs, computing how 
 A group of examples processed together, stacked along the first axis. 32 images of shape (3, 64, 64) form a batch of shape (32, 3, 64, 64).
 
 <small>first met in [week-01/day-1](week-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="batchnorm" markdown>
+**BatchNorm** <small>(also: batch normalization, batch norm, BatchNorm1d)</small>
+
+A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>
 
 <div class="gl-entry" id="bigram" markdown>
@@ -336,7 +368,31 @@ The dot product of two vectors after dividing out their lengths: 1 means same di
 <small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
 </div>
 
+<div class="gl-entry" id="cross-entropy" markdown>
+**cross-entropy** <small>(also: cross entropy)</small>
+
+The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+
+<small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-optim`</small>
+</div>
+
 ## D
+
+<div class="gl-entry" id="dataloader" markdown>
+**DataLoader** <small>(also: DataLoaders, data loader)</small>
+
+The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks them into batches, one batch per loop iteration.
+
+<small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="dataset" markdown>
+**Dataset** <small>(also: dataset, datasets)</small>
+
+A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
+
+<small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-tooling`</small>
+</div>
 
 <div class="gl-entry" id="deep-research" markdown>
 **Deep Research** <small>(also: deep research)</small>
@@ -386,6 +442,14 @@ Multiply two equal-length vectors number by number and add up the results. Large
 <small>first met in [week-01/day-2](week-01/day-2.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="dropout" markdown>
+**dropout**
+
+During training, randomly zero a fraction of a layer's outputs on every step, so no unit can rely on another. Switched off for evaluation.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="dtype" markdown>
 **dtype** <small>(also: dtypes)</small>
 
@@ -395,6 +459,14 @@ The number type stored in a tensor, such as 32-bit float or 64-bit integer. Mode
 </div>
 
 ## E
+
+<div class="gl-entry" id="early-stopping" markdown>
+**early stopping**
+
+Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
 
 <div class="gl-entry" id="effort-level" markdown>
 **effort level** <small>(also: effort levels)</small>
@@ -418,6 +490,22 @@ An operation applied separately to each matching pair of numbers in two tensors,
 A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
 
 <small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
+</div>
+
+<div class="gl-entry" id="epoch" markdown>
+**epoch** <small>(also: epochs)</small>
+
+One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
+
+<small>first met in [week-02/day-5](week-02/day-5.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="exploding-gradient" markdown>
+**exploding gradient** <small>(also: exploding gradients)</small>
+
+Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>
 
 ## F
@@ -472,12 +560,28 @@ A rule that turns inputs into an output. A whole neural network is one big funct
 
 ## G
 
+<div class="gl-entry" id="generalisation" markdown>
+**generalisation** <small>(also: generalization, generalise, generalize, generalises, generalizes, generalising, generalizing)</small>
+
+How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="gradient" markdown>
 **gradient** <small>(also: gradients, grad, grads)</small>
 
 The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="gradient-accumulation" markdown>
+**gradient accumulation**
+
+Gradients are added into a stored slot, never overwritten. Needed when a value feeds two places; a bug when last step's gradient is still in the slot.
+
+<small>first met in [week-02/day-3](week-02/day-3.md) · canvas card `core-calc`</small>
 </div>
 
 <div class="gl-entry" id="gradient-descent" markdown>
@@ -498,12 +602,28 @@ Always pick the single most likely next token, no randomness. Deterministic, and
 
 ## H
 
+<div class="gl-entry" id="hidden-layer" markdown>
+**hidden layer** <small>(also: hidden layers, hidden units, hidden unit)</small>
+
+Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
 <div class="gl-entry" id="hook" markdown>
 **hook**
 
 A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
 
 <small>first met in [agentic-03/day-3](agentic-03/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="hyperparameter" markdown>
+**hyperparameter** <small>(also: hyperparameters, hyper-parameter)</small>
+
+A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+
+<small>first met in [week-03/day-1](week-03/day-1.md)</small>
 </div>
 
 ## I
@@ -516,6 +636,14 @@ Using a trained model to produce outputs, with no learning happening. Only the f
 <small>first met in [week-01/day-4](week-01/day-4.md)</small>
 </div>
 
+<div class="gl-entry" id="initialization" markdown>
+**initialization** <small>(also: initialisation, init, Xavier, Kaiming, Xavier initialization, Kaiming initialization)</small>
+
+The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="instruction-file" markdown>
 **instruction file** <small>(also: instruction files)</small>
 
@@ -526,8 +654,8 @@ A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and w
 
 ## K
 
-<div class="gl-entry" id="key" markdown>
-**key**
+<div class="gl-entry" id="key-vector" markdown>
+**key vector** <small>(also: key vectors)</small>
 
 In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
 
@@ -550,6 +678,14 @@ A model that assigns probabilities to sequences of tokens, usually by predicting
 One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="layernorm" markdown>
+**LayerNorm** <small>(also: layer normalization, layer norm)</small>
+
+A layer that normalizes across the features of each single example, independent of the batch. The normalization used inside transformers.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>
 
 <div class="gl-entry" id="learning-rate" markdown>
@@ -592,6 +728,14 @@ A valley that is lower than its surroundings but not the lowest point overall. G
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
 </div>
 
+<div class="gl-entry" id="logits" markdown>
+**logits** <small>(also: logit)</small>
+
+The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
+
+<small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="lookup-table" markdown>
 **lookup table** <small>(also: lookup tables, embedding table)</small>
 
@@ -614,6 +758,14 @@ Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-r
 One number that scores how wrong the model currently is. Lower is better. Training means changing parameters to push this number down.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="loss-curve" markdown>
+**loss curve** <small>(also: loss curves)</small>
+
+The loss plotted against training steps. The first thing anyone looks at: falling means learning, flat means stuck, rising means the step is too big.
+
+<small>first met in [week-02/day-5](week-02/day-5.md) · canvas card `core-calc`</small>
 </div>
 
 <div class="gl-entry" id="loss-surface" markdown>
@@ -665,6 +817,30 @@ Model Context Protocol: the open standard both Claude Code and Codex use to plug
 
 </div>
 
+<div class="gl-entry" id="micrograd" markdown>
+**micrograd**
+
+Karpathy's 100-line autograd engine that works on single numbers. Rebuilding it from memory is this week's goal, because PyTorch does the same thing on tensors.
+
+<small>first met in [week-02/day-1](week-02/day-1.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="mini-batch" markdown>
+**mini-batch** <small>(also: mini-batches, minibatch, minibatches)</small>
+
+A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
+
+<small>first met in [week-03/day-3](week-03/day-3.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="mlp" markdown>
+**MLP** <small>(also: MLPs, multi-layer perceptron, multilayer perceptron)</small>
+
+Multi-layer perceptron: linear layers stacked with an activation function between each pair. The plainest neural network, and a component inside far larger models.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
 <div class="gl-entry" id="mlp-block" markdown>
 **MLP block** <small>(also: MLP blocks)</small>
 
@@ -673,12 +849,28 @@ The second half of a transformer block: the same small two-layer network applied
 <small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="mnist" markdown>
+**MNIST** <small>(also: Fashion-MNIST)</small>
+
+70,000 small grey images of handwritten digits, 28 by 28 pixels, ten classes. The standard first classification dataset. Fashion-MNIST swaps digits for clothing items.
+
+<small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="model" markdown>
 **model** <small>(also: models)</small>
 
 A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
+</div>
+
+<div class="gl-entry" id="momentum" markdown>
+**momentum**
+
+An optimizer trick: keep a running average of past gradients and step along that instead. Smooths mini-batch noise and speeds up travel along long shallow valleys.
+
+<small>first met in [week-03/day-3](week-03/day-3.md) · canvas card `core-optim`</small>
 </div>
 
 <div class="gl-entry" id="mse" markdown>
@@ -715,6 +907,14 @@ Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its
 <small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="negative-log-likelihood" markdown>
+**negative log-likelihood** <small>(also: NLL, log-likelihood)</small>
+
+Minus the log of the probability the model gave the right answer. Probability one gives zero; probability near zero gives a huge number. Cross-entropy is its average.
+
+<small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-optim`</small>
+</div>
+
 <div class="gl-entry" id="neural-network" markdown>
 **neural network** <small>(also: neural networks, neural net, network)</small>
 
@@ -723,12 +923,44 @@ A function built by stacking simple layers, such as matrix multiplies with simpl
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="neuron" markdown>
+**neuron** <small>(also: neurons)</small>
+
+The smallest unit of a neural network: a weighted sum of its inputs plus an offset, pushed through a bend such as tanh.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
 <div class="gl-entry" id="next-token-prediction" markdown>
 **next-token prediction** <small>(also: next token prediction)</small>
 
 The training job of a language model: given the tokens so far, give a probability to every possible next token. Every position in any text is a free labelled example.
 
 <small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
+</div>
+
+<div class="gl-entry" id="nn-module" markdown>
+**nn.Module**
+
+PyTorch's building block: a Python class that owns parameters and defines a forward function. Modules nest, and model.parameters() walks the whole tree.
+
+<small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="nonlinearity" markdown>
+**nonlinearity** <small>(also: nonlinearities, non-linearity)</small>
+
+Any step whose output is not a weighted sum of its input, like a bend, a clip or a threshold. Without one, stacked layers are just one bigger linear layer.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="normalization" markdown>
+**normalization** <small>(also: normalisation, normalized, normalised, normalizing)</small>
+
+Rescaling a set of numbers so their mean is zero and their spread is one, so that every layer sees inputs of a predictable size.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>
 
 <div class="gl-entry" id="numerical-gradient" markdown>
@@ -740,6 +972,22 @@ A derivative estimated by brute force: nudge the input a tiny bit, measure the o
 </div>
 
 ## O
+
+<div class="gl-entry" id="one-hot" markdown>
+**one-hot** <small>(also: one-hot vector, one-hot encoding)</small>
+
+A label written as a vector of zeros with a single one at the true class. The gradient of cross-entropy at the logits is probabilities minus this vector.
+
+<small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="optimizer" markdown>
+**optimizer** <small>(also: optimizers, optimiser)</small>
+
+The object that applies the update rule to every parameter after a backward pass. SGD and Adam are optimizers; all of them read the .grad fields.
+
+<small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-optim`</small>
+</div>
 
 <div class="gl-entry" id="opusplan" markdown>
 **opusplan**
@@ -755,6 +1003,14 @@ A Claude Code model setting that uses Opus while in plan mode and switches to So
 A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="overfitting" markdown>
+**overfitting** <small>(also: overfit, overfits, overfitted)</small>
+
+The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
 </div>
 
 ## P
@@ -857,8 +1113,8 @@ The Python library this course uses for tensors, automatic gradients and neural 
 
 ## Q
 
-<div class="gl-entry" id="query" markdown>
-**query**
+<div class="gl-entry" id="query-vector" markdown>
+**query vector** <small>(also: query vectors)</small>
 
 In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 
@@ -867,12 +1123,36 @@ In attention, the vector a token uses to ask: what am I looking for? Compared by
 
 ## R
 
+<div class="gl-entry" id="regularization" markdown>
+**regularization** <small>(also: regularisation, regularizer, regularizers)</small>
+
+Any change that trades a little training fit for better results on new data: penalising large weights, dropping units at random, stopping early, adding data.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="relu" markdown>
+**ReLU**
+
+The activation function max(0, x): negative inputs become zero, positive inputs pass unchanged. Cheap, and its slope is exactly 0 or 1.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
 <div class="gl-entry" id="remote-control" markdown>
 **Remote Control** <small>(also: remote control)</small>
 
 Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="residual-connection" markdown>
+**residual connection** <small>(also: residual connections, skip connection, skip connections)</small>
+
+Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `lin-resnet`</small>
 </div>
 
 <div class="gl-entry" id="residual-stream" markdown>
@@ -933,6 +1213,14 @@ An ordered list of tokens, such as the characters of a line or the words of a se
 <small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
 </div>
 
+<div class="gl-entry" id="sgd" markdown>
+**SGD** <small>(also: stochastic gradient descent)</small>
+
+Stochastic gradient descent: gradient descent where each step uses the gradient of one mini-batch instead of all the data.
+
+<small>first met in [week-03/day-3](week-03/day-3.md) · canvas card `core-optim`</small>
+</div>
+
 <div class="gl-entry" id="shape" markdown>
 **shape** <small>(also: shapes)</small>
 
@@ -965,6 +1253,14 @@ Rise over run: how steep a curve is at a point. The derivative is the slope of t
 <small>first met in [week-01/day-3](week-01/day-3.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="softmax" markdown>
+**softmax**
+
+Turns a list of scores into probabilities that add to one: exponentiate each score, then divide by the total. Bigger gaps between scores give sharper probabilities.
+
+<small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="subagent" markdown>
 **subagent** <small>(also: subagents)</small>
 
@@ -974,6 +1270,14 @@ A helper agent with its own fresh context that does a bounded job and returns a 
 </div>
 
 ## T
+
+<div class="gl-entry" id="tanh" markdown>
+**tanh**
+
+The S-shaped activation function that squashes any number into the range minus one to one. Steep near zero, flat far out, so large inputs stop passing gradient.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
 
 <div class="gl-entry" id="temperature" markdown>
 **temperature** <small>(also: sampling temperature)</small>
@@ -1023,12 +1327,36 @@ Before drawing, keep only the k most likely tokens and give the rest zero probab
 <small>first met in [week-05/day-4](week-05/day-4.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="topological-order" markdown>
+**topological order** <small>(also: topological sort, topo order)</small>
+
+A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+
+<small>first met in [week-02/day-2](week-02/day-2.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="train-validation-test-split" markdown>
+**train/validation/test split** <small>(also: train/val/test split, training set, validation set, validation data, test set)</small>
+
+Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="training" markdown>
 **training**
 
 Repeatedly adjusting a model's parameters to lower the loss on example data.
 
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
+</div>
+
+<div class="gl-entry" id="training-loop" markdown>
+**training loop** <small>(also: training loops)</small>
+
+The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
+
+<small>first met in [week-02/day-5](week-02/day-5.md) · canvas card `core-calc`</small>
 </div>
 
 <div class="gl-entry" id="transformer-block" markdown>
@@ -1047,6 +1375,14 @@ One repeated unit of a transformer: attention, then a small per-token network, e
 Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 
 <small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="underfitting" markdown>
+**underfitting** <small>(also: underfit, underfits)</small>
+
+The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
 </div>
 
 <div class="gl-entry" id="unity-batch-mode-compile" markdown>
@@ -1083,12 +1419,28 @@ A rolling 5-hour period with a fixed allowance of usage; when it is spent you wa
 
 ## V
 
-<div class="gl-entry" id="value" markdown>
-**value**
+<div class="gl-entry" id="value-object" markdown>
+**Value object** <small>(also: Value objects)</small>
+
+A single number wrapped in a tiny class that also remembers which numbers made it and how. The building block of micrograd; a one-number cousin of a tensor.
+
+<small>first met in [week-02/day-1](week-02/day-1.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="value-vector" markdown>
+**value vector** <small>(also: value vectors)</small>
 
 In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
 
 <small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
+</div>
+
+<div class="gl-entry" id="vanishing-gradient" markdown>
+**vanishing gradient** <small>(also: vanishing gradients)</small>
+
+Gradients that shrink layer by layer on the way back, until early layers get almost no learning signal. Caused by small weights or saturated units.
+
+<small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>
 
 <div class="gl-entry" id="vector" markdown>
@@ -1117,6 +1469,14 @@ A learnable number that says how strongly one input contributes to one output. A
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="weight-decay" markdown>
+**weight decay**
+
+Shrink every weight slightly towards zero on each update, so only weights the data keeps pushing up stay large. A regularizer; AdamW applies it separately from the gradient.
+
+<small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="word2vec" markdown>
 **word2vec**
 
@@ -1131,6 +1491,26 @@ The 2013 method that learns word embeddings by predicting a word from its neighb
 A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 
 <small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
+</div>
+
+## X
+
+<div class="gl-entry" id="xor" markdown>
+**XOR**
+
+Exclusive-or: true when exactly one of two inputs is on. Four points that no single straight line can split, so no single neuron can learn them.
+
+<small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+## Z
+
+<div class="gl-entry" id="zero-grad" markdown>
+**zero_grad** <small>(also: zero the gradients, zeroing the gradients)</small>
+
+Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
+
+<small>first met in [week-02/day-3](week-02/day-3.md) · canvas card `core-calc`</small>
 </div>
 
 ## √

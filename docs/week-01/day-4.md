@@ -35,7 +35,7 @@ Each box only needs to know its own tiny derivative (the table in lesson 3). The
 
 Two patterns cover most of what you will see. **Add distributes:** it copies the incoming gradient to both inputs unchanged. **Multiply swaps:** each input receives the incoming gradient times the *other* input's number. So if \(b = 0\), \(a\) gets gradient 0: it has no way to influence the result right now, and cannot learn.
 
-Here the analogy is the same mathematics, not just a likeness. Think of a signal chain: tracker → filter → renderer → display. The end-to-end sensitivity of what the eye sees to a head movement is the product of the stage gains. One stage with zero gain (saturated, clipped) and nothing upstream matters. Several stages with gain above 1 and small changes blow up. Deep networks suffer both: vanishing and exploding gradients.
+Here the analogy is the same mathematics, not just a likeness. Think of a signal chain: tracker → filter → renderer → display. The end-to-end sensitivity of what the eye sees to a head movement is the product of the stage gains. One stage with zero gain (saturated, clipped) and nothing upstream matters. Several stages with gain above 1 and small changes blow up. Deep networks suffer both, and week 3 names them.
 
 Why walk backward rather than nudging forward? One backward pass yields the sensitivity of **one output** to **everything**, at about the cost of a second forward pass. Nudging yields the effect of one knob per run. We have millions of knobs and one number we care about, the error. Backward wins by a factor of millions; it is also why training needs a single scalar to differentiate. At **inference** time none of this runs: only the forward pass.
 
