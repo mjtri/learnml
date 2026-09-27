@@ -14,7 +14,7 @@ Three places hold what the agent knows: the conversation (this session only), th
 
 ## How it works
 
-**Auto memory, Claude Code.** On by default. Claude saves four kinds of note into `~/.claude/projects/<project>/memory/`: your role and preferences, corrections, project decisions not derivable from the code, and where to find things. The first 200 lines or 25 KB of the `MEMORY.md` index load every session. It skips what `CLAUDE.md` already says or the code shows. **Auto memory** is machine-local and shared across worktrees, so a cloud session starts without it. `/memory` browses and toggles it; "remember X" lands in memory, "add this to CLAUDE.md" lands in instructions ([memory](https://code.claude.com/docs/en/memory){ .src data-checked="2026-09-27" }).
+**Auto memory, Claude Code.** On by default. Claude saves four kinds of note into `~/.claude/projects/<project>/memory/`: your role and preferences, corrections, project decisions not derivable from the code, and where to find things. The first 200 lines or 25 KB of the `MEMORY.md` index load every session. It skips what `CLAUDE.md` already says or the code shows. **Auto memory** is machine-local and shared across every checkout of the project, so a cloud session starts without it. `/memory` browses and toggles it; "remember X" lands in memory, "add this to CLAUDE.md" lands in instructions ([memory](https://code.claude.com/docs/en/memory){ .src data-checked="2026-09-27" }).
 
 **Memories, Codex.** Local memories live under `~/.codex/memories/`, generated once a chat has been idle. Enable them in Settings › Personalization or `config.toml`; `/memories` sets per-chat use. OpenAI's own framing: a "helpful recall layer", not "the only source for rules that must always apply" ([Codex memories](https://learn.chatgpt.com/docs/customization/memories.md){ .src data-checked="2026-09-27" }).
 
@@ -45,7 +45,7 @@ Predict first: which of the eight cards belong in memory? The readout says what 
     Conversation: you and the agent, lost at /clear. Instruction file: you, persists. Auto memory: the agent, persists on that machine.
 
 ??? question "What loads from auto memory at session start, and where does it live?"
-    The first 200 lines or 25 KB of MEMORY.md, under `~/.claude/projects/<project>/memory/`: machine-local, shared across worktrees.
+    The first 200 lines or 25 KB of MEMORY.md, under `~/.claude/projects/<project>/memory/`: machine-local, shared across every checkout of the project.
 
 ??? question "Where must a must-always-apply rule go, and why not memory?"
     In the instruction file. Both vendors say memory is a recall layer; neither tool enforces what it remembers.

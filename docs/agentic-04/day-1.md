@@ -6,7 +6,7 @@ playbook: delegation
 
 # B4 · Lesson 1 · Subagents and skills: summaries in, context saved
 
-<p class="recall" markdown>**Previously:** week 3 gave the agent an oracle it can run, a permission mode chosen on purpose, and hooks for the rules that must always hold.</p>
+<p class="recall" markdown>**Previously:** an oracle the agent can run closes the loop; a permission mode picks who stops a bad action; a hook makes a rule hold on every turn, in both tools.</p>
 
 ## Idea
 

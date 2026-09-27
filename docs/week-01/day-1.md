@@ -10,7 +10,7 @@ card: core-linalg
 
 ## Idea
 
-Deep learning code never handles "an image" or "a sentence". It handles **tensors**: boxes of numbers with a known **shape**. A model is a pipeline that reshapes and recombines those boxes. When you read someone's model code, most of understanding it is knowing the shape at each line, and most bugs in your first month will be shape mismatches. So the first skill is unglamorous and decisive: look at a shape, know what each axis means, and predict the shape an operation produces *before* you run it.
+Deep learning code never handles "an image" or "a sentence". It handles **tensors**: boxes of numbers with a known **shape**. A model is a pipeline that reshapes and recombines those boxes. When you read someone's model code, most of understanding it is knowing the shape at each line, and most bugs in your first month will be shape mismatches. So the first ability to build is unglamorous and decisive: look at a shape, know what each axis means, and predict the shape an operation produces *before* you run it.
 
 ## Mechanism
 

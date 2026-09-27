@@ -1,9 +1,9 @@
 ---
-title: B1 · Apply · Meters, one instruction file, one measured comparison
+title: B1 · Apply · Meters, one AGENTS.md, one measured comparison
 playbook: budget
 ---
 
-# B1 · Apply · Meters, one instruction file, one measured comparison
+# B1 · Apply · Meters, one AGENTS.md, one measured comparison
 
 <p class="recall" markdown>**This week in one sentence:** an agent is a loop over a finite context; two subscriptions are two rolling allowances with meters; where a task runs and who verifies it picks the tool.</p>
 
@@ -11,12 +11,12 @@ playbook: budget
 
 ## Goal
 
-Leave with (1) the `/usage` habit installed, (2) one instruction file both tools read, and (3) three lines in the playbook that came from numbers, not opinions.
+Leave with (1) the `/usage` habit installed, (2) one AGENTS.md both tools read, and (3) three lines in the playbook that came from numbers, not opinions.
 
 ## Steps
 
 1. **Baseline (3 min).** In Claude Code: `/usage`. In ChatGPT: open the usage counter. Write both numbers in a scratch note with the time.
-2. **Instruction file (15 min).** This repo ships a starter `AGENTS.md` and a `CLAUDE.md` that imports it. Read both. Then, with the agent in plan mode, ask:
+2. **AGENTS.md (15 min).** This repo ships a starter `AGENTS.md` and a `CLAUDE.md` that imports it. Read both. Then, with the agent in plan mode, ask:
    ```
    Goal: tighten AGENTS.md for this repo. Context: read AGENTS.md, LOOP.md, LESSON_FORMAT.md.
    Constraints: under 80 lines, no duplication of LESSON_FORMAT.md, keep the commands section.

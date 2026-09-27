@@ -6,7 +6,7 @@ playbook: verification
 
 # B3 · Lesson 1 · The agent needs an oracle
 
-<p class="recall" markdown>**Previously:** keep one durable instruction file (`AGENTS.md`) that both tools read; keep it short and pruned.</p>
+<p class="recall" markdown>**Previously:** one short instruction file that both tools read, a plan before any edit, a four-part prompt, and memory kept for preferences rather than rules.</p>
 
 ## Idea
 
@@ -74,4 +74,4 @@ Two lines the agent can act on without you.
 
 > In **Verification**: your three tasks with their oracles, and the one kind of task that has none.
 
-**Next:** permission modes and sandboxes: what each one lets the agent do without asking, and who stops a bad action.
+**Next:** permission modes and sandboxes: what each lets the agent do unasked, and who stops a bad action.

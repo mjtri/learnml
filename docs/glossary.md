@@ -6,7 +6,43 @@ title: Glossary
 
 Every dotted-underlined word in a lesson opens its definition when tapped. This page is the same list, A–Z, with the lesson that introduced each word.
 
+## /
+
+<div class="gl-entry" id="plan" markdown>
+**/plan**
+
+The command that turns on plan mode for the next prompt (Claude Code) or toggles it (Codex): read and propose first, edit only after approval.
+
+<small>first met in [agentic-02/day-2](agentic-02/day-2.md)</small>
+</div>
+
+## @
+
+<div class="gl-entry" id="import" markdown>
+**@import** <small>(also: @imports)</small>
+
+A line in CLAUDE.md of the form @path that pulls another file into context at launch. Paths resolve relative to the importing file; at most four hops deep.
+
+<small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
+</div>
+
 ## A
+
+<div class="gl-entry" id="accept-edits-mode" markdown>
+**accept-edits mode** <small>(also: acceptEdits, accept edits mode)</small>
+
+Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
+
+<small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="adversarial-review" markdown>
+**adversarial review** <small>(also: adversarial reviews)</small>
+
+A read-only review told to argue against the chosen design and its assumptions, not only hunt bugs. In codex-plugin-cc: /codex:adversarial-review with focus text.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="agent" markdown>
 **agent** <small>(also: agents)</small>
@@ -16,12 +52,52 @@ A model that runs in a loop: read the situation, pick a tool, act, read the resu
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="agent-teams" markdown>
+**agent teams** <small>(also: agent team)</small>
+
+An experimental Claude Code mode where a lead session spawns teammate sessions that message each other and share a task list. Each teammate is a full context window.
+
+<small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="agents-md" markdown>
 **AGENTS.md**
 
 The cross-tool instruction file convention read by Codex and, when no CLAUDE.md exists, by Claude Code. One source of truth for repo rules.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="allowlist" markdown>
+**allowlist** <small>(also: allowlists, allowlisted, allow rule, allow rules)</small>
+
+Tools or command patterns pre-approved in a settings file, like Bash(git commit *), so they run without a prompt. Deny rules override it in every mode.
+
+<small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="approval-policy" markdown>
+**approval policy** <small>(also: approval policies)</small>
+
+Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
+
+<small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="auto-memory" markdown>
+**auto memory** <small>(also: auto memories, Codex memories)</small>
+
+Notes the agent writes for itself across sessions: your preferences, corrections, project facts. Loaded every session but never enforced; Claude Code and Codex both keep them on your machine.
+
+<small>first met in [agentic-02/day-3](agentic-02/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="auto-mode" markdown>
+**auto mode**
+
+Claude Code permission mode where a separate classifier reviews each action instead of you and blocks risky ones. The starting mode for terminal sessions on recent versions.
+
+<small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="autograd" markdown>
@@ -41,6 +117,14 @@ One direction you can index a tensor along, such as rows, columns, colour channe
 </div>
 
 ## B
+
+<div class="gl-entry" id="background-agent" markdown>
+**background agent** <small>(also: background agents, background session, background sessions)</small>
+
+A Claude Code session moved off your screen with /bg or claude --bg. It edits inside its own worktree and spends your quota on its own.
+
+<small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
+</div>
 
 <div class="gl-entry" id="backpropagation" markdown>
 **backpropagation** <small>(also: backprop)</small>
@@ -72,6 +156,14 @@ A group of examples processed together, stacked along the first axis. 32 images 
 The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="bypass-mode" markdown>
+**bypass mode** <small>(also: bypassPermissions, bypass permissions mode, bypass permissions)</small>
+
+Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
+
+<small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
 </div>
 
 ## C
@@ -130,6 +222,14 @@ Codex running in an isolated cloud environment on a copy of your repo, started f
 Starting, steering and approving Codex on your own computer from the ChatGPT mobile app. The computer must stay awake.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="codex-plugin-cc" markdown>
+**codex-plugin-cc** <small>(also: Codex plugin, Codex plugin for Claude Code)</small>
+
+OpenAI's plugin that runs Codex from inside Claude Code for reviews and delegated tasks. It spends your ChatGPT/Codex usage, not the Claude plan.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="colab" markdown>
@@ -198,6 +298,22 @@ To blow up: each step makes the loss larger, usually because the learning rate i
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
 </div>
 
+<div class="gl-entry" id="doer-grader" markdown>
+**doer/grader** <small>(also: doer and grader, doer vs grader)</small>
+
+The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor's model.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="dontask" markdown>
+**dontAsk** <small>(also: dontAsk mode)</small>
+
+Claude Code permission mode for scripts and CI: anything that would prompt is denied instead. Only reads and allowlisted tools run.
+
+<small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="dot-product" markdown>
 **dot product** <small>(also: dot products)</small>
 
@@ -258,6 +374,14 @@ Running the calculation from inputs to output, storing intermediate values along
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="four-part-prompt" markdown>
+**four-part prompt** <small>(also: four-part prompts, prompt shape, Goal/Context/Constraints/Done-when)</small>
+
+A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
+
+<small>first met in [agentic-02/day-2](agentic-02/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="function" markdown>
 **function** <small>(also: functions)</small>
 
@@ -284,6 +408,16 @@ The learning algorithm: compute the gradient of the loss, move every parameter a
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
 </div>
 
+## H
+
+<div class="gl-entry" id="hook" markdown>
+**hook**
+
+A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
+
+<small>first met in [agentic-03/day-3](agentic-03/day-3.md)</small>
+</div>
+
 ## I
 
 <div class="gl-entry" id="inference" markdown>
@@ -292,6 +426,14 @@ The learning algorithm: compute the gradient of the loss, move every parameter a
 Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
 
 <small>first met in [week-01/day-4](week-01/day-4.md)</small>
+</div>
+
+<div class="gl-entry" id="instruction-file" markdown>
+**instruction file** <small>(also: instruction files)</small>
+
+A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
+
+<small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
 </div>
 
 ## L
@@ -453,6 +595,14 @@ A derivative estimated by brute force: nudge the input a tiny bit, measure the o
 
 ## O
 
+<div class="gl-entry" id="opusplan" markdown>
+**opusplan**
+
+A Claude Code model setting that uses Opus while in plan mode and switches to Sonnet for the edits: the costly model thinks, the cheaper one types.
+
+<small>first met in [agentic-02/day-2](agentic-02/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="oracle" markdown>
 **oracle** <small>(also: oracles, test oracle)</small>
 
@@ -474,7 +624,7 @@ Any number inside a model that training is allowed to change. Weights are parame
 <div class="gl-entry" id="permission-mode" markdown>
 **permission mode** <small>(also: permission modes)</small>
 
-Claude Code's setting for what the agent may do without asking: manual, accept edits, plan, auto or bypass.
+Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
 </div>
@@ -482,7 +632,7 @@ Claude Code's setting for what the agent may do without asking: manual, accept e
 <div class="gl-entry" id="plan-mode" markdown>
 **plan mode**
 
-A Claude Code mode where the agent may read and propose but not edit or run, so you approve an approach before work starts.
+A Claude Code mode where the agent explores and proposes (read-only commands allowed) but every edit stays blocked until you approve its plan.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
 </div>
@@ -493,6 +643,22 @@ A Claude Code mode where the agent may read and propose but not edit or run, so 
 Your own page of workflow rules, each backed by a source or a measurement. The ledger for Track B.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="plugin" markdown>
+**plugin** <small>(also: plugins)</small>
+
+A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
+
+<small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="precedence" markdown>
+**precedence**
+
+The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
+
+<small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="premium-seat" markdown>
@@ -529,6 +695,14 @@ Driving a Claude Code session that runs on your own machine from the Claude mobi
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
 </div>
 
+<div class="gl-entry" id="rules-directory" markdown>
+**rules directory** <small>(also: rules directories)</small>
+
+Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
+
+<small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
+</div>
+
 ## S
 
 <div class="gl-entry" id="sandbox" markdown>
@@ -553,6 +727,22 @@ A single number; a tensor with no axes. Its shape is empty: ().
 The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="size-cap" markdown>
+**size cap** <small>(also: size caps)</small>
+
+Codex's limit on combined instruction-file text, 32 KiB by default; files past it are not loaded. Claude Code has no byte cap but targets 200 lines per file.
+
+<small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="skill" markdown>
+**skill** <small>(also: SKILL.md)</small>
+
+A folder holding a SKILL.md: instructions loaded into context only when you type /name or the agent picks it. Until then only its description costs tokens.
+
+<small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="slope" markdown>
@@ -607,6 +797,22 @@ Repeatedly adjusting a model's parameters to lower the loss on example data.
 
 ## U
 
+<div class="gl-entry" id="ultrareview" markdown>
+**ultrareview** <small>(also: ultra review)</small>
+
+Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="unity-batch-mode-compile" markdown>
+**Unity batch-mode compile** <small>(also: batch-mode compile, batch-mode compile check)</small>
+
+Running the Unity Editor from the command line with no window, so it imports and compiles a project, writes a log and quits with an exit code. A build oracle.
+
+<small>first met in [agentic-03/day-1](agentic-03/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="usage-credits" markdown>
 **usage credits** <small>(also: extra usage)</small>
 
@@ -660,8 +866,9 @@ A learnable number that says how strongly one input contributes to one output. A
 </div>
 
 <div class="gl-entry" id="worktree" markdown>
-**worktree** <small>(also: worktrees)</small>
+**worktree** <small>(also: worktrees, git worktree)</small>
 
-A second checkout of the same git repo in its own folder, so two agents can work in parallel without overwriting each other.
+A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 
+<small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
 </div>

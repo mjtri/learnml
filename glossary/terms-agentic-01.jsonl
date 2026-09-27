@@ -24,7 +24,7 @@
 {"term": "Remote Control", "aliases": ["remote control"], "def": "Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.", "lesson": "agentic-01/day-3"}
 {"term": "Codex Remote", "aliases": [], "def": "Starting, steering and approving Codex on your own computer from the ChatGPT mobile app. The computer must stay awake.", "lesson": "agentic-01/day-3"}
 {"term": "oracle", "aliases": ["oracles", "test oracle"], "def": "A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.", "lesson": "agentic-01/day-3"}
-{"term": "plan mode", "aliases": [], "def": "A Claude Code mode where the agent may read and propose but not edit or run, so you approve an approach before work starts.", "lesson": "agentic-01/day-3"}
-{"term": "permission mode", "aliases": ["permission modes"], "def": "Claude Code's setting for what the agent may do without asking: manual, accept edits, plan, auto or bypass.", "lesson": "agentic-01/day-3"}
+{"term": "plan mode", "aliases": [], "def": "A Claude Code mode where the agent explores and proposes (read-only commands allowed) but every edit stays blocked until you approve its plan.", "lesson": "agentic-01/day-3"}
+{"term": "permission mode", "aliases": ["permission modes"], "def": "Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.", "lesson": "agentic-01/day-3"}
 {"term": "sandbox", "aliases": ["sandboxing", "sandboxed"], "def": "An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.", "lesson": "agentic-01/day-3"}
 {"term": "playbook", "aliases": [], "def": "Your own page of workflow rules, each backed by a source or a measurement. The ledger for Track B.", "lesson": "agentic-01/day-1"}

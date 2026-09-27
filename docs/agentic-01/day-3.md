@@ -18,9 +18,9 @@ playbook: budget
 
 **Who verifies.** With an **oracle** (tests, a compile, `check_lessons.py`) either agent can be left alone. If the verifier is you, keep the task short enough that you will actually read the output.
 
-**The phone.** **Remote Control** drives a Claude Code session on your laptop from the Claude app; execution stays local ([remote control](https://code.claude.com/docs/en/remote-control){ .src data-checked="2026-09-27" }). **Codex Remote** does the same from the ChatGPT app, you approving each action; the computer must stay awake ([Codex Remote](https://learn.chatgpt.com/docs/remote.md){ .src data-checked="2026-09-27" }). Claude's app cannot select bypass mode, nor auto mode over Remote Control ([mobile](https://code.claude.com/docs/en/mobile){ .src data-checked="2026-09-27" }).
+**The phone.** **Remote Control** drives a Claude Code session on your laptop from the Claude app; execution stays local ([remote control](https://code.claude.com/docs/en/remote-control){ .src data-checked="2026-09-27" }). **Codex Remote** does the same from the ChatGPT app, you approving each action; the computer must stay awake ([Codex Remote](https://learn.chatgpt.com/docs/remote.md){ .src data-checked="2026-09-27" }). Claude's app cannot select the loosest permission settings, and Remote Control sessions are stricter still ([mobile](https://code.claude.com/docs/en/mobile){ .src data-checked="2026-09-27" }).
 
-**Safety defaults.** Claude Code sets a **permission mode** per session, including **plan mode** for approve-first work ([permission modes](https://code.claude.com/docs/en/permission-modes){ .src data-checked="2026-09-27" }); Codex pairs an OS-level **sandbox** with an approval policy ([sandboxing](https://learn.chatgpt.com/docs/sandboxing){ .src data-checked="2026-09-27" }).
+**Safety defaults.** Claude Code sets a **permission mode** per session, including **plan mode** for approve-first work ([permission modes](https://code.claude.com/docs/en/permission-modes){ .src data-checked="2026-09-27" }); Codex pairs an OS-level **sandbox** with approval rules ([sandboxing](https://learn.chatgpt.com/docs/sandboxing){ .src data-checked="2026-09-27" }).
 
 **No repo.** Literature search is **Deep Research** territory in ChatGPT, or Claude's research features; verify every citation before it enters a document (week B6).
 
@@ -50,7 +50,7 @@ Predict first, then tap through your real next three tasks: does the picker agre
     The build fix stays local (needs the editor); the typo fix is a self-contained cloud task ending in a PR.
 
 ??? question "What is the same about Remote Control and Codex Remote, and what is one limit of each?"
-    Both drive an agent on your own machine from the phone. Codex Remote needs the computer awake; Claude's app cannot select bypass mode.
+    Both drive an agent on your own machine from the phone. Codex Remote needs the computer awake; Claude's app cannot select the loosest permission settings.
 
 ## Sources
 
@@ -63,4 +63,4 @@ Predict first, then tap through your real next three tasks: does the picker agre
 
 > In **Budget**: your three tagged tasks, and one rule the picker did not have.
 
-**Next:** the apply task in the build session: an instruction file for this repo, and the same task in both tools, measured.
+**Next:** the apply task in the build session: an AGENTS.md for this repo, and the same task in both tools, measured.

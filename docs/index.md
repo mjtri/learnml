@@ -86,16 +86,25 @@ hide:
     - ⬜ [B1 · Lesson 1 · An agent is a loop; context is the budget](agentic-01/day-1.md) ← next
     - ⬜ [B1 · Lesson 2 · What you actually pay for](agentic-01/day-2.md)
     - ⬜ [B1 · Lesson 3 · Which tool for which job, v1](agentic-01/day-3.md)
-    - ⬜ [B1 · Apply · Meters, one instruction file, one measured comparison](agentic-01/apply.md)
+    - ⬜ [B1 · Apply · Meters, one AGENTS.md, one measured comparison](agentic-01/apply.md)
 
-??? note "Week 2 · Instructions & memory · not generated yet"
-    `python gen_week.py agentic 2` prints the prompt that builds it.
+??? note "⬜ Week 2 · Instructions & memory · 0/4"
+    - ⬜ [B2 · Lesson 1 · One instruction file, read by both tools](agentic-02/day-1.md)
+    - ⬜ [B2 · Lesson 2 · Plan first, then the four-part prompt](agentic-02/day-2.md)
+    - ⬜ [B2 · Lesson 3 · Memory, instructions, context: what goes where](agentic-02/day-3.md)
+    - ⬜ [B2 · Apply · An instruction file the Unity project can build from](agentic-02/apply.md)
 
-??? note "Week 3 · Verification & permissions · not generated yet"
-    `python gen_week.py agentic 3` prints the prompt that builds it.
+??? note "⬜ Week 3 · Verification & permissions · 0/4"
+    - ⬜ [B3 · Lesson 1 · The agent needs an oracle](agentic-03/day-1.md)
+    - ⬜ [B3 · Lesson 2 · Permission modes and sandboxes: what each one risks](agentic-03/day-2.md)
+    - ⬜ [B3 · Lesson 3 · Hooks: deterministic guard rails](agentic-03/day-3.md)
+    - ⬜ [B3 · Apply · A Stop hook for this repo, a compile oracle for Unity](agentic-03/apply.md)
 
-??? note "Week 4 · Delegation · not generated yet"
-    `python gen_week.py agentic 4` prints the prompt that builds it.
+??? note "⬜ Week 4 · Delegation · 0/4"
+    - ⬜ [B4 · Lesson 1 · Subagents and skills: summaries in, context saved](agentic-04/day-1.md)
+    - ⬜ [B4 · Lesson 2 · Worktrees and background agents: parallel without collisions](agentic-04/day-2.md)
+    - ⬜ [B4 · Lesson 3 · Doer ≠ grader: /code-review, ultrareview, adversarial review](agentic-04/day-3.md)
+    - ⬜ [B4 · Apply · Two commands per week, and the other vendor grades](agentic-04/apply.md)
 
 ??? note "Week 5 · Automation & phone · not generated yet"
     `python gen_week.py agentic 5` prints the prompt that builds it.
