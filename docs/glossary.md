@@ -18,6 +18,14 @@ The Claude Code flag that starts a new cloud session for the current repository:
 
 ## /
 
+<div class="gl-entry" id="insights" markdown>
+**/insights**
+
+A Claude Code command that writes an HTML report on how you work: projects, friction points, suggestions. Reads local sessions only; its analysis tokens count against your plan.
+
+<small>first met in [agentic-08/day-1](agentic-08/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="loop" markdown>
 **/loop**
 
@@ -86,6 +94,14 @@ The default optimizer for deep learning. Keeps running averages of each gradient
 <small>first met in [week-03/day-3](week-03/day-3.md) · canvas card `core-optim`</small>
 </div>
 
+<div class="gl-entry" id="adapter" markdown>
+**adapter** <small>(also: adapters, LoRA adapter, LoRA adapters)</small>
+
+The small set of trained weights added to a frozen model to change its behaviour. Saved alone it is megabytes; swapping adapters swaps tasks without reloading the base model.
+
+<small>first met in [week-08/day-3](week-08/day-3.md) · canvas card `lin-lora`</small>
+</div>
+
 <div class="gl-entry" id="adversarial-review" markdown>
 **adversarial review** <small>(also: adversarial reviews)</small>
 
@@ -124,6 +140,14 @@ The cross-tool instruction file convention read by Codex and, when no CLAUDE.md 
 Tools or command patterns pre-approved in a settings file, like Bash(git commit *), so they run without a prompt. Deny rules override it in every mode.
 
 <small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="alpha" markdown>
+**alpha** <small>(also: lora_alpha, LoRA alpha)</small>
+
+The gain on a LoRA update: the learned change is multiplied by alpha over rank before being added. Raising it makes the adapter push harder, like a larger learning rate.
+
+<small>first met in [week-08/day-4](week-08/day-4.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="approval-policy" markdown>
@@ -280,6 +304,14 @@ The rule that lets tensors of different shapes combine: line shapes up from the 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="budget-rule" markdown>
+**budget rule** <small>(also: budget rules)</small>
+
+A written trigger and action for one meter: when this number passes this threshold, do that; with the source or measurement that says the action works.
+
+<small>first met in [agentic-08/day-2](agentic-08/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="bypass-mode" markdown>
 **bypass mode** <small>(also: bypassPermissions, bypass permissions mode, bypass permissions)</small>
 
@@ -297,6 +329,14 @@ A number from 0 to 255, the unit computers store text in. An English letter is o
 </div>
 
 ## C
+
+<div class="gl-entry" id="catastrophic-forgetting" markdown>
+**catastrophic forgetting**
+
+When training on a new task overwrites what a model could already do, so old abilities drop sharply. Like a device remapping that erases a user's earlier learned mapping.
+
+<small>first met in [week-08/day-5](week-08/day-5.md) · canvas card `bridge-adaptation`</small>
+</div>
 
 <div class="gl-entry" id="causal-mask" markdown>
 **causal mask** <small>(also: causal masks, causal masking)</small>
@@ -499,6 +539,14 @@ The standard classification loss: how surprised the model is by the correct labe
 </div>
 
 ## D
+
+<div class="gl-entry" id="data-leakage" markdown>
+**data leakage**
+
+When information from the test data reaches training, through duplicates, shared sources or the answers themselves, so a score looks far better than the model really is.
+
+<small>first met in [week-08/day-5](week-08/day-5.md) · canvas card `bridge-adaptation`</small>
+</div>
 
 <div class="gl-entry" id="dataloader" markdown>
 **DataLoader** <small>(also: DataLoaders, data loader)</small>
@@ -933,7 +981,7 @@ The step-size knob of gradient descent. Too small: learning crawls. Too large: s
 <div class="gl-entry" id="limit-reset" markdown>
 **limit reset** <small>(also: limit resets)</small>
 
-An occasional free reset of a spent usage window, applied from Settings > Usage on claude.ai.
+An occasional free reset of a spent usage window, offered in Settings > Usage on claude.ai web or desktop (not from Claude Code or the mobile app).
 
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
@@ -1003,11 +1051,11 @@ A matrix read by row number: token 17 comes back as row 17. In an embedding laye
 </div>
 
 <div class="gl-entry" id="lora" markdown>
-**LoRA**
+**LoRA** <small>(also: Low-Rank Adaptation)</small>
 
-Low-Rank Adaptation: fine-tune a big frozen model by learning only a small low-rank change to its weight matrices. Week 8.
+Low-Rank Adaptation: fine-tune a frozen model by learning only a small change to each chosen weight matrix, written as two thin matrices B times A, so very few numbers train.
 
-<small>canvas card `lin-lora`</small>
+<small>first met in [week-08/day-3](week-08/day-3.md) · canvas card `lin-lora`</small>
 </div>
 
 <div class="gl-entry" id="loss" markdown>
@@ -1037,9 +1085,17 @@ The loss pictured as a landscape: each position is one setting of the parameters
 <div class="gl-entry" id="low-rank" markdown>
 **low rank** <small>(also: low-rank)</small>
 
-A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.
+A matrix whose rank is far below its size, so it squashes space onto a few directions. It can be stored as two thin matrices multiplied, which is far cheaper.
 
-<small>canvas card `core-linalg`</small>
+<small>first met in [week-08/day-1](week-08/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="low-rank-approximation" markdown>
+**low-rank approximation** <small>(also: low-rank approximations, rank-k approximation)</small>
+
+Keeping only the k strongest stretches of a matrix's SVD and dropping the rest: the closest rank-k matrix to the original, the best compression at that rank.
+
+<small>first met in [week-08/day-2](week-08/day-2.md) · canvas card `core-linalg`</small>
 </div>
 
 ## M
@@ -1090,6 +1146,14 @@ Model Context Protocol: the open standard for plugging tools and data sources in
 How many bytes a model needs on the GPU. About two bytes per weight to run in 16-bit; about sixteen per weight to fully fine-tune with Adam, before activations.
 
 <small>first met in [week-07/day-4](week-07/day-4.md) · canvas card `move-adapters`</small>
+</div>
+
+<div class="gl-entry" id="merge-weights" markdown>
+**merge (weights)** <small>(also: weight merge, weight merging, merged adapter, merged weights, merge_and_unload)</small>
+
+Adding the adapter's product B times A into the frozen matrix once, after training, so the model runs exactly as fast as before with no extra layers.
+
+<small>first met in [week-08/day-4](week-08/day-4.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="merge-rule" markdown>
@@ -1322,6 +1386,14 @@ The total number of learned weights in a model. For a transformer it is about tw
 <small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="peft" markdown>
+**PEFT** <small>(also: parameter-efficient fine-tuning)</small>
+
+Parameter-efficient fine-tuning: any method that adapts a big model by training a small fraction of its numbers. Also the Hugging Face library that implements LoRA and its relatives.
+
+<small>first met in [week-08/day-3](week-08/day-3.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="permission-mode" markdown>
 **permission mode** <small>(also: permission modes)</small>
 
@@ -1344,6 +1416,14 @@ A Claude Code mode where the agent explores and proposes (read-only commands all
 Your own page of workflow rules, each backed by a source or a measurement. The ledger for Track B.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="playbook-v1" markdown>
+**playbook v1**
+
+The first pruned playbook: at most 20 rules, each with a source or a measurement, installed as global instructions in both tools.
+
+<small>first met in [agentic-08/day-3](agentic-08/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="plugin" markdown>
@@ -1389,7 +1469,7 @@ The order instruction files are read: broadest first, the nearest last. Files ar
 <div class="gl-entry" id="premium-seat" markdown>
 **Premium seat** <small>(also: Premium seats)</small>
 
-A higher-priced ChatGPT Business seat with much more usage and no 5-hour window. Seats can be mixed and reassigned.
+A higher-priced ChatGPT Business seat: 5x the usage, no 5-hour window, weekly reset. Seats can be mixed and reassigned.
 
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
@@ -1452,6 +1532,14 @@ In attention, the vector a token uses to ask: what am I looking for? Compared by
 The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
 
 <small>first met in [week-07/day-5](week-07/day-5.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="rank" markdown>
+**rank** <small>(also: matrix rank, full rank, full-rank, rank-1, rank-one)</small>
+
+How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
+
+<small>first met in [week-08/day-1](week-08/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
 <div class="gl-entry" id="record-mode" markdown>
@@ -1576,6 +1664,14 @@ An empirical rule for how loss falls as you add parameters, data or compute: smo
 <small>first met in [week-06/day-3](week-06/day-3.md) · canvas card `lin-kaplan`</small>
 </div>
 
+<div class="gl-entry" id="seat-type" markdown>
+**seat type** <small>(also: seat types)</small>
+
+Standard or Premium on ChatGPT Business: which allowance a member gets. Premium has more usage and no 5-hour window; only a workspace owner switches it.
+
+<small>first met in [agentic-08/day-2](agentic-08/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="sequence" markdown>
 **sequence** <small>(also: sequences)</small>
 
@@ -1598,6 +1694,14 @@ Stochastic gradient descent: gradient descent where each step uses the gradient 
 The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="singular-value" markdown>
+**singular value** <small>(also: singular values)</small>
+
+The strength of one stretch in a matrix's SVD. Counting the ones that are not zero gives the rank; their sizes say how much each direction matters.
+
+<small>first met in [week-08/day-2](week-08/day-2.md) · canvas card `core-linalg`</small>
 </div>
 
 <div class="gl-entry" id="size-cap" markdown>
@@ -1632,12 +1736,28 @@ Turns a list of scores into probabilities that add to one: exponentiate each sco
 <small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-dl`</small>
 </div>
 
+<div class="gl-entry" id="spend-limit" markdown>
+**spend limit** <small>(also: spend limits)</small>
+
+A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
+
+<small>first met in [agentic-08/day-2](agentic-08/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="subagent" markdown>
 **subagent** <small>(also: subagents)</small>
 
 A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="svd" markdown>
+**SVD** <small>(also: singular value decomposition)</small>
+
+Writing any matrix as a sum of simple stretches, each one a direction in, a direction out and a strength. Sorted by strength, the first few usually carry almost everything.
+
+<small>first met in [week-08/day-2](week-08/day-2.md) · canvas card `core-linalg`</small>
 </div>
 
 ## T
@@ -1648,6 +1768,14 @@ A helper agent with its own fresh context that does a bounded job and returns a 
 The S-shaped activation function that squashes any number into the range minus one to one. Steep near zero, flat far out, so large inputs stop passing gradient.
 
 <small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="target-module" markdown>
+**target module** <small>(also: target modules)</small>
+
+A named layer inside the model that gets an adapter, chosen by name such as q_proj or v_proj. Everything not named stays frozen and unchanged.
+
+<small>first met in [week-08/day-4](week-08/day-4.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="teleport" markdown>
@@ -1828,6 +1956,14 @@ One shared allowance drawn on by several surfaces. On Claude Max one pool covers
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="usage-report" markdown>
+**usage report** <small>(also: usage reports, usage report line)</small>
+
+Six numbers written down once a week from the meters: Claude weekly and worst-window percent, top attribution item, any flag, Codex weekly percent, credits spent.
+
+<small>first met in [agentic-08/day-1](agentic-08/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="usage-window" markdown>
 **usage window** <small>(also: usage windows, session window, 5-hour window)</small>
 
@@ -1886,6 +2022,14 @@ The full list of pieces a tokenizer can output, each with an id number. GPT-2 ha
 A second, larger allowance that spans seven days and applies across all models; it resets at a fixed time set per account.
 
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="weekly-review" markdown>
+**weekly review** <small>(also: weekly reviews)</small>
+
+A fifteen-minute ritual at a fixed weekly slot: write the usage report line, check the week's logs against the playbook, change one rule, delete one without evidence.
+
+<small>first met in [agentic-08/day-3](agentic-08/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="weight" markdown>

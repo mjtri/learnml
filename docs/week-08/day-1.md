@@ -6,7 +6,7 @@ card: core-linalg
 
 # Lesson 1 · Rank: how many directions a matrix really uses
 
-<p class="recall" markdown>**Previously:** you loaded a model and tokenizer from the Hub, inspected its config, parameter count and layers, ran generation and pulled out hidden states.</p>
+<p class="recall" markdown>**Previously:** a checkpoint is config plus weights plus tokenizer; load it, read the shapes, probe its hidden states with the weights frozen, and log every run with config, seed and git hash.</p>
 
 ## Idea
 

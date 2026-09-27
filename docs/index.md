@@ -95,8 +95,13 @@ hide:
     - ⬜ [Lesson 5 · Reproducibility basics: seeds, configs, run logs](week-07/day-5.md)
     - ⬜ [Build · Probe a small language model and log the run](week-07/build.md)
 
-??? note "Week 8 · LoRA fine-tuning · not generated yet"
-    `python gen_week.py 8` prints the prompt that builds it.
+??? note "⬜ Week 8 · LoRA fine-tuning · 0/6"
+    - ⬜ [Lesson 1 · Rank: how many directions a matrix really uses](week-08/day-1.md)
+    - ⬜ [Lesson 2 · SVD in pictures: a matrix as a few stretches](week-08/day-2.md)
+    - ⬜ [Lesson 3 · LoRA: freeze W, learn BA](week-08/day-3.md)
+    - ⬜ [Lesson 4 · PEFT in practice: where, how hard, and folding it back](week-08/day-4.md)
+    - ⬜ [Lesson 5 · Fine-tuning failure modes](week-08/day-5.md)
+    - ⬜ [Build · LoRA by hand, then with PEFT, then a rank ablation](week-08/build.md)
 
 ??? note "Week 9 · CLIP, multimodal embeddings, evaluation · not generated yet"
     `python gen_week.py 9` prints the prompt that builds it.
@@ -151,8 +156,11 @@ hide:
 ??? note "Week 7 · Experiments & data · not generated yet"
     `python gen_week.py agentic 7` prints the prompt that builds it.
 
-??? note "Week 8 · Your operating system · not generated yet"
-    `python gen_week.py agentic 8` prints the prompt that builds it.
+??? note "⬜ Week 8 · Your operating system · 0/4"
+    - ⬜ [B8 · Lesson 1 · Reading your own meters: what a week of usage says](agentic-08/day-1.md)
+    - ⬜ [B8 · Lesson 2 · Budgets and escape hatches: credits, fast mode, resets, seats](agentic-08/day-2.md)
+    - ⬜ [B8 · Lesson 3 · The weekly review and the playbook v1](agentic-08/day-3.md)
+    - ⬜ [B8 · Apply · Playbook v1 installed, first weekly review logged](agentic-08/apply.md)
 
 ## After a lesson
 

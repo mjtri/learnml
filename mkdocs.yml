@@ -106,6 +106,13 @@ nav:
       - "Lesson 4 · Full fine-tuning in outline; memory arithmetic": week-07/day-4.md
       - "Lesson 5 · Reproducibility basics: seeds, configs, run logs": week-07/day-5.md
       - "Build · Probe a small language model and log the run": week-07/build.md
+  - "Track A · Week 8 · LoRA fine-tuning":
+      - "Lesson 1 · Rank: how many directions a matrix really uses": week-08/day-1.md
+      - "Lesson 2 · SVD in pictures: a matrix as a few stretches": week-08/day-2.md
+      - "Lesson 3 · LoRA: freeze W, learn BA": week-08/day-3.md
+      - "Lesson 4 · PEFT in practice: where, how hard, and folding it back": week-08/day-4.md
+      - "Lesson 5 · Fine-tuning failure modes": week-08/day-5.md
+      - "Build · LoRA by hand, then with PEFT, then a rank ablation": week-08/build.md
   - "Track B · 1 · Budget & mental model":
       - "B1 · Lesson 1 · An agent is a loop; context is the budget": agentic-01/day-1.md
       - "B1 · Lesson 2 · What you actually pay for": agentic-01/day-2.md
@@ -136,6 +143,11 @@ nav:
       - "B6 · Lesson 2 · Drafting in Projects: TM reports, reviewer responses, KR↔EN": agentic-06/day-2.md
       - "B6 · Lesson 3 · Citation verification is its own pass": agentic-06/day-3.md
       - "B6 · Apply · One question, two tools, one verified reference list": agentic-06/apply.md
+  - "Track B · 8 · Your operating system":
+      - "B8 · Lesson 1 · Reading your own meters: what a week of usage says": agentic-08/day-1.md
+      - "B8 · Lesson 2 · Budgets and escape hatches: credits, fast mode, resets, seats": agentic-08/day-2.md
+      - "B8 · Lesson 3 · The weekly review and the playbook v1": agentic-08/day-3.md
+      - "B8 · Apply · Playbook v1 installed, first weekly review logged": agentic-08/apply.md
   - "Track B · Playbook": agentic/playbook.md
   - "Track B · Changelog": agentic/changelog.md
   - Glossary: glossary.md

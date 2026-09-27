@@ -1,0 +1,19 @@
+#separator:tab
+#html:true
+#tags column:3
+Which parts of /usage are account-wide and which are this machine only?	The plan bars are the account. Attribution, behavior flags and Loops rows come from local session history, so other devices and claude.ai are missing.	learnml agentic-08 agentic-08-day-1
+What does /insights cost and where does the report go?	Its analysis runs through your plan and counts against it. The report lands in ~/.claude/usage-data/report.html, deleted after 30 days by default.	learnml agentic-08 agentic-08-day-1
+Worst window 95 %, weekly cap 40 %: what is the reading?	Sessions are bunched into one block. Spread them or move the heavy block to the other pool; the weekly cap is not the problem.	learnml agentic-08 agentic-08-day-1
+Name three things about fast mode that decide when to turn it on.	Credits only, never the plan; Opus only, up to 2.5x faster at a higher price; the first fast turn re-bills the whole conversation.	learnml agentic-08 agentic-08-day-2
+What can a free limit reset do, and from where?	Restore a 5-hour or weekly limit once, from Settings › Usage on web or desktop; not from Claude Code, and not undone.	learnml agentic-08 agentic-08-day-2
+Your Codex weekly allowance is spent on a Business seat. List the options in order of cost.	Wait for the weekly reset; workspace credits under the seat-type limit; a Premium seat. No paid instant reset exists on Business.	learnml agentic-08 agentic-08-day-2
+In what order do user and project instruction files load in each tool, and who wins a conflict?	Claude: the user file before project files, neither overrides, so keep them consistent. Codex: the global file first, then Git root down; later files override because they appear later.	learnml agentic-08 agentic-08-day-3
+What makes a rule survive the prune?	A source link or a measured number. A rule with neither is scheduled for a measurement or deleted.	learnml agentic-08 agentic-08-day-3
+Why not install the whole playbook page as the global file?	Instruction tokens load at every session start even for unrelated work. Evidence and stamps belong in the ledger; the imperatives, under 200 lines, in the global files.	learnml agentic-08 agentic-08-day-3
+What does <b>usage report</b> mean?	Six numbers written down once a week from the meters: Claude weekly and worst-window percent, top attribution item, any flag, Codex weekly percent, credits spent.	learnml agentic-08 vocab
+What does <b>/insights</b> mean?	A Claude Code command that writes an HTML report on how you work: projects, friction points, suggestions. Reads local sessions only; its analysis tokens count against your plan.	learnml agentic-08 vocab
+What does <b>budget rule</b> mean?	A written trigger and action for one meter: when this number passes this threshold, do that; with the source or measurement that says the action works.	learnml agentic-08 vocab
+What does <b>seat type</b> mean?	Standard or Premium on ChatGPT Business: which allowance a member gets. Premium has more usage and no 5-hour window; only a workspace owner switches it.	learnml agentic-08 vocab
+What does <b>spend limit</b> mean?	A monthly cap on pay-as-you-go credits: set by you in Claude&#x27;s Settings &gt; Usage, or per seat type and per user by a ChatGPT Business owner or admin.	learnml agentic-08 vocab
+What does <b>weekly review</b> mean?	A fifteen-minute ritual at a fixed weekly slot: write the usage report line, check the week&#x27;s logs against the playbook, change one rule, delete one without evidence.	learnml agentic-08 vocab
+What does <b>playbook v1</b> mean?	The first pruned playbook: at most 20 rules, each with a source or a measurement, installed as global instructions in both tools.	learnml agentic-08 vocab
