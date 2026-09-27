@@ -16,7 +16,7 @@ If the badge 404s, run `python setup_repo.py <user> <repo>` once, or upload `not
 
 ## The rule of the session
 
-Every experiment cell is preceded by a **predict cell**. Write what you expect, with a confidence, *before* running; the notebook refuses an empty prediction. One extra rule this week: Part A is written **from memory**. Close the lessons, write the `Value` class, run the checks. If it fails, fix it and note in the ledger which piece you had forgotten.
+Every experiment cell is preceded by a **predict cell**. Write what you expect, with a confidence, *before* running; the notebook refuses an empty prediction. One extra rule: Part A is written **from memory**. Close the lessons, write `Value`, run the checks. If it fails, fix it and note in the ledger which piece you had forgotten.
 
 A `SMOKE` switch near the top shrinks data and step counts so the notebook runs in minutes on CPU. Set it to `False` for the real session.
 
