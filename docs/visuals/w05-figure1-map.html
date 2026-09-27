@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Figure 1 to code</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.panel{background:var(--card);border-radius:10px;padding:10px;min-height:120px;margin-bottom:10px}
+.panel .t{font-weight:700;margin-bottom:4px}
+.panel .code{font:13px ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;color:var(--acc2);margin:4px 0}
+.panel .k{font-size:12px;color:var(--mut)}
+.panel .v{font:13px ui-monospace,Menlo,Consolas,monospace;margin-bottom:4px}
+.panel .n{font-size:13px;margin-top:4px}
+.stack{margin:0}
+.box{display:block;width:100%;margin:0 0 6px;text-align:center;font-weight:600}
+.box.grey{color:var(--mut);border-style:dashed;font-weight:400}
+.arrow{text-align:center;color:var(--mut);font-size:12px;line-height:1;margin:-2px 0 4px}
+.nx{border:2px solid var(--acc2);border-radius:12px;padding:8px 8px 2px;margin-bottom:6px;position:relative}
+.nx .lab{position:absolute;top:-10px;right:10px;background:var(--bg);color:var(--acc2);font-size:12px;font-weight:700;padding:0 6px}
+.cols{display:flex;gap:8px;align-items:flex-start}
+.cols>div{flex:1;min-width:0}
+.hint{font-size:12px;color:var(--mut);margin:4px 0 8px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Tap a box of figure 1 to see its line of nanoGPT</h1>
+<div class="panel" id="panel"><div class="t">Tap a box</div><div class="n">Shapes are for this week's config: d = 384, T = 256, 65 characters, batch B.</div></div>
+<div class="hint">Right column: what a GPT keeps. Left column: the paper's other half. Read bottom to top, like the paper's figure.</div>
+<div class="cols">
+<div>
+<button class="box grey" data-i="10">Softmax (of the left stack)</button>
+<div class="nx"><span class="lab">N×</span>
+<button class="box grey" data-i="11">Add &amp; Norm</button>
+<button class="box grey" data-i="11">Feed Forward</button>
+<button class="box grey" data-i="11">Add &amp; Norm</button>
+<button class="box grey" data-i="11">Multi-Head Attention</button>
+</div>
+<div class="arrow">▲</div>
+<button class="box grey" data-i="12">Input Embedding</button>
+</div>
+<div>
+<button class="box" data-i="9">Softmax</button>
+<div class="arrow">▲</div>
+<button class="box" data-i="8">Linear</button>
+<div class="arrow">▲</div>
+<div class="nx"><span class="lab">N×</span>
+<button class="box" data-i="7">Add &amp; Norm</button>
+<button class="box" data-i="6">Feed Forward</button>
+<button class="box grey" data-i="5">Add &amp; Norm</button>
+<button class="box grey" data-i="4">Multi-Head Attention</button>
+<button class="box" data-i="3">Add &amp; Norm</button>
+<button class="box" data-i="2">Masked Multi-Head Attention</button>
+</div>
+<div class="arrow">▲</div>
+<button class="box" data-i="1">⊕ Positional Encoding</button>
+<div class="arrow">▲</div>
+<button class="box" data-i="0">Output Embedding</button>
+</div>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>figure 1</dt><dd>The block diagram in Attention Is All You Need (2017): a left stack reads the input, a right stack writes the output.</dd>
+<dt>nanoGPT</dt><dd>Karpathy's small PyTorch GPT. Its model.py is the code every box is mapped to.</dd>
+<dt>N×</dt><dd>The bracket repeated N times: one transformer block, stacked. Six times this week.</dd>
+<dt>d, T, V</dt><dd>Stream width 384, context length 256, alphabet size 65.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var d=384,T=256,V=65;
+function M(n){return n>=1e6?(n/1e6).toFixed(2)+" M":n>=1e3?(n/1e3).toFixed(1)+" K":String(n)}
+var INFO=[
+ {t:"Output Embedding",c:"tok_emb = self.transformer.wte(idx)",s:"(B, T) integers → (B, T, "+d+")",p:V*d,n:"The lookup table from week 4. The paper's word pieces are characters here. This table is also reused as the output layer."},
+ {t:"Positional Encoding (added)",c:"pos_emb = self.transformer.wpe(pos)\nx = tok_emb + pos_emb",s:"(T, "+d+") added to every row of the batch → (B, T, "+d+")",p:T*d,n:"Paper: fixed sine waves, no parameters (section 3.5). Code: a learned table. The residual stream starts on this line."},
+ {t:"Masked Multi-Head Attention",c:"x = x + self.attn(self.ln_1(x))   (class CausalSelfAttention)\natt = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))\natt = att.masked_fill(self.bias[:,:,:T,:T] == 0, float('-inf'))",s:"(B, T, "+d+") → (B, T, "+d+")   inside: (B, 6 heads, T, 64)",p:4*d*d,n:"Four d×d matrices: query, key, value, output projection. \"Masked\" = the causal mask so a position cannot read the future."},
+ {t:"Add & Norm (after attention)",c:"x = x + self.attn(self.ln_1(x))",s:"(B, T, "+d+") → same",p:2*d,n:"Paper: LN(x + f(x)), post-norm. Code: x + f(LN(x)), pre-norm. The add is the residual stream; only the norm's position differs."},
+ {t:"Multi-Head Attention (reads the left stack)",c:"(no line: a GPT has no left stack to read)",s:"would be (B, T, "+d+") → same",p:4*d*d,n:"Cross-attention: queries from here, keys and values from the left stack. Dropped in GPT. It would add another 4d² per block."},
+ {t:"Add & Norm (after cross-attention)",c:"(no line: a GPT has no cross-attention)",s:"–",p:0,n:"Exists only with the box below it. Not in nanoGPT."},
+ {t:"Feed Forward",c:"x = x + self.mlp(self.ln_2(x))   (class MLP)\nc_fc: Linear("+d+", "+4*d+")  gelu  c_proj: Linear("+4*d+", "+d+")",s:"(B, T, "+d+") → (B, T, "+4*d+") → (B, T, "+d+")",p:8*d*d,n:"The MLP block: the same two-layer net on every token, no mixing between positions. Two thirds of a block's parameters live here."},
+ {t:"Add & Norm (after feed forward)",c:"x = x + self.mlp(self.ln_2(x))",s:"(B, T, "+d+") → same",p:2*d,n:"Second add of the block. Pre-norm in code, post-norm in the figure. A final ln_f follows the last block in nanoGPT."},
+ {t:"Linear",c:"logits = self.lm_head(x)",s:"(B, T, "+d+") → (B, T, "+V+")",p:0,n:"One score per character per position. Tied to the embedding table (weight sharing), so zero extra parameters."},
+ {t:"Softmax",c:"probs = F.softmax(logits, dim=-1)   (inside generate)",s:"(B, "+V+") for the last position → probabilities that sum to 1",p:0,n:"In training the softmax hides inside cross_entropy. In generation it runs after temperature and top-k, then multinomial draws one character."},
+ {t:"Softmax of the left stack",c:"(no line)",s:"–",p:0,n:"The figure's left stack has no output head; its final vectors feed the cross-attention box. Nothing to map."},
+ {t:"Left stack block",c:"(no line: a GPT has no left stack)",s:"would be (B, S, "+d+") → same for a source of length S",p:12*d*d,n:"Same anatomy as the right stack but without the mask, and without cross-attention. 12d² per block, none of it in your code."},
+ {t:"Input Embedding",c:"(no line: a GPT has one embedding table, on the right)",s:"–",p:0,n:"Reads the source sentence in translation. A GPT reads and writes the same stream, so only the right stack survives."}];
+var boxes=document.querySelectorAll(".box");
+function show(i){var o=INFO[i];$("panel").innerHTML='<div class="t">'+o.t+'</div><div class="k">nanoGPT line</div><div class="code"></div><div class="k">shape in → out</div><div class="v"></div><div class="k">parameters in this box</div><div class="v"></div><div class="n"></div>';
+  var el=$("panel").querySelectorAll(".code,.v,.n");el[0].textContent=o.c;el[1].textContent=o.s;el[2].textContent=o.p?M(o.p)+" ("+o.p.toLocaleString()+")":"0";el[3].textContent=o.n;
+  Array.prototype.forEach.call(boxes,function(b){b.classList.toggle("on",+b.getAttribute("data-i")===i)})}
+Array.prototype.forEach.call(boxes,function(b){b.onclick=function(){show(+b.getAttribute("data-i"))}});
+window.redraw=function(){};
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
