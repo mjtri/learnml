@@ -83,9 +83,19 @@
 *[Bypass permissions]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
 *[chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
 *[Chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
+*[character-level model]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
+*[Character-level model]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
+*[character-level models]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
+*[Character-level models]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
+*[character-level]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
+*[Character-level]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
 *[ChatGPT Business]: OpenAI's team subscription (formerly Team). Seats share one usage pool across ChatGPT and Codex; business data is not used for training by default.
 *[Business plan]: OpenAI's team subscription (formerly Team). Seats share one usage pool across ChatGPT and Codex; business data is not used for training by default.
 *[ChatGPT Business plan]: OpenAI's team subscription (formerly Team). Seats share one usage pool across ChatGPT and Codex; business data is not used for training by default.
+*[checkpoint]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
+*[Checkpoint]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
+*[checkpoints]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
+*[Checkpoints]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
 *[CLAUDE.md]: Claude Code's project instruction file, loaded into every session. Keep it short; it can import other files with @path.
 *[cloud session]: Claude Code running on Anthropic's servers against your GitHub repo, started from claude.ai/code or the mobile app.
 *[Cloud session]: Claude Code running on Anthropic's servers against your GitHub repo, started from claude.ai/code or the mobile app.
@@ -173,6 +183,14 @@
 *[Feature]: One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.
 *[features]: One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.
 *[Features]: One number that describes something about an input, such as a pixel's brightness or, deeper in a network, how strongly a learned pattern is present.
+*[feed-forward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[Feed-forward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[feed-forward layer]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[Feed-forward layer]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[feed-forward network]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[Feed-forward network]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[Feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[forward pass]: Running the calculation from inputs to output, storing intermediate values along the way.
 *[Forward pass]: Running the calculation from inputs to output, storing intermediate values along the way.
 *[four-part prompt]: A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
@@ -196,6 +214,8 @@
 *[Grads]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[gradient descent]: The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.
 *[Gradient descent]: The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.
+*[greedy decoding]: Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
+*[Greedy decoding]: Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
 *[hook]: A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
 *[Hook]: A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
 *[inference]: Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
@@ -269,6 +289,8 @@
 *[Connector]: Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
 *[connectors]: Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
 *[Connectors]: Model Context Protocol: the open standard both Claude Code and Codex use to plug in external tools and data sources.
+*[MLP block]: The second half of a transformer block: the same small two-layer network applied to every token on its own, widening to four times the stream width and back.
+*[MLP blocks]: The second half of a transformer block: the same small two-layer network applied to every token on its own, widening to four times the stream width and back.
 *[model]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[Model]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[models]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
@@ -277,6 +299,8 @@
 *[mean squared error]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
 *[Mean squared error]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
 *[NaN]: Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.
+*[nanoGPT]: Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
+*[NanoGPT]: Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
 *[neural network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[Neural network]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
 *[neural networks]: A function built by stacking simple layers, such as matrix multiplies with simple bends in between, whose parameters are learned from data.
@@ -305,6 +329,12 @@
 *[Parameter]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
 *[parameters]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
 *[Parameters]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
+*[parameter count]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+*[Parameter count]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+*[parameter counts]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+*[Parameter counts]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+*[parameter counting]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+*[Parameter counting]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
 *[permission mode]: Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
 *[Permission mode]: Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
 *[permission modes]: Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
@@ -317,6 +347,12 @@
 *[Plugin]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 *[plugins]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 *[Plugins]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
+*[pre-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+*[Pre-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+*[post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+*[Post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+*[pre-norm/post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+*[Pre-norm/post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 *[Precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 *[Premium seat]: A higher-priced ChatGPT Business seat with much more usage and no 5-hour window. Seats can be mixed and reassigned.
@@ -333,10 +369,16 @@
 *[Remote Control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[Remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
+*[residual stream]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
+*[Residual stream]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
+*[residual streams]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
+*[Residual streams]: The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
 *[rules directory]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
 *[Rules directory]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
 *[rules directories]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
 *[Rules directories]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
+*[sampling]: Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
+*[Sampling]: Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
 *[sandbox]: An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.
 *[Sandbox]: An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.
 *[sandboxing]: An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.
@@ -366,10 +408,16 @@
 *[Subagent]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[Subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
+*[temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
+*[Temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
+*[sampling temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
+*[Sampling temperature]: A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
 *[tensor]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
 *[Tensor]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
 *[tensors]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
 *[Tensors]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
+*[tiny Shakespeare]: A one-megabyte text file of Shakespeare's plays, about a million characters. The standard tiny corpus for training a first language model in minutes.
+*[Tiny Shakespeare]: A one-megabyte text file of Shakespeare's plays, about a million characters. The standard tiny corpus for training a first language model in minutes.
 *[token]: The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
 *[Token]: The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
 *[tokens]: The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
@@ -380,8 +428,16 @@
 *[Tool calls]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[tool use]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[Tool use]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
+*[top-k]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
+*[Top-k]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
+*[top-k sampling]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
+*[Top-k sampling]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
 *[training]: Repeatedly adjusting a model's parameters to lower the loss on example data.
 *[Training]: Repeatedly adjusting a model's parameters to lower the loss on example data.
+*[transformer block]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
+*[Transformer block]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
+*[transformer blocks]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
+*[Transformer blocks]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
 *[ultrareview]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 *[Ultrareview]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 *[ultra review]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.

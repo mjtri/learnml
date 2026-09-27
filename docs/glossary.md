@@ -176,12 +176,28 @@ When one quantity affects another through a chain of steps, the overall sensitiv
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="character-level-model" markdown>
+**character-level model** <small>(also: character-level models, character-level)</small>
+
+A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
+
+<small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="chatgpt-business" markdown>
 **ChatGPT Business** <small>(also: Business plan, ChatGPT Business plan)</small>
 
 OpenAI's team subscription (formerly Team). Seats share one usage pool across ChatGPT and Codex; business data is not used for training by default.
 
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="checkpoint" markdown>
+**checkpoint** <small>(also: checkpoints)</small>
+
+A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
+
+<small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="claude-md" markdown>
@@ -366,6 +382,14 @@ One number that describes something about an input, such as a pixel's brightness
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="feed-forward" markdown>
+**feed-forward** <small>(also: feed-forward layer, feed-forward network, feedforward)</small>
+
+The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+
+<small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="forward-pass" markdown>
 **forward pass**
 
@@ -406,6 +430,14 @@ The list of derivatives of one output (usually the loss) with respect to every i
 The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="greedy-decoding" markdown>
+**greedy decoding**
+
+Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
+
+<small>first met in [week-05/day-4](week-05/day-4.md) · canvas card `core-transformer`</small>
 </div>
 
 ## H
@@ -551,6 +583,14 @@ Model Context Protocol: the open standard both Claude Code and Codex use to plug
 
 </div>
 
+<div class="gl-entry" id="mlp-block" markdown>
+**MLP block** <small>(also: MLP blocks)</small>
+
+The second half of a transformer block: the same small two-layer network applied to every token on its own, widening to four times the stream width and back.
+
+<small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="model" markdown>
 **model** <small>(also: models)</small>
 
@@ -575,6 +615,14 @@ Mean squared error: average of (prediction minus target) squared. The standard l
 Not a Number: what arithmetic returns after overflow or invalid operations. A loss of NaN almost always means training diverged.
 
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
+</div>
+
+<div class="gl-entry" id="nanogpt" markdown>
+**nanoGPT**
+
+Karpathy's small, readable PyTorch repository that trains a GPT-style model. Its model.py is the reference code this week maps the paper onto.
+
+<small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="neural-network" markdown>
@@ -621,6 +669,14 @@ Any number inside a model that training is allowed to change. Weights are parame
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="parameter-count" markdown>
+**parameter count** <small>(also: parameter counts, parameter counting)</small>
+
+The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+
+<small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="permission-mode" markdown>
 **permission mode** <small>(also: permission modes)</small>
 
@@ -651,6 +707,14 @@ Your own page of workflow rules, each backed by a source or a measurement. The l
 A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 
 <small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="pre-norm" markdown>
+**pre-norm** <small>(also: post-norm, pre-norm/post-norm)</small>
+
+Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
+
+<small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="precedence" markdown>
@@ -695,6 +759,14 @@ Driving a Claude Code session that runs on your own machine from the Claude mobi
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
 </div>
 
+<div class="gl-entry" id="residual-stream" markdown>
+**residual stream** <small>(also: residual streams)</small>
+
+The running sum that flows through a transformer: the token's embedding plus everything each block has added. Blocks read from it and add to it; nothing erases it.
+
+<small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `lin-resnet`</small>
+</div>
+
 <div class="gl-entry" id="rules-directory" markdown>
 **rules directory** <small>(also: rules directories)</small>
 
@@ -704,6 +776,14 @@ Claude Code's .claude/rules/ folder of topic files loaded with the instruction f
 </div>
 
 ## S
+
+<div class="gl-entry" id="sampling" markdown>
+**sampling**
+
+Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
+
+<small>first met in [week-05/day-4](week-05/day-4.md) · canvas card `core-transformer`</small>
+</div>
 
 <div class="gl-entry" id="sandbox" markdown>
 **sandbox** <small>(also: sandboxing, sandboxed)</small>
@@ -763,12 +843,28 @@ A helper agent with its own fresh context that does a bounded job and returns a 
 
 ## T
 
+<div class="gl-entry" id="temperature" markdown>
+**temperature** <small>(also: sampling temperature)</small>
+
+A number the logits are divided by before softmax. Below 1 sharpens the choice towards the favourite; above 1 flattens it towards uniform. Same knob as in chat APIs.
+
+<small>first met in [week-05/day-4](week-05/day-4.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="tensor" markdown>
 **tensor** <small>(also: tensors)</small>
 
 A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="tiny-shakespeare" markdown>
+**tiny Shakespeare**
+
+A one-megabyte text file of Shakespeare's plays, about a million characters. The standard tiny corpus for training a first language model in minutes.
+
+<small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="token" markdown>
@@ -787,12 +883,28 @@ The agent asking to run something outside itself: read a file, run a command, se
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="top-k" markdown>
+**top-k** <small>(also: top-k sampling)</small>
+
+Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
+
+<small>first met in [week-05/day-4](week-05/day-4.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="training" markdown>
 **training**
 
 Repeatedly adjusting a model's parameters to lower the loss on example data.
 
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
+</div>
+
+<div class="gl-entry" id="transformer-block" markdown>
+**transformer block** <small>(also: transformer blocks)</small>
+
+One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
+
+<small>first met in [week-05/day-1](week-05/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 ## U

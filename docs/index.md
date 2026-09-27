@@ -56,8 +56,13 @@ hide:
 ??? note "Week 4 · Embeddings and attention · not generated yet"
     `python gen_week.py 4` prints the prompt that builds it.
 
-??? note "Week 5 · The transformer block and nanoGPT · not generated yet"
-    `python gen_week.py 5` prints the prompt that builds it.
+??? note "⬜ Week 5 · The transformer block and nanoGPT · 0/6"
+    - ⬜ [Lesson 1 · The residual stream](week-05/day-1.md)
+    - ⬜ [Lesson 2 · The MLP block and where LayerNorm goes](week-05/day-2.md)
+    - ⬜ [Lesson 3 · Stacking blocks and counting parameters](week-05/day-3.md)
+    - ⬜ [Lesson 4 · Sampling, temperature and top-k](week-05/day-4.md)
+    - ⬜ [Lesson 5 · Reading the Transformer paper with a map](week-05/day-5.md)
+    - ⬜ [Build · A character-level model on tiny Shakespeare](week-05/build.md)
 
 ??? note "Week 6 · Tokenization, scaling intuition, first ablation · not generated yet"
     `python gen_week.py 6` prints the prompt that builds it.
