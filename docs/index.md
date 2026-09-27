@@ -87,8 +87,13 @@ hide:
     - ⬜ [Lesson 5 · Encoder vs decoder: BERT and GPT](week-06/day-5.md)
     - ⬜ [Build · BPE from scratch, one ablation, one scaling line](week-06/build.md)
 
-??? note "Week 7 · Using pretrained models with Hugging Face · not generated yet"
-    `python gen_week.py 7` prints the prompt that builds it.
+??? note "⬜ Week 7 · Using pretrained models with Hugging Face · 0/6"
+    - ⬜ [Lesson 1 · The Hub, model cards, and what a checkpoint contains](week-07/day-1.md)
+    - ⬜ [Lesson 2 · AutoTokenizer / AutoModel: shapes in, shapes out](week-07/day-2.md)
+    - ⬜ [Lesson 3 · Hidden states as features; the linear probe](week-07/day-3.md)
+    - ⬜ [Lesson 4 · Full fine-tuning in outline; memory arithmetic](week-07/day-4.md)
+    - ⬜ [Lesson 5 · Reproducibility basics: seeds, configs, run logs](week-07/day-5.md)
+    - ⬜ [Build · Probe a small language model and log the run](week-07/build.md)
 
 ??? note "Week 8 · LoRA fine-tuning · not generated yet"
     `python gen_week.py 8` prints the prompt that builds it.

@@ -85,6 +85,9 @@
 *[Auto mode]: Claude Code permission mode where a separate classifier reviews each action instead of you and blocks risky ones. The starting mode for terminal sessions on recent versions.
 *[autograd]: PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().
 *[Autograd]: PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().
+*[AutoModel]: The Transformers class that reads a repository's config, builds the right architecture and loads the weights. The ForCausalLM variant adds the next-token output layer.
+*[AutoModelForCausalLM]: The Transformers class that reads a repository's config, builds the right architecture and loads the weights. The ForCausalLM variant adds the next-token output layer.
+*[AutoTokenizer]: The Transformers class that reads a Hub repository's tokenizer files and returns the matching tokenizer: text in, integer token ids and an attention mask out.
 *[axis]: One direction you can index a tensor along, such as rows, columns, colour channels or time. Also called a dimension.
 *[Axis]: One direction you can index a tensor along, such as rows, columns, colour channels or time. Also called a dimension.
 *[axes]: One direction you can index a tensor along, such as rows, columns, colour channels or time. Also called a dimension.
@@ -165,6 +168,8 @@
 *[Checkpoint]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
 *[checkpoints]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
 *[Checkpoints]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
+*[checkpoint files]: The files a Hub repository needs to run a model: a config describing the architecture, a weights file, and the tokenizer. Lose one and the others are useless.
+*[Checkpoint files]: The files a Hub repository needs to run a model: a config describing the architecture, a weights file, and the tokenizer. Lose one and the others are useless.
 *[Chinchilla]: DeepMind's 2022 result: for a fixed compute budget, grow parameters and training tokens together, roughly 20 tokens per parameter. Earlier large models were under-trained.
 *[citation verification]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
 *[Citation verification]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
@@ -210,6 +215,10 @@
 *[Compute-optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[Compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
+*[config]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
+*[Config]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
+*[configs]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
+*[Configs]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
 *[context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[Context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[context lengths]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
@@ -339,6 +348,18 @@
 *[Feed-forward network]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[Feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[fine-tuning]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[Fine-tuning]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[fine-tune]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[Fine-tune]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[fine-tuned]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[Fine-tuned]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[fine-tunes]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[Fine-tunes]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[finetuning]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[Finetuning]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[finetune]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+*[Finetune]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
 *[FLOPs]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
 *[FLOP]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
 *[floating-point operations]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
@@ -352,6 +373,21 @@
 *[prompt shape]: A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
 *[Prompt shape]: A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
 *[Goal/Context/Constraints/Done-when]: A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
+*[fp16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[Fp16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[bf16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[Bf16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[float16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[Float16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[bfloat16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[Bfloat16]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[half precision]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[Half precision]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[16-bit]: Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+*[frozen weights]: Weights that receive no gradient and never change during a training run. The model is used as a fixed feature extractor while something small on top learns.
+*[Frozen weights]: Weights that receive no gradient and never change during a training run. The model is used as a fixed feature extractor while something small on top learns.
+*[frozen]: Weights that receive no gradient and never change during a training run. The model is used as a fixed feature extractor while something small on top learns.
+*[Frozen]: Weights that receive no gradient and never change during a training run. The model is used as a fixed feature extractor while something small on top learns.
 *[function]: A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.
 *[Function]: A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.
 *[functions]: A rule that turns inputs into an output. A whole neural network is one big function from input numbers to output numbers.
@@ -372,6 +408,12 @@
 *[Generalising]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
 *[generalizing]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
 *[Generalizing]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
+*[git hash]: The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
+*[Git hash]: The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
+*[git hashes]: The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
+*[Git hashes]: The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
+*[commit hash]: The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
+*[Commit hash]: The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
 *[GitHub Code Review action]: A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
 *[Code Review action]: A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
 *[GPT]: OpenAI's family of language models that read text left to right and predict the next token. nanoGPT is a small copy of the design.
@@ -397,8 +439,16 @@
 *[Hidden units]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
 *[hidden unit]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
 *[Hidden unit]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
+*[hidden state]: The vector a model holds for one token after one layer. A transformer returns one per token per layer, shaped batch by tokens by width.
+*[Hidden state]: The vector a model holds for one token after one layer. A transformer returns one per token per layer, shaped batch by tokens by width.
+*[hidden states]: The vector a model holds for one token after one layer. A transformer returns one per token per layer, shaped batch by tokens by width.
+*[Hidden states]: The vector a model holds for one token after one layer. A transformer returns one per token per layer, shaped batch by tokens by width.
 *[hook]: A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
 *[Hook]: A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
+*[Hugging Face Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
+*[HF Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
+*[the Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
+*[The Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
 *[hyperparameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[Hyperparameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[hyperparameters]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
@@ -458,6 +508,10 @@
 *[Linear map]: A layer that computes each output as a weighted sum of its inputs: one matrix multiply (plus an optional constant offset).
 *[linear maps]: A layer that computes each output as a weighted sum of its inputs: one matrix multiply (plus an optional constant offset).
 *[Linear maps]: A layer that computes each output as a weighted sum of its inputs: one matrix multiply (plus an optional constant offset).
+*[linear probe]: A single linear layer trained on a frozen model's hidden states to predict a label. If it works, that layer already holds the distinction in a readable form.
+*[Linear probe]: A single linear layer trained on a frozen model's hidden states to predict a label. If it works, that layer already holds the distinction in a readable form.
+*[linear probes]: A single linear layer trained on a frozen model's hidden states to predict a label. If it works, that layer already holds the distinction in a readable form.
+*[Linear probes]: A single linear layer trained on a frozen model's hidden states to predict a label. If it works, that layer already holds the distinction in a readable form.
 *[literature review pipeline]: A fixed sequence for a paper search: search in both tools, merge and dedupe the reference lists, verify every citation, then summarise only what survived. Nothing enters a document earlier.
 *[Literature review pipeline]: A fixed sequence for a paper search: search in both tools, merge and dedupe the reference lists, verify every citation, then summarise only what survived. Nothing enters a document earlier.
 *[lit-review pipeline]: A fixed sequence for a paper search: search in both tools, merge and dedupe the reference lists, verify every citation, then summarise only what survived. Nothing enters a document earlier.
@@ -545,6 +599,10 @@
 *[Custom connector]: Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
 *[custom connectors]: Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
 *[Custom connectors]: Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
+*[memory footprint]: How many bytes a model needs on the GPU. About two bytes per weight to run in 16-bit; about sixteen per weight to fully fine-tune with Adam, before activations.
+*[Memory footprint]: How many bytes a model needs on the GPU. About two bytes per weight to run in 16-bit; about sixteen per weight to fully fine-tune with Adam, before activations.
+*[memory footprints]: How many bytes a model needs on the GPU. About two bytes per weight to run in 16-bit; about sixteen per weight to fully fine-tune with Adam, before activations.
+*[Memory footprints]: How many bytes a model needs on the GPU. About two bytes per weight to run in 16-bit; about sixteen per weight to fully fine-tune with Adam, before activations.
 *[merge rule]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
 *[Merge rule]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
 *[merge rules]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
@@ -575,6 +633,10 @@
 *[Model]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[models]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 *[Models]: A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
+*[model card]: The README of a Hub model repository: what it was trained on, what it is for, its licence, its scores and a copy-paste snippet to run it.
+*[Model card]: The README of a Hub model repository: what it was trained on, what it is for, its licence, its scores and a copy-paste snippet to run it.
+*[model cards]: The README of a Hub model repository: what it was trained on, what it is for, its licence, its scores and a copy-paste snippet to run it.
+*[Model cards]: The README of a Hub model repository: what it was trained on, what it is for, its licence, its scores and a copy-paste snippet to run it.
 *[momentum]: An optimizer trick: keep a running average of past gradients and step along that instead. Smooths mini-batch noise and speeds up travel along long shallow valleys.
 *[Momentum]: An optimizer trick: keep a running average of past gradients and step along that instead. Smooths mini-batch noise and speeds up travel along long shallow valleys.
 *[MSE]: Mean squared error: average of (prediction minus target) squared. The standard loss for predicting continuous numbers.
@@ -720,6 +782,16 @@
 *[Precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 *[Premium seat]: A higher-priced ChatGPT Business seat with much more usage and no 5-hour window. Seats can be mixed and reassigned.
 *[Premium seats]: A higher-priced ChatGPT Business seat with much more usage and no 5-hour window. Seats can be mixed and reassigned.
+*[pretraining]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[Pretraining]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[pretrain]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[Pretrain]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[pretrained]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[Pretrained]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[pre-training]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[Pre-training]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[pre-trained]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[Pre-trained]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
 *[project instructions]: The standing text a Projects workspace adds to every chat inside it: role, audience, format, language rules. Written once, applied to every draft.
 *[Project instructions]: The standing text a Projects workspace adds to every chat inside it: role, audience, format, language rules. Written once, applied to every draft.
 *[Projects]: A workspace in ChatGPT or Claude that keeps its own chats, files, instructions and memory together, so every new chat starts with the same context.
@@ -736,6 +808,10 @@
 *[Query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 *[query vectors]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 *[Query vectors]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
+*[random seed]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[Random seed]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[random seeds]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[Random seeds]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
 *[record mode]: The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
 *[Record mode]: The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
 *[ChatGPT record]: The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
@@ -752,6 +828,10 @@
 *[Remote Control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
 *[Remote control]: Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.
+*[reproducibility]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
+*[Reproducibility]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
+*[reproducible]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
+*[Reproducible]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
 *[residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[Residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[residual connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
@@ -774,6 +854,10 @@
 *[Rules directory]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
 *[rules directories]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
 *[Rules directories]: Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
+*[run log]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
+*[Run log]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
+*[run logs]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
+*[Run logs]: One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
 *[sampling]: Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
 *[Sampling]: Turning the model's probabilities for the next token into one chosen token, by drawing at random in proportion to those probabilities. Repeated once per token.
 *[sandbox]: An enforced boundary around what an agent's commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.
@@ -904,6 +988,8 @@
 *[Training loop]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
 *[training loops]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
 *[Training loops]: The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
+*[transfer learning]: Using what a model learned on one big task to do a different, smaller task. Pretraining then fine-tuning or probing are its two common forms.
+*[Transfer learning]: Using what a model learned on one big task to do a different, smaller task. Pretraining then fine-tuning or probing are its two common forms.
 *[transformer block]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
 *[Transformer block]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.
 *[transformer blocks]: One repeated unit of a transformer: attention, then a small per-token network, each added back onto the residual stream. Stack many identical ones to make the model.

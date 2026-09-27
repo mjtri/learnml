@@ -6,7 +6,7 @@ card: lin-bert
 
 # Lesson 1 · The Hub, model cards, and what a checkpoint contains
 
-<p class="recall" markdown>**Previously:** byte-pair tokenization cut text into pieces and explained three odd model behaviours; scaling laws made loss predictable from size and data; a first remove-one-part experiment measured what a component is worth.</p>
+<p class="recall" markdown>**Previously:** text becomes tokens by learned merges, loss falls as a straight line on log–log axes, and a component removed on purpose tells you what it was for.</p>
 
 ## Idea
 

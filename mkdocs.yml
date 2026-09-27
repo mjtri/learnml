@@ -99,6 +99,13 @@ nav:
       - "Lesson 4 · Chinchilla: compute-optimal for a small lab": week-06/day-4.md
       - "Lesson 5 · Encoder vs decoder: BERT and GPT": week-06/day-5.md
       - "Build · BPE from scratch, one ablation, one scaling line": week-06/build.md
+  - "Track A · Week 7 · Using pretrained models with Hugging Face":
+      - "Lesson 1 · The Hub, model cards, and what a checkpoint contains": week-07/day-1.md
+      - "Lesson 2 · AutoTokenizer / AutoModel: shapes in, shapes out": week-07/day-2.md
+      - "Lesson 3 · Hidden states as features; the linear probe": week-07/day-3.md
+      - "Lesson 4 · Full fine-tuning in outline; memory arithmetic": week-07/day-4.md
+      - "Lesson 5 · Reproducibility basics: seeds, configs, run logs": week-07/day-5.md
+      - "Build · Probe a small language model and log the run": week-07/build.md
   - "Track B · 1 · Budget & mental model":
       - "B1 · Lesson 1 · An agent is a loop; context is the budget": agentic-01/day-1.md
       - "B1 · Lesson 2 · What you actually pay for": agentic-01/day-2.md

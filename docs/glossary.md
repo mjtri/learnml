@@ -182,6 +182,22 @@ PyTorch's system that records the computation graph during the forward pass and 
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="automodel" markdown>
+**AutoModel** <small>(also: AutoModelForCausalLM)</small>
+
+The Transformers class that reads a repository's config, builds the right architecture and loads the weights. The ForCausalLM variant adds the next-token output layer.
+
+<small>first met in [week-07/day-2](week-07/day-2.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="autotokenizer" markdown>
+**AutoTokenizer**
+
+The Transformers class that reads a Hub repository's tokenizer files and returns the matching tokenizer: text in, integer token ids and an attention mask out.
+
+<small>first met in [week-07/day-2](week-07/day-2.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="axis" markdown>
 **axis** <small>(also: axes)</small>
 
@@ -322,6 +338,14 @@ A saved copy of a model's weights (and often optimizer state) at one moment of t
 <small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="checkpoint-files" markdown>
+**checkpoint files**
+
+The files a Hub repository needs to run a model: a config describing the architecture, a weights file, and the tokenizer. Lose one and the others are useless.
+
+<small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="chinchilla" markdown>
 **Chinchilla**
 
@@ -424,6 +448,14 @@ A drawing of a calculation as boxes (operations) joined by arrows (values). PyTo
 The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 
 <small>first met in [week-06/day-4](week-06/day-4.md) · canvas card `lin-chinchilla`</small>
+</div>
+
+<div class="gl-entry" id="config" markdown>
+**config** <small>(also: configs)</small>
+
+The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
+
+<small>first met in [week-07/day-2](week-07/day-2.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="context-length" markdown>
@@ -656,6 +688,14 @@ The 2017 paper's name for the MLP block: information flows straight through it, 
 <small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="fine-tuning" markdown>
+**fine-tuning** <small>(also: fine-tune, fine-tuned, fine-tunes, finetuning, finetune)</small>
+
+Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
+
+<small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `lin-bert`</small>
+</div>
+
 <div class="gl-entry" id="flops" markdown>
 **FLOPs** <small>(also: FLOP, floating-point operations)</small>
 
@@ -680,6 +720,22 @@ A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Eac
 <small>first met in [agentic-02/day-2](agentic-02/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="fp16" markdown>
+**fp16** <small>(also: bf16, float16, bfloat16, half precision, 16-bit)</small>
+
+Number formats using 16 bits per value instead of 32, halving memory. fp16 has few large values and overflows easily; bf16 keeps the 32-bit range with coarser steps.
+
+<small>first met in [week-07/day-4](week-07/day-4.md) · canvas card `move-adapters`</small>
+</div>
+
+<div class="gl-entry" id="frozen-weights" markdown>
+**frozen weights** <small>(also: frozen)</small>
+
+Weights that receive no gradient and never change during a training run. The model is used as a fixed feature extractor while something small on top learns.
+
+<small>first met in [week-07/day-3](week-07/day-3.md) · canvas card `move-adapters`</small>
+</div>
+
 <div class="gl-entry" id="function" markdown>
 **function** <small>(also: functions)</small>
 
@@ -696,6 +752,14 @@ A rule that turns inputs into an output. A whole neural network is one big funct
 How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
 
 <small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="git-hash" markdown>
+**git hash** <small>(also: git hashes, commit hash)</small>
+
+The short id of the exact code version a run used, printed by git rev-parse. Pins every line of code the way a seed pins the random choices.
+
+<small>first met in [week-07/day-5](week-07/day-5.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="github-code-review-action" markdown>
@@ -756,12 +820,28 @@ Any layer between the input and the output of a network. Its values are not data
 <small>first met in [week-02/day-4](week-02/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="hidden-state" markdown>
+**hidden state** <small>(also: hidden states)</small>
+
+The vector a model holds for one token after one layer. A transformer returns one per token per layer, shaped batch by tokens by width.
+
+<small>first met in [week-07/day-2](week-07/day-2.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="hook" markdown>
 **hook**
 
 A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.
 
 <small>first met in [agentic-03/day-3](agentic-03/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="hugging-face-hub" markdown>
+**Hugging Face Hub** <small>(also: HF Hub, the Hub)</small>
+
+The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
+
+<small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="hyperparameter" markdown>
@@ -864,6 +944,14 @@ An occasional free reset of a spent usage window, applied from Settings > Usage 
 A layer that computes each output as a weighted sum of its inputs: one matrix multiply (plus an optional constant offset).
 
 <small>first met in [week-01/day-2](week-01/day-2.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="linear-probe" markdown>
+**linear probe** <small>(also: linear probes)</small>
+
+A single linear layer trained on a frozen model's hidden states to predict a label. If it works, that layer already holds the distinction in a readable form.
+
+<small>first met in [week-07/day-3](week-07/day-3.md) · canvas card `lin-gpt3`</small>
 </div>
 
 <div class="gl-entry" id="literature-review-pipeline" markdown>
@@ -996,6 +1084,14 @@ Model Context Protocol: the open standard for plugging tools and data sources in
 <small>first met in [agentic-06/day-1](agentic-06/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="memory-footprint" markdown>
+**memory footprint** <small>(also: memory footprints)</small>
+
+How many bytes a model needs on the GPU. About two bytes per weight to run in 16-bit; about sixteen per weight to fully fine-tune with Adam, before activations.
+
+<small>first met in [week-07/day-4](week-07/day-4.md) · canvas card `move-adapters`</small>
+</div>
+
 <div class="gl-entry" id="merge-rule" markdown>
 **merge rule** <small>(also: merge rules, BPE merge, BPE merges)</small>
 
@@ -1050,6 +1146,14 @@ The second half of a transformer block: the same small two-layer network applied
 A function with adjustable parameters. Its architecture is the fixed form of the function; training picks the parameter values.
 
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
+</div>
+
+<div class="gl-entry" id="model-card" markdown>
+**model card** <small>(also: model cards)</small>
+
+The README of a Hub model repository: what it was trained on, what it is for, its licence, its scores and a copy-paste snippet to run it.
+
+<small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="momentum" markdown>
@@ -1290,6 +1394,14 @@ A higher-priced ChatGPT Business seat with much more usage and no 5-hour window.
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="pretraining" markdown>
+**pretraining** <small>(also: pretrain, pretrained, pre-training, pre-trained)</small>
+
+The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+
+<small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `lin-bert`</small>
+</div>
+
 <div class="gl-entry" id="project-instructions" markdown>
 **project instructions**
 
@@ -1334,6 +1446,14 @@ In attention, the vector a token uses to ask: what am I looking for? Compared by
 
 ## R
 
+<div class="gl-entry" id="random-seed" markdown>
+**random seed** <small>(also: random seeds)</small>
+
+The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+
+<small>first met in [week-07/day-5](week-07/day-5.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="record-mode" markdown>
 **record mode** <small>(also: ChatGPT record, ChatGPT Record)</small>
 
@@ -1366,6 +1486,14 @@ Driving a Claude Code session that runs on your own machine from the Claude mobi
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
 </div>
 
+<div class="gl-entry" id="reproducibility" markdown>
+**reproducibility** <small>(also: reproducible)</small>
+
+Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
+
+<small>first met in [week-07/day-5](week-07/day-5.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="residual-connection" markdown>
 **residual connection** <small>(also: residual connections, skip connection, skip connections)</small>
 
@@ -1396,6 +1524,14 @@ The point-by-point reply to a paper review: each comment quoted, then the change
 Claude Code's .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.
 
 <small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="run-log" markdown>
+**run log** <small>(also: run logs)</small>
+
+One row appended per experiment run: time, code version, config, seed, library versions and the result. A methods section written by the code.
+
+<small>first met in [week-07/day-5](week-07/day-5.md) · canvas card `core-tooling`</small>
 </div>
 
 ## S
@@ -1624,6 +1760,14 @@ Repeatedly adjusting a model's parameters to lower the loss on example data.
 The five steps repeated to train any model: forward pass, loss, zero the gradients, backward pass, update the parameters.
 
 <small>first met in [week-02/day-5](week-02/day-5.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="transfer-learning" markdown>
+**transfer learning**
+
+Using what a model learned on one big task to do a different, smaller task. Pretraining then fine-tuning or probing are its two common forms.
+
+<small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `lin-bert`</small>
 </div>
 
 <div class="gl-entry" id="transformer-block" markdown>
