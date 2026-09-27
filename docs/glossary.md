@@ -6,7 +6,35 @@ title: Glossary
 
 Every dotted-underlined word in a lesson opens its definition when tapped. This page is the same list, A–Z, with the lesson that introduced each word.
 
+## -
+
+<div class="gl-entry" id="cloud" markdown>
+**--cloud**
+
+The Claude Code flag that starts a new cloud session for the current repository: claude --cloud "task" clones the GitHub remote at your branch, so push first.
+
+<small>first met in [agentic-05/day-2](agentic-05/day-2.md)</small>
+</div>
+
+## /
+
+<div class="gl-entry" id="loop" markdown>
+**/loop**
+
+A Claude Code command that re-runs a prompt on an interval inside the open session. Session-scoped: it stops with the session and expires after seven days.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
+</div>
+
 ## A
+
+<div class="gl-entry" id="adversarial-review" markdown>
+**adversarial review** <small>(also: adversarial reviews)</small>
+
+A read-only review told to argue against the chosen design and its assumptions, not only hunt bugs. In codex-plugin-cc: /codex:adversarial-review with focus text.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="agent" markdown>
 **agent** <small>(also: agents)</small>
@@ -14,6 +42,14 @@ Every dotted-underlined word in a lesson opens its definition when tapped. This 
 A model that runs in a loop: read the situation, pick a tool, act, read the result, repeat until a goal is met. Claude Code and Codex are agents.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="agent-teams" markdown>
+**agent teams** <small>(also: agent team)</small>
+
+An experimental Claude Code mode where a lead session spawns teammate sessions that message each other and share a task list. Each teammate is a full context window.
+
+<small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="agents-md" markdown>
@@ -41,6 +77,14 @@ One direction you can index a tensor along, such as rows, columns, colour channe
 </div>
 
 ## B
+
+<div class="gl-entry" id="background-agent" markdown>
+**background agent** <small>(also: background agents, background session, background sessions)</small>
+
+A Claude Code session moved off your screen with /bg or claude --bg. It edits inside its own worktree and spends your quota on its own.
+
+<small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
+</div>
 
 <div class="gl-entry" id="backpropagation" markdown>
 **backpropagation** <small>(also: backprop)</small>
@@ -100,6 +144,14 @@ Claude Code's project instruction file, loaded into every session. Keep it short
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="cloud-routine" markdown>
+**cloud routine** <small>(also: cloud routines)</small>
+
+A saved Claude Code prompt plus repositories that runs as a cloud session whenever a trigger fires, laptop closed, without permission prompts. Research preview; spends your subscription usage.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="cloud-session" markdown>
 **cloud session** <small>(also: cloud sessions, Claude Code on the web)</small>
 
@@ -130,6 +182,14 @@ Codex running in an isolated cloud environment on a copy of your repo, started f
 Starting, steering and approving Codex on your own computer from the ChatGPT mobile app. The computer must stay awake.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="codex-plugin-cc" markdown>
+**codex-plugin-cc** <small>(also: Codex plugin, Codex plugin for Claude Code)</small>
+
+OpenAI's plugin that runs Codex from inside Claude Code for reviews and delegated tasks. It spends your ChatGPT/Codex usage, not the Claude plan.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="colab" markdown>
@@ -190,12 +250,28 @@ How much a function's output changes per tiny change of one input, at one partic
 <small>first met in [week-01/day-3](week-01/day-3.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="desktop-scheduled-task" markdown>
+**desktop scheduled task** <small>(also: desktop scheduled tasks, local scheduled task, local scheduled tasks)</small>
+
+A prompt the Claude Desktop app starts on a schedule as a fresh session on your own machine. Runs only while the app is open and the computer awake.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="diverge" markdown>
 **diverge** <small>(also: diverges, diverged, divergence)</small>
 
 To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.
 
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
+</div>
+
+<div class="gl-entry" id="doer-grader" markdown>
+**doer/grader** <small>(also: doer and grader, doer vs grader)</small>
+
+The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor's model.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="dot-product" markdown>
@@ -267,6 +343,14 @@ A rule that turns inputs into an output. A whole neural network is one big funct
 </div>
 
 ## G
+
+<div class="gl-entry" id="github-code-review-action" markdown>
+**GitHub Code Review action** <small>(also: Code Review action)</small>
+
+A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
+
+<small>first met in [agentic-05/day-3](agentic-05/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="gradient" markdown>
 **gradient** <small>(also: gradients, grad, grads)</small>
@@ -495,6 +579,14 @@ Your own page of workflow rules, each backed by a source or a measurement. The l
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="plugin" markdown>
+**plugin** <small>(also: plugins)</small>
+
+A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
+
+<small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="premium-seat" markdown>
 **Premium seat** <small>(also: Premium seats)</small>
 
@@ -555,6 +647,14 @@ The size of a tensor along each axis, written like (32, 4, 4). Most beginner bug
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="skill" markdown>
+**skill** <small>(also: SKILL.md)</small>
+
+A folder holding a SKILL.md: instructions loaded into context only when you type /name or the agent picks it. Until then only its description costs tokens.
+
+<small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="slope" markdown>
 **slope** <small>(also: slopes)</small>
 
@@ -572,6 +672,14 @@ A helper agent with its own fresh context that does a bounded job and returns a 
 </div>
 
 ## T
+
+<div class="gl-entry" id="teleport" markdown>
+**teleport** <small>(also: --teleport, /teleport)</small>
+
+Pulling a cloud session, its branch and its conversation into your terminal with claude --teleport. Needs a clean tree, the same repository and the same account.
+
+<small>first met in [agentic-05/day-2](agentic-05/day-2.md)</small>
+</div>
 
 <div class="gl-entry" id="tensor" markdown>
 **tensor** <small>(also: tensors)</small>
@@ -605,7 +713,23 @@ Repeatedly adjusting a model's parameters to lower the loss on example data.
 <small>first met in [week-01/day-5](week-01/day-5.md)</small>
 </div>
 
+<div class="gl-entry" id="trigger" markdown>
+**trigger**
+
+What starts a cloud routine's run: a schedule (hourly at most), an HTTP call to the routine's own endpoint, or a GitHub event such as a pull request opening.
+
+<small>first met in [agentic-05/day-1](agentic-05/day-1.md)</small>
+</div>
+
 ## U
+
+<div class="gl-entry" id="ultrareview" markdown>
+**ultrareview** <small>(also: ultra review)</small>
+
+Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
+
+<small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="usage-credits" markdown>
 **usage credits** <small>(also: extra usage)</small>
@@ -657,6 +781,14 @@ A second, larger allowance that spans seven days and applies across all models; 
 A learnable number that says how strongly one input contributes to one output. A model's knowledge lives in its weights.
 
 <small>first met in [week-01/day-2](week-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="worktree" markdown>
+**worktree** <small>(also: worktrees, git worktree)</small>
+
+A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
+
+<small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="worktree" markdown>

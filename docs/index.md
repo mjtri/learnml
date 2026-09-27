@@ -94,11 +94,17 @@ hide:
 ??? note "Week 3 · Verification & permissions · not generated yet"
     `python gen_week.py agentic 3` prints the prompt that builds it.
 
-??? note "Week 4 · Delegation · not generated yet"
-    `python gen_week.py agentic 4` prints the prompt that builds it.
+??? note "⬜ Week 4 · Delegation · 0/4"
+    - ⬜ [B4 · Lesson 1 · Subagents and skills: summaries in, context saved](agentic-04/day-1.md)
+    - ⬜ [B4 · Lesson 2 · Worktrees and background agents: parallel without collisions](agentic-04/day-2.md)
+    - ⬜ [B4 · Lesson 3 · Doer ≠ grader: /code-review, ultrareview, adversarial review](agentic-04/day-3.md)
+    - ⬜ [B4 · Apply · Two commands per week, and the other vendor grades](agentic-04/apply.md)
 
-??? note "Week 5 · Automation & phone · not generated yet"
-    `python gen_week.py agentic 5` prints the prompt that builds it.
+??? note "⬜ Week 5 · Automation & phone · 0/4"
+    - ⬜ [B5 · Lesson 1 · Three clocks: /loop, desktop tasks, cloud routines](agentic-05/day-1.md)
+    - ⬜ [B5 · Lesson 2 · From the phone: Remote Control, Codex Remote, cloud sessions](agentic-05/day-2.md)
+    - ⬜ [B5 · Lesson 3 · Automation that pays vs automation that burns usage](agentic-05/day-3.md)
+    - ⬜ [B5 · Apply · One routine that checks and deploys, one lesson logged from the couch](agentic-05/apply.md)
 
 ??? note "Week 6 · Research paperwork · not generated yet"
     `python gen_week.py agentic 6` prints the prompt that builds it.
@@ -117,4 +123,4 @@ hide:
 
 Stuck on a word? Tap any dotted-underlined term, or open the [glossary](glossary.md).
 
-<small>Generated 2026-09-27 (KST) by `build_today.py`. Do not edit by hand.</small>
+<small>Generated 2026-09-28 (KST) by `build_today.py`. Do not edit by hand.</small>

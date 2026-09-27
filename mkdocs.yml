@@ -69,6 +69,16 @@ nav:
       - "B1 · Lesson 2 · What you actually pay for": agentic-01/day-2.md
       - "B1 · Lesson 3 · Which tool for which job, v1": agentic-01/day-3.md
       - "B1 · Apply · Meters, one instruction file, one measured comparison": agentic-01/apply.md
+  - "Track B · 4 · Delegation":
+      - "B4 · Lesson 1 · Subagents and skills: summaries in, context saved": agentic-04/day-1.md
+      - "B4 · Lesson 2 · Worktrees and background agents: parallel without collisions": agentic-04/day-2.md
+      - "B4 · Lesson 3 · Doer ≠ grader: /code-review, ultrareview, adversarial review": agentic-04/day-3.md
+      - "B4 · Apply · Two commands per week, and the other vendor grades": agentic-04/apply.md
+  - "Track B · 5 · Automation & phone":
+      - "B5 · Lesson 1 · Three clocks: /loop, desktop tasks, cloud routines": agentic-05/day-1.md
+      - "B5 · Lesson 2 · From the phone: Remote Control, Codex Remote, cloud sessions": agentic-05/day-2.md
+      - "B5 · Lesson 3 · Automation that pays vs automation that burns usage": agentic-05/day-3.md
+      - "B5 · Apply · One routine that checks and deploys, one lesson logged from the couch": agentic-05/apply.md
   - "Track B · Playbook": agentic/playbook.md
   - "Track B · Changelog": agentic/changelog.md
   - Glossary: glossary.md
