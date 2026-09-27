@@ -10,7 +10,7 @@ card: core-calc
 
 ## Idea
 
-On the table: a model made of Values, the MSE loss from week 1, a backward pass, and the rule that you zero before you walk. The **training loop** is those pieces in a fixed order, five lines, the same five from a 17-parameter XOR net to a language model. The skill to take from this lesson is reading the **loss curve** it draws: the plot that says which line is wrong.
+On the table: a model made of Values, the MSE loss from week 1, a backward pass, and the rule that you zero before you walk. The **training loop** is those pieces in a fixed order, five lines, the same five from a 17-parameter XOR net to a billion-parameter model. The skill to take from this lesson is reading the **loss curve** it draws: the plot that says which line is wrong.
 
 ## Mechanism
 
@@ -34,9 +34,9 @@ Reading the curve, loss against step on a log scale. Four shapes cover most of w
 - **Falls, then flattens at a floor.** Learning, then done; the floor is noise.
 - **Flat from step 0.** Gradients are zero or tiny: learning rate too small, every tanh saturated, or every ReLU at 0.
 - **Falls, climbs, then NaN.** Steps too large, or the zeroing line is missing.
-- **Flat at a plateau, then a sudden drop.** A symmetric half-solution. On XOR the plateau sits near loss 1.0, the score of "predict 0.5 for everything" *and* of "three of four right". The drop is the hidden units finally taking different jobs.
+- **Flat at a plateau, then a sudden drop.** A symmetric half-solution. On XOR with MSE the plateau sits near 0.25, the score of "predict 0.5 for everything" *and* of "three of four right". The drop is the hidden units finally taking different jobs.
 
-**In practice.** The log you will produce in Colab this week reads `step 0 loss 4.02`, `step 40 loss 1.01`, `step 90 loss 0.98`, `step 130 loss 0.06`: a fall, a plateau, a drop. In PyTorch lines 3–5 shrink to three calls, `opt.zero_grad()`, `loss.backward()`, `opt.step()`; in any training script, find those three first.
+**In practice.** Your Colab log this week (loss divided by four) reads `step 0 loss 0.80`, `step 50 loss 0.14`, `step 150 loss 0.013`, `step 350 loss 0.002`: a fast fall, then a long slow tail. In PyTorch lines 3–5 shrink to three calls, `opt.zero_grad()`, `loss.backward()`, `opt.step()`; in any training script, find those three first.
 
 One thing the loop quietly requires is this week's canvas move: every piece must be smooth. The loss measures *how far* each prediction is from its target, not *how many* are wrong, because "number wrong" has a derivative of zero almost everywhere and jumps at the rest: no slope to descend. The bend is tanh, not a hard threshold, for the same reason. Replacing hard, discrete things with soft, differentiable ones is the move that makes all of this work. A closed-loop calibration on a haptic rig is an honest analogy for the loop itself, with one break: there the plant is fixed and one gain is tuned; here the plant *is* what is being tuned.
 
@@ -55,17 +55,17 @@ Predict first, then press:
 ??? question "Write the five lines of the training loop in order and name the two orderings you must never swap."
     Forward, loss, zero grads, backward, update. Never backward before zeroing (stale gradients add in), never update before backward (you would step along the previous gradient).
 
-??? question "The loss curve sits flat near 1.0 for 80 steps, then drops to 0.05. What was happening during the plateau?"
+??? question "An XOR loss curve sits flat near 0.25 for 80 steps, then drops to 0.01. What was happening during the plateau?"
     The model was parked at a symmetric half-solution, where the gradient is small. The drop is the hidden units taking different jobs.
 
 ??? question "Why can you not use the number of wrong answers as the loss?"
-    Its derivative is zero almost everywhere and undefined at the jumps, so gradient descent has no slope to follow. A smooth stand-in such as MSE is needed: the discrete-to-continuous move.
+    Its derivative is zero almost everywhere and undefined at the jumps, so gradient descent has no slope to follow. A smooth stand-in such as MSE is the discrete-to-continuous move.
 
 ## Sources
 
 - [Karpathy: micrograd video](https://www.youtube.com/watch?v=VMj-3S1tku0): about 1:51–2:14, "creating a tiny dataset, writing the loss function" through "doing gradient descent optimization manually": the five lines typed live.
 - [PyTorch tutorial: Optimizing model parameters](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html): the "Full implementation" section only. 8 min.
-- [3Blue1Brown: Gradient descent, how neural networks learn](https://www.3blue1brown.com/lessons/gradient-descent): 21 min; rewatch now that you have built the loop.
+- [3Blue1Brown: Gradient descent, how neural networks learn](https://www.3blue1brown.com/lessons/gradient-descent): 21 min; rewatch after building the loop.
 
 ## Ledger prompt
 

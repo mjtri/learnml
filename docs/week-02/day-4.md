@@ -24,7 +24,7 @@ A layer of 4 neurons on 2 inputs is a \(4 \times 2\) weight matrix, 4 offsets, a
 
 Why the bend is not optional. Two linear layers with nothing between them: \(W_2 (W_1 x) = (W_2 W_1)\, x\), one matrix. Now XOR: \((0,0) \to 0\), \((0,1) \to 1\), \((1,0) \to 1\), \((1,1) \to 0\). A single neuron's decision boundary is a straight line, and no line puts the two diagonal 1s on one side and the two 0s on the other: three of four at best. With a hidden layer of two tanh neurons, each hidden unit draws its own line, roughly "at least one input on" and "both on", and the output neuron combines them: *one or the other, and not both*.
 
-**In practice.** Open nanoGPT's `model.py` and find `class MLP`: a linear layer from width 768 to 3072, a bend called GELU (a smoothed ReLU), a linear layer back to 768: this lesson's 2–4–1, wider, inside every block of a language model. The micrograd neuron as typed in the video (the repo's `nn.py` later swaps tanh for ReLU):
+**In practice.** Open nanoGPT's `model.py` and find `class MLP`: a linear layer from width 768 to 3072, a bend called GELU (a smoothed ReLU), a linear layer back to 768: this lesson's 2–4–1, wider, inside every block of a large text model. The micrograd neuron as typed in the video (the repo's `nn.py` later swaps tanh for ReLU):
 
 ```python
 class Neuron:
