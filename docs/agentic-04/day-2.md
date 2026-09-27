@@ -14,7 +14,7 @@ Two agents editing one checkout overwrite each other silently. A **worktree** gi
 
 ## How it works
 
-**Worktrees.** `claude --worktree <name>` creates `.claude/worktrees/<name>/` on branch `worktree-<name>` and starts a session there; a second name is a second isolated session ([worktrees](https://code.claude.com/docs/en/worktrees){ .src data-checked="2026-09-27" }). A subagent whose definition says `isolation: worktree` always gets its own. Two details that bite: new worktrees branch from the *remote* default branch unless `worktree.baseRef` is `"head"`, and approvals granted inside a worktree are saved to the main checkout.
+**Worktrees.** `claude --worktree <name>` creates `.claude/worktrees/<name>/` on branch `worktree-<name>` and starts a session there; a second name is a second isolated session ([worktrees](https://code.claude.com/docs/en/worktrees){ .src data-checked="2026-09-27" }). A subagent whose definition says `isolation: worktree` always gets its own. Two details that bite: new worktrees branch from the *remote* default branch unless `worktree.baseRef` is `"head"`, and approvals granted inside a worktree are saved to the main checkout, except on Windows, where they stay with the worktree.
 
 **Background agents.** `/bg` (or `claude --bg "<prompt>"`) moves a whole session off your screen; `claude agents` lists every background session and its state ([agent view](https://code.claude.com/docs/en/agent-view){ .src data-checked="2026-09-27" }). Before its first edit a **background agent** moves itself into a worktree, so parallel sessions read one checkout and each write to their own. Each spends your quota on its own.
 
@@ -42,7 +42,7 @@ Predict first: three sessions, six files, two shared. How many silent overwrites
 ## Retrieval
 
 ??? question "What does a worktree share with the main checkout, and what is its own?"
-    Shared: repository history, project-scope plugins, permission approvals. Its own: files, branch, a fresh checkout without ignored files.
+    Shared: repository history and project-scope plugins. Its own: files, branch, a fresh checkout without ignored files.
 
 ??? question "Where does a background session write its edits, and why?"
     Into its own worktree under .claude/worktrees/, entered before its first edit, so parallel sessions never share a checkout.

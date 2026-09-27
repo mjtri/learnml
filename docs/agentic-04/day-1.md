@@ -20,7 +20,7 @@ Delegation is a trade. A subagent spends *more* tokens in total (its own instruc
 
 **Plugins.** A **plugin** bundles skills, agents, hooks and MCP servers into one installable unit. The price: every invocable component's name and description sits in context on every turn, used or not; the marketplace shows a "Context cost" estimate ([plugins](https://code.claude.com/docs/en/plugins){ .src data-checked="2026-09-27" }).
 
-**Codex** has both shapes: skills in `.agents/skills/<name>/SKILL.md`, description first, body when chosen ([Codex skills](https://learn.chatgpt.com/docs/build-skills.md){ .src data-checked="2026-09-27" }); subagents that "consume more tokens than comparable single-agent runs" ([Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents.md){ .src data-checked="2026-09-27" }). One `SKILL.md` with only those two fields serves both tools.
+**Codex** has both shapes: skills in `.agents/skills/<name>/SKILL.md`, description first, body when chosen ([Codex skills](https://learn.chatgpt.com/docs/build-skills.md){ .src data-checked="2026-09-27" }); subagents that "consume more tokens than comparable single-agent runs" ([Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents.md){ .src data-checked="2026-09-27" }). The same file format serves both tools; only the folder differs.
 
 **In practice.** The ETRI TM report format is 60 lines you need twice a year. In `CLAUDE.md` it costs 60 lines on every turn of every Unity session; as `/tm-report` it costs one description line until the day you type it.
 
