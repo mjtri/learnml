@@ -46,6 +46,14 @@ A line in CLAUDE.md of the form @path that pulls another file into context at la
 
 ## A
 
+<div class="gl-entry" id="ablation" markdown>
+**ablation** <small>(also: ablations, ablate, ablated, ablating)</small>
+
+An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+
+<small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `core-transformer`</small>
+</div>
+
 <div class="gl-entry" id="accept-edits-mode" markdown>
 **accept-edits mode** <small>(also: acceptEdits, accept edits mode)</small>
 
@@ -224,12 +232,28 @@ A layer that normalizes each unit's output across the current batch, then lets t
 <small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>
 
+<div class="gl-entry" id="bert" markdown>
+**BERT**
+
+Google's 2018 encoder, trained as a masked language model on raw text and then adapted per task. The template for train once, reuse everywhere.
+
+<small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `lin-bert`</small>
+</div>
+
 <div class="gl-entry" id="bigram" markdown>
 **bigram** <small>(also: bigrams, bigram model)</small>
 
 The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 
 <small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
+</div>
+
+<div class="gl-entry" id="bpe" markdown>
+**BPE** <small>(also: byte-pair encoding, byte pair encoding, Byte-Pair Encoding)</small>
+
+Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
+
+<small>first met in [week-06/day-1](week-06/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="broadcasting" markdown>
@@ -246,6 +270,14 @@ The rule that lets tensors of different shapes combine: line shapes up from the 
 Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
 
 <small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="byte" markdown>
+**byte** <small>(also: bytes)</small>
+
+A number from 0 to 255, the unit computers store text in. An English letter is one byte; a Korean syllable is three.
+
+<small>first met in [week-06/day-1](week-06/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 ## C
@@ -288,6 +320,14 @@ OpenAI's team subscription (formerly Team). Seats share one usage pool across Ch
 A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
 
 <small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="chinchilla" markdown>
+**Chinchilla**
+
+DeepMind's 2022 result: for a fixed compute budget, grow parameters and training tokens together, roughly 20 tokens per parameter. Earlier large models were under-trained.
+
+<small>first met in [week-06/day-4](week-06/day-4.md) · canvas card `lin-chinchilla`</small>
 </div>
 
 <div class="gl-entry" id="citation-verification" markdown>
@@ -378,6 +418,14 @@ A drawing of a calculation as boxes (operations) joined by arrows (values). PyTo
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="compute-optimal" markdown>
+**compute-optimal** <small>(also: compute optimal)</small>
+
+The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
+
+<small>first met in [week-06/day-4](week-06/day-4.md) · canvas card `lin-chinchilla`</small>
+</div>
+
 <div class="gl-entry" id="context-length" markdown>
 **context length** <small>(also: context lengths, block size)</small>
 
@@ -434,6 +482,14 @@ The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks 
 A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 
 <small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="decoder" markdown>
+**decoder** <small>(also: decoders)</small>
+
+A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
+
+<small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `lin-gpt3`</small>
 </div>
 
 <div class="gl-entry" id="deep-research" markdown>
@@ -550,6 +606,14 @@ A short list of learned numbers that stands in for a discrete thing such as a wo
 <small>first met in [week-04/day-1](week-04/day-1.md) · canvas card `lin-word2vec`</small>
 </div>
 
+<div class="gl-entry" id="encoder" markdown>
+**encoder** <small>(also: encoders)</small>
+
+A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
+
+<small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `lin-bert`</small>
+</div>
+
 <div class="gl-entry" id="epoch" markdown>
 **epoch** <small>(also: epochs)</small>
 
@@ -592,6 +656,14 @@ The 2017 paper's name for the MLP block: information flows straight through it, 
 <small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="flops" markdown>
+**FLOPs** <small>(also: FLOP, floating-point operations)</small>
+
+Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
+
+<small>first met in [week-06/day-4](week-06/day-4.md) · canvas card `lin-chinchilla`</small>
+</div>
+
 <div class="gl-entry" id="forward-pass" markdown>
 **forward pass**
 
@@ -632,6 +704,14 @@ How well a model does on examples it never trained on. The only thing that matte
 A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
 
 <small>first met in [agentic-05/day-3](agentic-05/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="gpt" markdown>
+**GPT**
+
+OpenAI's family of language models that read text left to right and predict the next token. nanoGPT is a small copy of the design.
+
+<small>first met in [week-06/day-1](week-06/day-1.md) · canvas card `lin-gpt3`</small>
 </div>
 
 <div class="gl-entry" id="gradient" markdown>
@@ -818,6 +898,14 @@ The raw scores a classifier outputs, one per class, any real number. Softmax tur
 <small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-dl`</small>
 </div>
 
+<div class="gl-entry" id="log-log-plot" markdown>
+**log–log plot** <small>(also: log-log plot, log–log plots, log-log plots, log–log, log-log)</small>
+
+A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+
+<small>first met in [week-06/day-3](week-06/day-3.md) · canvas card `lin-kaplan`</small>
+</div>
+
 <div class="gl-entry" id="lookup-table" markdown>
 **lookup table** <small>(also: lookup tables, embedding table)</small>
 
@@ -868,6 +956,14 @@ A matrix that uses fewer independent directions than its size suggests, so it sq
 
 ## M
 
+<div class="gl-entry" id="masked-language-model" markdown>
+**masked language model** <small>(also: masked language modelling, masked language modeling, MLM)</small>
+
+Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+
+<small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `lin-bert`</small>
+</div>
+
 <div class="gl-entry" id="matmul" markdown>
 **matmul** <small>(also: matrix multiplication, matrix multiply, matrix multiplies)</small>
 
@@ -898,6 +994,14 @@ Anthropic's top individual subscription. The 20x tier gives twenty times Pro's p
 Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
 
 <small>first met in [agentic-06/day-1](agentic-06/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="merge-rule" markdown>
+**merge rule** <small>(also: merge rules, BPE merge, BPE merges)</small>
+
+One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
+
+<small>first met in [week-06/day-1](week-06/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="micrograd" markdown>
@@ -1154,6 +1258,14 @@ A vector for each position, added to the token's embedding so attention can tell
 <small>first met in [week-04/day-5](week-04/day-5.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="power-law" markdown>
+**power law** <small>(also: power laws, power-law)</small>
+
+A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
+
+<small>first met in [week-06/day-3](week-06/day-3.md) · canvas card `lin-kaplan`</small>
+</div>
+
 <div class="gl-entry" id="pre-norm" markdown>
 **pre-norm** <small>(also: post-norm, pre-norm/post-norm)</small>
 
@@ -1320,6 +1432,14 @@ The standard attention recipe: dot every query with every key, divide by the squ
 <small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="scaling-law" markdown>
+**scaling law** <small>(also: scaling laws)</small>
+
+An empirical rule for how loss falls as you add parameters, data or compute: smoothly and predictably, as a power law, across many orders of magnitude.
+
+<small>first met in [week-06/day-3](week-06/day-3.md) · canvas card `lin-kaplan`</small>
+</div>
+
 <div class="gl-entry" id="sequence" markdown>
 **sequence** <small>(also: sequences)</small>
 
@@ -1440,6 +1560,22 @@ Your fixed section list and rules for an ETRI Technical Memo, stored as project 
 The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="tokenization" markdown>
+**tokenization** <small>(also: tokenizer, tokenizers, tokenize, tokenized, tokenizing, tokenizes)</small>
+
+Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+
+<small>first met in [week-06/day-1](week-06/day-1.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="tokenizer-artefact" markdown>
+**tokenizer artefact** <small>(also: tokenizer artefacts, tokenizer artifact, tokenizer artifacts, tokenization artefact, tokenization artefacts)</small>
+
+An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+
+<small>first met in [week-06/day-2](week-06/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
 <div class="gl-entry" id="tool-call" markdown>
@@ -1588,6 +1724,14 @@ Gradients that shrink layer by layer on the way back, until early layers get alm
 A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="vocabulary" markdown>
+**vocabulary** <small>(also: vocabularies, vocab)</small>
+
+The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
+
+<small>first met in [week-06/day-1](week-06/day-1.md) · canvas card `core-transformer`</small>
 </div>
 
 ## W

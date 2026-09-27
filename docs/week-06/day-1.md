@@ -6,7 +6,7 @@ card: core-transformer
 
 # Lesson 1 · Tokenization: bytes → BPE merges
 
-<p class="recall" markdown>**Previously:** week 5 assembled the transformer block (attention + MLP + residual stream + LayerNorm, each with a job) and trained nanoGPT one character at a time. **Why this week:** what a model is fed (lessons 1–2), what training costs (3–4), two ways to use one block (5), then your first ablation.</p>
+<p class="recall" markdown>**Previously:** one running sum, read and written by identical blocks of attention and MLP, trained to guess the next character and then sampled with a temperature.</p>
 
 ## Idea
 

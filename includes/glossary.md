@@ -5,6 +5,16 @@
 *[/plan]: The command that turns on plan mode for the next prompt (Claude Code) or toggles it (Codex): read and propose first, edit only after approval.
 *[@import]: A line in CLAUDE.md of the form @path that pulls another file into context at launch. Paths resolve relative to the importing file; at most four hops deep.
 *[@imports]: A line in CLAUDE.md of the form @path that pulls another file into context at launch. Paths resolve relative to the importing file; at most four hops deep.
+*[ablation]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[Ablation]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[ablations]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[Ablations]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[ablate]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[Ablate]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[ablated]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[Ablated]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[ablating]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
+*[Ablating]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
 *[accept-edits mode]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
 *[Accept-edits mode]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
 *[acceptEdits]: Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.
@@ -103,12 +113,19 @@
 *[batch norm]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
 *[Batch norm]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
 *[BatchNorm1d]: A layer that normalizes each unit's output across the current batch, then lets the network re-scale it. Keeps activations well-sized in deep nets; behaves differently at evaluation time.
+*[BERT]: Google's 2018 encoder, trained as a masked language model on raw text and then adapted per task. The template for train once, reuse everywhere.
 *[bigram]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[Bigram]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[bigrams]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[Bigrams]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[bigram model]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[Bigram model]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[BPE]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
+*[byte-pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
+*[Byte-pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
+*[byte pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
+*[Byte pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
+*[Byte-Pair Encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
 *[broadcasting]: The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
 *[Broadcasting]: The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
 *[broadcast]: The rule that lets tensors of different shapes combine: line shapes up from the right; a size-1 or missing axis is virtually copied to match the other.
@@ -123,6 +140,10 @@
 *[Bypass permissions mode]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
 *[bypass permissions]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
 *[Bypass permissions]: Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.
+*[byte]: A number from 0 to 255, the unit computers store text in. An English letter is one byte; a Korean syllable is three.
+*[Byte]: A number from 0 to 255, the unit computers store text in. An English letter is one byte; a Korean syllable is three.
+*[bytes]: A number from 0 to 255, the unit computers store text in. An English letter is one byte; a Korean syllable is three.
+*[Bytes]: A number from 0 to 255, the unit computers store text in. An English letter is one byte; a Korean syllable is three.
 *[causal mask]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 *[Causal mask]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 *[causal masks]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
@@ -144,6 +165,7 @@
 *[Checkpoint]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
 *[checkpoints]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
 *[Checkpoints]: A saved copy of a model's weights (and often optimizer state) at one moment of training, so a run can be resumed, compared or shared.
+*[Chinchilla]: DeepMind's 2022 result: for a fixed compute budget, grow parameters and training tokens together, roughly 20 tokens per parameter. Earlier large models were under-trained.
 *[citation verification]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
 *[Citation verification]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
 *[citation check]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
@@ -184,6 +206,10 @@
 *[Computation graphs]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 *[computational graph]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
 *[Computational graph]: A drawing of a calculation as boxes (operations) joined by arrows (values). PyTorch records one as your code runs.
+*[compute-optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
+*[Compute-optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
+*[compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
+*[Compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[Context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[context lengths]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
@@ -218,6 +244,10 @@
 *[dataset]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 *[datasets]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 *[Datasets]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
+*[decoder]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
+*[Decoder]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
+*[decoders]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
+*[Decoders]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
 *[Deep Research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
 *[deep research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
 *[Deep research]: ChatGPT's long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.
@@ -283,6 +313,10 @@
 *[Embedding vectors]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
 *[embedding layer]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
 *[Embedding layer]: A short list of learned numbers that stands in for a discrete thing such as a word. Things used alike end up pointing the same way.
+*[encoder]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
+*[Encoder]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
+*[encoders]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
+*[Encoders]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
 *[epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
 *[Epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
 *[epochs]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
@@ -305,6 +339,10 @@
 *[Feed-forward network]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[Feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[FLOPs]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
+*[FLOP]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
+*[floating-point operations]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
+*[Floating-point operations]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
 *[forward pass]: Running the calculation from inputs to output, storing intermediate values along the way.
 *[Forward pass]: Running the calculation from inputs to output, storing intermediate values along the way.
 *[four-part prompt]: A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
@@ -336,6 +374,7 @@
 *[Generalizing]: How well a model does on examples it never trained on. The only thing that matters; training loss is just a proxy for it.
 *[GitHub Code Review action]: A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
 *[Code Review action]: A review that runs on GitHub when a pull request opens: Anthropic's managed Code Review (Team and Enterprise, billed separately) or the claude-code-action review workflow, which can use your subscription.
+*[GPT]: OpenAI's family of language models that read text left to right and predict the next token. nanoGPT is a small copy of the design.
 *[gradient]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[Gradient]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
 *[gradients]: The list of derivatives of one output (usually the loss) with respect to every input or parameter. It points in the direction of steepest increase.
@@ -435,6 +474,18 @@
 *[Logits]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
 *[logit]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
 *[Logit]: The raw scores a classifier outputs, one per class, any real number. Softmax turns them into probabilities; the loss usually takes the logits directly.
+*[log–log plot]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[Log–log plot]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[log-log plot]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[Log-log plot]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[log–log plots]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[Log–log plots]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[log-log plots]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[Log-log plots]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[log–log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[Log–log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[log-log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[Log-log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
 *[lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[Lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[lookup tables]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
@@ -460,6 +511,13 @@
 *[Low rank]: A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.
 *[low-rank]: A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.
 *[Low-rank]: A matrix that uses fewer independent directions than its size suggests, so it squashes space. It can be stored as two thin matrices multiplied. Week 8.
+*[masked language model]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+*[Masked language model]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+*[masked language modelling]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+*[Masked language modelling]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+*[masked language modeling]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+*[Masked language modeling]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
+*[MLM]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
 *[matmul]: Matrix multiplication. Each output number is the dot product of one row of the first matrix with one column of the second. Written A @ B in Python.
 *[Matmul]: Matrix multiplication. Each output number is the dot product of one row of the first matrix with one column of the second. Written A @ B in Python.
 *[matrix multiplication]: Matrix multiplication. Each output number is the dot product of one row of the first matrix with one column of the second. Written A @ B in Python.
@@ -487,6 +545,12 @@
 *[Custom connector]: Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
 *[custom connectors]: Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
 *[Custom connectors]: Model Context Protocol: the open standard for plugging tools and data sources into an agent. A connector is an MCP server offered inside the Claude or ChatGPT app.
+*[merge rule]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
+*[Merge rule]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
+*[merge rules]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
+*[Merge rules]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
+*[BPE merge]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
+*[BPE merges]: One learned step of BPE: whenever these two pieces sit next to each other, glue them into one. Rules are applied in the order they were learned.
 *[micrograd]: Karpathy's 100-line autograd engine that works on single numbers. Rebuilding it from memory is this week's goal, because PyTorch does the same thing on tensors.
 *[Micrograd]: Karpathy's 100-line autograd engine that works on single numbers. Rebuilding it from memory is this week's goal, because PyTorch does the same thing on tensors.
 *[mini-batch]: A small random handful of examples, typically 32 to 512, used for one gradient step. Its gradient is a noisy but cheap estimate of the full-data gradient.
@@ -640,6 +704,12 @@
 *[Positional embedding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[positional embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[Positional embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[power law]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
+*[Power law]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
+*[power laws]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
+*[Power laws]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
+*[power-law]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
+*[Power-law]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
 *[pre-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[Pre-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
 *[post-norm]: Where LayerNorm sits. Pre-norm normalises what a sub-block reads, so the residual stream stays a clean sum (GPT-2, nanoGPT). Post-norm normalises the sum itself after each add (the 2017 paper).
@@ -720,6 +790,10 @@
 *[Scaled dot-product]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
 *[scaled dot-product attention]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
 *[Scaled dot-product attention]: The standard attention recipe: dot every query with every key, divide by the square root of the vector size, softmax each row, then mix the values with those weights.
+*[scaling law]: An empirical rule for how loss falls as you add parameters, data or compute: smoothly and predictably, as a power law, across many orders of magnitude.
+*[Scaling law]: An empirical rule for how loss falls as you add parameters, data or compute: smoothly and predictably, as a power law, across many orders of magnitude.
+*[scaling laws]: An empirical rule for how loss falls as you add parameters, data or compute: smoothly and predictably, as a power law, across many orders of magnitude.
+*[Scaling laws]: An empirical rule for how loss falls as you add parameters, data or compute: smoothly and predictably, as a power law, across many orders of magnitude.
 *[sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[Sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[sequences]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
@@ -770,6 +844,32 @@
 *[Token]: The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
 *[tokens]: The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
 *[Tokens]: The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.
+*[tokenization]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenization]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenizer]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenizer]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenizers]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenizers]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenize]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenize]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenized]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenized]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenizing]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenizing]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenizes]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[Tokenizes]: Cutting text into tokens a model can number. A tokenizer is the program that does it; modern ones cut at learned sub-word chunks, not words or letters.
+*[tokenizer artefact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[Tokenizer artefact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[tokenizer artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[Tokenizer artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[tokenizer artifact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[Tokenizer artifact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[tokenizer artifacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[Tokenizer artifacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[tokenization artefact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[Tokenization artefact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[tokenization artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[Tokenization artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
 *[tool call]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[Tool call]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[tool calls]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
@@ -854,6 +954,12 @@
 *[Vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[Vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
+*[vocabulary]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
+*[Vocabulary]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
+*[vocabularies]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
+*[Vocabularies]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
+*[vocab]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
+*[Vocab]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
 *[weekly cap]: A second, larger allowance that spans seven days and applies across all models; it resets at a fixed time set per account.
 *[Weekly cap]: A second, larger allowance that spans seven days and applies across all models; it resets at a fixed time set per account.
 *[weekly limit]: A second, larger allowance that spans seven days and applies across all models; it resets at a fixed time set per account.

@@ -79,8 +79,13 @@ hide:
     - ⬜ [Lesson 5 · Reading the Transformer paper with a map](week-05/day-5.md)
     - ⬜ [Build · A character-level model on tiny Shakespeare](week-05/build.md)
 
-??? note "Week 6 · Tokenization, scaling intuition, first ablation · not generated yet"
-    `python gen_week.py 6` prints the prompt that builds it.
+??? note "⬜ Week 6 · Tokenization, scaling intuition, first ablation · 0/6"
+    - ⬜ [Lesson 1 · Tokenization: bytes → BPE merges](week-06/day-1.md)
+    - ⬜ [Lesson 2 · Tokenizer artefacts: numbers, spaces, Korean](week-06/day-2.md)
+    - ⬜ [Lesson 3 · Scaling laws: reading a log–log plot](week-06/day-3.md)
+    - ⬜ [Lesson 4 · Chinchilla: compute-optimal for a small lab](week-06/day-4.md)
+    - ⬜ [Lesson 5 · Encoder vs decoder: BERT and GPT](week-06/day-5.md)
+    - ⬜ [Build · BPE from scratch, one ablation, one scaling line](week-06/build.md)
 
 ??? note "Week 7 · Using pretrained models with Hugging Face · not generated yet"
     `python gen_week.py 7` prints the prompt that builds it.
