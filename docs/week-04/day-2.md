@@ -24,7 +24,7 @@ Read it as *surprise at the right answer*: \(p = 0.6\) costs 0.51, \(p = 0.1\) c
 
 The learned version replaces counts with a table of scores, pushes each row through a softmax, and lets gradient descent lower the loss. It arrives at the same table the counting found, which makes counting your sanity check in the build session. Notice what the learned table *is*: an embedding with `d = V`, row \(a\) holding the scores for what follows \(a\). Lesson 1's lookup table, used as the whole model.
 
-**In practice.** Karpathy's makemore trains a bigram on 32,000 names split into characters, 27 tokens with a boundary marker: loss about 2.45 against the 3.30 line. Read it as "knows something, not much"; say the same about any paper's loss once you know its \(V\).
+**In practice.** Karpathy's makemore trains a bigram on 32,000 names split into characters, 27 tokens with a boundary marker: loss about 2.45 against the 3.30 line. Read it as "knows something, not much", and read any paper's loss the same way.
 
 Your phone keyboard is a language model with a short context length. When the suggestion strip proposes "the the", that is a bigram's blindness: it answered from one token. The analogy breaks where the keyboard is also personalised and rule-filtered.
 
@@ -53,8 +53,8 @@ Predict first, then tap:
 ??? question "After 'buzz' the counts are: left 2, pulse 2, stop 4. Give the three probabilities and the loss if the next token is actually 'left'."
     Probabilities 0.25, 0.25, 0.5. The loss at that position is \(-\log 0.25 = 1.39\).
 
-??? question "A model over 64 possible tokens reports a loss of 4.16. Has it learned anything?"
-    No. \(\log 64 = 4.16\), so it does exactly as well as spreading probability evenly. Learning shows as a loss below that line.
+??? question "A model over 64 possible tokens reports a loss of 4.16. What does that number tell you about what it learned?"
+    Nothing was learned: \(\log 64 = 4.16\), so it does exactly as well as spreading probability evenly. Learning shows as a loss below that line.
 
 ??? question "Why does a context of 5 tokens make the counting approach collapse, in numbers?"
     One row per possible context: \(V^5\), about 14 million for 27 tokens. Almost every row is never seen, so the table stays empty.

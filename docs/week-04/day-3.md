@@ -74,6 +74,6 @@ Predict first, then edit:
 
 ## Ledger prompt
 
-> Next to `lin-attention`: Bahdanau dropped the assumption that compressing the input into one fixed vector is necessary. Name one pipeline in your work where a summary is computed early and used late, and what "look back at the raw thing with learned weights" would mean there.
+> Next to `lin-attention`: Bahdanau dropped the assumption that compressing the input into one fixed vector (the `lin-seq2seq` bottleneck) is necessary. Name one pipeline in your work where a summary is computed early and used late, and what "look back at the raw thing with learned weights" would mean there.
 
 **Next:** the two details that make the lookup trainable: divide by √d, and blank out the future.
