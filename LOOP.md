@@ -49,19 +49,23 @@ git push
 
 (One command per line: Windows PowerShell 5 does not accept `&&`.)
 
-The GitHub Actions workflow (`.github/workflows/deploy.yml`) runs `check_lessons.py` and `build_today.py` and publishes to GitHub Pages in about a minute. It also runs by itself at 00:05 KST so the streak stays honest on days you do not push.
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) runs `check_lessons.py` and `build_today.py` and publishes to GitHub Pages. With all 20 weeks the strict build takes 20–40 minutes on a runner (the tap-to-define glossary is applied to every page), so give it time and hard-refresh on the phone. It also runs by itself at 00:05 KST so the streak stays honest on days you do not push.
 
-Preview locally first if you like:
+Preview locally first if you like. A full build takes ~20 minutes, so build once and serve the static output instead of `mkdocs serve`:
 
 ```bash
 python build_today.py
 ```
 
 ```bash
-mkdocs serve
+python -m mkdocs build
 ```
 
-then open <http://127.0.0.1:8000/> (append your repo name as the path if `site_url` has one).
+```bash
+python -m http.server 8124 -d site
+```
+
+then open <http://127.0.0.1:8124/>.
 
 ## (d) Monthly: refresh Track B's product claims
 

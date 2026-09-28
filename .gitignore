@@ -12,3 +12,6 @@ __pycache__/
 
 # agent worktrees
 .claude/worktrees/
+
+# local Claude Code permissions (machine-specific)
+.claude/settings.local.json
