@@ -2271,7 +2271,7 @@ An odd model behaviour caused by how text was cut into tokens, not by the model:
 <div class="gl-entry" id="tolerance" markdown>
 **tolerance** <small>(also: tolerances)</small>
 
-How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
+How far a reproduced number may sit from the claimed one and still count as the same: about 0.1 point on identical data, or two seed spreads when the run is seeded.
 
 <small>first met in [week-11/day-2](week-11/day-2.md) · canvas card `core-tooling`</small>
 </div>

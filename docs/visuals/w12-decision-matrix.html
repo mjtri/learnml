@@ -29,38 +29,41 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 </head>
 <body>
 <h1>Kill, pivot or scale up: the rule reads the numbers, not you</h1>
-<label>X (pre-registered)<input id="x" type="range" min="0.05" max="0.5" step="0.05" value="0.2"><output id="ox"></output></label>
+<label>X (the plan's)<input id="x" type="range" min="0.05" max="0.5" step="0.05" value="0.2"><output id="ox"></output></label>
+<label>kill line (the plan's)<input id="k" type="range" min="0" max="0.5" step="0.05" value="0.1"><output id="ok"></output></label>
 <label>gap A − B<input id="g" type="range" min="-0.3" max="0.6" step="0.01" value="0.25"><output id="og"></output></label>
 <label>95% interval ± half-width<input id="h" type="range" min="0.02" max="0.5" step="0.01" value="0.2"><output id="oh"></output></label>
-<label>ablation cost<input id="a" type="range" min="0" max="0.5" step="0.01" value="0.2"><output id="oa"></output></label>
+<label>ablation cost<input id="a" type="range" min="-0.3" max="0.5" step="0.01" value="0.2"><output id="oa"></output></label>
+<label>ablation floor (the plan's)<input id="f" type="range" min="0" max="0.3" step="0.01" value="0.05"><output id="of"></output></label>
 <canvas id="cv" aria-label="Number line showing zero, X, and the interval around the gap."></canvas>
 <div class="mx">
-  <div class="cell" id="k"><b>KILL</b> if the gap misses X, or the interval includes zero. The lever is dead; write what was learned.</div>
-  <div class="cell" id="p"><b>PIVOT</b> if the gap clears X with the interval above zero, but the ablation cost less than X / 2. The gain is real but not for the claimed reason; start from the ablation row.</div>
-  <div class="cell" id="s"><b>SCALE UP</b> if the gap clears X, the interval is above zero, and the ablation cost at least X / 2. 50 shapes, real listeners.</div>
+  <div class="cell" id="ck"><b>KILL</b> if the gap is under the plan's kill line, the interval includes zero, or the gap never reaches X. The lever is dead; the plan's alternative is the next plan.</div>
+  <div class="cell" id="cp"><b>PIVOT</b> if the gap survived the kill line with the interval above zero, but the ablation cost less than the plan's floor. The gain is real but not for the claimed reason; start from the plan's pivot target.</div>
+  <div class="cell" id="cs"><b>SCALE UP</b> if the gap clears X, the interval is above zero, and the ablation cost at least the floor. 50 shapes, real listeners.</div>
 </div>
 <pre id="out"></pre>
 <details><summary>ⓘ Words used here</summary><dl>
 <dt>gap A − B</dt><dd>Mean of the metric for your method minus the mean for the baseline, over seeds.</dd>
 <dt>95% interval</dt><dd>The bootstrap range for the gap. If it includes zero, the data cannot tell the gap from no difference.</dd>
-<dt>ablation cost</dt><dd>How much the metric drops when the claimed ingredient (the sound side) is removed. Near zero means the ingredient did nothing.</dd>
-<dt>kill / pivot / scale up</dt><dd>The three pre-registered outcomes. "Run more seeds and look again" is deliberately not one of them.</dd>
+<dt>ablation cost</dt><dd>How much the metric drops when the claimed ingredient (the sound side) is removed. Under the plan's floor means the ingredient did nothing; negative means removing it helped.</dd>
+<dt>kill / pivot / scale up</dt><dd>The three pre-registered outcomes, with the plan's own numbers (X, kill line, ablation floor). "Run more seeds and look again" is deliberately not one of them.</dd>
 </dl></details>
 <script>
 (function(){
-var ids=["x","g","h","a"],el={};ids.forEach(function(i){el[i]=document.getElementById(i);el[i].oninput=draw});
+var ids=["x","k","g","h","a","f"],el={};ids.forEach(function(i){el[i]=document.getElementById(i);el[i].oninput=draw});
 var cv=document.getElementById("cv"),ctx=cv.getContext("2d");
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 function draw(){
-  var X=+el.x.value,g=+el.g.value,h=+el.h.value,a=+el.a.value,lo=g-h,hi=g+h;
+  var X=+el.x.value,K=+el.k.value,g=+el.g.value,h=+el.h.value,a=+el.a.value,Fl=+el.f.value,lo=g-h,hi=g+h;
   document.getElementById("ox").textContent=X.toFixed(2);document.getElementById("og").textContent=g.toFixed(2);
-  document.getElementById("oh").textContent="±"+h.toFixed(2);document.getElementById("oa").textContent=a.toFixed(2);
-  var cleared=g>=X&&lo>0,dec,why;
-  if(!cleared){dec="KILL";why=g<X?"gap "+g.toFixed(2)+" < X = "+X.toFixed(2):"interval ["+lo.toFixed(2)+", "+hi.toFixed(2)+"] includes 0"}
-  else if(a<X/2){dec="PIVOT";why="gap cleared X, but ablation cost "+a.toFixed(2)+" < X/2 = "+(X/2).toFixed(2)}
-  else{dec="SCALE UP";why="gap "+g.toFixed(2)+" ≥ X, interval above 0, ablation cost "+a.toFixed(2)+" ≥ X/2"}
-  ["k","p","s"].forEach(function(i){document.getElementById(i).className="cell"+((i==="k"&&dec==="KILL")||(i==="p"&&dec==="PIVOT")||(i==="s"&&dec==="SCALE UP")?" hit":"")});
-  document.getElementById("out").textContent="RESULT    A − B = "+g.toFixed(2)+"  95% CI ["+lo.toFixed(2)+", "+hi.toFixed(2)+"]"+(lo<=0?"  (includes 0: no detectable difference)":"")+"\n          ablation cost "+a.toFixed(2)+"\nDECISION  "+dec+"  (rule: "+why+")";
+  document.getElementById("oh").textContent="±"+h.toFixed(2);document.getElementById("oa").textContent=a.toFixed(2);document.getElementById("ok").textContent=K.toFixed(2);document.getElementById("of").textContent=Fl.toFixed(2);
+  var dec,why;
+  if(g<K||lo<=0){dec="KILL";why=g<K?"gap "+g.toFixed(2)+" < kill line "+K.toFixed(2):"interval ["+lo.toFixed(2)+", "+hi.toFixed(2)+"] includes 0"}
+  else if(a<Fl){dec="PIVOT";why="gap survived the kill line, but ablation cost "+a.toFixed(2)+" < floor "+Fl.toFixed(2)}
+  else if(g>=X){dec="SCALE UP";why="gap "+g.toFixed(2)+" ≥ X, interval above 0, ablation cost "+a.toFixed(2)+" ≥ floor"}
+  else{dec="KILL";why="gap "+g.toFixed(2)+" cleared the kill line but missed X = "+X.toFixed(2)}
+  ["ck","cp","cs"].forEach(function(i){document.getElementById(i).className="cell"+((i==="ck"&&dec==="KILL")||(i==="cp"&&dec==="PIVOT")||(i==="cs"&&dec==="SCALE UP")?" hit":"")});
+  document.getElementById("out").textContent="RESULT    A − B = "+g.toFixed(2)+"  95% CI ["+lo.toFixed(2)+", "+hi.toFixed(2)+"]"+(lo<=0?"  (includes 0: no detectable difference)":"")+"\n          ablation cost "+a.toFixed(2)+(a<0?"  (negative: dropping the ingredient helped; a finding)":"")+"\nDECISION  "+dec+"  (rule: "+why+")";
   var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);
   var mut=css("--mut"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok"),bad=css("--bad");ctx.clearRect(0,0,W,H);
   var L0=16,R0=W-16,y=H/2+8;function P(v){return L0+(v+0.5)/1.3*(R0-L0)}
@@ -68,8 +71,8 @@ function draw(){
   ctx.font="11px system-ui,sans-serif";ctx.fillStyle=mut;ctx.textAlign="center";
   [-0.4,-0.2,0,0.2,0.4,0.6].forEach(function(v){ctx.beginPath();ctx.moveTo(P(v),y-4);ctx.lineTo(P(v),y+4);ctx.stroke();ctx.fillText(v.toFixed(1),P(v),y+18)});
   ctx.strokeStyle=bad;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(P(0),8);ctx.lineTo(P(0),y+6);ctx.stroke();
-  ctx.strokeStyle=ok;ctx.beginPath();ctx.moveTo(P(X),8);ctx.lineTo(P(X),y+6);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle=bad;ctx.fillText("0",P(0),H-36);ctx.fillStyle=ok;ctx.fillText("X",P(X),H-36);
+  ctx.strokeStyle=ok;ctx.beginPath();ctx.moveTo(P(X),8);ctx.lineTo(P(X),y+6);ctx.stroke();ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(P(K),8);ctx.lineTo(P(K),y+6);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=bad;ctx.fillText("0",P(0),H-36);ctx.fillStyle=ok;ctx.fillText("X",P(X),H-36);ctx.fillStyle=mut;ctx.fillText("kill",P(K),H-48);
   ctx.strokeStyle=acc;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(P(lo),y-14);ctx.lineTo(P(hi),y-14);ctx.stroke();
   ctx.fillStyle=acc2;ctx.beginPath();ctx.arc(P(g),y-14,6,0,7);ctx.fill();
 }

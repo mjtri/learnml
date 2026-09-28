@@ -28,16 +28,18 @@ Leave with `experiments/week12/`, a harness an agent can run unattended for one 
    ```text
    # Week 12 · cross-modal contrastive embedding
    Prediction (week10_plan.md): on 16×16 shapes ↔ vOICe-style sound, the contrastive
-   embedding beats the pixel-distance baseline on retrieval_acc@1 by ≥ 0.10 over 5 seeds.
-   Kill rule: gain smaller than the seed spread → stop, pivot to the codec.
+   embedding beats the pixel-loss encoder (B strong) on rank_corr, the rank correlation
+   between latent distance and the confusion ordering, by ≥ X (the plan's number) over
+   5 seeds; pixel_distance is the trivial rung. Decision: the plan's line (kill under its
+   kill line; pivot to the codec if the ablation costs nothing); the notebook adds a CI guard.
    Layout: config.json · run.py · check.py · runs.jsonl · progress.md · CHANGELOG.md · analysis/
    Never silently: change config or seed, drop rows, edit check.py, flip smoke, push.
    ```
    `CHANGELOG.md` has three headings: `## Units done`, `## Failed approaches (do not retry without a new reason)` with the line format `date · what · why · run_id`, and `## Known limitations`. `progress.md` has four lines: status, next unit, blocked on, and "start of session: read CHANGELOG.md, run check.py". `config.json`:
    ```json
    {"option": "contrastive", "data": "week10_data.npz", "seeds": [0, 1, 2, 3, 4],
-    "smoke": true, "epochs": 20, "lr": 0.001, "metric": "retrieval_acc@1",
-    "baseline": "pixel_distance"}
+    "smoke": true, "epochs": 20, "lr": 0.001, "metric": "rank_corr",
+    "x": "copied from week10_plan.md", "baseline": "pixel_distance"}
    ```
    `check.py`, the oracle:
    ```python
@@ -53,10 +55,10 @@ Leave with `experiments/week12/`, a harness an agent can run unattended for one 
    full = {(r["config"], r["seed"]) for r in rows if not r["smoke"]}
    print(f"OK: {len(rows)} rows, {len(full)} full config/seed pairs")
    ```
-3. **Oracle check (5 min).** Run `python experiments/week12/check.py`: FAIL. Paste the Lesson 3 row, on one line, into `runs.jsonl`: OK. Set its `dirty` to `true`: FAIL. Empty the file, commit `Scaffold week12 harness`.
+3. **Oracle check (5 min).** Run `python experiments/week12/check.py`: FAIL. Paste the Lesson 3 row, on one line, into `runs.jsonl` (the week-12 notebook's Part D appends rows in this schema with `metric: "rank_corr"`): OK. Set its `dirty` to `true`: FAIL. Empty the file, commit `Scaffold week12 harness`.
 4. **Unit 1, Claude Code (15 min).** Unattended, one line:
    ```text
-   claude -p "Read experiments/week12/progress.md and CHANGELOG.md. Do the next unit: write run.py (pixel-distance baseline on week10_data.npz, retrieval_acc@1, seeds from config.json, smoke first), append rows, run check.py, update progress.md and CHANGELOG.md, commit." --allowedTools "Read,Edit,Write,Bash(python *),Bash(git add *),Bash(git commit *)" --permission-prompts none
+   claude -p "Read experiments/week12/progress.md and CHANGELOG.md. Do the next unit: write run.py (pixel-distance baseline on week10_data.npz, metric rank_corr against the synthetic confusion table exactly as the week-12 notebook computes it, seeds from config.json, smoke first), append rows, run check.py, update progress.md and CHANGELOG.md, commit." --allowedTools "Read,Edit,Write,Bash(python *),Bash(git add *),Bash(git commit *)" --permission-prompts none
    ```
    Note minutes, `/usage` delta, and a 1–5 quality score after reading the diff.
 5. **Unit 1, Codex (15 min).** `git checkout -b codex-unit1 <scaffold hash>` then the same prompt as a Codex cloud task or in the CLI. Note minutes, counter delta, quality. Read both diffs for silent changes: config, seeds, `check.py`, `smoke`.

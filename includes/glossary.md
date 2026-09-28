@@ -1339,10 +1339,10 @@
 *[Tokenization artefact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
 *[tokenization artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
 *[Tokenization artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
-*[tolerance]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
-*[Tolerance]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
-*[tolerances]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
-*[Tolerances]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
+*[tolerance]: How far a reproduced number may sit from the claimed one and still count as the same: about 0.1 point on identical data, or two seed spreads when the run is seeded.
+*[Tolerance]: How far a reproduced number may sit from the claimed one and still count as the same: about 0.1 point on identical data, or two seed spreads when the run is seeded.
+*[tolerances]: How far a reproduced number may sit from the claimed one and still count as the same: about 0.1 point on identical data, or two seed spreads when the run is seeded.
+*[Tolerances]: How far a reproduced number may sit from the claimed one and still count as the same: about 0.1 point on identical data, or two seed spreads when the run is seeded.
 *[tool call]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[Tool call]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[tool calls]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.

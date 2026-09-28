@@ -30,9 +30,9 @@ def quantize(z, levels=8):
     return z + (q - z).detach()   # forward: q, backward: z
 ```
 
-The other way to shape a bottleneck is noise rather than steps. A **VAE**'s encoder outputs a mean and a spread per latent number, a sample from that bell shape is decoded, and a penalty pulls every code toward a standard bell. Its objective, the **ELBO**, is reconstruction minus that penalty; the noise makes nearby codes decode alike, so VAE latents are smooth. Card `lin-vae`: a discrete bottleneck for a display, a noisy one for a space you want to walk through.
+The other way to shape a bottleneck is noise rather than steps: a **VAE**'s encoder outputs a mean and a spread per latent number, a sample from that bell shape is decoded, and a penalty pulls every code toward a standard bell. Its objective, the **ELBO**, is reconstruction minus that penalty; the noise makes nearby codes decode alike, so VAE latents are smooth (`lin-vae`: discrete for a display, noisy for a space to walk through).
 
-The comparison is fair at equal bandwidth: week 10's hand-designed downsampler (block average, round to 8 levels) also sends 48 bits per frame. The claim: a learned 48 bits keeps more shape identity, measured by a probe on the codes.
+The comparison is fair at equal bandwidth: week 10's hand downsampler (block average, round to 8 levels) also sends 48 bits per frame. The claim: a learned 48 bits keeps more shape identity, measured by a probe on the codes.
 
 The analogy is honest: the bottleneck *is* the display, tactor for tactor. Where it breaks: 8 nominal levels may be 4 perceptual ones on skin; the network optimises for the decoder, not the finger.
 
@@ -40,8 +40,8 @@ The analogy is honest: the bottleneck *is* the display, tactor for tactor. Where
 
 <div class="visual"><iframe src="../visuals/w12-bottleneck-shaper.html" title="Actuator grid and levels: bits, reconstruction error, distinct codes" loading="lazy"></iframe></div>
 
-1. At 4×4, 8 levels, guess which of the six shapes collide into the same code before moving anything.
-2. Halve the levels to 4. Will the reconstruction error rise more, or less, than halving the grid to 2×2 at 8 levels? Compare at equal bits.
+1. At 4×4, 8 levels, guess which of the six shapes share a code before moving anything.
+2. Equal bits: 4×4 at 16 levels and 8×8 at 2 levels both send 64. Guess first which reconstructs better and which keeps all six shapes distinct.
 3. Find the cheapest setting that keeps all six shapes distinct; read its bits per frame.
 
 ## Retrieval
@@ -49,8 +49,8 @@ The analogy is honest: the bottleneck *is* the display, tactor for tactor. Where
 ??? question "An autoencoder with a 4×4, 8-level bottleneck trains, but the encoder's weights never change. Which line is missing and what does it do?"
     The straight-through estimator: `z + (q - z).detach()` keeps the rounded forward value but lets the gradient reach the encoder as if rounding were the identity.
 
-??? question "Compute the bits per frame for a 4×4 grid at 8 levels and for a 2×2 grid at 64 levels. Which would you trust on skin?"
-    Both are 48 bits (16 × 3 and 4 × 6). The 4×4 grid: 64 intensity levels are far beyond a fingertip's JNDs, so most of those bits never reach the person.
+??? question "Compute the bits per frame for a 4×4 grid at 8 levels and for a 2×2 grid at 64 levels. Which matches the display, and which would you trust on skin?"
+    48 and 24 bits (16 × 3 and 4 × 6): only the first is equal bandwidth with the display. Trust the 4×4 grid: 64 intensity levels are far beyond a fingertip's JNDs, so most of the 2×2 grid's bits never reach the person.
 
 ??? question "Reconstruction loss is 0.01 but a probe on the codes scores at chance. What has the bottleneck kept and what has it lost?"
     It kept the smooth average brightness that gives a low pixel error and lost the thin strokes that tell shapes apart. Reconstruction loss does not measure identity.

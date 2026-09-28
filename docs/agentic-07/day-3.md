@@ -18,7 +18,7 @@ An agent will make a run work; reproducibility means it works the same way next 
 
 ```json
 {"run_id": "0007", "git": "3f2a9c1", "dirty": false, "config": "config.json",
- "seed": 3, "smoke": false, "metric": "retrieval_acc@1", "value": 0.52,
+ "seed": 3, "smoke": false, "metric": "rank_corr", "value": 0.52,
  "minutes": 0.4, "versions": {"torch": "2.8.0", "numpy": "2.3.2"}}
 ```
 
