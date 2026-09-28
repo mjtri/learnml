@@ -52,13 +52,13 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 function $(id){return document.getElementById(id)}
 function check(){
   var c=+$("claimed").value,m=+$("mine").value,n=Math.max(1,+$("n").value||1),sd=Math.max(0,+$("sd").value||0);
-  var p=Math.min(.999,Math.max(.001,c/100)),se=Math.sqrt(p*(1-p)/n)*100,band=2*Math.max(se,sd),gap=m-c,inside=Math.abs(gap)<=band;
+  var p=Math.min(.999,Math.max(.001,c/100)),se=Math.sqrt(p*(1-p)/n)*100,band=sd>0?2*sd:0.1,gap=m-c,inside=Math.abs(gap)<=band;
   var blanks=[];
   [["target","target"],["setup","setup"],["mine","result"],["expl","explanation"],["res","residue"]].forEach(function(f){var el=$(f[0]),ok=String(el.value).trim()!=="";el.parentNode.className="f"+(ok?"":" bad");if(!ok)blanks.push(f[1])});
   var vague=/probably|maybe|might|likely|I think/i.test($("expl").value);
   if(blanks.length){$("out").hidden=true;$("verdict").innerHTML='<span class="bad">Refused: '+blanks.join(", ")+' empty.</span> '+(blanks.indexOf("residue")>=0?'An unexplained residue stated is a result; hidden, it is a claim. Write "0 points unexplained" if that is true.':'Every sentence answers one question; none may be skipped.');return}
   var verdict=inside?"within tolerance (gap "+(gap>=0?"+":"")+gap.toFixed(1)+", band ±"+band.toFixed(1)+")":"outside tolerance by "+(Math.abs(gap)-band).toFixed(1)+" points (gap "+(gap>=0?"+":"")+gap.toFixed(1)+", band ±"+band.toFixed(1)+")";
-  var src=sd>se?"seed spread "+sd.toFixed(1):"test-set SE "+se.toFixed(2);
+  var src=sd>0?"2 x seed spread "+sd.toFixed(1):"same images, numerics only; the claim's test-set SE is "+se.toFixed(2);
   var lines=["Target: "+$("target").value.trim()+", "+c+".","Setup: "+$("setup").value.trim()+".","Result: "+m+", tolerance +-"+band.toFixed(1)+" ("+src+").","Verdict: "+verdict+".","Explanation: "+$("expl").value.trim()+".","Residue: "+$("res").value.trim()+"."];
   $("out").textContent=lines.join(" ");$("out").hidden=false;
   var v=inside?'<span class="ok">Verdict computed: reproduced.</span> Sentence 5 may now be short; sentence 6 still names the next check.':'<span class="acc">Verdict computed: a real gap.</span> Sentence 5 must account for it with measured moves.';
@@ -67,7 +67,7 @@ function check(){
   $("verdict").innerHTML=v+' Commit this paragraph as week11_report.md.'}
 function preset(t,s,c,m,n,sd,e,r){$("target").value=t;$("setup").value=s;$("claimed").value=c;$("mine").value=m;$("n").value=n;$("sd").value=sd;$("expl").value=e;$("res").value=r;$("out").hidden=true;$("verdict").textContent="Preset loaded. Tap check."}
 $("pClip").onclick=function(){preset("Radford et al. 2021, Table 11, ViT-B/32 zero-shot CIFAR-10","open_clip, pretrained=openai, 10,000 test images, shipped preprocess, 18 templates, T4 fp32, commit ____, no seed",91.3,89.8,10000,0,"","")};
-$("pProbe").onclick=function(){preset("LearnML week-10 notebook, cell 30, sound-probe held-out accuracy, seeds 0-2","week10_data.npz (smoke, seed 0, 240 images), standardise + 75/25 split, 64-unit probe, 200 Adam steps, CPU, torch ____",71.1,66.2,60,8,"seeds 0-9 give 66.2 +- 8.0; the claimed 71.1 was the mean of three draws (measured)","0 points unexplained once the spread is reported; next: 500 steps, 2 min")};
+$("pProbe").onclick=function(){preset("LearnML week-10 notebook, cell 30, sound-probe held-out accuracy, seeds 0-2","week10_data.npz (smoke, seed 0, 240 images), standardise + 75/25 split, 64-unit probe, 200 Adam steps, CPU, torch ____",71.1,0,60,8,"(fill in after the build: what did seeds 0-9 give, and how does the claimed 71.1 sit inside that spread?)","0 points unexplained once the spread is reported; next: 500 steps, 2 min")};
 $("check").onclick=check;
 window.redraw=function(){};
 

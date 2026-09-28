@@ -72,7 +72,7 @@ var STEPS=[
 var done=[];
 function state(){
   var c=+$("claimed").value||0,m=+$("mine").value||0,sd=Math.max(0,+$("sd").value||0),k=Math.max(2,+$("k").value||2),n=Math.max(1,+$("n").value||1);
-  var p=Math.min(.999,Math.max(.001,c/100)),se=Math.sqrt(p*(1-p)/n)*100,band=2*Math.max(se,sd),gap=m-c,ag=Math.abs(gap),chance=100/k;
+  var p=Math.min(.999,Math.max(.001,c/100)),se=Math.sqrt(p*(1-p)/n)*100,band=sd>0?2*sd:0.1,gap=m-c,ag=Math.abs(gap),chance=100/k;
   var cls,sus,fit;
   if(ag<=band){cls="inside tolerance";sus="none: write 'within tolerance' and stop";fit="none"}
   else if(m<=chance+5&&c>chance+10){cls="near chance ("+chance.toFixed(0)+" %)";sus="labels, class order, the metric";fit="big"}
