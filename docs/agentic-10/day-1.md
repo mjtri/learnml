@@ -6,11 +6,11 @@ playbook: automation
 
 # B10 · Lesson 1 · Anatomy of a personal automation: five parts, one payoff
 
-<p class="recall" markdown>**Previously:** week 9 mapped the extension layers (skills, plugins, hooks, subagents, MCP servers, rules) and had you read a plugin's three security files before installing anything.</p>
+<p class="recall" markdown>**Previously:** add-ons come in seven layers, each with a place to run and a price per turn; star-history finds candidates, the six-line rubric decides, the three security files are read before any install, and a measured A/B week decides keep or drop.</p>
 
 ## Idea
 
-A trip request, a trip report, a TM cover sheet: the same twelve facts typed into three layouts, every time. An **automation recipe** separates facts from layouts: a data file you edit, templates you replace, a skill that maps one onto the other, an oracle that refuses a half-filled form, a trigger that says when. Remove one part and a familiar failure returns.
+A trip request, a trip report, a TM cover sheet: the same twelve facts typed into three layouts. An **automation recipe** separates facts from layouts: a data file you edit, templates you replace, a skill mapping between them, an oracle that refuses a half-filled form, a trigger. Remove one part and a familiar failure returns.
 
 ## How it works
 
@@ -58,12 +58,12 @@ Predict first: which missing part gives a form that looks right and is wrong? Th
 
 ## Sources
 
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills){ .src data-checked="2026-09-28" }: locations, `scripts/`, 8 min.
-- [Codex: build skills](https://learn.chatgpt.com/docs/build-skills.md){ .src data-checked="2026-09-28" }: `.agents/skills`, `$skill-name`, 4 min.
-- [kordoc README](https://github.com/chrisryugj/kordoc) (unverified): the `seal` command, 3 min.
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills){ .src data-checked="2026-09-28" }: 8 min.
+- [Codex: build skills](https://learn.chatgpt.com/docs/build-skills.md){ .src data-checked="2026-09-28" }: 4 min.
+- [kordoc README](https://github.com/chrisryugj/kordoc) (unverified): 3 min.
 
 ## Ledger prompt
 
-> In **Automation**: the three forms you file most, each tagged recipe or by hand, with minutes per run.
+> In **Automation recipes**: the three forms you file most, tagged recipe or by hand, with minutes per run.
 
-**Next:** docx, xlsx, LaTeX, HWP and HWPX: one honest route and one check per format.
+**Next:** docx, xlsx, LaTeX and HWPX: one honest route and one check per format.

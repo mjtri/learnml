@@ -54,6 +54,14 @@ A line in CLAUDE.md of the form @path that pulls another file into context at la
 
 ## A
 
+<div class="gl-entry" id="a-b-week" markdown>
+**A/B week** <small>(also: A/B weeks)</small>
+
+One week with a tool installed, logging the same kind of task with and without it: minutes, usage delta, quality 1 to 5. The numbers decide keep or uninstall.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="ablation" markdown>
 **ablation** <small>(also: ablations, ablate, ablated, ablating)</small>
 
@@ -140,6 +148,22 @@ An experimental Claude Code mode where a lead session spawns teammate sessions t
 The cross-tool instruction file convention read by Codex and, when no CLAUDE.md exists, by Claude Code. One source of truth for repo rules.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="agentshield" markdown>
+**AgentShield**
+
+A scanner shipped inside ECC that audits an agent setup for leaked secrets, loose permissions, hook injection and risky MCP servers. Useful on its own, without the bundle.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="allowed-tools" markdown>
+**allowed-tools**
+
+A line in a skill's front matter that pre-approves tools for the invoking turn. Read it before running a repository's skills: a skill can grant itself broad access.
+
+<small>first met in [agentic-09/day-1](agentic-09/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="allowlist" markdown>
@@ -400,6 +424,14 @@ When training on a new task overwrites what a model could already do, so old abi
 Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 
 <small>first met in [week-04/day-4](week-04/day-4.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="ccusage" markdown>
+**ccusage**
+
+A command that reads the local session logs of Claude Code and Codex and prints daily, weekly or per-session token reports. No hook, no context cost, nothing sent anywhere.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="chain-rule" markdown>
@@ -756,6 +788,14 @@ To blow up: each step makes the loss larger, usually because the learning rate i
 <small>first met in [week-01/day-5](week-01/day-5.md) · canvas card `core-optim`</small>
 </div>
 
+<div class="gl-entry" id="document-skills" markdown>
+**document skills** <small>(also: document-skills)</small>
+
+Anthropic's skills for reading and writing DOCX, PDF, PPTX and XLSX files, installed as one plugin from the anthropics/skills marketplace. Labelled demonstration quality.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="doer-grader" markdown>
 **doer/grader** <small>(also: doer and grader, doer vs grader)</small>
 
@@ -820,6 +860,14 @@ The number type stored in a tensor, such as 32-bit float or 64-bit integer. Mode
 Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
 
 <small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="ecc" markdown>
+**ECC** <small>(also: Everything Claude Code)</small>
+
+Everything Claude Code: a bundle of hundreds of skills, agents, rules and hooks for Claude Code and Codex. A pattern library to read; installed whole, it costs context every turn.
+
+<small>first met in [agentic-09/day-2](agentic-09/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="effect-size" markdown>
@@ -900,6 +948,14 @@ The number you report to say how good a model is, computed on data it did not tr
 Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 
 <small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="extension-layer" markdown>
+**extension layer** <small>(also: extension layers)</small>
+
+One of the seven ways to add to an agent: skills, plugins, marketplaces, hooks, subagents, MCP servers, rules. Each runs somewhere different and costs something different per turn.
+
+<small>first met in [agentic-09/day-1](agentic-09/day-1.md)</small>
 </div>
 
 ## F
@@ -1218,6 +1274,14 @@ The rule written before the run for what happens after it: kill if the gap misse
 <small>first met in [week-12/day-5](week-12/day-5.md) · canvas card `build-step9`</small>
 </div>
 
+<div class="gl-entry" id="kordoc" markdown>
+**kordoc**
+
+A Korean document tool: HWP, HWPX and PDF to Markdown, form filling that keeps the layout, old-versus-new diffs. Pure JavaScript, no Hancom Office; CLI, MCP server or plugin.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="kr-en-glossary" markdown>
 **KR↔EN glossary** <small>(also: KR-EN glossary, bilingual glossary)</small>
 
@@ -1413,6 +1477,14 @@ Keeping only the k strongest stretches of a matrix's SVD and dropping the rest: 
 </div>
 
 ## M
+
+<div class="gl-entry" id="marketplace-scope" markdown>
+**marketplace scope** <small>(also: marketplace scopes, install scope, install scopes)</small>
+
+Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
+</div>
 
 <div class="gl-entry" id="masked-language-model" markdown>
 **masked language model** <small>(also: masked language modelling, masked language modeling, MLM)</small>
@@ -1770,6 +1842,22 @@ The first pruned playbook: at most 20 rules, each with a source or a measurement
 A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 
 <small>first met in [agentic-04/day-1](agentic-04/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="plugin-marketplace" markdown>
+**plugin marketplace** <small>(also: plugin marketplaces, marketplace, marketplaces)</small>
+
+A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+
+<small>first met in [agentic-09/day-1](agentic-09/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="pocock-skills" markdown>
+**Pocock skills** <small>(also: mattpocock/skills)</small>
+
+Matt Pocock's engineering method pack: interview-driven specs, tickets, TDD, code review, handoff. A Claude Code plugin; Codex installs the same folders with npx skills.
+
+<small>first met in [agentic-09/day-2](agentic-09/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="positional-encoding" markdown>
@@ -2234,6 +2322,14 @@ How much a mean would wobble if you repeated the whole experiment: the spread of
 <small>first met in [week-09/day-5](week-09/day-5.md) · canvas card `core-prob`</small>
 </div>
 
+<div class="gl-entry" id="star-history" markdown>
+**star history** <small>(also: star-history, star curve, star curves)</small>
+
+A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+
+<small>first met in [agentic-09/day-2](agentic-09/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="straight-through-estimator" markdown>
 **straight-through estimator** <small>(also: straight-through, STE, straight-through trick)</small>
 
@@ -2256,6 +2352,14 @@ The best simple method that already exists for the task, tuned as carefully as y
 A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="superpowers" markdown>
+**superpowers**
+
+Jesse Vincent's method plugin for Claude Code and Codex: brainstorm, plan, test-driven development, one subagent per task. Skill bodies load on demand; one hook runs at session start.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="svd" markdown>
@@ -2372,6 +2476,14 @@ The agent asking to run something outside itself: read a file, run a command, se
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="tool-radar" markdown>
+**tool radar** <small>(also: radar)</small>
+
+Your dated table of tools scored with the worth-it rubric: what each changes, score, install line, risk note, check date. Rows enter at 8 or more, leave at monthly refresh.
+
+<small>first met in [agentic-09/day-3](agentic-09/day-3.md)</small>
+</div>
+
 <div class="gl-entry" id="top-k" markdown>
 **top-k** <small>(also: top-k sampling)</small>
 
@@ -2386,6 +2498,14 @@ Before drawing, keep only the k most likely tokens and give the rest zero probab
 A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
 
 <small>first met in [week-02/day-2](week-02/day-2.md) · canvas card `core-calc`</small>
+</div>
+
+<div class="gl-entry" id="traction" markdown>
+**traction**
+
+Evidence that other people keep using a tool: weekly new stars, recent pushes, contributors, issues closed. A filter for candidates, never a reason to install.
+
+<small>first met in [agentic-09/day-2](agentic-09/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="train-validation-test-split" markdown>
@@ -2616,6 +2736,14 @@ The 2013 method that learns word embeddings by predicting a word from its neighb
 A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 
 <small>first met in [agentic-04/day-2](agentic-04/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="worth-it-rubric" markdown>
+**worth-it rubric** <small>(also: worth-it rubrics, rubric)</small>
+
+Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
+
+<small>first met in [agentic-09/day-2](agentic-09/day-2.md)</small>
 </div>
 
 ## X

@@ -51,6 +51,14 @@ _(B6)_
 
 _(B7)_
 
+## Tools
+
+_(B9: what you installed, its rubric score, and the A/B week that kept it; what you uninstalled and why.)_
+
+## Automation recipes
+
+_(B10: each recipe as data file + form template + skill + oracle + trigger, with minutes saved per run.)_
+
 ## Weekly review
 
 _(B8: what you check every week, and what you deleted from this page.)_

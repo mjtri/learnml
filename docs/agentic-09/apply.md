@@ -5,7 +5,7 @@ playbook: tools
 
 # B9 · Apply · Five scores, three files, two installs, two radar rows
 
-<p class="recall" markdown>**This week in one sentence:** add-ons come in seven extension layers, each with its own place to run and price per turn; star-history.com finds candidates, the six-line rubric decides (8/12, no trust zero, one method pack), the three files (`hooks/hooks.json`, `.mcp.json`, `bin/`) are read before any install, and a measured A/B week decides keep or uninstall.</p>
+<p class="recall" markdown>**This week in one sentence:** add-ons come in seven layers, each with a place to run and a price per turn; star-history finds candidates, the six-line rubric decides, the three security files are read before any install, and a measured A/B week decides keep or drop.</p>
 
 **Laptop · ~60 min · in the build session.**
 

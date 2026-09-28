@@ -185,8 +185,11 @@ hide:
     - ⬜ [B8 · Lesson 3 · The weekly review and the playbook v1](agentic-08/day-3.md)
     - ⬜ [B8 · Apply · Playbook v1 installed, first weekly review logged](agentic-08/apply.md)
 
-??? note "Week 9 · Finding and adopting tools that earn their place · not generated yet"
-    `python gen_week.py agentic 9` prints the prompt that builds it.
+??? note "⬜ Week 9 · Finding and adopting tools that earn their place · 0/4"
+    - ⬜ [B9 · Lesson 1 · The extension map and the three files you read first](agentic-09/day-1.md)
+    - ⬜ [B9 · Lesson 2 · Discover with traction, decide with a rubric](agentic-09/day-2.md)
+    - ⬜ [B9 · Lesson 3 · The radar, the A/B week and uninstall as a first-class move](agentic-09/day-3.md)
+    - ⬜ [B9 · Apply · Five scores, three files, two installs, two radar rows](agentic-09/apply.md)
 
 ??? note "⬜ Week 10 · Automate your own repetitive tasks · 0/4"
     - ⬜ [B10 · Lesson 1 · Anatomy of a personal automation: five parts, one payoff](agentic-10/day-1.md)

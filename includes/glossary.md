@@ -6,6 +6,8 @@
 *[/plan]: The command that turns on plan mode for the next prompt (Claude Code) or toggles it (Codex): read and propose first, edit only after approval.
 *[@import]: A line in CLAUDE.md of the form @path that pulls another file into context at launch. Paths resolve relative to the importing file; at most four hops deep.
 *[@imports]: A line in CLAUDE.md of the form @path that pulls another file into context at launch. Paths resolve relative to the importing file; at most four hops deep.
+*[A/B week]: One week with a tool installed, logging the same kind of task with and without it: minutes, usage delta, quality 1 to 5. The numbers decide keep or uninstall.
+*[A/B weeks]: One week with a tool installed, logging the same kind of task with and without it: minutes, usage delta, quality 1 to 5. The numbers decide keep or uninstall.
 *[ablation]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
 *[Ablation]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
 *[ablations]: An experiment that removes or replaces one component of a model, keeps everything else fixed, and measures the change in loss, to learn what that component was doing.
@@ -53,6 +55,9 @@
 *[agent team]: An experimental Claude Code mode where a lead session spawns teammate sessions that message each other and share a task list. Each teammate is a full context window.
 *[Agent team]: An experimental Claude Code mode where a lead session spawns teammate sessions that message each other and share a task list. Each teammate is a full context window.
 *[AGENTS.md]: The cross-tool instruction file convention read by Codex and, when no CLAUDE.md exists, by Claude Code. One source of truth for repo rules.
+*[AgentShield]: A scanner shipped inside ECC that audits an agent setup for leaked secrets, loose permissions, hook injection and risky MCP servers. Useful on its own, without the bundle.
+*[allowed-tools]: A line in a skill's front matter that pre-approves tools for the invoking turn. Read it before running a repository's skills: a skill can grant itself broad access.
+*[Allowed-tools]: A line in a skill's front matter that pre-approves tools for the invoking turn. Read it before running a repository's skills: a skill can grant itself broad access.
 *[allowlist]: Tools or command patterns pre-approved in a settings file, like Bash(git commit *), so they run without a prompt. Deny rules override it in every mode.
 *[Allowlist]: Tools or command patterns pre-approved in a settings file, like Bash(git commit *), so they run without a prompt. Deny rules override it in every mode.
 *[allowlists]: Tools or command patterns pre-approved in a settings file, like Bash(git commit *), so they run without a prompt. Deny rules override it in every mode.
@@ -207,6 +212,8 @@
 *[Causal masks]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 *[causal masking]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 *[Causal masking]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
+*[ccusage]: A command that reads the local session logs of Claude Code and Codex and prints daily, weekly or per-session token reports. No hook, no context cost, nothing sent anywhere.
+*[Ccusage]: A command that reads the local session logs of Claude Code and Codex and prints daily, weekly or per-session token reports. No hook, no context cost, nothing sent anywhere.
 *[chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
 *[Chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
 *[CHANGELOG]: The experiment's lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.
@@ -391,6 +398,10 @@
 *[Diverged]: To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.
 *[divergence]: To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.
 *[Divergence]: To blow up: each step makes the loss larger, usually because the learning rate is too high. Often ends in NaN.
+*[document skills]: Anthropic's skills for reading and writing DOCX, PDF, PPTX and XLSX files, installed as one plugin from the anthropics/skills marketplace. Labelled demonstration quality.
+*[Document skills]: Anthropic's skills for reading and writing DOCX, PDF, PPTX and XLSX files, installed as one plugin from the anthropics/skills marketplace. Labelled demonstration quality.
+*[document-skills]: Anthropic's skills for reading and writing DOCX, PDF, PPTX and XLSX files, installed as one plugin from the anthropics/skills marketplace. Labelled demonstration quality.
+*[Document-skills]: Anthropic's skills for reading and writing DOCX, PDF, PPTX and XLSX files, installed as one plugin from the anthropics/skills marketplace. Labelled demonstration quality.
 *[doer/grader]: The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor's model.
 *[Doer/grader]: The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor's model.
 *[doer and grader]: The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor's model.
@@ -421,6 +432,8 @@
 *[Dtypes]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[early stopping]: Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
 *[Early stopping]: Watch the validation loss during training and keep the parameters from the step where it was lowest, stopping once it has clearly started to rise.
+*[ECC]: Everything Claude Code: a bundle of hundreds of skills, agents, rules and hooks for Claude Code and Codex. A pattern library to read; installed whole, it costs context every turn.
+*[Everything Claude Code]: Everything Claude Code: a bundle of hundreds of skills, agents, rules and hooks for Claude Code and Codex. A pattern library to read; installed whole, it costs context every turn.
 *[effect size]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
 *[Effect size]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
 *[effect sizes]: How big a difference is compared with the run-to-run spread. A gain of 2 points means little if repeats of the same setup differ by 3.
@@ -470,6 +483,10 @@
 *[Exploding gradient]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[Exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
+*[extension layer]: One of the seven ways to add to an agent: skills, plugins, marketplaces, hooks, subagents, MCP servers, rules. Each runs somewhere different and costs something different per turn.
+*[Extension layer]: One of the seven ways to add to an agent: skills, plugins, marketplaces, hooks, subagents, MCP servers, rules. Each runs somewhere different and costs something different per turn.
+*[extension layers]: One of the seven ways to add to an agent: skills, plugins, marketplaces, hooks, subagents, MCP servers, rules. Each runs somewhere different and costs something different per turn.
+*[Extension layers]: One of the seven ways to add to an agent: skills, plugins, marketplaces, hooks, subagents, MCP servers, rules. Each runs somewhere different and costs something different per turn.
 *[falsifiable prediction]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
 *[Falsifiable prediction]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
 *[falsifiable predictions]: A claim with a number that a run can prove wrong: on task T, A beats B by at least X on metric M. No number, no experiment.
@@ -666,6 +683,8 @@
 *[Kill, pivot or scale up]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
 *[kill-pivot-scale]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
 *[Kill-pivot-scale]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[kordoc]: A Korean document tool: HWP, HWPX and PDF to Markdown, form filling that keeps the layout, old-versus-new diffs. Pure JavaScript, no Hancom Office; CLI, MCP server or plugin.
+*[Kordoc]: A Korean document tool: HWP, HWPX and PDF to Markdown, form filling that keeps the layout, old-versus-new diffs. Pure JavaScript, no Hancom Office; CLI, MCP server or plugin.
 *[KR↔EN glossary]: A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
 *[KR-EN glossary]: A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
 *[bilingual glossary]: A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
@@ -787,6 +806,14 @@
 *[Low-rank approximations]: Keeping only the k strongest stretches of a matrix's SVD and dropping the rest: the closest rank-k matrix to the original, the best compression at that rank.
 *[rank-k approximation]: Keeping only the k strongest stretches of a matrix's SVD and dropping the rest: the closest rank-k matrix to the original, the best compression at that rank.
 *[Rank-k approximation]: Keeping only the k strongest stretches of a matrix's SVD and dropping the rest: the closest rank-k matrix to the original, the best compression at that rank.
+*[marketplace scope]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[Marketplace scope]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[marketplace scopes]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[Marketplace scopes]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[install scope]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[Install scope]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[install scopes]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
+*[Install scopes]: Where an installed plugin is enabled: user (every project on this machine), project (everyone in this repository, committed), or local (you, this repository only).
 *[masked language model]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
 *[Masked language model]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
 *[masked language modelling]: Training by hiding some tokens of a text and predicting them from both sides. The objective BERT uses; it needs no labels.
@@ -997,6 +1024,17 @@
 *[Plugin]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 *[plugins]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
 *[Plugins]: A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.
+*[plugin marketplace]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[Plugin marketplace]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[plugin marketplaces]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[Plugin marketplaces]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[marketplace]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[Marketplace]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[marketplaces]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[Marketplaces]: A repository or folder whose marketplace.json lists plugins and where to fetch them. Add it once, install by name@marketplace. Its name says who publishes the list, not what plugins do.
+*[Pocock skills]: Matt Pocock's engineering method pack: interview-driven specs, tickets, TDD, code review, handoff. A Claude Code plugin; Codex installs the same folders with npx skills.
+*[mattpocock/skills]: Matt Pocock's engineering method pack: interview-driven specs, tickets, TDD, code review, handoff. A Claude Code plugin; Codex installs the same folders with npx skills.
+*[Mattpocock/skills]: Matt Pocock's engineering method pack: interview-driven specs, tickets, TDD, code review, handoff. A Claude Code plugin; Codex installs the same folders with npx skills.
 *[positional encoding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[Positional encoding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[positional encodings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
@@ -1296,6 +1334,14 @@
 *[Standard error]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
 *[standard errors]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
 *[Standard errors]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
+*[star history]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[Star history]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[star-history]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[Star-history]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[star curve]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[Star curve]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[star curves]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
+*[Star curves]: A repository's GitHub stars plotted over time, as drawn by star-history.com. A steady slope means sustained use; a one-week spike means a launch or a viral post.
 *[straight-through estimator]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
 *[Straight-through estimator]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
 *[straight-through]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
@@ -1311,6 +1357,8 @@
 *[Subagent]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
 *[Subagents]: A helper agent with its own fresh context that does a bounded job and returns a summary, so the main context stays small.
+*[superpowers]: Jesse Vincent's method plugin for Claude Code and Codex: brainstorm, plan, test-driven development, one subagent per task. Skill bodies load on demand; one hook runs at session start.
+*[Superpowers]: Jesse Vincent's method plugin for Claude Code and Codex: brainstorm, plan, test-driven development, one subagent per task. Skill bodies load on demand; one hook runs at session start.
 *[SVD]: Writing any matrix as a sum of simple stretches, each one a direction in, a direction out and a strength. Sorted by strength, the first few usually carry almost everything.
 *[singular value decomposition]: Writing any matrix as a sum of simple stretches, each one a direction in, a direction out and a strength. Sorted by strength, the first few usually carry almost everything.
 *[Singular value decomposition]: Writing any matrix as a sum of simple stretches, each one a direction in, a direction out and a strength. Sorted by strength, the first few usually carry almost everything.
@@ -1382,6 +1430,10 @@
 *[Tool calls]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[tool use]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[Tool use]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
+*[tool radar]: Your dated table of tools scored with the worth-it rubric: what each changes, score, install line, risk note, check date. Rows enter at 8 or more, leave at monthly refresh.
+*[Tool radar]: Your dated table of tools scored with the worth-it rubric: what each changes, score, install line, risk note, check date. Rows enter at 8 or more, leave at monthly refresh.
+*[radar]: Your dated table of tools scored with the worth-it rubric: what each changes, score, install line, risk note, check date. Rows enter at 8 or more, leave at monthly refresh.
+*[Radar]: Your dated table of tools scored with the worth-it rubric: what each changes, score, install line, risk note, check date. Rows enter at 8 or more, leave at monthly refresh.
 *[top-k]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
 *[Top-k]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
 *[top-k sampling]: Before drawing, keep only the k most likely tokens and give the rest zero probability. Cuts off the long tail of unlikely characters that produce gibberish.
@@ -1392,6 +1444,8 @@
 *[Topological sort]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
 *[topo order]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
 *[Topo order]: A listing of graph nodes where every value comes after everything it was made from. Walked in reverse, each gradient is complete before it is passed on.
+*[traction]: Evidence that other people keep using a tool: weekly new stars, recent pushes, contributors, issues closed. A filter for candidates, never a reason to install.
+*[Traction]: Evidence that other people keep using a tool: weekly new stars, recent pushes, contributors, issues closed. A filter for candidates, never a reason to install.
 *[train/validation/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
 *[Train/validation/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
 *[train/val/test split]: Divide the data three ways: train on the first part, tune choices on the second, report once on the third, which the model never sees during training.
@@ -1518,6 +1572,12 @@
 *[Worktrees]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[Git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
+*[worth-it rubric]: Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
+*[Worth-it rubric]: Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
+*[worth-it rubrics]: Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
+*[Worth-it rubrics]: Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
+*[rubric]: Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
+*[Rubric]: Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.
 *[XOR]: Exclusive-or: true when exactly one of two inputs is on. Four points that no single straight line can split, so no single neuron can learn them.
 *[zero-shot classification]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
 *[Zero-shot classification]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
