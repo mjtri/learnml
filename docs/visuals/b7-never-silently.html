@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Never silently checklist</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.item{display:block;width:100%;font:inherit;font-size:13px;min-height:48px;padding:8px 10px;margin:0 0 5px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;text-align:left}
+.item .n{color:var(--mut);font-family:ui-monospace,Menlo,Consolas,monospace;margin-right:6px}
+.item .g{float:right;font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:8px;border:1px solid var(--line)}
+.item.g0 .g{color:var(--bad);border-color:var(--bad)}
+.item.g1 .g{color:var(--acc2);border-color:var(--acc2)}
+.item.g2 .g{color:var(--ok);border-color:var(--ok)}
+.item.g0{border-color:color-mix(in srgb,var(--bad) 50%,var(--line))}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0}
+.stat{padding:8px;border-radius:10px;background:var(--card);text-align:center}
+.stat b{display:block;font-size:20px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.stat span{font-size:11px;color:var(--mut)}
+.stat.ok b{color:var(--ok)}.stat.warn b{color:var(--acc2)}.stat.bad b{color:var(--bad)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.bad{color:var(--bad);font-weight:700}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.row button{font:inherit;font-size:12px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Nine things an agent must never do silently</h1>
+<p class="hint">Tap an item to set what guards it in your setup: nothing, an instruction line, or a hook or check that runs every time. The counters say how many an unattended run could do without a trace.</p>
+<div id="list"></div>
+<div class="stats"><div class="stat" id="s2"><b>0</b><span>caught every time</span></div><div class="stat" id="s1"><b>0</b><span>instruction only</span></div><div class="stat" id="s0"><b>9</b><span>unguarded</span></div></div>
+<div class="status" id="st"></div>
+<div class="row"><button id="rec">Show the recommended set</button><button id="reset">Reset</button></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>hook</dt><dd>A command Claude Code runs itself at a fixed moment, such as before a tool call. Exit code 2 blocks the call every time.</dd>
+<dt>check.py</dt><dd>The oracle script over the run log: fails on missing fields, dirty code, or smoke rows counted as evidence.</dd>
+<dt>instruction line</dt><dd>A rule in AGENTS.md or CLAUDE.md. Read and weighed by the model; not enforced.</dd>
+<dt>CHANGELOG line</dt><dd>The out-loud version of any of the nine: what changed, why, and the run id that shows it.</dd>
+</dl></details>
+<script>
+(function(){
+var G=["unguarded","instruction","hook / check"];
+var I=[
+ {t:"Change a seed or a config value",rec:2,why:"check.py rejects rows whose git hash or config differ from the committed ones."},
+ {t:"Drop, filter or re-weight rows",rec:2,why:"check.py counts rows per config and seed; a missing pair fails the run."},
+ {t:"Edit or delete a test or check.py",rec:2,why:"A PreToolUse hook that blocks Edit and Write on check.py: exit 2, every time."},
+ {t:"Flip smoke or shorten a run",rec:2,why:"check.py counts only smoke=false rows as evidence; a flip shows in the diff."},
+ {t:"Claim a unit passes without running the check",rec:2,why:"A Stop hook runs check.py before the turn may end."},
+ {t:"Retry an approach listed under Failed approaches",rec:1,why:"An instruction: read CHANGELOG.md first. No script can know what counts as the same idea."},
+ {t:"Change a library version or the data file",rec:1,why:"The run log row records versions; an instruction says to log the change, the row proves it."},
+ {t:"Rewrite CHANGELOG history",rec:1,why:"An instruction: append only. Git shows a rewrite in the diff."},
+ {t:"Push, force-push or merge",rec:2,why:"A hook that blocks git push, or leave push out of --allowedTools."}
+];
+var g=I.map(function(){return 0}),list=document.getElementById("list"),st=document.getElementById("st"),last=-1;
+I.forEach(function(it,i){var b=document.createElement("button");b.className="item g0";b.id="i"+i;
+ b.innerHTML="<span class=n>"+(i+1)+"</span>"+it.t+"<span class=g>"+G[0]+"</span>";
+ b.onclick=function(){g[i]=(g[i]+1)%3;last=i;draw()};list.appendChild(b)});
+document.getElementById("rec").onclick=function(){I.forEach(function(it,i){g[i]=it.rec});last=-1;draw()};
+document.getElementById("reset").onclick=function(){I.forEach(function(it,i){g[i]=0});last=-1;draw()};
+function draw(){
+ var c=[0,0,0];
+ I.forEach(function(it,i){var b=document.getElementById("i"+i);b.className="item g"+g[i];b.querySelector(".g").textContent=G[g[i]];c[g[i]]++});
+ [0,1,2].forEach(function(k){var s=document.getElementById("s"+k);s.querySelector("b").textContent=c[k];s.className="stat "+(k===2?"ok":k===1?"warn":"bad")});
+ if(last>=0){var it=I[last];st.className="status";st.textContent=(last+1)+". Recommended: "+G[it.rec]+". "+it.why;return}
+ if(c[0]>0){st.className="status bad";st.textContent="An unattended run could do "+c[0]+" of these and leave no trace. Every unguarded item is a result you cannot defend later."}
+ else if(c[1]>c[2]){st.className="status";st.textContent="Nothing unguarded, but "+c[1]+" rely on the model reading and obeying a line. Turn the ones that have already bitten you into a hook or a check."}
+ else{st.className="status";st.textContent=c[2]+" caught every time, "+c[1]+" by instruction. This is the recommended shape: scripts for what a script can see, instructions for judgement calls, and a CHANGELOG line for all nine."}
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
