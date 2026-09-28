@@ -1,0 +1,21 @@
+#separator:tab
+#html:true
+#tags column:3
+Your repo has both AGENTS.md and CLAUDE.md. Which does Claude Code read, and how do you get both?	CLAUDE.md only. Put <code>@AGENTS.md</code> on its first line; the import never loads the file twice.	learnml agentic-02 agentic-02-day-1
+What does 'nearest file wins' actually guarantee?	Only that the nearest file is read last. Files are joined, not replaced, so either tool may follow either conflicting line.	learnml agentic-02 agentic-02-day-1
+Codex stops loading instruction files at what size, and what is Claude Code's equivalent?	32 KiB combined by default. Claude has no byte cap: a 200-line target per file; files over 4 MiB are skipped.	learnml agentic-02 agentic-02-day-1
+What can Claude Code do in plan mode, and what stays blocked?	Read files, run exploratory commands and write a plan. Edits stay blocked until you approve the plan or leave plan mode.	learnml agentic-02 agentic-02-day-2
+Name the four parts of the prompt shape and the one an agent can never invent for you.	Goal, Context, Constraints, Done when. Done when: without your oracle it can only guess that it has finished.	learnml agentic-02 agentic-02-day-2
+What does opusplan change, and what does Codex offer instead?	Opus plans, then Sonnet executes. Codex has plan mode but no published automatic switch; you choose the model.	learnml agentic-02 agentic-02-day-2
+Who writes each of the three stores, and which survive /clear?	Conversation: you and the agent, lost at /clear. Instruction file: you, persists. Auto memory: the agent, persists on that machine.	learnml agentic-02 agentic-02-day-3
+What loads from auto memory at session start, and where does it live?	The first 200 lines or 25 KB of MEMORY.md, under <code>~/.claude/projects/<project>/memory/</code>: machine-local, shared across every checkout of the project.	learnml agentic-02 agentic-02-day-3
+Where must a must-always-apply rule go, and why not memory?	In the instruction file. Both vendors say memory is a recall layer; neither tool enforces what it remembers.	learnml agentic-02 agentic-02-day-3
+What does <b>instruction file</b> mean?	A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.	learnml agentic-02 vocab
+What does <b>@import</b> mean?	A line in CLAUDE.md of the form @path that pulls another file into context at launch. Paths resolve relative to the importing file; at most four hops deep.	learnml agentic-02 vocab
+What does <b>rules directory</b> mean?	Claude Code&#x27;s .claude/rules/ folder of topic files loaded with the instruction file. A file with a paths: line loads only when matching files are opened.	learnml agentic-02 vocab
+What does <b>precedence</b> mean?	The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.	learnml agentic-02 vocab
+What does <b>size cap</b> mean?	Codex&#x27;s limit on combined instruction-file text, 32 KiB by default; files past it are not loaded. Claude Code has no byte cap but targets 200 lines per file.	learnml agentic-02 vocab
+What does <b>four-part prompt</b> mean?	A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.	learnml agentic-02 vocab
+What does <b>/plan</b> mean?	The command that turns on plan mode for the next prompt (Claude Code) or toggles it (Codex): read and propose first, edit only after approval.	learnml agentic-02 vocab
+What does <b>opusplan</b> mean?	A Claude Code model setting that uses Opus while in plan mode and switches to Sonnet for the edits: the costly model thinks, the cheaper one types.	learnml agentic-02 vocab
+What does <b>auto memory</b> mean?	Notes the agent writes for itself across sessions: your preferences, corrections, project facts. Loaded every session but never enforced; Claude Code and Codex both keep them on your machine.	learnml agentic-02 vocab

@@ -9,7 +9,7 @@ Fast mode is on and your plan window is empty. What happens to the bill?	Fast mo
 Name two things about ChatGPT Business limits you can only learn from the product itself.	The exact Deep Research and agent-mode allowances, and where you are in the 5-hour window: OpenAI publishes ranges, not counts.	learnml agentic-01 agentic-01-day-2
 What three questions about a task decide the tool, before any opinion about the tools?	Where it runs (local, cloud copy, no repo), who verifies it (test vs you), and how much context it needs (file, project, web).	learnml agentic-01 agentic-01-day-3
 A Unity build fix and a docs typo fix arrive together. Where does each go, and why?	The build fix stays local (needs the editor); the typo fix is a self-contained cloud task ending in a PR.	learnml agentic-01 agentic-01-day-3
-What is the same about Remote Control and Codex Remote, and what is one limit of each?	Both drive an agent on your own machine from the phone. Codex Remote needs the computer awake; Claude's app cannot select bypass mode.	learnml agentic-01 agentic-01-day-3
+What is the same about Remote Control and Codex Remote, and what is one limit of each?	Both drive an agent on your own machine from the phone. Codex Remote needs the computer awake; Claude's app cannot select the loosest permission settings.	learnml agentic-01 agentic-01-day-3
 What does <b>agent</b> mean?	A model that runs in a loop: read the situation, pick a tool, act, read the result, repeat until a goal is met. Claude Code and Codex are agents.	learnml agentic-01 vocab
 What does <b>context window</b> mean?	Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.	learnml agentic-01 vocab
 What does <b>token</b> mean?	The unit models read and write in; about three-quarters of an English word. Usage limits and costs are counted in tokens.	learnml agentic-01 vocab
@@ -24,19 +24,19 @@ What does <b>weekly cap</b> mean?	A second, larger allowance that spans seven da
 What does <b>usage pool</b> mean?	One shared allowance drawn on by several surfaces. On Claude Max one pool covers claude.ai, Claude Code, desktop and mobile; Opus and Sonnet have separate limits.	learnml agentic-01 vocab
 What does <b>usage credits</b> mean?	Pay-as-you-go balance that Claude Code can draw on once plan limits are spent, managed with /usage-credits and an optional spend cap.	learnml agentic-01 vocab
 What does <b>fast mode</b> mean?	A Claude Code option that runs Opus with much faster output. Billed only from usage credits, never from plan limits.	learnml agentic-01 vocab
-What does <b>limit reset</b> mean?	An occasional free reset of a spent usage window, applied from Settings &gt; Usage on claude.ai.	learnml agentic-01 vocab
+What does <b>limit reset</b> mean?	An occasional free reset of a spent usage window, offered in Settings &gt; Usage on claude.ai web or desktop (not from Claude Code or the mobile app).	learnml agentic-01 vocab
 What does <b>Max plan</b> mean?	Anthropic&#x27;s top individual subscription. The 20x tier gives twenty times Pro&#x27;s per-window allowance plus a weekly cap.	learnml agentic-01 vocab
 What does <b>ChatGPT Business</b> mean?	OpenAI&#x27;s team subscription (formerly Team). Seats share one usage pool across ChatGPT and Codex; business data is not used for training by default.	learnml agentic-01 vocab
-What does <b>Premium seat</b> mean?	A higher-priced ChatGPT Business seat with much more usage and no 5-hour window. Seats can be mixed and reassigned.	learnml agentic-01 vocab
+What does <b>Premium seat</b> mean?	A higher-priced ChatGPT Business seat: 5x the usage, no 5-hour window, weekly reset. Seats can be mixed and reassigned.	learnml agentic-01 vocab
 What does <b>effort level</b> mean?	How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.	learnml agentic-01 vocab
 What does <b>Codex</b> mean?	OpenAI&#x27;s coding agent, available as a CLI, an IDE extension, a desktop app and a cloud service; included in ChatGPT Business.	learnml agentic-01 vocab
-What does <b>Codex cloud</b> mean?	Codex running in an isolated cloud environment on a copy of your repo, started from the web, GitHub or the phone, finishing in a pull request.	learnml agentic-01 vocab
+What does <b>Codex cloud</b> mean?	Codex running in an isolated cloud environment on a copy of your repo, started from the web, GitHub or a connected app, finishing in a pull request.	learnml agentic-01 vocab
 What does <b>Deep Research</b> mean?	ChatGPT&#x27;s long-running web research mode that reads many sources and returns a cited report. Verify its citations before reusing them.	learnml agentic-01 vocab
 What does <b>cloud session</b> mean?	Claude Code running on Anthropic&#x27;s servers against your GitHub repo, started from claude.ai/code or the mobile app.	learnml agentic-01 vocab
 What does <b>Remote Control</b> mean?	Driving a Claude Code session that runs on your own machine from the Claude mobile app or browser. Execution stays local.	learnml agentic-01 vocab
 What does <b>Codex Remote</b> mean?	Starting, steering and approving Codex on your own computer from the ChatGPT mobile app. The computer must stay awake.	learnml agentic-01 vocab
 What does <b>oracle</b> mean?	A check the agent can run to know whether it is done: a test suite, a build, a checker script. Without one it can only guess.	learnml agentic-01 vocab
-What does <b>plan mode</b> mean?	A Claude Code mode where the agent may read and propose but not edit or run, so you approve an approach before work starts.	learnml agentic-01 vocab
-What does <b>permission mode</b> mean?	Claude Code&#x27;s setting for what the agent may do without asking: manual, accept edits, plan, auto or bypass.	learnml agentic-01 vocab
+What does <b>plan mode</b> mean?	A Claude Code mode where the agent explores and proposes (read-only commands allowed) but every edit stays blocked until you approve its plan.	learnml agentic-01 vocab
+What does <b>permission mode</b> mean?	Claude Code&#x27;s per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.	learnml agentic-01 vocab
 What does <b>sandbox</b> mean?	An enforced boundary around what an agent&#x27;s commands can touch on disk and network. Codex uses an OS-level sandbox plus an approval policy.	learnml agentic-01 vocab
 What does <b>playbook</b> mean?	Your own page of workflow rules, each backed by a source or a measurement. The ledger for Track B.	learnml agentic-01 vocab

@@ -1,0 +1,21 @@
+#separator:tab
+#html:true
+#tags column:3
+What does a subagent see at start, and what does it never see?	Its own system prompt, your CLAUDE.md and the task message. Never your conversation, files or corrections.	learnml agentic-04 agentic-04-day-1
+What is in context before a skill is invoked, and what survives a compaction?	Only the description line. After compaction only the first 5,000 tokens of the loaded body come back.	learnml agentic-04 agentic-04-day-1
+Why can an installed plugin cost usage in a session that never uses it?	Every invocable component's name and description is in context on every turn; each turn pays for the listing.	learnml agentic-04 agentic-04-day-1
+What does a worktree share with the main checkout, and what is its own?	Shared: repository history and project-scope plugins. Its own: files, branch, a fresh checkout without ignored files.	learnml agentic-04 agentic-04-day-2
+Where does a background session write its edits, and why?	Into its own worktree under .claude/worktrees/, entered before its first edit, so parallel sessions never share a checkout.	learnml agentic-04 agentic-04-day-2
+Name three reasons agent teams are rarely right for a solo researcher.	Experimental and off by default; no worktree isolation between teammates; about seven times the tokens of one session when they plan.	learnml agentic-04 agentic-04-day-2
+Why is <code>/code-review</code> in the same terminal still a different grader from the doer?	It runs as a background subagent with its own context, so it never sees the doer's conversation or assumptions.	learnml agentic-04 agentic-04-day-3
+What does ultrareview cost on Max, and when does a run count?	Three free runs that never refresh, then $5 to $25 in usage credits. A run counts once the cloud session starts, even if stopped.	learnml agentic-04 agentic-04-day-3
+Which pool pays for <code>/codex:adversarial-review</code>, and what does it refuse to do?	Your ChatGPT/Codex usage, not the Claude plan. It is read-only: it never edits.	learnml agentic-04 agentic-04-day-3
+What does <b>skill</b> mean?	A folder holding a SKILL.md: instructions loaded into context only when you type /name or the agent picks it. Until then only its description costs tokens.	learnml agentic-04 vocab
+What does <b>plugin</b> mean?	A directory of skills, agents, hooks and MCP servers installed as one unit from a marketplace. Its component descriptions sit in context on every turn.	learnml agentic-04 vocab
+What does <b>worktree</b> mean?	A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other&#x27;s files. Claude Code keeps them under .claude/worktrees/.	learnml agentic-04 vocab
+What does <b>background agent</b> mean?	A Claude Code session moved off your screen with /bg or claude --bg. It edits inside its own worktree and spends your quota on its own.	learnml agentic-04 vocab
+What does <b>agent teams</b> mean?	An experimental Claude Code mode where a lead session spawns teammate sessions that message each other and share a task list. Each teammate is a full context window.	learnml agentic-04 vocab
+What does <b>doer/grader</b> mean?	The rule that the agent which made a change never grades it. The grader starts from a fresh context and, at best, is a different vendor&#x27;s model.	learnml agentic-04 vocab
+What does <b>adversarial review</b> mean?	A read-only review told to argue against the chosen design and its assumptions, not only hunt bugs. In codex-plugin-cc: /codex:adversarial-review with focus text.	learnml agentic-04 vocab
+What does <b>ultrareview</b> mean?	Claude Code&#x27;s deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.	learnml agentic-04 vocab
+What does <b>codex-plugin-cc</b> mean?	OpenAI&#x27;s plugin that runs Codex from inside Claude Code for reviews and delegated tasks. It spends your ChatGPT/Codex usage, not the Claude plan.	learnml agentic-04 vocab

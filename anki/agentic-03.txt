@@ -1,0 +1,20 @@
+#separator:tab
+#html:true
+#tags column:3
+What does an agent use as its stop signal when it has no oracle, and what does that make you?	"Looks done", its own judgement; you become the verification loop.	learnml agentic-03 agentic-03-day-1
+Name the four ways Anthropic lists for turning a check into a gate, weakest to strongest.	In the prompt, as a <code>/goal</code> condition, as a Stop hook that blocks the turn, and as a review by a fresh subagent.	learnml agentic-03 agentic-03-day-1
+Why does a Unity batch-mode compile fail while the Editor is open, and what does that mean for the workflow?	Only one Editor instance can hold a project. Close it for hand-off runs; while editing, the console is your oracle.	learnml agentic-03 agentic-03-day-1
+Name the stopper in each Claude Code mode: Manual, auto, dontAsk, bypass.	You; the classifier (you again after 3 blocks in a row or 20 total); the allowlist; nobody, only deny rules survive.	learnml agentic-03 agentic-03-day-2
+Codex's default for a git folder: which two settings, and what still asks?	<code>workspace-write</code> plus <code>on-request</code>; the network and writes outside the workspace.	learnml agentic-03 agentic-03-day-2
+Where does a rule you must never break go, and why?	A deny rule: enforced in every mode, bypass included; instructions are advisory.	learnml agentic-03 agentic-03-day-2
+What do exit 0 and exit 2 mean for a PreToolUse hook, and for a Stop hook?	0: proceed. 2 on PreToolUse: the call is refused and Claude reads stderr. 2 on Stop: Claude keeps working, with stderr as its next instruction.	learnml agentic-03 agentic-03-day-3
+Why is 'always run the checker' a hook rather than an instruction?	The tool runs a hook every time; an instruction is advisory and can be skipped.	learnml agentic-03 agentic-03-day-3
+What stops a failing Stop hook looping forever in Claude Code, and which input field matters?	The override after eight consecutive blocks without progress; the script reads <code>stop_hook_active</code>.	learnml agentic-03 agentic-03-day-3
+What does <b>Unity batch-mode compile</b> mean?	Running the Unity Editor from the command line with no window, so it imports and compiles a project, writes a log and quits with an exit code. A build oracle.	learnml agentic-03 vocab
+What does <b>accept-edits mode</b> mean?	Claude Code permission mode that runs file edits and simple file commands without asking; other shell commands, the network and paths outside the repo still prompt.	learnml agentic-03 vocab
+What does <b>auto mode</b> mean?	Claude Code permission mode where a separate classifier reviews each action instead of you and blocks risky ones. The starting mode for terminal sessions on recent versions.	learnml agentic-03 vocab
+What does <b>bypass mode</b> mean?	Claude Code permission mode that skips prompts and safety checks entirely. For throwaway containers or VMs only; deny rules and a few critical paths still apply.	learnml agentic-03 vocab
+What does <b>dontAsk</b> mean?	Claude Code permission mode for scripts and CI: anything that would prompt is denied instead. Only reads and allowlisted tools run.	learnml agentic-03 vocab
+What does <b>allowlist</b> mean?	Tools or command patterns pre-approved in a settings file, like Bash(git commit *), so they run without a prompt. Deny rules override it in every mode.	learnml agentic-03 vocab
+What does <b>approval policy</b> mean?	Codex&#x27;s rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.	learnml agentic-03 vocab
+What does <b>hook</b> mean?	A command Claude Code or Codex runs itself at a fixed moment, such as before a tool call or when the agent tries to stop. Deterministic, unlike an instruction.	learnml agentic-03 vocab
