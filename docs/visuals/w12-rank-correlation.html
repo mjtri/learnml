@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rank-correlation explorer</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.hdr{display:grid;grid-template-columns:118px 1fr 52px;gap:8px;font-size:11.5px;color:var(--mut);margin-top:6px}
+label{display:grid;grid-template-columns:118px 1fr 52px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label .nm{color:var(--fg);font-size:12.5px;line-height:1.2}
+label .nm small{color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc2)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+canvas{display:block;width:100%;height:190px;border-radius:10px;background:var(--card);margin-top:8px}
+.ok{color:var(--ok);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Eight shape pairs. The model's closeness order is fixed; you set how often a listener confuses each pair</h1>
+<div class="row"><button id="perfect">perfect agreement</button><button id="reverse">reverse</button><button id="shuffle">shuffle</button></div>
+<div class="hdr"><span>pair · model closeness</span><span>listener confusions (0–40)</span><span></span></div>
+<div id="rows"></div>
+<div class="read">
+  <span class="k">rank correlation ρ (Spearman)</span><span id="r1" class="acc"></span>
+  <span class="k">plain correlation r (Pearson, raw values)</span><span id="r2"></span>
+  <span class="k">top-3 most-confused pairs that are also the model's top 3</span><span id="r3" class="ok"></span>
+  <span class="k">Σ d² over the 8 position differences</span><span id="r4"></span>
+</div>
+<canvas id="cv" aria-label="Scatter of model position against listener position for the eight pairs; a diagonal means perfect agreement."></canvas>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>rank correlation</dt><dd>Replace each list by positions (1 = first), then correlate the positions. Ignores how big the numbers are, keeps their order. Ties get the average position.</dd>
+<dt>plain correlation</dt><dd>The usual correlation of the raw values. One extreme value can drag it a long way.</dd>
+<dt>closeness</dt><dd>The model's cosine similarity between the two shapes' class-mean latents: 1 means identical direction.</dd>
+</dl></details>
+<script>
+(function(){
+var PAIRS=[["rising–falling",0.89],["ring–circle",0.81],["plus–X",0.74],["L–T",0.66],["square–diamond",0.58],["dot–circle",0.49],["h bar–v bar",0.37],["checker–corners",0.22]];
+var INIT=[34,30,26,22,17,13,8,4],vals=INIT.slice();
+var rows=document.getElementById("rows"),sliders=[];
+PAIRS.forEach(function(p,i){var l=document.createElement("label");l.innerHTML="<span class='nm'>"+p[0]+"<br><small>closeness "+p[1].toFixed(2)+"</small></span><input type='range' min='0' max='40' step='1' value='"+vals[i]+"'><output></output>";rows.appendChild(l);var s=l.querySelector("input");s.oninput=function(){vals[i]=+s.value;draw()};sliders.push(s)});
+function ranks(v){var idx=v.map(function(x,i){return i}).sort(function(a,b){return v[a]-v[b]}),r=new Array(v.length),i=0;while(i<idx.length){var j=i;while(j+1<idx.length&&v[idx[j+1]]===v[idx[i]])j++;var avg=(i+j)/2+1;for(var k=i;k<=j;k++)r[idx[k]]=avg;i=j+1}return r}
+function pearson(a,b){var n=a.length,ma=0,mb=0;for(var i=0;i<n;i++){ma+=a[i];mb+=b[i]}ma/=n;mb/=n;var sab=0,sa=0,sb=0;for(var j=0;j<n;j++){var x=a[j]-ma,y=b[j]-mb;sab+=x*y;sa+=x*x;sb+=y*y}return sa&&sb?sab/Math.sqrt(sa*sb):0}
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function draw(){
+  var close=PAIRS.map(function(p){return p[1]}),rm=ranks(close),rl=ranks(vals),rho=pearson(rm,rl),r=pearson(close,vals),d2=0;
+  for(var i=0;i<8;i++){d2+=(rm[i]-rl[i])*(rm[i]-rl[i]);sliders[i].nextSibling.textContent=vals[i]}
+  var topL=vals.map(function(v,i){return i}).sort(function(a,b){return vals[b]-vals[a]}).slice(0,3),hit=topL.filter(function(i){return i<3}).length;
+  document.getElementById("r1").textContent=rho.toFixed(2);document.getElementById("r2").textContent=r.toFixed(2);
+  document.getElementById("r3").textContent=hit+" / 3";document.getElementById("r4").textContent=d2.toFixed(1)+(d2===0?" (ρ = 1)":"");
+  var dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  var mut=css("--mut"),acc=css("--acc2"),line=css("--line"),fg=css("--fg");ctx.clearRect(0,0,W,H);
+  var L0=40,R0=W-12,T0=12,B0=H-26;function X(p){return L0+(p-1)/7*(R0-L0)}function Y(p){return B0-(p-1)/7*(B0-T0)}
+  ctx.strokeStyle=line;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L0,T0);ctx.lineTo(L0,B0);ctx.lineTo(R0,B0);ctx.stroke();
+  ctx.setLineDash([4,4]);ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(X(1),Y(1));ctx.lineTo(X(8),Y(8));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=mut;ctx.font="11px system-ui,sans-serif";ctx.textAlign="center";ctx.fillText("model position (1 = closest pair)",(L0+R0)/2,H-8);
+  ctx.save();ctx.translate(10,(T0+B0)/2);ctx.rotate(-Math.PI/2);ctx.fillText("listener position (1 = least confused)",0,0);ctx.restore();
+  for(var k=0;k<8;k++){ctx.fillStyle=acc;ctx.beginPath();ctx.arc(X(rm[k]),Y(rl[k]),6,0,7);ctx.fill();ctx.fillStyle=fg;ctx.textAlign="left";ctx.fillText(PAIRS[k][0].split("–")[0],X(rm[k])+8,Y(rl[k])+4)}
+}
+window.redraw=draw;
+function setAll(v){vals=v;sliders.forEach(function(s,i){s.value=vals[i]});draw()}
+document.getElementById("perfect").onclick=function(){setAll(INIT.slice())};
+document.getElementById("reverse").onclick=function(){setAll(INIT.slice().reverse())};
+document.getElementById("shuffle").onclick=function(){var v=INIT.slice();for(var i=v.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=v[i];v[i]=v[j];v[j]=t}setAll(v)};
+addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
