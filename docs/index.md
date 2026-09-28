@@ -163,8 +163,11 @@ hide:
     - ⬜ [B6 · Lesson 3 · Citation verification is its own pass](agentic-06/day-3.md)
     - ⬜ [B6 · Apply · One question, two tools, one verified reference list](agentic-06/apply.md)
 
-??? note "Week 7 · Experiments & data · not generated yet"
-    `python gen_week.py agentic 7` prints the prompt that builds it.
+??? note "⬜ Week 7 · Experiments & data · 0/4"
+    - ⬜ [B7 · Lesson 1 · The long-running harness: progress file, changelog, commit per unit](agentic-07/day-1.md)
+    - ⬜ [B7 · Lesson 2 · Analysis with an agent: scripts, plots, stats you can defend](agentic-07/day-2.md)
+    - ⬜ [B7 · Lesson 3 · Reproducibility: seeds, configs, run logs, and what the agent must never do silently](agentic-07/day-3.md)
+    - ⬜ [B7 · Apply · The week-12 harness: one folder, one unit, unattended](agentic-07/apply.md)
 
 ??? note "⬜ Week 8 · Your operating system · 0/4"
     - ⬜ [B8 · Lesson 1 · Reading your own meters: what a week of usage says](agentic-08/day-1.md)

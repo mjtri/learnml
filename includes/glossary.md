@@ -68,6 +68,10 @@
 *[lora_alpha]: The gain on a LoRA update: the learned change is multiplied by alpha over rank before being added. Raising it makes the adapter push harder, like a larger learning rate.
 *[Lora_alpha]: The gain on a LoRA update: the learned change is multiplied by alpha over rank before being added. Raising it makes the adapter push harder, like a larger learning rate.
 *[LoRA alpha]: The gain on a LoRA update: the learned change is multiplied by alpha over rank before being added. Raising it makes the adapter push harder, like a larger learning rate.
+*[analysis script]: A script in the repo that reads the run log and prints every number a document uses. The chat is a draft; the script is the record.
+*[Analysis script]: A script in the repo that reads the run log and prints every number a document uses. The chat is a draft; the script is the record.
+*[analysis scripts]: A script in the repo that reads the run log and prints every number a document uses. The chat is a draft; the script is the record.
+*[Analysis scripts]: A script in the repo that reads the run log and prints every number a document uses. The chat is a draft; the script is the record.
 *[approval policy]: Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
 *[Approval policy]: Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
 *[approval policies]: Codex's rule for when it must ask: on-request asks only to step outside the sandbox; never asks nothing. Paired with a sandbox mode that says what commands can touch.
@@ -191,6 +195,10 @@
 *[Causal masking]: Blanking every score that points to a later token before the softmax, so a token can only mix in its past. Without it, next-token training can read its own answer.
 *[chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
 *[Chain rule]: When one quantity affects another through a chain of steps, the overall sensitivity is the product of the step-by-step sensitivities.
+*[CHANGELOG]: The experiment's lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.
+*[CHANGELOG.md]: The experiment's lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.
+*[failed approaches]: The experiment's lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.
+*[Failed approaches]: The experiment's lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.
 *[character-level model]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
 *[Character-level model]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
 *[character-level models]: A language model whose tokens are single characters, so its alphabet is tiny (about 65 symbols) and it must learn spelling before words.
@@ -238,6 +246,12 @@
 *[Codex plugin]: OpenAI's plugin that runs Codex from inside Claude Code for reviews and delegated tasks. It spends your ChatGPT/Codex usage, not the Claude plan.
 *[Codex plugin for Claude Code]: OpenAI's plugin that runs Codex from inside Claude Code for reviews and delegated tasks. It spends your ChatGPT/Codex usage, not the Claude plan.
 *[Colab]: Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.
+*[commit per unit]: One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
+*[Commit per unit]: One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
+*[one commit per unit]: One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
+*[One commit per unit]: One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
+*[commit-per-unit]: One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
+*[Commit-per-unit]: One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
 *[compaction]: Summarising the conversation so far to free context. Claude Code does it automatically near the limit; /compact does it on demand.
 *[Compaction]: Summarising the conversation so far to free context. Claude Code does it automatically near the limit; /compact does it on demand.
 *[auto-compaction]: Summarising the conversation so far to free context. Claude Code does it automatically near the limit; /compact does it on demand.
@@ -647,6 +661,10 @@
 *[Log–log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
 *[log-log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
 *[Log-log]: A plot with both axes on log scales, so each tick is ten times the last. A power law appears as a straight line whose slope is the exponent.
+*[long-running harness]: Files and rules that let an agent work across many sessions: a progress file, a CHANGELOG, a check it can run, and one commit per unit.
+*[Long-running harness]: Files and rules that let an agent work across many sessions: a progress file, a CHANGELOG, a check it can run, and one commit per unit.
+*[long-running harnesses]: Files and rules that let an agent work across many sessions: a progress file, a CHANGELOG, a check it can run, and one commit per unit.
+*[Long-running harnesses]: Files and rules that let an agent work across many sessions: a progress file, a CHANGELOG, a check it can run, and one commit per unit.
 *[lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[Lookup table]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
 *[lookup tables]: A matrix read by row number: token 17 comes back as row 17. In an embedding layer the rows are parameters, so training rewrites them.
@@ -953,6 +971,12 @@
 *[Pre-training]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
 *[pre-trained]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
 *[Pre-trained]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
+*[progress file]: A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
+*[Progress file]: A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
+*[progress files]: A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
+*[Progress files]: A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
+*[progress.md]: A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
+*[Progress.md]: A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
 *[project instructions]: The standing text a Projects workspace adds to every chat inside it: role, audience, format, language rules. Written once, applied to every draft.
 *[Project instructions]: The standing text a Projects workspace adds to every chat inside it: role, audience, format, language rules. Written once, applied to every draft.
 *[Projects]: A workspace in ChatGPT or Claude that keeps its own chats, files, instructions and memory together, so every new chat starts with the same context.
@@ -1009,6 +1033,10 @@
 *[Reproducibility]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
 *[reproducible]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
 *[Reproducible]: Someone else, or you next month, gets the same number from the same code, data and settings. Needs a pinned seed, a saved config and a known code version.
+*[reproducible plot]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
+*[Reproducible plot]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
+*[reproducible plots]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
+*[Reproducible plots]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
 *[residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[Residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[residual connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
@@ -1065,6 +1093,10 @@
 *[Seat type]: Standard or Premium on ChatGPT Business: which allowance a member gets. Premium has more usage and no 5-hour window; only a workspace owner switches it.
 *[seat types]: Standard or Premium on ChatGPT Business: which allowance a member gets. Premium has more usage and no 5-hour window; only a workspace owner switches it.
 *[Seat types]: Standard or Premium on ChatGPT Business: which allowance a member gets. Premium has more usage and no 5-hour window; only a workspace owner switches it.
+*[seed/config discipline]: One config file per run, every random seed set from it, and one run log row written by the code with the git hash. Nothing set by hand.
+*[Seed/config discipline]: One config file per run, every random seed set from it, and one run log row written by the code with the git hash. Nothing set by hand.
+*[seed and config discipline]: One config file per run, every random seed set from it, and one run log row written by the code with the git hash. Nothing set by hand.
+*[Seed and config discipline]: One config file per run, every random seed set from it, and one run log row written by the code with the git hash. Nothing set by hand.
 *[sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[Sequence]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
 *[sequences]: An ordered list of tokens, such as the characters of a line or the words of a sentence. Position in the list matters.
@@ -1218,6 +1250,10 @@
 *[Ultrareview]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 *[ultra review]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 *[Ultra review]: Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
+*[unattended run]: An agent session nobody is watching: a scheduled or scripted run that must finish, fail loudly or stop on its own, with no one there to answer a prompt.
+*[Unattended run]: An agent session nobody is watching: a scheduled or scripted run that must finish, fail loudly or stop on its own, with no one there to answer a prompt.
+*[unattended runs]: An agent session nobody is watching: a scheduled or scripted run that must finish, fail loudly or stop on its own, with no one there to answer a prompt.
+*[Unattended runs]: An agent session nobody is watching: a scheduled or scripted run that must finish, fail loudly or stop on its own, with no one there to answer a prompt.
 *[underfitting]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
 *[Underfitting]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.
 *[underfit]: The model is too weak or too briefly trained to capture the pattern: both training and validation loss stay high.

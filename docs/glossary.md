@@ -158,6 +158,14 @@ The gain on a LoRA update: the learned change is multiplied by alpha over rank b
 <small>first met in [week-08/day-4](week-08/day-4.md) · canvas card `core-tooling`</small>
 </div>
 
+<div class="gl-entry" id="analysis-script" markdown>
+**analysis script** <small>(also: analysis scripts)</small>
+
+A script in the repo that reads the run log and prints every number a document uses. The chat is a draft; the script is the record.
+
+<small>first met in [agentic-07/day-2](agentic-07/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="approval-policy" markdown>
 **approval policy** <small>(also: approval policies)</small>
 
@@ -378,6 +386,14 @@ When one quantity affects another through a chain of steps, the overall sensitiv
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="changelog" markdown>
+**CHANGELOG** <small>(also: CHANGELOG.md, failed approaches)</small>
+
+The experiment's lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.
+
+<small>first met in [agentic-07/day-1](agentic-07/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="character-level-model" markdown>
 **character-level model** <small>(also: character-level models, character-level)</small>
 
@@ -496,6 +512,14 @@ OpenAI's plugin that runs Codex from inside Claude Code for reviews and delegate
 Google Colaboratory: free hosted Python notebooks in the browser, with an optional GPU. Where the weekly build sessions run.
 
 <small>first met in [week-01/build](week-01/build.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="commit-per-unit" markdown>
+**commit per unit** <small>(also: one commit per unit, commit-per-unit)</small>
+
+One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.
+
+<small>first met in [agentic-07/day-1](agentic-07/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="compaction" markdown>
@@ -1178,6 +1202,14 @@ A plot with both axes on log scales, so each tick is ten times the last. A power
 <small>first met in [week-06/day-3](week-06/day-3.md) · canvas card `lin-kaplan`</small>
 </div>
 
+<div class="gl-entry" id="long-running-harness" markdown>
+**long-running harness** <small>(also: long-running harnesses)</small>
+
+Files and rules that let an agent work across many sessions: a progress file, a CHANGELOG, a check it can run, and one commit per unit.
+
+<small>first met in [agentic-07/day-1](agentic-07/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="lookup-table" markdown>
 **lookup table** <small>(also: lookup tables, embedding table)</small>
 
@@ -1650,6 +1682,14 @@ The long, expensive first training of a model on huge general data, done once by
 <small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `lin-bert`</small>
 </div>
 
+<div class="gl-entry" id="progress-file" markdown>
+**progress file** <small>(also: progress files, progress.md)</small>
+
+A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.
+
+<small>first met in [agentic-07/day-1](agentic-07/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="project-instructions" markdown>
 **project instructions**
 
@@ -1758,6 +1798,14 @@ Someone else, or you next month, gets the same number from the same code, data a
 <small>first met in [week-07/day-5](week-07/day-5.md) · canvas card `core-tooling`</small>
 </div>
 
+<div class="gl-entry" id="reproducible-plot" markdown>
+**reproducible plot** <small>(also: reproducible plots)</small>
+
+A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
+
+<small>first met in [agentic-07/day-2](agentic-07/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="residual-connection" markdown>
 **residual connection** <small>(also: residual connections, skip connection, skip connections)</small>
 
@@ -1854,6 +1902,14 @@ An empirical rule for how loss falls as you add parameters, data or compute: smo
 Standard or Premium on ChatGPT Business: which allowance a member gets. Premium has more usage and no 5-hour window; only a workspace owner switches it.
 
 <small>first met in [agentic-08/day-2](agentic-08/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="seed-config-discipline" markdown>
+**seed/config discipline** <small>(also: seed and config discipline)</small>
+
+One config file per run, every random seed set from it, and one run log row written by the code with the git hash. Nothing set by hand.
+
+<small>first met in [agentic-07/day-3](agentic-07/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="sequence" markdown>
@@ -2130,6 +2186,14 @@ What starts a cloud routine's run: a schedule (hourly at most), an HTTP call to 
 Claude Code's deep review in a cloud sandbox (/code-review ultra): many reviewer agents, every finding reproduced before it is reported. Three free runs on Max, then usage credits.
 
 <small>first met in [agentic-04/day-3](agentic-04/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="unattended-run" markdown>
+**unattended run** <small>(also: unattended runs)</small>
+
+An agent session nobody is watching: a scheduled or scripted run that must finish, fail loudly or stop on its own, with no one there to answer a prompt.
+
+<small>first met in [agentic-07/day-1](agentic-07/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="underfitting" markdown>

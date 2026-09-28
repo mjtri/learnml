@@ -6,7 +6,7 @@ playbook: weekly review
 
 # B8 · Lesson 1 · Reading your own meters: what a week of usage says
 
-<p class="recall" markdown>**Previously:** week 7 set up a harness for long-running agent work: a progress file, a CHANGELOG of failed approaches, a commit per unit, and test oracles.</p>
+<p class="recall" markdown>**Previously:** a long-running harness is a progress file, a CHANGELOG with failed approaches, one commit per unit and a check the agent runs before claiming progress; every number and figure comes from an analysis script over the run log; and seeds, configs and run-log rows are written by the code, never changed silently.</p>
 
 ## Idea
 

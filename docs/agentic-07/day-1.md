@@ -6,7 +6,7 @@ playbook: experiments
 
 # B7 · Lesson 1 · The long-running harness: progress file, changelog, commit per unit
 
-<p class="recall" markdown>**Previously:** week 6 ran a literature review in Deep Research and Claude's research tooling, and verified every citation before it entered a document.</p>
+<p class="recall" markdown>**Previously:** a literature review is search in both tools, dedupe, a scripted citation verification and only then a summary; Projects hold the standing instructions (TM template, reviewer-response table, KR↔EN glossary); and the plan's training policy decides where an unpublished draft may live.</p>
 
 ## Idea
 

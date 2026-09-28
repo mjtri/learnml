@@ -1,0 +1,20 @@
+#separator:tab
+#html:true
+#tags column:3
+Three failure modes of long-running agents: which harness part answers each?	Context loss: progress file and CHANGELOG. Premature done: the oracle before the claim. Over-ambition: one unit, one commit per session.	learnml agentic-07 agentic-07-day-1
+Why is the failed-approaches section worth more than completed tasks?	Completed work is visible in git; a dead end is not, so a fresh session re-attempts it and pays again.	learnml agentic-07 agentic-07-day-1
+Why not let the working agent grade its own unit?	Asked to judge its own output it praises it; a separate evaluator or a script is easier to make skeptical.	learnml agentic-07 agentic-07-day-1
+Why is 'the agent computed it in the chat' not a source for a table?	Nobody can regenerate it, including you; a script over the run log is re-runnable, diffable and reviewable.	learnml agentic-07 agentic-07-day-2
+What three things does a defensible statistic carry with it?	The seed count behind each mean, an interval with its resample count and fixed seed, and the per-seed points on the plot.	learnml agentic-07 agentic-07-day-2
+What makes a plot reproducible?	One command regenerates it from a named input file, with the git hash in the filename or caption. Any hand step breaks it.	learnml agentic-07 agentic-07-day-2
+A run log row says dirty: true; what does it mean?	The code was never committed, so nobody can check out that version; the row is evidence of nothing and check.py rejects it.	learnml agentic-07 agentic-07-day-3
+Instruction or hook: which stops an agent from editing check.py, and why?	A hook: it runs every time and exit code 2 blocks the call; an instruction is just another line of context.	learnml agentic-07 agentic-07-day-3
+Name four things an agent must never do silently.	Any four of: change a seed or config, drop rows, edit a check, flip smoke, claim a pass unchecked, retry a logged failure, change a version, push.	learnml agentic-07 agentic-07-day-3
+What does <b>long-running harness</b> mean?	Files and rules that let an agent work across many sessions: a progress file, a CHANGELOG, a check it can run, and one commit per unit.	learnml agentic-07 vocab
+What does <b>progress file</b> mean?	A short file, progress.md, that says where the work stands, the next unit and what blocks it. Every agent session reads it first and updates it last.	learnml agentic-07 vocab
+What does <b>CHANGELOG</b> mean?	The experiment&#x27;s lab notes: units done, and failed approaches with why they failed and the run that shows it, so no later session retries them.	learnml agentic-07 vocab
+What does <b>commit per unit</b> mean?	One git commit for each finished unit of work, made only after the check passes, so any step can be rolled back and the branch itself records progress.	learnml agentic-07 vocab
+What does <b>unattended run</b> mean?	An agent session nobody is watching: a scheduled or scripted run that must finish, fail loudly or stop on its own, with no one there to answer a prompt.	learnml agentic-07 vocab
+What does <b>analysis script</b> mean?	A script in the repo that reads the run log and prints every number a document uses. The chat is a draft; the script is the record.	learnml agentic-07 vocab
+What does <b>reproducible plot</b> mean?	A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.	learnml agentic-07 vocab
+What does <b>seed/config discipline</b> mean?	One config file per run, every random seed set from it, and one run log row written by the code with the git hash. Nothing set by hand.	learnml agentic-07 vocab
