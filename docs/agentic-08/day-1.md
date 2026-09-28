@@ -10,7 +10,7 @@ playbook: weekly review
 
 ## Idea
 
-Same Sunday question: where did the usage go? A **usage report** is six numbers written down once a week from meters you already have; the pattern in them, not the total, says what to change. Without it the playbook stays opinion.
+Same Sunday question: where did the usage go? A **usage report** is six numbers written weekly from meters you already have; the pattern in them, not the total, says what to change. Without it the playbook is opinion.
 
 ## How it works
 
