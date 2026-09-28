@@ -41,13 +41,13 @@ def print_status() -> None:
     import build_today
 
     s = build_today.compute_state()
-    print(f"\nStreak: {s['streak']} day(s)")
+    print(f"\nActive days: {s['active_days']}")
     for ts in s["tracks"].values():
         head = f"{ts['label']}: week {ts['week']} {ts['week_done']}/{ts['per_week']}, overall {ts['total_done']}/{ts['total']} ({ts['pct']}%)"
         if ts["next"]:
             print(f"{head}\n   next: {ts['next']} - {c.lesson_title(ts['next'])}")
         else:
-            print(f"{head}\n   all generated lessons done. Run: {build_today.gen_cmd(ts['track'], ts['week'] + 1)}")
+            print(f"{head}\n   complete.")
 
 
 def main() -> int:
