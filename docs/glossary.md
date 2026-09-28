@@ -214,6 +214,14 @@ Claude Code permission mode where a separate classifier reviews each action inst
 <small>first met in [agentic-03/day-2](agentic-03/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="autoencoder" markdown>
+**autoencoder** <small>(also: autoencoders, auto-encoder)</small>
+
+A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `bridge-codec`</small>
+</div>
+
 <div class="gl-entry" id="autograd" markdown>
 **autograd**
 
@@ -318,6 +326,14 @@ The smallest language model: predict the next token from the current token only.
 Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
 
 <small>first met in [week-09/day-5](week-09/day-5.md) · canvas card `core-prob`</small>
+</div>
+
+<div class="gl-entry" id="bottleneck" markdown>
+**bottleneck** <small>(also: bottlenecks)</small>
+
+The narrowest point of a network, where an input must fit into a few numbers. Shape it like a real display and the network learns a code for that display.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `bridge-codec`</small>
 </div>
 
 <div class="gl-entry" id="bpe" markdown>
@@ -578,6 +594,14 @@ The file of settings the entry point reads, whose values overwrite its defaults.
 <small>first met in [week-11/day-3](week-11/day-3.md) · canvas card `core-tooling`</small>
 </div>
 
+<div class="gl-entry" id="confusion-matrix" markdown>
+**confusion matrix** <small>(also: confusion matrices, confusion table, confusion tables)</small>
+
+A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+
+<small>first met in [week-12/day-4](week-12/day-4.md) · canvas card `build-step7`</small>
+</div>
+
 <div class="gl-entry" id="context-length" markdown>
 **context length** <small>(also: context lengths, block size)</small>
 
@@ -788,6 +812,14 @@ How big a difference is compared with the run-to-run spread. A gain of 2 points 
 How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 
 <small>first met in [agentic-01/day-2](agentic-01/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="elbo" markdown>
+**ELBO** <small>(also: evidence lower bound)</small>
+
+The VAE's training objective: reconstruction quality minus a penalty for codes that stray from the standard bell shape. Making it as large as possible is the whole training recipe.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `lin-vae`</small>
 </div>
 
 <div class="gl-entry" id="element-wise" markdown>
@@ -1110,6 +1142,16 @@ A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and w
 <small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
 </div>
 
+## J
+
+<div class="gl-entry" id="jnd" markdown>
+**JND** <small>(also: JNDs, just-noticeable difference, just-noticeable differences)</small>
+
+The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
+
+<small>first met in [week-12/day-4](week-12/day-4.md) · canvas card `build-step7`</small>
+</div>
+
 ## K
 
 <div class="gl-entry" id="key-vector" markdown>
@@ -1118,6 +1160,14 @@ A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and w
 In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
 
 <small>first met in [week-04/day-3](week-04/day-3.md) · canvas card `lin-attention`</small>
+</div>
+
+<div class="gl-entry" id="kill-pivot-scale-decision" markdown>
+**kill/pivot/scale decision** <small>(also: kill/pivot/scale, kill, pivot or scale up, kill-pivot-scale)</small>
+
+The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+
+<small>first met in [week-12/day-5](week-12/day-5.md) · canvas card `build-step9`</small>
 </div>
 
 <div class="gl-entry" id="kr-en-glossary" markdown>
@@ -1136,6 +1186,14 @@ A short table of your field's terms in Korean and English, kept in project knowl
 A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
 
 <small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
+</div>
+
+<div class="gl-entry" id="latent" markdown>
+**latent** <small>(also: latents, latent vector, latent vectors, latent space, latent code, latent codes)</small>
+
+The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+
+<small>first met in [week-12/day-1](week-12/day-1.md) · canvas card `lin-clip`</small>
 </div>
 
 <div class="gl-entry" id="layer" markdown>
@@ -1764,6 +1822,14 @@ The Python library this course uses for tensors, automatic gradients and neural 
 
 ## Q
 
+<div class="gl-entry" id="quantization" markdown>
+**quantization** <small>(also: quantize, quantized, quantizing, quantisation, quantise, quantised)</small>
+
+Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `bridge-codec`</small>
+</div>
+
 <div class="gl-entry" id="query-vector" markdown>
 **query vector** <small>(also: query vectors)</small>
 
@@ -1788,6 +1854,22 @@ The starting number for a random number generator. Same seed, same sequence of r
 How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
 
 <small>first met in [week-08/day-1](week-08/day-1.md) · canvas card `core-linalg`</small>
+</div>
+
+<div class="gl-entry" id="rank-correlation" markdown>
+**rank correlation** <small>(also: rank correlations, Spearman correlation, Spearman's rho, Spearman)</small>
+
+Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+
+<small>first met in [week-12/day-4](week-12/day-4.md) · canvas card `build-step7`</small>
+</div>
+
+<div class="gl-entry" id="reconstruction-loss" markdown>
+**reconstruction loss** <small>(also: reconstruction losses, reconstruction error, pixel loss)</small>
+
+How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `bridge-codec`</small>
 </div>
 
 <div class="gl-entry" id="record-mode" markdown>
@@ -2032,6 +2114,22 @@ Turns a list of scores into probabilities that add to one: exponentiate each sco
 <small>first met in [week-03/day-2](week-03/day-2.md) · canvas card `core-dl`</small>
 </div>
 
+<div class="gl-entry" id="sonification" markdown>
+**sonification** <small>(also: sonify, sonified, sonifier, sonifying, sonifies)</small>
+
+Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+
+<small>first met in [week-12/day-1](week-12/day-1.md) · canvas card `bridge-crossmodal`</small>
+</div>
+
+<div class="gl-entry" id="spectrogram" markdown>
+**spectrogram** <small>(also: spectrograms)</small>
+
+A picture of a sound: time runs left to right, pitch bottom to top, brightness is how much energy each pitch carries. A sonified image round-trips to one.
+
+<small>first met in [week-12/day-1](week-12/day-1.md) · canvas card `bridge-crossmodal`</small>
+</div>
+
 <div class="gl-entry" id="spend-limit" markdown>
 **spend limit** <small>(also: spend limits)</small>
 
@@ -2046,6 +2144,14 @@ A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage,
 How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
 
 <small>first met in [week-09/day-5](week-09/day-5.md) · canvas card `core-prob`</small>
+</div>
+
+<div class="gl-entry" id="straight-through-estimator" markdown>
+**straight-through estimator** <small>(also: straight-through, STE, straight-through trick)</small>
+
+The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `bridge-codec`</small>
 </div>
 
 <div class="gl-entry" id="strong-baseline" markdown>
@@ -2309,6 +2415,14 @@ A rolling 5-hour period with a fixed allowance of usage; when it is spent you wa
 </div>
 
 ## V
+
+<div class="gl-entry" id="vae" markdown>
+**VAE** <small>(also: VAEs, variational autoencoder, variational autoencoders)</small>
+
+An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
+
+<small>first met in [week-12/day-2](week-12/day-2.md) · canvas card `lin-vae`</small>
+</div>
 
 <div class="gl-entry" id="value-object" markdown>
 **Value object** <small>(also: Value objects)</small>

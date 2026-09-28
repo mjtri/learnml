@@ -127,8 +127,13 @@ hide:
     - ⬜ [Lesson 5 · The one-paragraph reproduction report](week-11/day-5.md)
     - ⬜ [Build · Reproduce one number](week-11/build.md)
 
-??? note "Week 12 · A small sensory-substitution experiment · not generated yet"
-    `python gen_week.py 12` prints the prompt that builds it.
+??? note "⬜ Week 12 · A small sensory-substitution experiment · 0/6"
+    - ⬜ [Lesson 1 · The chosen family in one page](week-12/day-1.md)
+    - ⬜ [Lesson 2 · Shape the bottleneck like the display](week-12/day-2.md)
+    - ⬜ [Lesson 3 · Learning, memorising, or broken](week-12/day-3.md)
+    - ⬜ [Lesson 4 · From a distance to a prediction about people](week-12/day-4.md)
+    - ⬜ [Lesson 5 · The one-page write-up](week-12/day-5.md)
+    - ⬜ [Build · Run, compare, decide, write up](week-12/build.md)
 
 ## Track B · Agentic workflows · map
 

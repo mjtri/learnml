@@ -6,7 +6,7 @@ card: bridge-crossmodal
 
 # Lesson 1 · The chosen family in one page
 
-<p class="recall" markdown>**Previously:** read a paper in three passes; extract exactly what is needed to reproduce one table cell.</p>
+<p class="recall" markdown>**Previously:** read for one table cell, write its five-line checklist and a tolerance, walk the repo from entry point to metric, reproduce, and when the number is off, check cheapest first and write the gap down.</p>
 
 ## Idea
 

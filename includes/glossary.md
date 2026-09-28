@@ -103,6 +103,12 @@
 *[Codex memories]: Notes the agent writes for itself across sessions: your preferences, corrections, project facts. Loaded every session but never enforced; Claude Code and Codex both keep them on your machine.
 *[auto mode]: Claude Code permission mode where a separate classifier reviews each action instead of you and blocks risky ones. The starting mode for terminal sessions on recent versions.
 *[Auto mode]: Claude Code permission mode where a separate classifier reviews each action instead of you and blocks risky ones. The starting mode for terminal sessions on recent versions.
+*[autoencoder]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
+*[Autoencoder]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
+*[autoencoders]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
+*[Autoencoders]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
+*[auto-encoder]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
+*[Auto-encoder]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
 *[autograd]: PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().
 *[Autograd]: PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().
 *[AutoModel]: The Transformers class that reads a repository's config, builds the right architecture and loads the weights. The ForCausalLM variant adds the next-token output layer.
@@ -157,6 +163,10 @@
 *[Bootstraps]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
 *[bootstrap resampling]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
 *[Bootstrap resampling]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[bottleneck]: The narrowest point of a network, where an input must fit into a few numbers. Shape it like a real display and the network learns a code for that display.
+*[Bottleneck]: The narrowest point of a network, where an input must fit into a few numbers. Shape it like a real display and the network learns a code for that display.
+*[bottlenecks]: The narrowest point of a network, where an input must fit into a few numbers. Shape it like a real display and the network learns a code for that display.
+*[Bottlenecks]: The narrowest point of a network, where an input must fit into a few numbers. Shape it like a real display and the network learns a code for that display.
 *[BPE]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
 *[byte-pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
 *[Byte-pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
@@ -282,6 +292,14 @@
 *[Config file]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
 *[config files]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
 *[Config files]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
+*[confusion matrix]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[Confusion matrix]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[confusion matrices]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[Confusion matrices]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[confusion table]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[Confusion table]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[confusion tables]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
+*[Confusion tables]: A table with one row per stimulus shown and one column per answer given, counting each combination. The off-diagonal cells are the confusions a display causes.
 *[context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[Context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[context lengths]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
@@ -397,6 +415,9 @@
 *[Effort level]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 *[effort levels]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
 *[Effort levels]: How much thinking a Claude model does per request (low to max). Higher effort costs more usage; lower is fine for routine edits.
+*[ELBO]: The VAE's training objective: reconstruction quality minus a penalty for codes that stray from the standard bell shape. Making it as large as possible is the whole training recipe.
+*[evidence lower bound]: The VAE's training objective: reconstruction quality minus a penalty for codes that stray from the standard bell shape. Making it as large as possible is the whole training recipe.
+*[Evidence lower bound]: The VAE's training objective: reconstruction quality minus a penalty for codes that stray from the standard bell shape. Making it as large as possible is the whole training recipe.
 *[element-wise]: An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
 *[Element-wise]: An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
 *[elementwise]: An operation applied separately to each matching pair of numbers in two tensors, such as adding two images pixel by pixel.
@@ -604,10 +625,24 @@
 *[Instruction file]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[Instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
+*[JND]: The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
+*[JNDs]: The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
+*[just-noticeable difference]: The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
+*[Just-noticeable difference]: The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
+*[just-noticeable differences]: The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
+*[Just-noticeable differences]: The smallest change in a stimulus a person detects reliably, measured by psychophysics. A table of JNDs over pairs says which stimuli a display can keep apart.
 *[key vector]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
 *[Key vector]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
 *[key vectors]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
 *[Key vectors]: In attention, the vector a token advertises: what do I have? A query that matches it by dot product gets a large weight.
+*[kill/pivot/scale decision]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[Kill/pivot/scale decision]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[kill/pivot/scale]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[Kill/pivot/scale]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[kill, pivot or scale up]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[Kill, pivot or scale up]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[kill-pivot-scale]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
+*[Kill-pivot-scale]: The rule written before the run for what happens after it: kill if the gap misses X, pivot if the ablation shows the gain came from elsewhere, scale up otherwise.
 *[KR↔EN glossary]: A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
 *[KR-EN glossary]: A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
 *[bilingual glossary]: A short table of your field's terms in Korean and English, kept in project knowledge so translations stay consistent across papers and reports.
@@ -616,6 +651,20 @@
 *[Language model]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
 *[language models]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
 *[Language models]: A model that assigns probabilities to sequences of tokens, usually by predicting each next token from the ones before it. Generation is asking it repeatedly.
+*[latent]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latent]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latents]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latents]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latent vector]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latent vector]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latent vectors]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latent vectors]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latent space]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latent space]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latent code]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latent code]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latent codes]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[Latent codes]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
 *[layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[Layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[layers]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
@@ -1009,6 +1058,20 @@
 *[prompt templates]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
 *[Prompt templates]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
 *[PyTorch]: The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.
+*[quantization]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantization]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[quantize]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantize]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[quantized]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantized]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[quantizing]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantizing]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[quantisation]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantisation]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[quantise]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantise]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[quantised]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
+*[Quantised]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
 *[query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 *[Query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 *[query vectors]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
@@ -1033,6 +1096,21 @@
 *[Rank-1]: How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
 *[rank-one]: How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
 *[Rank-one]: How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
+*[rank correlation]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[Rank correlation]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[rank correlations]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[Rank correlations]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[Spearman correlation]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[Spearman's rho]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[Spearman]: Agreement between two orderings, from minus 1 to 1: replace each value by its position in its own list, then correlate the positions. Ignores scale, keeps order.
+*[reconstruction loss]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[Reconstruction loss]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[reconstruction losses]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[Reconstruction losses]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[reconstruction error]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[Reconstruction error]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[pixel loss]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
+*[Pixel loss]: How far an autoencoder's rebuilt output is from its input, usually the mean squared pixel difference. Low means the middle kept enough; it says nothing about which shapes stay apart.
 *[record mode]: The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
 *[Record mode]: The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
 *[ChatGPT record]: The ChatGPT macOS app feature that transcribes a meeting or voice note and writes notes into a canvas. The audio is deleted once transcribed.
@@ -1161,6 +1239,22 @@
 *[Slopes]: Rise over run: how steep a curve is at a point. The derivative is the slope of the curve at that point.
 *[softmax]: Turns a list of scores into probabilities that add to one: exponentiate each score, then divide by the total. Bigger gaps between scores give sharper probabilities.
 *[Softmax]: Turns a list of scores into probabilities that add to one: exponentiate each score, then divide by the total. Bigger gaps between scores give sharper probabilities.
+*[sonification]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[Sonification]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[sonify]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[Sonify]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[sonified]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[Sonified]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[sonifier]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[Sonifier]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[sonifying]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[Sonifying]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[sonifies]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[Sonifies]: Turning data into sound by a fixed rule. The vOICe rule scans an image column by column: left to right becomes time, height becomes pitch, brightness becomes loudness.
+*[spectrogram]: A picture of a sound: time runs left to right, pitch bottom to top, brightness is how much energy each pitch carries. A sonified image round-trips to one.
+*[Spectrogram]: A picture of a sound: time runs left to right, pitch bottom to top, brightness is how much energy each pitch carries. A sonified image round-trips to one.
+*[spectrograms]: A picture of a sound: time runs left to right, pitch bottom to top, brightness is how much energy each pitch carries. A sonified image round-trips to one.
+*[Spectrograms]: A picture of a sound: time runs left to right, pitch bottom to top, brightness is how much energy each pitch carries. A sonified image round-trips to one.
 *[spend limit]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 *[Spend limit]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 *[spend limits]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
@@ -1169,6 +1263,13 @@
 *[Standard error]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
 *[standard errors]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
 *[Standard errors]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
+*[straight-through estimator]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+*[Straight-through estimator]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+*[straight-through]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+*[Straight-through]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+*[STE]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+*[straight-through trick]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
+*[Straight-through trick]: The trick that trains through rounding: the forward pass uses the rounded value, the backward pass pretends rounding was the identity, so the gradient passes straight through.
 *[strong baseline]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
 *[Strong baseline]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
 *[strong baselines]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
@@ -1324,6 +1425,12 @@
 *[session window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
 *[Session window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
 *[5-hour window]: A rolling 5-hour period with a fixed allowance of usage; when it is spent you wait for the window to reset.
+*[VAE]: An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
+*[VAEs]: An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
+*[variational autoencoder]: An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
+*[Variational autoencoder]: An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
+*[variational autoencoders]: An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
+*[Variational autoencoders]: An autoencoder whose bottleneck is a noisy vector: the encoder outputs a mean and a spread, a sample is decoded, and a penalty keeps codes near a standard bell shape.
 *[Value object]: A single number wrapped in a tiny class that also remembers which numbers made it and how. The building block of micrograd; a one-number cousin of a tensor.
 *[Value objects]: A single number wrapped in a tiny class that also remembers which numbers made it and how. The building block of micrograd; a one-number cousin of a tensor.
 *[value vector]: In attention, the vector a token hands over once it is matched. The output is the weighted mix of the values, not of the keys.
