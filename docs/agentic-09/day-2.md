@@ -20,7 +20,7 @@ Hype arrives as a screenshot; **traction** arrives as a curve. Discovery is a te
 
 **The six lines.** Habit change (changes what you do weekly, or adds a feature?). Context and usage cost (always-on descriptions, hooks per turn, tool schemas). Trust (licence, who wrote the code that runs as you, the three files). Maintenance (last push, open issues, maintainer count). Both tools (Claude Code and Codex, or one?). Fit (Unity, paperwork, experiments, this repo). Tie-break: two candidates that change the same habit count as one; keep one method pack.
 
-**In practice.** **ECC**: habit 1, cost 0 (21 hook entries, 292 skill descriptions), trust 1, maintenance 2, both 2, fit 0 = 6, read as a pattern library. **Pocock skills**: habit 2 (`grill-with-docs` changes how a Unity feature starts), cost 1, trust 1, maintenance 1 (one maintainer, 533 open issues), both 2, fit 1 = 8, passes, but shares its habit with superpowers: keep one.
+**In practice.** **ECC**: habit 1, cost 0 (21 hook entries, 292 skill descriptions), trust 1, maintenance 2, both 2, fit 0 = 6, read as a pattern library. **Pocock skills**: habit 2 (`grill-with-docs` changes how a Unity feature starts), cost 1, trust 1, maintenance 1 (one maintainer, 533 open issues), both 2, fit 1 = 8, passes, but shares its habit with superpowers: keep one (unverified).
 
 ## Try it
 

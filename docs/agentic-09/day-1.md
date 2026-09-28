@@ -18,7 +18,7 @@ Every add-on lands in one of seven **extension layers**; each differs in what it
 
 **The checklist.** The details pane says a hook exists, not what it runs, so open the repository and read `hooks/hooks.json` (each hook's command), `.mcp.json` (server commands or URLs) and every file in `bin/` (on the Bash tool's `PATH`). Then two settings: **allowed-tools** in each `SKILL.md`, because "a skill can grant itself broad tool access", and auto-update, on by default for official-name marketplaces, which rewrites reviewed files silently ([security](https://code.claude.com/docs/en/plugins/security){ .src data-checked="2026-09-28" }, [install](https://code.claude.com/docs/en/plugins/install){ .src data-checked="2026-09-28" }). Codex's version: review and trust plugin hooks before they run ([Codex plugins](https://learn.chatgpt.com/docs/plugins.md){ .src data-checked="2026-09-28" }).
 
-**In practice.** `mattpocock-skills` installs as `…@claude-plugins-official`, so it auto-updates although a third party wrote it. Its repository has no `hooks/`, `.mcp.json` or `bin/`: two minutes, and the finding is the absence. The same walk through ECC finds 21 hook entries and a `chrome-devtools` server.
+**In practice.** `mattpocock-skills` installs as `…@claude-plugins-official` ([listing](https://claude.com/marketplace/plugins/mattpocock-skills){ .src data-checked="2026-09-28" }), so it auto-updates although a third party wrote it. Its repository has no `hooks/`, `.mcp.json` or `bin/`: two minutes, and the finding is the absence. The same walk through ECC finds 21 hook entries and a `chrome-devtools` server.
 
 ## Try it
 
