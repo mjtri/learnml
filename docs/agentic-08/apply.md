@@ -52,6 +52,8 @@ Leave with (1) `playbook.md` at 20 rules or fewer, each with a link or a number,
 python track.py done agentic-08/apply --rating 3 --minutes 60 --note "rules kept/deleted; which tool quoted the global rule and how fast"
 ```
 
+**Next:** week B9 turns the playbook outward: finding tools with real traction and deciding, with a rubric, which ones earn a place.
+
 ## Ledger prompt
 
 > In **Weekly review**: "W39 review: 16 kept / 6 deleted / 2 to measure; global loaded: Claude yes 4 s, Codex yes 6 s; task X: Claude 9 min / 4 % / 4; Codex 12 min / 3 tasks / 3" and the one rule the comparison changed.

@@ -2,7 +2,7 @@
 
 Two parallel phone-first, self-paced tracks:
 - **Track A · ML** (12 weeks): just enough ML to use and modify models.
-- **Track B · Agentic workflows** (8 weeks): getting full value from Claude Code Max and ChatGPT Business without wasting usage; every product claim carries a checked-date badge and `gen_refresh.py` re-verifies them monthly.
+- **Track B · Agentic workflows** (10 weeks): getting full value from Claude Code Max and ChatGPT Business without wasting usage; every product claim carries a checked-date badge and `gen_refresh.py` re-verifies them monthly.
 
 - **Read:** <https://mjtri.github.io/learnml/> (Next up + progress map is the home page)
 - **Plan:** [curriculum.md](curriculum.md)

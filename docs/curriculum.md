@@ -374,7 +374,7 @@ Pick the next canvas chain by need, not by order: generative (`lin-vae` → `lin
 
 ---
 
-# Track B · Agentic workflows (8 weeks, in parallel)
+# Track B · Agentic workflows (10 weeks, in parallel)
 
 **3 phone lessons (~15 min) per week + one ~60 min "apply" task in the build session. Self-paced.**
 Goal: get full value from a **Claude Code Max 20x** subscription and a **ChatGPT Business** plan (already using chat + Codex) without wasting usage, for four kinds of work: Unity/C# XR development, research paperwork (papers, reviewer responses, ETRI TM reports, KR/EN), experiments & data analysis, and this repo. The ledger for this track is the [playbook](agentic/playbook.md): your own rules, each backed by something you measured.
@@ -394,6 +394,8 @@ How it is organised
 | B6 | Research paperwork | Mini literature review in both tools, then cross-verified citations |
 | B7 | Experiments & data | Long-running-agent harness scaffolded for ML weeks 10–12 |
 | B8 | Your operating system | Playbook v1 installed as global rules; weekly review ritual |
+| B9 | Finding and adopting tools that earn their place | Score five star-history candidates with the rubric; install the top two; measure; first radar rows |
+| B10 | Automate your own repetitive tasks | A `trip-forms` skill: trip.yaml → .docx, .hwpx and a LaTeX report, with an oracle; timed against doing it by hand |
 
 ## B1 — Budget & mental model
 
@@ -530,3 +532,37 @@ How it is organised
 **Done when:** the playbook has ≤ 20 rules, each with a source or a measurement, and both tools load it.
 
 **Sources:** Claude Code costs docs; ChatGPT Business pricing; your own `progress/` and playbook data.
+
+## B9 — Finding and adopting tools that earn their place
+
+**Objectives**
+- Know the extension map (skills, plugins, marketplaces, hooks, subagents, MCP servers, rules) and read a plugin's three security files before installing anything.
+- Discover candidates by traction on star-history.com and decide with a six-line "worth it" rubric, not by hype.
+- Keep a dated tool radar; measure what you keep with a one-week A/B; uninstall as a first-class move.
+
+**Lessons**
+1. The extension map: what each layer can do, where it runs, what it costs per turn; official vs community; one SKILL.md format for both tools; the security checklist (`hooks/hooks.json`, `.mcp.json`, `bin/`, `allowed-tools`, auto-update)
+2. Discover with traction, decide with a rubric: star-history Weekly/All-time tabs, per-repo Trending, `/compare/<category>`, reading a star curve (spike vs slope, stars vs last push); the rubric: habit change · context cost · trust · maintenance · both tools · fit, 0–2 each, adopt at ≥ 8/12 with no trust zero
+3. The current radar and measuring what you keep: today's picks (unity-mcp, superpowers, kordoc, document-skills, ccusage, docling, zotero-mcp, playwright-mcp) and the "read, don't bundle-install" cases (ECC as a pattern library, mattpocock/skills vs superpowers, codex-plugin-cc); scopes; a one-week A/B with the B8 meters; eight efficiency tips from official sources
+4. **Apply:** pull this week's star-history charts, score five candidates with the rubric, read the three security files of the top two (ECC and mattpocock/skills are the worked examples), install those two at user scope, run one real task with each (`/grill-with-docs` or `to-spec` on the Unity project; a document skill on a real form), log time/usage/quality, add a **Tools** section to the playbook and two rows to the [radar](agentic/radar.md).
+
+**Done when:** you can score a new repo in five minutes, name the three files you read before installing it, and your radar has two rows with your own measurements.
+
+**Sources:** code.claude.com skills / plugins / plugin-marketplaces / plugins/security / hooks / settings pages; support.claude.com "Using skills"; learn.chatgpt.com build-skills and agent-approvals-security; star-history.com (home, `/compare`, `/blog/skills`, `/blog/harness`); the READMEs of ECC, mattpocock/skills, superpowers, anthropics/skills, codex-plugin-cc, kordoc, ccusage.
+
+## B10 — Automate your own repetitive tasks
+
+**Objectives**
+- Build a personal automation from five parts: a data file, a template, a skill, an oracle, a trigger; know when it pays and what must stay manual.
+- Fill the documents you actually file: .docx/.xlsx (official document skills), LaTeX (`latexmk` as the oracle), HWP/HWPX (kordoc, python-hwpx, pyhwpx) with honest limits.
+- Run it unattended safely: where it runs, what it may touch, what it must never do silently.
+
+**Lessons**
+1. Anatomy of a personal automation: data + template + skill + oracle + trigger; B5's payoff maths applied to paperwork; signatures and approvals stay manual
+2. Documents you actually file: docx/xlsx via document skills; LaTeX from a data file with `latexmk` and pandoc; HWP/HWPX three ways (kordoc: read/fill/diff, CC plugin + Codex MCP; python-hwpx: pure Python, labelled cells, saves .hwpx; pyhwpx: true .hwp via Hancom COM, Windows only); keep an .hwpx master and diff it
+3. Run it unattended, safely: Cowork `/schedule`, Desktop scheduled tasks, cloud routines, Codex scheduled tasks; personal data and secrets never in the repo; dry-run and diff before overwrite; the "must never do silently" list
+4. **Apply:** build `~/.claude/skills/trip-forms/` (and the `.agents/skills` copy): `trip.yaml` → a filled .docx (document skill), a filled .hwpx (python-hwpx or kordoc on a copy of a real ETRI form, cells by label), a LaTeX trip report compiled with latexmk; `check.py` verifies every field; run once in Claude Code and once in Codex (`$trip-forms`); time it against doing it by hand; add **Automation recipes** to the playbook.
+
+**Done when:** one real form fills from `trip.yaml` in both tools, the oracle rejects a missing field, and the playbook records the minutes saved per run.
+
+**Sources:** anthropics/skills document-skills README; python-hwpx and pyhwpx on PyPI; kordoc README; support.claude.com Cowork article; code.claude.com desktop-scheduled-tasks and routines; learn.chatgpt.com automations; latexmk and pandoc manuals.

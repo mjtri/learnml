@@ -1,6 +1,6 @@
 # LearnML — agent instructions
 
-Personal 12-week ML course + 8-week agentic-workflow track, published with MkDocs Material to GitHub Pages. Self-paced: every week exists; weeks are regenerated on request and reviewed by the owner before commit.
+Personal 12-week ML course + 10-week agentic-workflow track, published with MkDocs Material to GitHub Pages. Self-paced: every week exists; weeks are regenerated on request and reviewed by the owner before commit.
 
 ## Commands
 

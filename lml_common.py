@@ -22,7 +22,7 @@ GLOSSARY_DIR = ROOT / "glossary"   # terms-<week-dir>.jsonl shards + terms-core.
 TRACKS = {
     "ml": {"label": "Track A · ML", "prefix": "week", "weeks": 12,
            "slots": ["day-1", "day-2", "day-3", "day-4", "day-5", "build"], "long": "build"},
-    "agentic": {"label": "Track B · Agentic workflows", "prefix": "agentic", "weeks": 8,
+    "agentic": {"label": "Track B · Agentic workflows", "prefix": "agentic", "weeks": 10,
                 "slots": ["day-1", "day-2", "day-3", "apply"], "long": "apply"},
 }
 # Backwards-compatible aliases for the ML track.

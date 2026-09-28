@@ -183,6 +183,7 @@ nav:
       - "B8 · Apply · Playbook v1 installed, first weekly review logged": agentic-08/apply.md
   - "Track B · Playbook": agentic/playbook.md
   - "Track B · Changelog": agentic/changelog.md
+  - "Track B · Tool radar": agentic/radar.md
   - Glossary: glossary.md
   - Curriculum: curriculum.md
 # nav:end

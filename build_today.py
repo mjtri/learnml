@@ -118,7 +118,7 @@ def render_index(s: dict) -> str:
         '<div class="stats" markdown>',
         f'<div class="stat"><b>{s["active_days"]}</b><span>active days</span></div>',
         f'<div class="stat"><b>{ml["pct"]}%</b><span>ML · 12 wk</span></div>',
-        f'<div class="stat"><b>{ag["pct"]}%</b><span>agentic · 8 wk</span></div>',
+        f'<div class="stat"><b>{ag["pct"]}%</b><span>agentic · 10 wk</span></div>',
         "</div>",
         "",
         bar("Track A", ml["total_done"], ml["total"]),
@@ -161,6 +161,7 @@ def render_nav() -> str:
         if track == "agentic":
             lines.append("  - \"Track B · Playbook\": agentic/playbook.md")
             lines.append("  - \"Track B · Changelog\": agentic/changelog.md")
+            lines.append("  - \"Track B · Tool radar\": agentic/radar.md")
     lines += ["  - Glossary: glossary.md", "  - Curriculum: curriculum.md"]
     return "\n".join(lines) + "\n"
 

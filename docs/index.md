@@ -29,11 +29,11 @@ hide:
 <div class="stats" markdown>
 <div class="stat"><b>0</b><span>active days</span></div>
 <div class="stat"><b>0%</b><span>ML · 12 wk</span></div>
-<div class="stat"><b>0%</b><span>agentic · 8 wk</span></div>
+<div class="stat"><b>0%</b><span>agentic · 10 wk</span></div>
 </div>
 
 <div class="bar"><span>Track A: 0/72</span><progress value="0" max="72"></progress></div>
-<div class="bar"><span>Track B: 0/32</span><progress value="0" max="32"></progress></div>
+<div class="bar"><span>Track B: 0/40</span><progress value="0" max="40"></progress></div>
 
 <small>0 minutes logged. Self-paced: a "week" is a unit of content, not a calendar week.</small>
 
@@ -184,6 +184,12 @@ hide:
     - ⬜ [B8 · Lesson 2 · Budgets and escape hatches: credits, fast mode, resets, seats](agentic-08/day-2.md)
     - ⬜ [B8 · Lesson 3 · The weekly review and the playbook v1](agentic-08/day-3.md)
     - ⬜ [B8 · Apply · Playbook v1 installed, first weekly review logged](agentic-08/apply.md)
+
+??? note "Week 9 · Finding and adopting tools that earn their place · not generated yet"
+    `python gen_week.py agentic 9` prints the prompt that builds it.
+
+??? note "Week 10 · Automate your own repetitive tasks · not generated yet"
+    `python gen_week.py agentic 10` prints the prompt that builds it.
 
 ## After a lesson
 
