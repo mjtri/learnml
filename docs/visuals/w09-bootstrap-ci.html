@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bootstrap interval</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:14px;min-height:44px;min-width:44px;padding:0 14px;border-radius:10px;border:1px solid var(--acc);background:var(--acc);color:var(--bg);font-weight:700;cursor:pointer;touch-action:manipulation;margin:6px 4px 8px 0}
+button.alt{background:var(--card);color:var(--fg);border-color:var(--line);font-weight:400}
+.sl{margin-top:4px;font-size:13px;color:var(--mut)}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;height:170px;border-radius:10px;background:var(--card)}
+.read{font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read div{padding:2px 0}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif}
+.read b{color:var(--acc2)}.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+.leg{font-size:12px;color:var(--mut);margin:4px 0}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:3px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Draw a test set, bootstrap it, and compare with the formula</h1>
+<div class="sl"><span>n, items in the test set</span><output id="on"></output></div>
+<input id="sn" type="range" min="10" max="200" step="10" value="20">
+<div class="sl"><span>true accuracy of the model</span><output id="opt"></output></div>
+<input id="spt" type="range" min="0.5" max="0.95" step="0.05" value="0.8">
+<div class="sl"><span>comparison line (a dumb method's score)</span><output id="oc"></output></div>
+<input id="sc" type="range" min="0.5" max="0.95" step="0.05" value="0.5">
+<button id="go">draw a new test set</button><button id="clr" class="alt">reset tally</button>
+<canvas id="cv" aria-label="Histogram of 1000 bootstrap accuracies with the interval, the observed value, the truth and the comparison line."></canvas>
+<div class="leg"><i style="background:var(--acc)"></i>bootstrap resamples <i style="background:var(--fg)"></i>observed <i style="background:var(--ok)"></i>truth <i style="background:var(--acc2)"></i>comparison <i style="background:var(--mut)"></i>95% interval</div>
+<div class="read" id="read"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>test set</dt><dd>n items the model got right or wrong. Here they are drawn at random from a model with the true accuracy you set.</dd>
+<dt>bootstrap</dt><dd>Resample the n results with replacement, recompute accuracy, repeat 1000 times. The 2.5th and 97.5th percentiles are the interval.</dd>
+<dt>standard error</dt><dd>The formula shortcut for a proportion: square root of p(1 − p)/n. About two of them either side is the 95% interval.</dd>
+<dt>coverage</dt><dd>How often, over many draws, the interval contains the truth. A 95% interval should manage it about 19 times in 20.</dd>
+</dl></details>
+<script>
+(function(){
+var sn=document.getElementById("sn"),spt=document.getElementById("spt"),sc=document.getElementById("sc"),cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+var hits=null,boot=[],tally={n:0,cover:0},W=300,H=170;
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function labels(){document.getElementById("on").textContent=sn.value;document.getElementById("opt").textContent=(+spt.value).toFixed(2);document.getElementById("oc").textContent=(+sc.value).toFixed(2)}
+function sample(){var n=+sn.value,p=+spt.value,i;hits=[];for(i=0;i<n;i++)hits.push(Math.random()<p?1:0);
+  boot=[];for(var b=0;b<1000;b++){var s=0;for(i=0;i<n;i++)s+=hits[Math.floor(Math.random()*n)];boot.push(s/n)}boot.sort(function(a,b){return a-b});
+  var lo=boot[24],hi=boot[974];tally.n++;if(lo<=p&&p<=hi)tally.cover++}
+function fit(){var r=window.devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function X(v){return 10+(v-0.3)/(0.7)*(W-20)}
+function draw(){
+  ctx.clearRect(0,0,W,H);if(!hits)return;
+  var n=hits.length,pt=+spt.value,c=+sc.value,ph=hits.reduce(function(a,b){return a+b},0)/n,se=Math.sqrt(ph*(1-ph)/n),lo=boot[24],hi=boot[974],i;
+  var bins=new Array(41).fill(0);boot.forEach(function(v){var k=Math.round((v-0.3)/0.7*40);if(k>=0&&k<=40)bins[k]++});var mx=Math.max.apply(null,bins);
+  ctx.fillStyle=css("--acc");for(i=0;i<=40;i++){var h=bins[i]/mx*(H-40),x=X(0.3+i*0.7/40);ctx.fillRect(x-3,H-20-h,6,h)}
+  ctx.fillStyle="rgba(128,128,128,0.18)";ctx.fillRect(X(lo),8,X(hi)-X(lo),H-28);
+  function vline(v,col,w){ctx.strokeStyle=col;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(X(v),8);ctx.lineTo(X(v),H-20);ctx.stroke()}
+  vline(lo,css("--mut"),2);vline(hi,css("--mut"),2);vline(pt,css("--ok"),2.5);vline(c,css("--acc2"),2.5);vline(ph,css("--fg"),3);
+  ctx.fillStyle=css("--mut");ctx.font="11px system-ui,sans-serif";ctx.textAlign="center";[0.3,0.5,0.7,0.9,1].forEach(function(v){ctx.fillText(v.toFixed(1),X(v),H-6)});
+  var flo=Math.max(0,ph-1.96*se),fhi=Math.min(1,ph+1.96*se),excl=c<lo||c>hi;
+  document.getElementById("read").innerHTML=
+   "<div><span class='k'>observed accuracy</span> <b>"+ph.toFixed(3)+"</b> ("+hits.reduce(function(a,b){return a+b},0)+" of "+n+") · truth "+pt.toFixed(2)+"</div>"+
+   "<div><span class='k'>bootstrap 95% interval</span> ["+lo.toFixed(3)+", "+hi.toFixed(3)+"] · width <b>"+(hi-lo).toFixed(3)+"</b></div>"+
+   "<div><span class='k'>formula: SE = √(p(1−p)/n) =</span> "+se.toFixed(3)+" → ± 1.96 SE = ["+flo.toFixed(3)+", "+fhi.toFixed(3)+"]</div>"+
+   "<div><span class='k'>comparison line "+c.toFixed(2)+"</span> <span class='"+(excl?"ok":"bad")+"'>"+(excl?"outside the interval: a difference you may claim":"inside the interval: no claim")+"</span></div>"+
+   "<div><span class='k'>tally: intervals covering the truth</span> "+tally.cover+" of "+tally.n+"</div>"}
+document.getElementById("go").onclick=function(){sample();draw()};
+document.getElementById("clr").onclick=function(){tally={n:0,cover:0};draw()};
+[sn,spt].forEach(function(s){s.oninput=function(){labels();hits=null;tally={n:0,cover:0};sample();draw()}});
+sc.oninput=function(){labels();draw()};
+addEventListener("resize",fit);
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+labels();sample();fit();
+})();
+</script>
+</body>
+</html>
