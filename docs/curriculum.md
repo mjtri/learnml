@@ -394,7 +394,7 @@ How it is organised
 | B6 | Research paperwork | Mini literature review in both tools, then cross-verified citations |
 | B7 | Experiments & data | Long-running-agent harness scaffolded for ML weeks 10–12 |
 | B8 | Your operating system | Playbook v1 installed as global rules; weekly review ritual |
-| B9 | Finding and adopting tools that earn their place | Score five star-history candidates with the rubric; install the top two; measure; first radar rows |
+| B9 | Finding and adopting tools that earn their place | Score five star-history candidates with the rubric; install the top two; measure; your A/B numbers on the radar |
 | B10 | Automate your own repetitive tasks | A `trip-forms` skill: trip.yaml → .docx, .hwpx and a LaTeX report, with an oracle; timed against doing it by hand |
 
 ## B1 — Budget & mental model
@@ -544,9 +544,9 @@ How it is organised
 1. The extension map: what each layer can do, where it runs, what it costs per turn; official vs community; one SKILL.md format for both tools; the security checklist (`hooks/hooks.json`, `.mcp.json`, `bin/`, `allowed-tools`, auto-update)
 2. Discover with traction, decide with a rubric: star-history Weekly/All-time tabs, per-repo Trending, `/compare/<category>`, reading a star curve (spike vs slope, stars vs last push); the rubric: habit change · context cost · trust · maintenance · both tools · fit, 0–2 each, adopt at ≥ 8/12 with no trust zero
 3. The current radar and measuring what you keep: today's picks (unity-mcp, superpowers, kordoc, document-skills, ccusage, docling, zotero-mcp, playwright-mcp) and the "read, don't bundle-install" cases (ECC as a pattern library, mattpocock/skills vs superpowers, codex-plugin-cc); scopes; a one-week A/B with the B8 meters; eight efficiency tips from official sources
-4. **Apply:** pull this week's star-history charts, score five candidates with the rubric, read the three security files of the top two (ECC and mattpocock/skills are the worked examples), install those two at user scope, run one real task with each (`/grill-with-docs` or `to-spec` on the Unity project; a document skill on a real form), log time/usage/quality, add a **Tools** section to the playbook and two rows to the [radar](agentic/radar.md).
+4. **Apply:** pull this week's star-history charts, score five candidates with the rubric, read the three security files of the top two (ECC and mattpocock/skills are the worked examples), install those two at user scope, run one real task with each (`/grill-with-docs` or `to-spec` on the Unity project; a document skill on a real form), log time/usage/quality, add a **Tools** section to the playbook and your A/B numbers to the existing rows of the [radar](agentic/radar.md) (a new row only for a tool not yet listed).
 
-**Done when:** you can score a new repo in five minutes, name the three files you read before installing it, and your radar has two rows with your own measurements.
+**Done when:** you can score a new repo in five minutes, name the three files you read before installing it, and two radar rows carry your own dated measurements.
 
 **Sources:** code.claude.com skills / plugins / plugin-marketplaces / plugins/security / hooks / settings pages; support.claude.com "Using skills"; learn.chatgpt.com build-skills and agent-approvals-security; star-history.com (home, `/compare`, `/blog/skills`, `/blog/harness`); the READMEs of ECC, mattpocock/skills, superpowers, anthropics/skills, codex-plugin-cc, kordoc, ccusage.
 
