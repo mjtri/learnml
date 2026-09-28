@@ -23,8 +23,8 @@ Leave with (1) `playbook.md` at 20 rules or fewer, each with a link or a number,
    Constraints: keep a rule only if its evidence is a link or a number;
    merge duplicates; list every deleted rule under "## Deleted" with the
    reason. Never invent evidence.
-   Done when: `grep -c "^- " docs/agentic/playbook.md` prints 20 or less
-   and every kept line contains "http" or a measured unit (min, %, /5).
+   Done when: `@(Select-String -Path docs/agentic/playbook.md -Pattern '^- ').Count`
+   prints 20 or less and every kept line contains "http" or a measured unit (min, %, /5).
    ```
    Approve, then read the Deleted list yourself: restore any rule you can measure next week, tagged "(measure by W40)".
 3. **Install (10 min).** Ask: "Write the kept rules as imperatives only, no links or dates, to `rules.txt`." Then in PowerShell, one line each:
@@ -33,17 +33,17 @@ Leave with (1) `playbook.md` at 20 rules or fewer, each with a link or a number,
    New-Item -ItemType Directory -Force $HOME\.codex
    Copy-Item $HOME\.claude\CLAUDE.md $HOME\.claude\CLAUDE.md.bak -ErrorAction SilentlyContinue
    Copy-Item $HOME\.codex\AGENTS.md $HOME\.codex\AGENTS.md.bak -ErrorAction SilentlyContinue
-   Copy-Item rules.txt $HOME\.claude\CLAUDE.md
-   Copy-Item rules.txt $HOME\.codex\AGENTS.md
+   Add-Content $HOME\.claude\CLAUDE.md -Encoding UTF8 -Value ("`n## Playbook`n" + (Get-Content rules.txt -Raw -Encoding UTF8))
+   Add-Content $HOME\.codex\AGENTS.md -Encoding UTF8 -Value ("`n## Playbook`n" + (Get-Content rules.txt -Raw -Encoding UTF8))
    ```
-   Existing files survive as `.bak`; delete `rules.txt` afterwards.
-4. **Prove it loads (10 min).** New session in each tool from `$HOME`, outside any repo: "Quote the first rule in your instructions, verbatim." In Claude Code `/memory` also lists the user file. Record per tool: quoted yes/no, seconds to answer.
+   Your existing global rules stay; the block is appended under `## Playbook`. Run it once (a second run appends a second heading); delete `rules.txt` afterwards.
+4. **Prove it loads (10 min).** New session in each tool from `$HOME`, outside any repo: "Quote the first rule under the Playbook heading in your instructions, verbatim." In Claude Code `/memory` also lists the user file. Record per tool: quoted yes/no, seconds to answer.
 5. **One measured task (15 min).** The same small task in both tools, for example "make `check_lessons.py --only` accept `b8` as well as `agentic-08`": minutes, usage delta (`/usage` before and after; Codex `/usage weekly` before and after), 1–5 quality after reading the diff. Keep the better diff.
 
 ## Done when
 
-- `grep -c "^- " docs/agentic/playbook.md` prints 20 or less, and every kept rule has a link or a number.
-- Both global files exist and are identical (`Compare-Object (Get-Content $HOME\.claude\CLAUDE.md) (Get-Content $HOME\.codex\AGENTS.md)` prints nothing), and both tools quoted the first rule.
+- `@(Select-String -Path docs/agentic/playbook.md -Pattern '^- ').Count` prints 20 or less, and every kept rule has a link or a number.
+- Both global files carry the block (`Select-String -Path $HOME\.claude\CLAUDE.md, $HOME\.codex\AGENTS.md -Pattern '^## Playbook'` prints two hits), and both tools quoted the first rule.
 - The **Weekly review** section holds the usage report line and "kept / deleted / to measure".
 
 ## Log it

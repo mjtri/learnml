@@ -16,7 +16,7 @@ Leave with (1) a repeatable pipeline in `research/<question>/`, (2) a verified f
 ## Steps
 
 1. **Meters (3 min).** `/usage`, the ChatGPT counter and its Deep Research tasks remaining.
-2. **Two runs (5 min to start).** Same wording in both: "For vision-to-touch substitution, what spatial resolution do electrotactile and vibrotactile displays reach, and how was it measured? Peer-reviewed sources 2010–2026." Deep Research with sites restricted to `arxiv.org, dl.acm.org, ieeexplore.ieee.org`; Claude `+ › Research`. Note both start times.
+2. **Two reports (5 min).** Export the two Lesson 1 runs as Markdown (`dr.md`, `cr.md`). If you skipped that task, start both now, same wording: "For vision-to-touch substitution, what spatial resolution do electrotactile and vibrotactile displays reach, and how was it measured? Peer-reviewed sources 2010–2026." Deep Research with sites restricted to `arxiv.org, dl.acm.org, ieeexplore.ieee.org`; Claude `+ › Research`. Note both start times.
 3. **The script (10 min).** The Lesson 3 laptop prompt, or paste this as `verify_refs.py`:
    ```python
    import json, re, sys, urllib.request
@@ -32,7 +32,7 @@ Leave with (1) a repeatable pipeline in `research/<question>/`, (2) a verified f
        except Exception: print("missing", ident)
    ```
    Oracle: `10.1038/221963a0 | Vision substitution by tactile image projection | 1969 | test` prints `ok`; `10.1145/9999999.9999999 | x | 2024 | test` prints `missing`.
-4. **Union (10 min).** Export both reports as Markdown. Claude Code: "Goal: build `refs.md` from `dr.md` and `cr.md`, one `identifier | title | year | tools` line per reference. Done when: no identifier appears twice and each line names every tool that found it." Note each run's minutes.
+4. **Union (10 min).** Claude Code: "Goal: build `refs.md` from `dr.md` and `cr.md`, one `identifier | title | year | tools` line per reference. Done when: no identifier appears twice and each line names every tool that found it." Note each run's minutes.
 5. **Verify (15 min).** `python verify_refs.py refs.md > verdicts.txt`. Hand `differs` lines to Codex (the other vendor): one title search each, corrected identifier or `drop`; re-run. Count per tool: offered, `ok`, `missing`.
 6. **Project (10 min).** Create the "TM reports" Project (Lesson 2 block, `glossary.md`, one past TM) and add `refs-verified.md`, the `ok` lines only. Ask for the 참고문헌 section.
 7. **Meters (2 min).** `/usage` and the ChatGPT counter again.

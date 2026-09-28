@@ -29,7 +29,7 @@ Leave with (1) one script that blocks "done" in both tools while `check_lessons.
    print("check_lessons.py failed; fix these before reporting done:", *errs[:12], sep="\n", file=sys.stderr)
    sys.exit(2)                                    # 2 = do not stop; stderr becomes the next instruction
    ```
-   Test: `echo {} | python .claude/hooks/stop_check.py`; `$LASTEXITCODE` is `0`. Delete a retrieval question from `docs/agentic-03/day-1.md`, run again: `2` plus the `ERROR` line. Restore with `git checkout -- docs/agentic-03/day-1.md`.
+   Test: `'{}' | python .claude/hooks/stop_check.py`; `$LASTEXITCODE` is `0`. Delete a retrieval question from `docs/agentic-03/day-1.md`, run again: `2` plus the `ERROR` line. Restore with `git checkout -- docs/agentic-03/day-1.md`.
 2. **Claude Code (10 min).** Add to `.claude/settings.json`:
    ```json
    {
@@ -58,7 +58,7 @@ Leave with (1) one script that blocks "done" in both tools while `check_lessons.
    ```
    Trust the folder if asked; `/hooks`; same prompt; same three numbers (ChatGPT counter). If Codex stops after one forced retry, that is the script's guard: Codex documents no block cap.
 4. **Unity (20 min).** Editor closed. Run the Lesson 1 command against your XR project; note exit code and minutes. In that project's `AGENTS.md`, put the command under a "Done when" line: exit 0, no `error CS` in the log. Ask the agent for a small change (rename a serialized field) and let it prove the compile passed.
-5. **Deny rule (5 min).** `"deny": ["Bash(git push *)"]` in `.claude/settings.json`; `/permissions` shows it with its source file.
+5. **Deny rule (5 min).** Put `{"permissions": {"deny": ["Bash(git push *)"]}}` in `.claude/settings.local.json` (add that path to `.gitignore` if `git status` lists it). Local on purpose: week 5's scheduled cloud run clones the repo and pushes its own branch. `/permissions` shows the rule with its source file.
 
 ## Done when
 

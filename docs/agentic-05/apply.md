@@ -32,7 +32,7 @@ Leave with (1) a weekly cloud routine that runs the checker and strict build and
    listing the checker's warnings and what you changed. Never push to
    main or gh-pages. If nothing changed, open no PR and say so.
    ```
-   Click **Run now**; read the transcript, not the green dot. Merging the PR fires the deploy workflow, so merging from the phone is the deploy; the daily Action runs a script, the routine repairs what it flags. If `/schedule` is unavailable, create the same task as Desktop › Routines › New routine › Local, weekly, worktree on, ending "push to main": a desktop task has your git credentials.
+   Click **Run now**; read the transcript, not the green dot. Merging the PR fires the deploy workflow, so merging from the phone is the deploy. Your week-3 deny rule lives in `settings.local.json`, so the clone never sees it and the branch push goes through. If `/schedule` is unavailable, create the same task as Desktop › Routines › New routine › Local, weekly, worktree on, ending "commit to claude/weekly-refresh": a desktop task runs on your machine, under that deny rule, so you push and open the PR.
 4. **Cost (5 min).** claude.ai/settings/usage again: the delta is one run, once a week. Write it down.
 5. **Phone (15 min).** In any `claude` session, `/config` → **Push when actions required** on; exit. Then `claude remote-control --name learnml`, space for the QR code, scan it. From the Claude app send:
    ```
@@ -43,7 +43,7 @@ Leave with (1) a weekly cloud routine that runs the checker and strict build and
 
 ## Done when
 
-- claude.ai/code/routines lists the routine with a next run time; its first run produced a PR or an honest "nothing changed".
+- claude.ai/code/routines lists the routine with a next run time; its first run produced a PR (a desktop task: a commit) or an honest "nothing changed".
 - The playbook's **Automation** section has the weekly cost line with a number.
 - `progress/log.jsonl` has an `agentic-05/day-2` entry written from the phone.
 

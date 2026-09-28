@@ -14,11 +14,11 @@ A scheduled prompt is an agent turn nobody watches. Three clocks can fire it, di
 
 ## How it works
 
-**`/loop` (inside a session).** **`/loop`** re-runs a prompt while the session stays open: `/loop 5m check the deploy`; with no interval, Claude picks the wait itself. Session-scoped: a new conversation clears it, it fires only while Claude Code is idle, and it expires after 7 days ([scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks){ .src data-checked="2026-09-27" }). Every fire re-sends the whole conversation, a full turn each time; `/usage` shows a Loops row with tokens per run ([costs](https://code.claude.com/docs/en/costs){ .src data-checked="2026-09-27" }).
+**`/loop` (inside a session).** **`/loop`** re-runs a prompt while the session stays open: `/loop 5m check the deploy`; with no interval, Claude picks the wait itself. Session-scoped: a new conversation clears it, it fires only while Claude Code is idle, and it expires after 7 days ([scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks){ .src data-checked="2026-09-27" }). Every fire re-sends the whole conversation; `/usage` shows a Loops row with tokens per run ([costs](https://code.claude.com/docs/en/costs){ .src data-checked="2026-09-28" }).
 
 **Desktop scheduled task (your machine, no session).** Desktop app › Code › Routines › New routine › Local. A **desktop scheduled task** starts a fresh session with your files, only while the app is open and the computer awake; a missed day gets one catch-up run on wake, so a 9 am task may run at 11 pm ([desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks){ .src data-checked="2026-09-27" }). "Always allow" its tools after a manual run, or later runs stall unanswered.
 
-**Cloud routine (laptop closed).** A **cloud routine** is a saved prompt plus repositories, run as a cloud session when a **trigger** fires: a schedule (hourly at most), an HTTP call, or a GitHub event such as a pull request opening. Each run clones the repo fresh, asks no permissions, and pushes to `claude/` branches. Research preview; it draws normal subscription usage under a daily cap on runs ([routines](https://code.claude.com/docs/en/routines){ .src data-checked="2026-09-27" }). Create it with `/schedule`, a few minutes past the hour.
+**Cloud routine (laptop closed).** A **cloud routine** is a saved prompt plus repositories, run as a cloud session when a **trigger** fires: a schedule (hourly at most), an HTTP call, or a GitHub event such as a pull request opening. Each run clones the repo fresh, asks no permissions, and pushes to `claude/` branches. Research preview; it draws normal subscription usage under a daily cap on runs (one-off runs exempt) ([routines](https://code.claude.com/docs/en/routines){ .src data-checked="2026-09-28" }). Create it with `/schedule`, a few minutes past the hour.
 
 **Codex.** ChatGPT's scheduled tasks are the same idea on the other pool, fired by a schedule or by Gmail, Slack or GitHub events; in the desktop app, "keep the computer on and the app running" ([Codex scheduled tasks](https://learn.chatgpt.com/docs/automations.md){ .src data-checked="2026-09-27" }). OpenAI publishes no per-run usage figure.
 
@@ -54,7 +54,7 @@ Predict first: a 10-minute check for one evening, and a weekly build with the la
 
 - [Run prompts on a schedule](https://code.claude.com/docs/en/scheduled-tasks){ .src data-checked="2026-09-27" }: 8 min.
 - [Scheduled tasks in Claude Code Desktop](https://code.claude.com/docs/en/desktop-scheduled-tasks){ .src data-checked="2026-09-27" }: 5 min.
-- [Automate work with routines](https://code.claude.com/docs/en/routines){ .src data-checked="2026-09-27" }: 10 min.
+- [Automate work with routines](https://code.claude.com/docs/en/routines){ .src data-checked="2026-09-28" }: 10 min.
 - [Codex: scheduled tasks](https://learn.chatgpt.com/docs/automations.md){ .src data-checked="2026-09-27" }: 3 min.
 
 ## Ledger prompt

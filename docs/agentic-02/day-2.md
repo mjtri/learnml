@@ -33,7 +33,7 @@ Each part you leave out is a guess the agent makes for you, and a wrong guess co
 
 <div class="visual"><iframe src="../visuals/b2-prompt-shape.html" title="Add Goal, Context, Constraints and Done-when to a vague prompt and watch the guesses disappear" loading="lazy"></iframe></div>
 
-Predict first: with only a Goal, how many things must the agent guess? Which part removes the most?
+Predict first: with only a Goal, how many things must the agent guess? Which guess would cost the most?
 
 **Phone:** find your last vague prompt in either app and write its four-part version in a note.
 **Laptop:** run that prompt in Claude Code with `/plan` and `/model opusplan`. You will see the files it intends to touch before any edit exists; note `/usage` before and after.

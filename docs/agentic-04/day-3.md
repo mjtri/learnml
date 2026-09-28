@@ -18,9 +18,9 @@ An agent grading its own work keeps the blind spots it had while doing it: same 
 
 **Ultrareview (Claude, cloud).** `/code-review ultra` runs a fleet of reviewers in a cloud sandbox and reproduces every finding before reporting it ([ultrareview](https://code.claude.com/docs/en/ultrareview){ .src data-checked="2026-09-27" }). 5 to 10 minutes; up to 500 files and 8,000 changed lines; Max includes three free runs, once, then $5 to $25 in usage credits per run, estimated before you confirm. A run you stop still counts; it never starts on its own.
 
-**Codex as the grader.** **codex-plugin-cc** is OpenAI's plugin for Claude Code: `/plugin marketplace add openai/codex-plugin-cc`, `/plugin install codex@openai-codex`, `/codex:setup`. It needs Node 18.18+ and your ChatGPT sign-in; "usage will contribute to your Codex usage limits", so the grader spends the other pool ([codex-plugin-cc](https://github.com/openai/codex-plugin-cc){ .src data-checked="2026-09-27" }). `/codex:review --base main` is a read-only review. `/codex:adversarial-review` is an **adversarial review**: it argues against the chosen design, takes focus text, and does not fix code. Inside Codex, `/review` offers the same presets without touching the tree ([Codex code review](https://learn.chatgpt.com/docs/code-review.md){ .src data-checked="2026-09-27" }). OpenAI publishes no per-review number.
+**Codex as the grader.** **codex-plugin-cc** is OpenAI's plugin for Claude Code: `/plugin marketplace add openai/codex-plugin-cc`, `/plugin install codex@openai-codex`, `/codex:setup`. It needs Node 18.18+ and your ChatGPT sign-in; "usage will contribute to your Codex usage limits", so the grader spends the other pool ([codex-plugin-cc](https://github.com/openai/codex-plugin-cc){ .src data-checked="2026-09-28" }). `/codex:review --base main` is a read-only review. `/codex:adversarial-review` is an **adversarial review**: it argues against the chosen design, takes focus text, and does not fix code. Inside Codex, `/review` offers the same presets without touching the tree ([Codex code review](https://learn.chatgpt.com/docs/code-review.md){ .src data-checked="2026-09-27" }). OpenAI publishes no per-review number.
 
-**In practice.** Reviewer response due: Claude drafts it from the manuscript and the reviews; a ChatGPT session given only the reviewers' comments and the draft lists every point the draft dodges. It knows nothing about why you dodged them, which is the point.
+**In practice.** Reply to reviewers due: Claude drafts it from the manuscript and the reviews; a ChatGPT session given only the reviewers' comments and the draft lists every point the draft dodges. It knows nothing about why you dodged them, which is the point.
 
 ## Try it
 
@@ -52,7 +52,7 @@ Predict first: for a one-file docs change, which two stages give an independent 
 
 - [Code review](https://code.claude.com/docs/en/code-review){ .src data-checked="2026-09-27" }: 6 min.
 - [Find bugs with ultrareview](https://code.claude.com/docs/en/ultrareview){ .src data-checked="2026-09-27" }: pricing table, 6 min.
-- [openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc){ .src data-checked="2026-09-27" }: OpenAI-maintained README, 3 min.
+- [openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc){ .src data-checked="2026-09-28" }: OpenAI-maintained README, 3 min.
 - [Codex code review](https://learn.chatgpt.com/docs/code-review.md){ .src data-checked="2026-09-27" }: 2 min.
 
 ## Ledger prompt

@@ -16,9 +16,7 @@ Delegation is a trade. A subagent spends *more* tokens in total (its own instruc
 
 **Subagents.** A subagent is a Markdown file in `.claude/agents/<name>.md`, or `~/.claude/agents/` for every project: `name` and `description` required; `tools`, `model`, `permissionMode`, `isolation` optional ([subagents](https://code.claude.com/docs/en/sub-agents){ .src data-checked="2026-09-27" }). It starts with its own system prompt, your `CLAUDE.md` and the task message; it never sees your conversation, the files you already read, or your corrections. By default it runs in the background with fewer tools, up to 20 at once, on the same usage limits as the main session; the built-in `Explore` agent is read-only and skips `CLAUDE.md`.
 
-**Skills.** A skill is a folder `.claude/skills/<name>/SKILL.md`. Only its `description` is in context; the body loads when you type `/<name>` or Claude decides it fits ([skills](https://code.claude.com/docs/en/skills){ .src data-checked="2026-09-27" }). `disable-model-invocation: true` keeps a costly skill manual. After compaction only the first 5,000 tokens of a loaded skill return, so keep the body short. Anthropic's cost advice: `CLAUDE.md` under about 200 lines, workflow detail in skills ([costs](https://code.claude.com/docs/en/costs){ .src data-checked="2026-09-27" }).
-
-**Plugins.** A **plugin** bundles skills, agents, hooks and MCP servers into one installable unit. The price: every invocable component's name and description sits in context on every turn, used or not; the marketplace shows a "Context cost" estimate ([plugins](https://code.claude.com/docs/en/plugins){ .src data-checked="2026-09-27" }).
+**Skills.** A skill is a folder `.claude/skills/<name>/SKILL.md`. Only its `description` is in context; the body loads when you type `/<name>` or Claude decides it fits ([skills](https://code.claude.com/docs/en/skills){ .src data-checked="2026-09-27" }). `disable-model-invocation: true` keeps a costly skill manual. After compaction only the first 5,000 tokens of a loaded skill return, so keep the body short. Anthropic's cost advice: `CLAUDE.md` under about 200 lines, workflow detail in skills ([costs](https://code.claude.com/docs/en/costs){ .src data-checked="2026-09-28" }). A **plugin** bundles skills, agents, hooks and tool connections into one install, and every component's description then sits in context on every turn, used or not: the "Context cost" the marketplace shows ([plugins](https://code.claude.com/docs/en/plugins){ .src data-checked="2026-09-27" }).
 
 **Codex** has both shapes: skills in `.agents/skills/<name>/SKILL.md`, description first, body when chosen ([Codex skills](https://learn.chatgpt.com/docs/build-skills.md){ .src data-checked="2026-09-27" }); subagents that "consume more tokens than comparable single-agent runs" ([Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents.md){ .src data-checked="2026-09-27" }). The same file format serves both tools; only the folder differs.
 
@@ -31,7 +29,7 @@ Delegation is a trade. A subagent spends *more* tokens in total (its own instruc
 Predict first: a 6k-token log, then eight more turns. Does a subagent save tokens, and where is break-even?
 
 **Phone:** which paragraph of your `CLAUDE.md` serves only one workflow? That is your first skill.
-**Laptop:** move it to `.claude/skills/<name>/SKILL.md` with a one-line description, `/reload-skills`, then `/context` before and after: you will see the instructions share of the window drop.
+**Laptop:** move it to `.claude/skills/<name>/SKILL.md` with a one-line description, `/reload-skills` ([commands](https://code.claude.com/docs/en/commands){ .src data-checked="2026-09-28" }), then `/context` before and after: you will see the instructions share of the window drop.
 
 ## Rules of thumb
 

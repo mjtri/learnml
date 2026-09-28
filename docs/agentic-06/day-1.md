@@ -14,11 +14,11 @@ A **literature review pipeline** is four fixed stages: search in both tools, ded
 
 ## How it works
 
-**ChatGPT Deep Research.** Start it with `/Deepresearch` or the tools menu. It proposes a plan you can edit before it runs. `Sites › Manage sites` restricts research to the domains you list, or prioritises them. The report cites its sources and downloads as Markdown, Word or PDF. Usage varies by plan; the in-product counter shows remaining tasks, and monthly allowances reset 30 days from first use ([deep research](https://help.openai.com/en/articles/10500283-deep-research-faq){ .src data-checked="2026-09-27" }). OpenAI publishes no number for Business seats.
+**ChatGPT Deep Research.** Start it with `/Deepresearch` or the tools menu. It proposes a plan you can edit before it runs. `Sites › Manage sites` restricts research to the domains you list, or prioritises them. The report cites its sources and downloads as Markdown, Word or PDF. Usage varies by plan; the in-product counter is the meter, and a fixed allowance, where a plan has one, resets 30 days from first use ([deep research](https://help.openai.com/en/articles/10500283-deep-research-faq){ .src data-checked="2026-09-28" }). OpenAI publishes no number for Business seats.
 
-**Claude Research.** Paid plans; web search must be on; start from `+ › Research`. It searches the web and connected sources, and is "subject to the same limits as standard Claude conversations" but spends them faster ([research](https://support.claude.com/en/articles/11088861-using-research-on-claude-ai){ .src data-checked="2026-09-27" }). Underneath, a lead agent spawns subagents and a citation agent attributes claims; agents use about 4× the tokens of chat, multi-agent runs about 15× ([multi-agent research](https://www.anthropic.com/engineering/multi-agent-research-system){ .src data-checked="2026-09-27" }). Attribution is not existence.
+**Claude Research.** Paid plans; web search must be on; start from `+ › Research`. It searches the web and connected sources, and is "subject to the same limits as standard Claude conversations" but spends them faster ([research](https://support.claude.com/en/articles/11088861-use-research-on-claude){ .src data-checked="2026-09-28" }). Underneath, a lead agent spawns subagents and a citation agent attributes claims; agents use about 4× the tokens of chat, multi-agent runs about 15× ([multi-agent research](https://www.anthropic.com/engineering/multi-agent-research-system){ .src data-checked="2026-09-27" }). Attribution is not existence.
 
-**Connectors.** Both apps accept a remote **MCP** server as a custom connector: Claude under Customize › Connectors ([custom connectors](https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp){ .src data-checked="2026-09-27" }), ChatGPT Business only through an admin's developer mode ([developer mode](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt){ .src data-checked="2026-09-27" }). In the terminal, `claude mcp add --transport http <name> <url>`; connector output is context, so Claude Code warns above 10,000 tokens and caps at 25,000 by default ([MCP](https://code.claude.com/docs/en/mcp){ .src data-checked="2026-09-27" }). Codex: `codex mcp add` ([Codex MCP](https://learn.chatgpt.com/codex/extend/mcp){ .src data-checked="2026-09-27" }).
+**Connectors.** Both apps also take a remote **MCP** server as a custom connector, whose output is context you pay for ([custom connectors](https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp){ .src data-checked="2026-09-27" }, [developer mode](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt){ .src data-checked="2026-09-27" }, [Codex MCP](https://learn.chatgpt.com/docs/extend/mcp){ .src data-checked="2026-09-28" }).
 
 **In practice.** "Which sensory-substitution encodings preserve spatial resolution best?" Deep Research restricted to arxiv.org, dl.acm.org and ieeexplore.ieee.org; Claude Research too; both reference lists into one file, a **DOI** or **arXiv ID** per line. The verify pass is Lesson 3; nothing enters a Projects workspace before it.
 
@@ -28,8 +28,8 @@ A **literature review pipeline** is four fixed stages: search in both tools, ded
 
 Predict first: two tools find 18 and 14 references; how many reach the summary if a fifth fail verification?
 
-**Phone:** in the ChatGPT app, start one Deep Research on your question with sites restricted to publishers, and edit the plan it proposes. In the Claude app, `+ › Research` with the same question.
-**Laptop:** paste both reference lists into `research/<question>/refs.md`, one line each (`identifier · title · year · tool`), then in Claude Code: "Goal: dedupe refs.md by identifier. Done when: none appears twice and each line names every tool that found it." You will see a union larger than either list, with a small overlap.
+**Phone:** in the ChatGPT app, start one Deep Research on the question in this week's Apply, step 2 (copy its wording), sites restricted to publishers; edit the plan it proposes and export the report. In the Claude app, `+ › Research` with the same question. The Apply reuses both runs.
+**Laptop:** paste both reference lists into `research/<question>/refs.md`, one line each (`identifier | title | year | tools`), then in Claude Code: "Goal: dedupe refs.md by identifier. Done when: none appears twice and each line names every tool that found it." You will see a union larger than either list, with a small overlap.
 
 ## Rules of thumb
 
@@ -51,9 +51,8 @@ Predict first: two tools find 18 and 14 references; how many reach the summary i
 ## Sources
 
 - [Deep research in ChatGPT](https://help.openai.com/en/articles/10500283-deep-research-faq){ .src data-checked="2026-09-27" }: 5 min.
-- [Use research on Claude](https://support.claude.com/en/articles/11088861-using-research-on-claude-ai){ .src data-checked="2026-09-27" }: 2 min.
+- [Use research on Claude](https://support.claude.com/en/articles/11088861-use-research-on-claude){ .src data-checked="2026-09-28" }: 2 min.
 - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system){ .src data-checked="2026-09-27" }: 12 min.
-- [Claude Code MCP](https://code.claude.com/docs/en/mcp){ .src data-checked="2026-09-27" }: 4 min.
 
 ## Ledger prompt
 

@@ -32,7 +32,7 @@ An **instruction file** is the part of the context you write once and pay for on
 Predict first: launched from `Assets/`, how many files load, and which is read last? Then switch to Codex.
 
 **Phone:** in the Claude app's Code tab, ask a repo session which instruction files it loaded and how long each is.
-**Laptop:** `/context` in Claude Code lists *Memory files*; ask Codex to quote its project instructions' first heading. You will see whether `AGENTS.md` loaded once, twice, or not at all.
+**Laptop:** `/context` in Claude Code lists *Memory files*; ask Codex to quote the first heading of the instructions it loaded. You will see whether `AGENTS.md` loaded once, twice, or not at all.
 
 ## Rules of thumb
 

@@ -14,7 +14,7 @@ The phone is a client, not a computer. Every "code from the couch" feature answe
 
 ## How it works
 
-**Remote Control (Claude, your machine).** `claude remote-control` in the repo folder starts a server with a QR code; the Claude app's Code tab lists it. Execution stays local: the app is "a client for Claude Code sessions rather than a place where code runs" ([mobile](https://code.claude.com/docs/en/mobile){ .src data-checked="2026-09-27" }). Close the terminal and the session goes offline; a sleeping laptop reconnects on wake; a stopped server returns within about four hours with `--continue`. From the phone: photos, permission approvals, text commands such as `/usage`; never `/plugin`, `/resume`, Auto or Bypass ([remote control](https://code.claude.com/docs/en/remote-control){ .src data-checked="2026-09-27" }). Turn on **Push when actions required** in `/config`, or a prompt stalls the run.
+**Remote Control (Claude, your machine).** `claude remote-control` in the repo folder starts a server with a QR code; the Claude app's Code tab lists it. Execution stays local: the app is "a client for Claude Code sessions rather than a place where code runs" ([mobile](https://code.claude.com/docs/en/mobile){ .src data-checked="2026-09-27" }). Close the terminal and the session goes offline; a sleeping laptop reconnects on wake; a stopped server returns within about four hours with `--continue`. From the phone: photos, permission approvals, text commands such as `/usage`; never `/plugin`, `/resume`, Auto or Bypass ([remote control](https://code.claude.com/docs/en/remote-control){ .src data-checked="2026-09-28" }). Turn on **Push when actions required** in `/config`, or a prompt stalls the run.
 
 **Cloud sessions, two flags.** A cloud session runs on Anthropic's machines from a fresh clone of the GitHub repo, keeps going with the phone in your pocket, and shares your Claude rate limits. **`--cloud`** starts one: `claude --cloud "fix the failing check"` clones the remote at your branch, so push first. **Teleport** is the reverse: `claude --teleport` pulls a cloud session, its branch and history into your terminal, given a clean tree and the same repo and account; the CLI hand-off is one-way ([cloud](https://code.claude.com/docs/en/claude-code-on-the-web){ .src data-checked="2026-09-27" }).
 
@@ -50,7 +50,7 @@ Predict first: of your five commonest evening tasks, how many need local files? 
 
 ## Sources
 
-- [Remote Control](https://code.claude.com/docs/en/remote-control){ .src data-checked="2026-09-27" }: 10 min.
+- [Remote Control](https://code.claude.com/docs/en/remote-control){ .src data-checked="2026-09-28" }: 10 min.
 - [Claude Code on mobile](https://code.claude.com/docs/en/mobile){ .src data-checked="2026-09-27" }: 4 min.
 - [Use Claude Code in the cloud](https://code.claude.com/docs/en/claude-code-on-the-web){ .src data-checked="2026-09-27" }: 6 min.
 - [Codex Remote](https://learn.chatgpt.com/docs/remote.md){ .src data-checked="2026-09-27" }: 2 min.

@@ -10,17 +10,17 @@ playbook: research
 
 ## Idea
 
-Drafting waste is re-explaining: the TM format, the journal's tone, which Korean term is which English one, every new chat. **Projects** hold that once, as **project instructions** plus a few files, so each chat starts briefed. The worse waste: an unpublished result drafted in a chat that may train the model.
+Drafting waste is re-explaining: the TM format, the journal's tone, which Korean term is which English one, every new chat. **Projects** hold that once, as **project instructions** plus a few files, so each chat starts briefed. Worse: an unpublished result drafted in a chat that may train the model.
 
 ## How it works
 
 **ChatGPT Projects.** Instructions "apply only within that project and override your global custom instructions". Business projects hold up to 40 files. Project-only memory keeps chats from referencing anything outside the project; shared projects are always project-only. Paid plans may include Deep Research inside ([Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt){ .src data-checked="2026-09-27" }).
 
-**Claude Projects.** Instructions apply to every chat in the project; knowledge files expand "by up to 10x" with retrieval on paid plans ([what are projects](https://support.claude.com/en/articles/9517075-what-are-projects){ .src data-checked="2026-09-27" }); each project has "its own separate memory space" ([memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context){ .src data-checked="2026-09-27" }). Sharing is Team and Enterprise only.
+**Claude Projects.** Instructions apply to every chat in the project; knowledge files expand "by up to 10x" with retrieval on paid plans ([what are projects](https://support.claude.com/en/articles/9517075-what-are-projects){ .src data-checked="2026-09-28" }); each project has "its own separate memory space" ([memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context){ .src data-checked="2026-09-27" }). Sharing is Team and Enterprise only ([projects](https://support.claude.com/en/articles/9517075-what-are-projects){ .src data-checked="2026-09-28" }).
 
 **Which plan holds the draft.** Business: "No training on your business data by default" ([pricing](https://learn.chatgpt.com/docs/pricing){ .src data-checked="2026-09-27" }). Max: chats train Claude when Model Improvement is on in Privacy Settings; incognito chats never ([training policy](https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training){ .src data-checked="2026-09-27" }).
 
-**Record mode.** The ChatGPT macOS app transcribes a meeting into canvas notes: 4 hours per session, audio deleted after transcription, Business transcripts excluded from training by default, "works best in English today" ([ChatGPT Record](https://help.openai.com/en/articles/11487532-chatgpt-record){ .src data-checked="2026-09-27" }). Not on Windows; a Korean lab meeting is a test, not a given.
+**Record mode**, the ChatGPT macOS app transcribing a meeting into notes, is macOS-only, so on this Windows laptop it stays a test, not a given ([ChatGPT Record](https://help.openai.com/en/articles/11487532-chatgpt-record){ .src data-checked="2026-09-27" }).
 
 **Three Projects, one template each.** The **TM report template** is an instructions block:
 
@@ -35,7 +35,7 @@ Length: 2 pages; bullets over prose in 방법 and 결과.
 Ask before writing if a section has no source material.
 ```
 
-A **reviewer response** is a workflow: (1) the review goes in as a file; (2) ask for a table `comment · our change · where · status`; (3) draft each reply from the table, never from memory; (4) the other tool reads the letter against the review and lists unanswered comments (week 4's doer/grader rule). The **KR↔EN glossary** is a 30-row table (`한국어 · English · never as`) in project knowledge; the language line above already points at it.
+A **reviewer response** is a workflow: (1) the review goes in as a file; (2) ask for a table `comment · our change · where · status`; (3) draft each reply from the table, never from memory; (4) the other tool reads the letter against the review and lists unanswered comments (week 4's doer/grader rule). The **KR↔EN glossary** is a 30-row table (`한국어 · English · never as`) in project knowledge; the language line above points at it.
 
 **In practice.** TM due Friday: Project "TM reports" holds the block above, last year's TM and `glossary.md`. One chat: "Draft the Q3 haptic-encoding TM from notes.md." Sections arrive in order, in Korean, with `[verify]` on every unchecked reference.
 
@@ -62,13 +62,13 @@ Predict first: instructions ride along on every turn; how many words before they
 ??? question "Where may an unpublished result be drafted on your two plans?"
     In a ChatGPT Business project (no training by default), or in Claude with Model Improvement off or an incognito chat.
 
-??? question "Name three limits of record mode."
-    macOS app only, 4 hours per session, English works best; audio is deleted after transcription.
+??? question "Name the four steps of the reviewer-response workflow, and who does the last one?"
+    Review in as a file; a comment table; replies drafted from the table; the other tool reads the letter against the review and lists unanswered comments.
 
 ## Sources
 
 - [Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt){ .src data-checked="2026-09-27" }: 8 min.
-- [What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects){ .src data-checked="2026-09-27" }: 3 min.
+- [What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects){ .src data-checked="2026-09-28" }: 3 min.
 - [ChatGPT Record](https://help.openai.com/en/articles/11487532-chatgpt-record){ .src data-checked="2026-09-27" }: 4 min.
 - [Is my data used for model training?](https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training){ .src data-checked="2026-09-27" }: 3 min.
 

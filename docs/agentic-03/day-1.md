@@ -14,7 +14,7 @@ An agent stops when the work *looks* done. Without a check it can run, that is i
 
 ## How it works
 
-Anthropic's rule: give Claude a check it can run, "tests, a build, a screenshot to compare"; it iterates until the check passes. Then choose how hard the check gates the stop: in the prompt, as a `/goal` condition re-checked every turn, as a Stop hook that blocks the turn from ending (Lesson 3), or as a review by a fresh subagent. Ask for evidence, the command and what it returned, not "done" ([best practices](https://code.claude.com/docs/en/best-practices){ .src data-checked="2026-09-27" }). OpenAI's version: Codex "can do this loop for you, but only if it knows what 'good' looks like", from the prompt or `AGENTS.md` ([Codex best practices](https://learn.chatgpt.com/guides/best-practices){ .src data-checked="2026-09-27" }).
+Anthropic's rule: give Claude a check it can run, "tests, a build, a screenshot to compare"; it iterates until the check passes. Then choose how hard the check gates the stop: in the prompt, as a `/goal` condition re-checked every turn, as a Stop hook that blocks the turn from ending (Lesson 3), or as a review by a fresh subagent. Ask for evidence, the command and what it returned, not "done" ([best practices](https://code.claude.com/docs/en/best-practices){ .src data-checked="2026-09-28" }). OpenAI's version: Codex "can do this loop for you, but only if it knows what 'good' looks like", from the prompt or `AGENTS.md` ([Codex best practices](https://learn.chatgpt.com/guides/best-practices){ .src data-checked="2026-09-27" }).
 
 Three oracles you already own:
 
@@ -66,7 +66,7 @@ Two lines the agent can act on without you.
 
 ## Sources
 
-- [Give Claude a way to verify its work](https://code.claude.com/docs/en/best-practices){ .src data-checked="2026-09-27" }: 4 min.
+- [Give Claude a way to verify its work](https://code.claude.com/docs/en/best-practices){ .src data-checked="2026-09-28" }: 4 min.
 - [Codex best practices](https://learn.chatgpt.com/guides/best-practices){ .src data-checked="2026-09-27" }: 5 min.
 - [Unity Editor command-line arguments](https://docs.unity3d.com/Manual/EditorCommandLineArguments.html){ .src data-checked="2026-09-27" }: 3 min.
 

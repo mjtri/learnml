@@ -23,9 +23,10 @@ A fresh session in either tool can build and test the Unity project from the ins
    nothing the code already says.
    Done when: a fresh session can run the EditMode tests from this file alone.
    ```
-   Approve or edit the plan. Add a `CLAUDE.md` whose first line is `@AGENTS.md`. The test command follows Unity's own form ([test framework CLI](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/reference-command-line.html){ .src data-checked="2026-09-27" }):
-   ```
-   Unity.exe -runTests -batchmode -projectPath . -testPlatform EditMode -testResults results.xml
+   Approve or edit the plan. Add a `CLAUDE.md` whose first line is `@AGENTS.md`. The test command follows Unity's own form ([test framework CLI](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/reference-command-line.html){ .src data-checked="2026-09-27" }); `Unity.exe` is not on `PATH`, and only one Editor may hold the project, so close it first:
+   ```powershell
+   $unity = "C:\Program Files\Unity\Hub\Editor\<version>\Editor\Unity.exe"
+   & $unity -runTests -batchmode -projectPath . -testPlatform EditMode -testResults results.xml
    ```
 2. **Prove it, twice (20 min).** New session, Claude Code: "Using only the instruction file, run the EditMode tests. Report the command and the result." Then the Codex CLI in the same repo, same prompt. Record for each: minutes, usage delta (`/usage` before/after, or the ChatGPT counter), and 1–5 for how much help it needed. If a tool asked you for the command, the file failed its done-when: fix the file, not the prompt.
 3. **One prompt, two shapes (20 min).** Take the vague prompt from Lesson 2's phone task. Run it as written in one tool, then its four-part version in the same tool, in plan mode, from the same commit both times (`git stash` between runs). Record minutes, usage delta, a 1–5 quality score after reading the diff, and how many corrections you typed.

@@ -30,7 +30,7 @@ Leave with (1) `/gen-week` generating a week in an isolated worktree, (2) a `wee
    When it reports, run `python check_lessons.py --only <week-dir>` here and show
    me its report, its branch name and its worktree path. Do not merge.
    ```
-   `/reload-skills`, then `/gen-week agentic 2` (or any week whose ratings were low). Note wall-clock time.
+   `/reload-skills`, then `/gen-week agentic 1` (any low-rated week other than the one you grade in step 3). It runs in the background: note the start time, carry on, log its branch when it reports, and grade that week next session.
 3. **The reviewer (10 min).** Create `.claude/agents/week-reviewer.md`:
    ```markdown
    ---
@@ -45,14 +45,14 @@ Leave with (1) `/gen-week` generating a week in an isolated worktree, (2) a `wee
    or say it does not. Report at most 15 findings as `file:line · blocks|nit ·
    evidence`. Never edit a file.
    ```
-   Ask: `@week-reviewer grade the week at <worktree path>`. It starts with no memory of the generation, which is the point.
-4. **The other vendor (25 min).** `/plugin marketplace add openai/codex-plugin-cc`, `/plugin install codex@openai-codex`, `/codex:setup`. Open a session in the worktree and run `/codex:adversarial-review --base main --wait product claims that overstate the cited page; lessons that break LESSON_FORMAT.md`. For comparison, run `/code-review medium` on the same branch. For each grader record: minutes, usage delta (`/usage` or the ChatGPT counter), a 1–5 quality score, and each finding tagged real or noise. Fix the real ones in the worktree, rerun the checker, merge.
-5. **Meters (2 min).** `/usage` and the ChatGPT counter again: the cost of one generated and twice-graded week.
+   Ask: `@week-reviewer grade the week at docs/agentic-02`, the week as it stands on `main`. It starts with no memory of how the week was written, which is the point.
+4. **The other vendor (25 min).** Prerequisites: Node 18.18 or later and a ChatGPT sign-in. `/plugin marketplace add openai/codex-plugin-cc`, `/plugin install codex@openai-codex`, `/codex:setup`. On a branch `b4-review`, fix the reviewer's real findings in one lesson, then run `/codex:adversarial-review --base main --wait product claims that overstate the cited page; lessons that break LESSON_FORMAT.md`. For comparison, run `/code-review medium` on the same branch. For each grader record: minutes, usage delta (`/usage` or the ChatGPT counter), a 1–5 quality score, and each finding tagged real or noise. Fix the real ones, rerun the checker, merge.
+5. **Meters (2 min).** `/usage` and the ChatGPT counter again: the cost of one lesson graded three ways.
 
 ## Done when
 
-- `/gen-week agentic N` yields a committed week on a `worktree-*` branch with the checker green, and `@week-reviewer` returns a findings list without touching a file.
-- The Codex adversarial review caught at least one real issue, logged with both meters' deltas.
+- `/gen-week agentic N` started a worktree subagent (branch name logged, finished or not), and `@week-reviewer` returned a findings list without touching a file.
+- The Codex adversarial review caught at least one real issue on `b4-review`, logged with both meters' deltas.
 - `python check_lessons.py` passes on `main` after the merge.
 
 ## Log it
