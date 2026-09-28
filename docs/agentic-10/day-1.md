@@ -1,6 +1,6 @@
 ---
 title: "B10 · Lesson 1 · Anatomy of a personal automation: five parts, one payoff"
-terms: [automation recipe, data file, template]
+terms: [automation recipe, data file, form template]
 playbook: automation
 ---
 
@@ -16,7 +16,7 @@ A trip request, a trip report, a TM cover sheet: the same twelve facts typed int
 
 **Data file.** The **data file** is the only thing you type per run: `trip.yaml`, one key per fact, kept outside every repository because it holds your details.
 
-**Template.** A **template** is the form as the office issued it, cells empty: `request-master.hwpx`. Never edited by hand; when the office changes the form, replace it and re-run.
+**Template.** A **form template** is the form as the office issued it, cells empty: `request-master.hwpx`. Never edited by hand; when the office changes the form, replace it and re-run.
 
 **Skill.** The mapping, in prose plus a script: which key lands in which cell, how a date is written in Korean, what to do when a key is missing (stop). Claude Code loads it from `~/.claude/skills/` on `/trip-forms` ([skills](https://code.claude.com/docs/en/skills){ .src data-checked="2026-09-28" }); Codex reads the copy in `~/.agents/skills/` as `$trip-forms` ([Codex skills](https://learn.chatgpt.com/docs/build-skills.md){ .src data-checked="2026-09-28" }).
 

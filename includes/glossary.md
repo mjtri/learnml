@@ -111,6 +111,10 @@
 *[Auto-encoder]: A network trained to copy its input to its output through a narrow middle, so the middle must keep what matters. An encoder squeezes, a decoder rebuilds.
 *[autograd]: PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().
 *[Autograd]: PyTorch's system that records the computation graph during the forward pass and applies the chain rule for you when you call backward().
+*[automation recipe]: A personal automation built from five parts: a data file you edit, a template you replace, a skill that maps one onto the other, an oracle that checks, a trigger.
+*[Automation recipe]: A personal automation built from five parts: a data file you edit, a template you replace, a skill that maps one onto the other, an oracle that checks, a trigger.
+*[automation recipes]: A personal automation built from five parts: a data file you edit, a template you replace, a skill that maps one onto the other, an oracle that checks, a trigger.
+*[Automation recipes]: A personal automation built from five parts: a data file you edit, a template you replace, a skill that maps one onto the other, an oracle that checks, a trigger.
 *[AutoModel]: The Transformers class that reads a repository's config, builds the right architecture and loads the weights. The ForCausalLM variant adds the next-token output layer.
 *[AutoModelForCausalLM]: The Transformers class that reads a repository's config, builds the right architecture and loads the weights. The ForCausalLM variant adds the next-token output layer.
 *[AutoTokenizer]: The Transformers class that reads a Hub repository's tokenizer files and returns the matching tokenizer: text in, integer token ids and an attention mask out.
@@ -338,6 +342,10 @@
 *[Cross-entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
 *[cross entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
 *[Cross entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+*[data file]: The one file you type per run of a recipe: plain text, one key per fact, kept outside every repository because it holds your personal details.
+*[Data file]: The one file you type per run of a recipe: plain text, one key per fact, kept outside every repository because it holds your personal details.
+*[data files]: The one file you type per run of a recipe: plain text, one key per fact, kept outside every repository because it holds your personal details.
+*[Data files]: The one file you type per run of a recipe: plain text, one key per fact, kept outside every repository because it holds your personal details.
 *[data flow]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
 *[Data flow]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
 *[data flows]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
@@ -401,6 +409,12 @@
 *[Dot products]: Multiply two equal-length vectors number by number and add up the results. Large when the vectors point the same way, so it works as a similarity score.
 *[dropout]: During training, randomly zero a fraction of a layer's outputs on every step, so no unit can rely on another. Switched off for evaluation.
 *[Dropout]: During training, randomly zero a fraction of a layer's outputs on every step, so no unit can rely on another. Switched off for evaluation.
+*[dry run]: A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
+*[Dry run]: A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
+*[dry runs]: A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
+*[Dry runs]: A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
+*[dry-run]: A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
+*[Dry-run]: A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
 *[dtype]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[Dtype]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
 *[dtypes]: The number type stored in a tensor, such as 32-bit float or 64-bit integer. Model weights are almost always floats.
@@ -476,6 +490,10 @@
 *[Feed-forward network]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
 *[Feedforward]: The 2017 paper's name for the MLP block: information flows straight through it, one token at a time, with no mixing between positions.
+*[field map]: The table from data-file keys to where each value lands in each format: a labelled cell, a placeholder or a LaTeX macro. A gap is a cell nobody fills.
+*[Field map]: The table from data-file keys to where each value lands in each format: a labelled cell, a placeholder or a LaTeX macro. A gap is a cell nobody fills.
+*[field maps]: The table from data-file keys to where each value lands in each format: a labelled cell, a placeholder or a LaTeX macro. A gap is a cell nobody fills.
+*[Field maps]: The table from data-file keys to where each value lands in each format: a labelled cell, a placeholder or a LaTeX macro. A gap is a cell nobody fills.
 *[fine-tuning]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
 *[Fine-tuning]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
 *[fine-tune]: Continuing to train a pretrained model on your own smaller data, usually with a tiny learning rate so what it already knows is adjusted, not erased.
@@ -492,6 +510,10 @@
 *[FLOP]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
 *[floating-point operations]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
 *[Floating-point operations]: Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
+*[form template]: A form or document with its cells empty, exactly as the office issued it. Never edited by hand; replaced whole when the office changes it.
+*[Form template]: A form or document with its cells empty, exactly as the office issued it. Never edited by hand; replaced whole when the office changes it.
+*[form templates]: A form or document with its cells empty, exactly as the office issued it. Never edited by hand; replaced whole when the office changes it.
+*[Form templates]: A form or document with its cells empty, exactly as the office issued it. Never edited by hand; replaced whole when the office changes it.
 *[forward pass]: Running the calculation from inputs to output, storing intermediate values along the way.
 *[Forward pass]: Running the calculation from inputs to output, storing intermediate values along the way.
 *[four-part prompt]: A task prompt in four labelled parts: Goal, Context, Constraints, Done when. Each part you leave out is a guess the agent makes for you.
@@ -585,6 +607,7 @@
 *[HF Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
 *[the Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
 *[The Hub]: The public website where trained models, datasets and tokenizers are stored, one git repository each, and downloaded from with one line of code.
+*[HWPX]: Hancom's open document format, a zip of XML files that any library can read and write. The older .hwp is a closed binary that only Hancom Office writes reliably.
 *[hyperparameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[Hyperparameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[hyperparameters]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
@@ -665,6 +688,8 @@
 *[Latent code]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
 *[latent codes]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
 *[Latent codes]: The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
+*[latexmk]: A script that runs LaTeX as many times as needed until references settle. With -g and -halt-on-error its exit code is a pass or fail oracle for a document.
+*[Latexmk]: A script that runs LaTeX as many times as needed until references settle. With -g and -halt-on-error its exit code is a pass or fail oracle for a document.
 *[layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[Layer]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
 *[layers]: One stage of a neural network: it takes a tensor in, applies a simple parameterised operation, and passes a tensor on.
@@ -937,6 +962,8 @@
 *[Overfits]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
 *[overfitted]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
 *[Overfitted]: The model memorises its training examples instead of learning the pattern: training loss keeps falling while validation loss rises. Like a study that only predicts its own participants.
+*[pandoc]: A converter between markup formats: Markdown to docx, LaTeX or HTML and back. Its --reference-doc option borrows an office document's styles for the output.
+*[Pandoc]: A converter between markup formats: Markdown to docx, LaTeX or HTML and back. Its --reference-doc option borrows an office document's styles for the output.
 *[parameter]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
 *[Parameter]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
 *[parameters]: Any number inside a model that training is allowed to change. Weights are parameters. A 7B model has seven billion of them.
@@ -958,6 +985,8 @@
 *[Permission mode]: Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
 *[permission modes]: Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
 *[Permission modes]: Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
+*[personal data boundary]: The line a recipe must not cross: which files it may read and where it may write. Personal details and secrets stay outside every repository and every cloud runner.
+*[Personal data boundary]: The line a recipe must not cross: which files it may read and where it may write. Personal details and secrets stay outside every repository and every cloud runner.
 *[plan mode]: A Claude Code mode where the agent explores and proposes (read-only commands allowed) but every edit stays blocked until you approve its plan.
 *[Plan mode]: A Claude Code mode where the agent explores and proposes (read-only commands allowed) but every edit stays blocked until you approve its plan.
 *[playbook]: Your own page of workflow rules, each backed by a source or a measurement. The ledger for Track B.
@@ -1057,6 +1086,10 @@
 *[Prompt template]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
 *[prompt templates]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
 *[Prompt templates]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
+*[pyhwpx]: A Python wrapper that drives an installed Hancom Office through Windows COM automation: the only route that writes true .hwp files. Windows only, opens the Hancom window.
+*[Pyhwpx]: A Python wrapper that drives an installed Hancom Office through Windows COM automation: the only route that writes true .hwp files. Windows only, opens the Hancom window.
+*[python-hwpx]: A pure-Python library that reads, edits and writes HWPX without Hancom Office: it fills table cells by label path and saves .hwpx. One maintainer, so pin the version.
+*[Python-hwpx]: A pure-Python library that reads, edits and writes HWPX without Hancom Office: it fills table cells by label path and saves .hwpx. One maintainer, so pin the version.
 *[PyTorch]: The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.
 *[quantization]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.
 *[Quantization]: Rounding a continuous number to one of a few allowed levels, like an 8-level tactor intensity. Cheap to send, but the rounding step has zero slope, so gradients stop there.

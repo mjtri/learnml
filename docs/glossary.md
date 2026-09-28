@@ -230,6 +230,14 @@ PyTorch's system that records the computation graph during the forward pass and 
 <small>first met in [week-01/day-4](week-01/day-4.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="automation-recipe" markdown>
+**automation recipe** <small>(also: automation recipes)</small>
+
+A personal automation built from five parts: a data file you edit, a template you replace, a skill that maps one onto the other, an oracle that checks, a trigger.
+
+<small>first met in [agentic-10/day-1](agentic-10/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="automodel" markdown>
 **AutoModel** <small>(also: AutoModelForCausalLM)</small>
 
@@ -660,6 +668,14 @@ The standard classification loss: how surprised the model is by the correct labe
 
 ## D
 
+<div class="gl-entry" id="data-file" markdown>
+**data file** <small>(also: data files)</small>
+
+The one file you type per run of a recipe: plain text, one key per fact, kept outside every repository because it holds your personal details.
+
+<small>first met in [agentic-10/day-1](agentic-10/day-1.md)</small>
+</div>
+
 <div class="gl-entry" id="data-flow" markdown>
 **data flow** <small>(also: data flows)</small>
 
@@ -778,6 +794,14 @@ Multiply two equal-length vectors number by number and add up the results. Large
 During training, randomly zero a fraction of a layer's outputs on every step, so no unit can rely on another. Switched off for evaluation.
 
 <small>first met in [week-03/day-4](week-03/day-4.md) · canvas card `core-dl`</small>
+</div>
+
+<div class="gl-entry" id="dry-run" markdown>
+**dry run** <small>(also: dry runs, dry-run)</small>
+
+A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.
+
+<small>first met in [agentic-10/day-3](agentic-10/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="dtype" markdown>
@@ -912,6 +936,14 @@ The 2017 paper's name for the MLP block: information flows straight through it, 
 <small>first met in [week-05/day-2](week-05/day-2.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="field-map" markdown>
+**field map** <small>(also: field maps)</small>
+
+The table from data-file keys to where each value lands in each format: a labelled cell, a placeholder or a LaTeX macro. A gap is a cell nobody fills.
+
+<small>first met in [agentic-10/day-2](agentic-10/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="fine-tuning" markdown>
 **fine-tuning** <small>(also: fine-tune, fine-tuned, fine-tunes, finetuning, finetune)</small>
 
@@ -926,6 +958,14 @@ Continuing to train a pretrained model on your own smaller data, usually with a 
 Floating-point operations: the count of multiplies and adds a computation needs. Training compute is measured in FLOPs, about six per parameter per training token.
 
 <small>first met in [week-06/day-4](week-06/day-4.md) · canvas card `lin-chinchilla`</small>
+</div>
+
+<div class="gl-entry" id="form-template" markdown>
+**form template** <small>(also: form templates)</small>
+
+A form or document with its cells empty, exactly as the office issued it. Never edited by hand; replaced whole when the office changes it.
+
+<small>first met in [agentic-10/day-1](agentic-10/day-1.md)</small>
 </div>
 
 <div class="gl-entry" id="forward-pass" markdown>
@@ -1076,6 +1116,14 @@ The public website where trained models, datasets and tokenizers are stored, one
 <small>first met in [week-07/day-1](week-07/day-1.md) · canvas card `core-tooling`</small>
 </div>
 
+<div class="gl-entry" id="hwpx" markdown>
+**HWPX**
+
+Hancom's open document format, a zip of XML files that any library can read and write. The older .hwp is a closed binary that only Hancom Office writes reliably.
+
+<small>first met in [agentic-10/day-2](agentic-10/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="hyperparameter" markdown>
 **hyperparameter** <small>(also: hyperparameters, hyper-parameter)</small>
 
@@ -1194,6 +1242,14 @@ A model that assigns probabilities to sequences of tokens, usually by predicting
 The short vector a model keeps in the middle: what it extracted from an input. Distances between latents are the model's opinion about similarity.
 
 <small>first met in [week-12/day-1](week-12/day-1.md) · canvas card `lin-clip`</small>
+</div>
+
+<div class="gl-entry" id="latexmk" markdown>
+**latexmk**
+
+A script that runs LaTeX as many times as needed until references settle. With -g and -halt-on-error its exit code is a pass or fail oracle for a document.
+
+<small>first met in [agentic-10/day-2](agentic-10/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="layer" markdown>
@@ -1628,6 +1684,14 @@ The model memorises its training examples instead of learning the pattern: train
 
 ## P
 
+<div class="gl-entry" id="pandoc" markdown>
+**pandoc**
+
+A converter between markup formats: Markdown to docx, LaTeX or HTML and back. Its --reference-doc option borrows an office document's styles for the output.
+
+<small>first met in [agentic-10/day-2](agentic-10/day-2.md)</small>
+</div>
+
 <div class="gl-entry" id="parameter" markdown>
 **parameter** <small>(also: parameters)</small>
 
@@ -1666,6 +1730,14 @@ Parameter-efficient fine-tuning: any method that adapts a big model by training 
 Claude Code's per-session setting for what the agent may do without asking: manual, accept edits, plan, auto, dontAsk or bypass.
 
 <small>first met in [agentic-01/day-3](agentic-01/day-3.md)</small>
+</div>
+
+<div class="gl-entry" id="personal-data-boundary" markdown>
+**personal data boundary**
+
+The line a recipe must not cross: which files it may read and where it may write. Personal details and secrets stay outside every repository and every cloud runner.
+
+<small>first met in [agentic-10/day-3](agentic-10/day-3.md)</small>
 </div>
 
 <div class="gl-entry" id="plan-mode" markdown>
@@ -1810,6 +1882,22 @@ Reuse of an already-processed conversation prefix so the next turn is cheaper. I
 The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
 
 <small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-clip`</small>
+</div>
+
+<div class="gl-entry" id="pyhwpx" markdown>
+**pyhwpx**
+
+A Python wrapper that drives an installed Hancom Office through Windows COM automation: the only route that writes true .hwp files. Windows only, opens the Hancom window.
+
+<small>first met in [agentic-10/day-2](agentic-10/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="python-hwpx" markdown>
+**python-hwpx**
+
+A pure-Python library that reads, edits and writes HWPX without Hancom Office: it fills table cells by label path and saves .hwpx. One maintainer, so pin the version.
+
+<small>first met in [agentic-10/day-2](agentic-10/day-2.md)</small>
 </div>
 
 <div class="gl-entry" id="pytorch" markdown>

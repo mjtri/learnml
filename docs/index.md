@@ -188,8 +188,11 @@ hide:
 ??? note "Week 9 · Finding and adopting tools that earn their place · not generated yet"
     `python gen_week.py agentic 9` prints the prompt that builds it.
 
-??? note "Week 10 · Automate your own repetitive tasks · not generated yet"
-    `python gen_week.py agentic 10` prints the prompt that builds it.
+??? note "⬜ Week 10 · Automate your own repetitive tasks · 0/4"
+    - ⬜ [B10 · Lesson 1 · Anatomy of a personal automation: five parts, one payoff](agentic-10/day-1.md)
+    - ⬜ [B10 · Lesson 2 · Documents you actually file: docx, xlsx, LaTeX, HWP and HWPX](agentic-10/day-2.md)
+    - ⬜ [B10 · Lesson 3 · Run it unattended, safely: where, what it may touch, what it must never do silently](agentic-10/day-3.md)
+    - ⬜ [B10 · Apply · trip-forms: one data file, three documents, one oracle, both tools](agentic-10/apply.md)
 
 ## After a lesson
 

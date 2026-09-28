@@ -181,6 +181,11 @@ nav:
       - "B8 · Lesson 2 · Budgets and escape hatches: credits, fast mode, resets, seats": agentic-08/day-2.md
       - "B8 · Lesson 3 · The weekly review and the playbook v1": agentic-08/day-3.md
       - "B8 · Apply · Playbook v1 installed, first weekly review logged": agentic-08/apply.md
+  - "Track B · 10 · Automate your own repetitive tasks":
+      - "B10 · Lesson 1 · Anatomy of a personal automation: five parts, one payoff": agentic-10/day-1.md
+      - "B10 · Lesson 2 · Documents you actually file: docx, xlsx, LaTeX, HWP and HWPX": agentic-10/day-2.md
+      - "B10 · Lesson 3 · Run it unattended, safely: where, what it may touch, what it must never do silently": agentic-10/day-3.md
+      - "B10 · Apply · trip-forms: one data file, three documents, one oracle, both tools": agentic-10/apply.md
   - "Track B · Playbook": agentic/playbook.md
   - "Track B · Changelog": agentic/changelog.md
   - "Track B · Tool radar": agentic/radar.md

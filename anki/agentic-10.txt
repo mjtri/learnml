@@ -1,0 +1,23 @@
+#separator:tab
+#html:true
+#tags column:3
+Name the five parts and the failure each one prevents.	Data file (retyped facts), template (drifting layout), skill (mapping in your head), oracle (half-filled form goes out), trigger (wrong time or never).	learnml agentic-10 agentic-10-day-1
+A form is filed twice a year and takes 20 minutes. Automate it?	No: 40 minutes a year against a 60-minute build plus upkeep. Fill it by hand.	learnml agentic-10 agentic-10-day-1
+Which things never go into the recipe?	Your signature or seal, the approval, the upload under your login, other people's details.	learnml agentic-10 agentic-10-day-1
+Why is <code>-g</code> part of the latexmk oracle command?	Without it latexmk can say "Nothing to do" and exit 0 on a stale PDF, even with an input file missing.	learnml agentic-10 agentic-10-day-2
+Which HWP route needs Hancom Office, and what do you get for it?	pyhwpx, through COM on Windows: true <code>.hwp</code> output.	learnml agentic-10 agentic-10-day-2
+kordoc fill wrote a file after 매칭 실패. What catches it?	check.py reads the output back by label and exits non-zero on the empty cell.	learnml agentic-10 agentic-10-day-2
+Why is a cloud routine the wrong runner for trip-forms?	It clones a repository fresh and sees nothing else; the data file is outside every repository.	learnml agentic-10 agentic-10-day-3
+What does <code>--permission-prompts none</code> change in an unattended run?	Anything that would have waited for you is denied and not retried; the run fails instead of hanging.	learnml agentic-10 agentic-10-day-3
+Name four things the recipe must never do silently.	Any four of: overwrite a master, write outside out\, submit, seal, invent a value, read another data file, change the map, use the network, skip the oracle.	learnml agentic-10 agentic-10-day-3
+What does <b>automation recipe</b> mean?	A personal automation built from five parts: a data file you edit, a template you replace, a skill that maps one onto the other, an oracle that checks, a trigger.	learnml agentic-10 vocab
+What does <b>data file</b> mean?	The one file you type per run of a recipe: plain text, one key per fact, kept outside every repository because it holds your personal details.	learnml agentic-10 vocab
+What does <b>form template</b> mean?	A form or document with its cells empty, exactly as the office issued it. Never edited by hand; replaced whole when the office changes it.	learnml agentic-10 vocab
+What does <b>field map</b> mean?	The table from data-file keys to where each value lands in each format: a labelled cell, a placeholder or a LaTeX macro. A gap is a cell nobody fills.	learnml agentic-10 vocab
+What does <b>HWPX</b> mean?	Hancom&#x27;s open document format, a zip of XML files that any library can read and write. The older .hwp is a closed binary that only Hancom Office writes reliably.	learnml agentic-10 vocab
+What does <b>python-hwpx</b> mean?	A pure-Python library that reads, edits and writes HWPX without Hancom Office: it fills table cells by label path and saves .hwpx. One maintainer, so pin the version.	learnml agentic-10 vocab
+What does <b>pyhwpx</b> mean?	A Python wrapper that drives an installed Hancom Office through Windows COM automation: the only route that writes true .hwp files. Windows only, opens the Hancom window.	learnml agentic-10 vocab
+What does <b>latexmk</b> mean?	A script that runs LaTeX as many times as needed until references settle. With -g and -halt-on-error its exit code is a pass or fail oracle for a document.	learnml agentic-10 vocab
+What does <b>pandoc</b> mean?	A converter between markup formats: Markdown to docx, LaTeX or HTML and back. Its --reference-doc option borrows an office document&#x27;s styles for the output.	learnml agentic-10 vocab
+What does <b>personal data boundary</b> mean?	The line a recipe must not cross: which files it may read and where it may write. Personal details and secrets stay outside every repository and every cloud runner.	learnml agentic-10 vocab
+What does <b>dry run</b> mean?	A run that prints what it would write, field by field, and touches no file. Read it, and the diff after the real run, before anything is overwritten.	learnml agentic-10 vocab
