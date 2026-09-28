@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The extension map</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.layers{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.layers button{font:inherit;font-size:13px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.layers button.on{border-color:var(--acc);border-width:2px;font-weight:700}
+.card{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--card)}
+.card h2{font-size:15px;margin:0 0 6px}
+.card p{margin:4px 0;font-size:13px}
+.card p b{color:var(--mut);font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:12px;font-weight:700;margin-top:6px}
+.badge.yes{background:color-mix(in srgb,var(--bad) 22%,var(--card));color:var(--bad)}
+.badge.no{background:color-mix(in srgb,var(--ok) 22%,var(--card));color:var(--ok)}
+.bars{margin-top:10px}
+.bars .lab{font-size:12px;color:var(--mut);margin-bottom:4px}
+.row{display:grid;grid-template-columns:92px 1fr 62px;gap:6px;align-items:center;min-height:26px}
+.row .n{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .b{height:12px;border-radius:6px;background:var(--line);overflow:hidden}
+.row .b i{display:block;height:100%;background:var(--acc)}
+.row.on .n{color:var(--fg);font-weight:700}
+.row.on .b i{background:var(--acc2)}
+.row .v{font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;text-align:right}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Seven layers, three questions</h1>
+<p class="hint">Tap a layer. The card says what it can do, where it runs and what it costs on every turn; the bars compare the always-on token cost (illustrative sizes).</p>
+<div class="layers" id="layers"></div>
+<div class="card" id="card"></div>
+<div class="bars" id="bars"><div class="lab">Always-on tokens per turn, before anything is invoked</div></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>always-on</dt><dd>Text that sits in the context window on every turn whether or not the layer is used: names and descriptions, or a whole instruction file.</dd>
+<dt>outside the sandbox</dt><dd>Code that runs on your machine with your user privileges, not as a tool call the permission rules can stop: hooks, MCP server processes, bin/ executables.</dd>
+<dt>on invoke</dt><dd>The extra cost paid only when the layer is used: a skill body, a subagent's whole second context window, a tool result.</dd>
+</dl></details>
+<script>
+(function(){
+var L=[
+ {k:"skill",n:"Skill",tok:60,code:false,
+  can:"A folder with a SKILL.md: instructions, optional scripts and references. Invoked by /name, by the agent, or only by you (disable-model-invocation).",
+  where:"Inside the context window; scripts run through the Bash tool, so permission rules apply. Same format in Claude Code and Codex.",
+  cost:"Description only (~40 to 100 tokens); the body loads on invoke. Codex caps the whole description list at 8,000 characters."},
+ {k:"plugin",n:"Plugin",tok:400,code:true,
+  can:"One install of skills, agents, hooks and MCP servers, from a marketplace or a folder.",
+  where:"Wherever its parts run: instructions in context, hooks and servers on your machine. Enabled per scope: user, project or local.",
+  cost:"Every invocable component's name and description on every turn. Example from the docs: ~146 tokens for a four-part plugin; 2,000 or more is highlighted before install."},
+ {k:"market",n:"Marketplace",tok:0,code:false,
+  can:"A catalog: a git repository or folder with marketplace.json listing plugins and where to fetch them.",
+  where:"Nothing runs. Claude Code fetches it, and with auto-update on, rewrites installed plugin files in the background.",
+  cost:"Zero tokens. The risk is not context but trust: the name says who publishes the list, not what each plugin does."},
+ {k:"hook",n:"Hook",tok:0,code:true,
+  can:"A shell command (or prompt, agent, HTTP call) at one of 28 lifecycle events: before a tool call, on stop, at session start.",
+  where:"On your machine, outside the sandbox, with your privileges. Deterministic: it always runs.",
+  cost:"Zero model tokens by itself. What it prints can enter context; a hook that filters test output saves tokens instead."},
+ {k:"subagent",n:"Subagent",tok:40,code:false,
+  can:"A helper with its own system prompt, tools and model; returns a summary.",
+  where:"In a separate context window, sending its own requests against the same usage limits.",
+  cost:"~40 tokens of description in the main window; on invoke, a whole second window is spent elsewhere."},
+ {k:"mcp",n:"MCP server",tok:250,code:true,
+  can:"Tools from a process (stdio) or a URL: Unity Editor, browser, Zotero, GitHub.",
+  where:"A stdio server is a process Claude Code starts on your machine, outside the sandbox; each tool call still needs permission.",
+  cost:"Tool names and server instructions every turn; schemas are deferred until used. A CLI like gh adds no listing at all."},
+ {k:"rules",n:"Rules",tok:300,code:false,
+  can:"Topic instruction files in .claude/rules/; a paths: line scopes one to matching files.",
+  where:"In context, like CLAUDE.md. Codex has no rules folder, only the AGENTS.md chain.",
+  cost:"Unscoped: the whole file every turn. With paths: nothing until a matching file is touched."}
+];
+var sel=0,lay=document.getElementById("layers"),card=document.getElementById("card"),bars=document.getElementById("bars");
+L.forEach(function(o,i){var b=document.createElement("button");b.textContent=o.n;b.onclick=function(){sel=i;draw()};lay.appendChild(b)});
+var rows=[];
+L.forEach(function(o){var r=document.createElement("div");r.className="row";r.innerHTML='<div class="n">'+o.n+'</div><div class="b"><i></i></div><div class="v"></div>';bars.appendChild(r);rows.push(r)});
+var MAX=400;
+function draw(){
+ var o=L[sel];
+ Array.prototype.forEach.call(lay.children,function(b,i){b.className=i===sel?"on":""});
+ card.innerHTML='<h2>'+o.n+'</h2><p><b>Can do:</b> '+o.can+'</p><p><b>Runs where:</b> '+o.where+'</p><p><b>Per turn:</b> '+o.cost+'</p>'+
+  '<span class="badge '+(o.code?"yes":"no")+'">'+(o.code?"runs code as you, outside the sandbox":"instructions only; acts through allowed tools")+'</span>';
+ rows.forEach(function(r,i){var t=L[i].tok;r.className="row"+(i===sel?" on":"");r.querySelector("i").style.width=Math.max(2,Math.round(t/MAX*100))+"%";r.querySelector(".v").textContent=t===0?"0":"~"+t});
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

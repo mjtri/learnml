@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Worth-it rubric scorer</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.presets button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.facts label{display:block;font-size:12px;color:var(--mut)}
+.facts input{font:inherit;font-size:14px;width:100%;min-height:44px;padding:0 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.note{font-size:12px;color:var(--mut);margin:0 0 8px;min-height:18px}
+.line{display:grid;grid-template-columns:1fr 150px;gap:6px;align-items:center;margin-bottom:6px}
+.line .t{font-size:13px}
+.line .t small{display:block;color:var(--mut);font-size:11px}
+.seg{display:flex;gap:4px}
+.seg button{flex:1;font:inherit;font-size:14px;min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.seg button.on{border-color:var(--acc);border-width:2px;font-weight:700}
+.seg button.zero.on{border-color:var(--bad)}
+.total{margin-top:8px;display:grid;grid-template-columns:1fr 84px;gap:6px;align-items:center}
+.total .m{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+.total .m i{display:block;height:100%;background:var(--acc);width:0}
+.total .m i.ok{background:var(--ok)}.total .m i.bad{background:var(--bad)}
+.total .v{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;text-align:right}
+.verdict{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.verdict.ok{color:var(--ok);font-weight:700}.verdict.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Six lines, 0 to 2 each</h1>
+<p class="hint">Tap a preset or score a repository yourself. Adopt at 8 of 12 with no zero on trust. Stars and last push feed the maintenance line; they are not lines of their own.</p>
+<div class="presets" id="presets"></div>
+<div class="facts">
+ <div><label for="stars">Stars</label><input id="stars" type="number" inputmode="numeric" min="0" placeholder="e.g. 268577"></div>
+ <div><label for="push">Last push</label><input id="push" type="date"></div>
+</div>
+<p class="note" id="note"></p>
+<div id="lines"></div>
+<div class="total"><div class="m"><i id="bar"></i></div><div class="v" id="tot">0 / 12</div></div>
+<div class="verdict" id="verdict"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>worth-it rubric</dt><dd>Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.</dd>
+<dt>trust zero</dt><dd>The three files (hooks/hooks.json, .mcp.json, bin/) showed something you cannot explain, or the licence forbids your use. A zero here ends the scoring.</dd>
+<dt>method pack</dt><dd>A plugin that changes how you start and finish work (brainstorm, plan, test, review). Two of them change the same habit, so they count as one: keep one.</dd>
+<dt>last push</dt><dd>The date of the newest commit on GitHub. Within 30 days scores 2 on maintenance, within 90 days 1, older 0.</dd>
+</dl></details>
+<script>
+(function(){
+var LINES=[
+ {k:"habit",t:"Habit change",s:"2 changes what you do weekly · 1 improves a step · 0 adds a feature"},
+ {k:"cost",t:"Context and usage cost",s:"2 nothing always-on · 1 descriptions only · 0 hooks every turn or big tool lists"},
+ {k:"trust",t:"Trust",s:"2 you or Anthropic/OpenAI wrote it · 1 known author, clean three files · 0 unexplained code or licence"},
+ {k:"maint",t:"Maintenance",s:"2 push within 30 days, issues moving · 1 within 90 days or one maintainer · 0 stale"},
+ {k:"both",t:"Both tools",s:"2 Claude Code and Codex · 1 one tool, format portable · 0 one tool, locked in"},
+ {k:"fit",t:"Fit",s:"2 two or more of Unity, paperwork, experiments, this repo · 1 one · 0 none"}
+];
+var PRESETS=[
+ {n:"ECC (bundle)",stars:268577,push:"2026-09-28",v:{habit:1,cost:0,trust:1,maint:2,both:2,fit:0},note:"21 hook entries, 292 skill descriptions, chrome-devtools server; MIT, 382 contributors. Radar: read, don't bundle-install."},
+ {n:"mattpocock/skills",stars:270893,push:"2026-09-24",v:{habit:2,cost:1,trust:1,maint:1,both:2,fit:1},note:"No hooks, no .mcp.json, no bin/; one maintainer, 533 open issues. Passes at 8, but it changes the same habit as superpowers: keep one method pack."},
+ {n:"superpowers",stars:292273,push:"2026-09-27",v:{habit:2,cost:2,trust:2,maint:2,both:2,fit:1},note:"One SessionStart hook, skill bodies on demand; official marketplace, also a Codex plugin. Radar: 11, adopt."},
+ {n:"Clear",stars:"",push:"",v:{habit:0,cost:0,trust:0,maint:0,both:0,fit:0},note:""}
+];
+var val={},pr=document.getElementById("presets"),lines=document.getElementById("lines"),note=document.getElementById("note"),stars=document.getElementById("stars"),push=document.getElementById("push");
+LINES.forEach(function(l){val[l.k]=0});
+PRESETS.forEach(function(p){var b=document.createElement("button");b.textContent=p.n;b.onclick=function(){stars.value=p.stars;push.value=p.push;Object.keys(p.v).forEach(function(k){val[k]=p.v[k]});note.textContent=p.note;draw()};pr.appendChild(b)});
+LINES.forEach(function(l){var d=document.createElement("div");d.className="line";d.innerHTML='<div class="t">'+l.t+'<small>'+l.s+'</small></div><div class="seg" data-k="'+l.k+'"><button data-v="0" class="zero">0</button><button data-v="1">1</button><button data-v="2">2</button></div>';lines.appendChild(d)});
+lines.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var k=b.parentNode.dataset.k;val[k]=+b.dataset.v;if(k!=="maint")note.textContent="";draw()});
+push.addEventListener("change",function(){if(!push.value)return;var days=Math.round((Date.now()-new Date(push.value+"T00:00:00").getTime())/864e5);var m=days<=30?2:days<=90?1:0;val.maint=m;note.textContent="Last push "+days+" days ago, so maintenance reads "+m+" today (a preset shows the score on its check date).";draw()});
+stars.addEventListener("input",function(){if(stars.value)note.textContent="Stars are traction, not a line: they got the repository onto the list. Score the six lines."});
+function draw(){
+ var tot=0;
+ Array.prototype.forEach.call(lines.querySelectorAll(".seg"),function(s){var k=s.dataset.k;tot+=val[k];Array.prototype.forEach.call(s.children,function(b){b.classList.toggle("on",+b.dataset.v===val[k])})});
+ var bar=document.getElementById("bar"),v=document.getElementById("verdict");
+ bar.style.width=Math.round(tot/12*100)+"%";document.getElementById("tot").textContent=tot+" / 12";
+ if(val.trust===0){bar.className="bad";v.className="verdict bad";v.textContent="Read, don't install: a zero on trust ends the scoring ("+tot+"/12 does not matter)."}
+ else if(tot>=8){bar.className="ok";v.className="verdict ok";v.textContent="Passes at "+tot+"/12: adopt at user scope and run an A/B week, unless a tool you already keep changes the same habit."}
+ else{bar.className="";v.className="verdict";v.textContent=tot+"/12: read the README for ideas, copy single skills if any, do not install the bundle."}
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
