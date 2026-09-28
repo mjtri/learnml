@@ -570,6 +570,14 @@ The list of settings that decide what a model or a run is: layer count, width, v
 <small>first met in [week-07/day-2](week-07/day-2.md) · canvas card `core-tooling`</small>
 </div>
 
+<div class="gl-entry" id="config-file" markdown>
+**config file** <small>(also: config files)</small>
+
+The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
+
+<small>first met in [week-11/day-3](week-11/day-3.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="context-length" markdown>
 **context length** <small>(also: context lengths, block size)</small>
 
@@ -628,6 +636,14 @@ The standard classification loss: how surprised the model is by the correct labe
 
 ## D
 
+<div class="gl-entry" id="data-flow" markdown>
+**data flow** <small>(also: data flows)</small>
+
+The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
+
+<small>first met in [week-11/day-3](week-11/day-3.md) · canvas card `core-tooling`</small>
+</div>
+
 <div class="gl-entry" id="data-leakage" markdown>
 **data leakage**
 
@@ -650,6 +666,14 @@ The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks 
 A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 
 <small>first met in [week-03/day-1](week-03/day-1.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="debugging-order" markdown>
+**debugging order** <small>(also: debugging orders)</small>
+
+A fixed sequence of checks when a number is off, cheapest and likeliest first: metric, data, preprocessing, model, seeds, versions, hardware. Stop at the step that moves the number.
+
+<small>first met in [week-11/day-4](week-11/day-4.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="decoder" markdown>
@@ -788,6 +812,14 @@ A short list of learned numbers that stands in for a discrete thing such as a wo
 A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
 
 <small>first met in [week-06/day-5](week-06/day-5.md) · canvas card `lin-bert`</small>
+</div>
+
+<div class="gl-entry" id="entry-point" markdown>
+**entry point** <small>(also: entry points)</small>
+
+The script the README tells you to run. Read once, top to bottom, it shows the order: config, data, model, loop, evaluation, print.
+
+<small>first met in [week-11/day-3](week-11/day-3.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="epoch" markdown>
@@ -1806,6 +1838,22 @@ A figure that one command regenerates from a named input file, with the git hash
 <small>first met in [agentic-07/day-2](agentic-07/day-2.md)</small>
 </div>
 
+<div class="gl-entry" id="reproduction" markdown>
+**reproduction** <small>(also: reproductions)</small>
+
+Getting a paper's number again from the same recipe: same data, preprocessing, model and metric. Counts as done when the result lands inside a stated tolerance.
+
+<small>first met in [week-11/day-2](week-11/day-2.md) · canvas card `core-tooling`</small>
+</div>
+
+<div class="gl-entry" id="reproduction-report" markdown>
+**reproduction report** <small>(also: reproduction reports)</small>
+
+One paragraph, six sentences: target, setup, result, verdict, explanation, residue. Committed next to the config and seed so the number can be judged and rerun.
+
+<small>first met in [week-11/day-5](week-11/day-5.md) · canvas card `lin-clip`</small>
+</div>
+
 <div class="gl-entry" id="residual-connection" markdown>
 **residual connection** <small>(also: residual connections, skip connection, skip connections)</small>
 
@@ -2066,6 +2114,14 @@ A box of numbers arranged along zero or more axes. A single number, a list, a ta
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="three-pass-reading" markdown>
+**three-pass reading** <small>(also: three passes, three-pass)</small>
+
+Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
+
+<small>first met in [week-11/day-1](week-11/day-1.md) · canvas card `lin-clip`</small>
+</div>
+
 <div class="gl-entry" id="tiny-shakespeare" markdown>
 **tiny Shakespeare**
 
@@ -2104,6 +2160,14 @@ Cutting text into tokens a model can number. A tokenizer is the program that doe
 An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
 
 <small>first met in [week-06/day-2](week-06/day-2.md) · canvas card `core-transformer`</small>
+</div>
+
+<div class="gl-entry" id="tolerance" markdown>
+**tolerance** <small>(also: tolerances)</small>
+
+How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
+
+<small>first met in [week-11/day-2](week-11/day-2.md) · canvas card `core-tooling`</small>
 </div>
 
 <div class="gl-entry" id="tool-call" markdown>

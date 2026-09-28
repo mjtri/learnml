@@ -127,6 +127,13 @@ nav:
       - "Lesson 4 · Seeds, variance and honest tables": week-10/day-4.md
       - "Lesson 5 · Pre-registration for yourself": week-10/day-5.md
       - "Build · Two candidates, one plan, one pipeline": week-10/build.md
+  - "Track A · Week 11 · Reproduce one number from a paper":
+      - "Lesson 1 · Read a paper in three passes": week-11/day-1.md
+      - "Lesson 2 · From paper to checklist": week-11/day-2.md
+      - "Lesson 3 · Reading someone else's repo": week-11/day-3.md
+      - "Lesson 4 · When the number does not match": week-11/day-4.md
+      - "Lesson 5 · The one-paragraph reproduction report": week-11/day-5.md
+      - "Build · Reproduce one number": week-11/build.md
   - "Track B · 1 · Budget & mental model":
       - "B1 · Lesson 1 · An agent is a loop; context is the budget": agentic-01/day-1.md
       - "B1 · Lesson 2 · What you actually pay for": agentic-01/day-2.md

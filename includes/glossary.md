@@ -278,6 +278,10 @@
 *[Config]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
 *[configs]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
 *[Configs]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
+*[config file]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
+*[Config file]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
+*[config files]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
+*[Config files]: The file of settings the entry point reads, whose values overwrite its defaults. Every setting in it is either a checklist line or a detail the paper left out.
 *[context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[Context length]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
 *[context lengths]: How many previous tokens a model may look at when predicting the next one. A bigram has 1; a transformer has a fixed maximum set by its position table.
@@ -316,6 +320,10 @@
 *[Cross-entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
 *[cross entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
 *[Cross entropy]: The standard classification loss: how surprised the model is by the correct label, averaged over examples. Zero when it was certain and right; large when confident and wrong.
+*[data flow]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
+*[Data flow]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
+*[data flows]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
+*[Data flows]: The path examples take from a file on disk through loading, preprocessing and the model to the line that computes the metric. Read it backwards from the metric.
 *[data leakage]: When information from the test data reaches training, through duplicates, shared sources or the answers themselves, so a score looks far better than the model really is.
 *[Data leakage]: When information from the test data reaches training, through duplicates, shared sources or the answers themselves, so a score looks far better than the model really is.
 *[DataLoader]: The PyTorch helper that pulls examples from a Dataset, shuffles them and stacks them into batches, one batch per loop iteration.
@@ -326,6 +334,10 @@
 *[dataset]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 *[datasets]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
 *[Datasets]: A collection of examples. In PyTorch, a class that answers two questions: how many examples are there, and give me example number i.
+*[debugging order]: A fixed sequence of checks when a number is off, cheapest and likeliest first: metric, data, preprocessing, model, seeds, versions, hardware. Stop at the step that moves the number.
+*[Debugging order]: A fixed sequence of checks when a number is off, cheapest and likeliest first: metric, data, preprocessing, model, seeds, versions, hardware. Stop at the step that moves the number.
+*[debugging orders]: A fixed sequence of checks when a number is off, cheapest and likeliest first: metric, data, preprocessing, model, seeds, versions, hardware. Stop at the step that moves the number.
+*[Debugging orders]: A fixed sequence of checks when a number is off, cheapest and likeliest first: metric, data, preprocessing, model, seeds, versions, hardware. Stop at the step that moves the number.
 *[decoder]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
 *[Decoder]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
 *[decoders]: A transformer in which each position sees only earlier positions, so it can be trained to predict the next token and then generate text.
@@ -403,6 +415,10 @@
 *[Encoder]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
 *[encoders]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
 *[Encoders]: A transformer that reads the whole input at once, every position seeing every other, and outputs one vector per token for a later task.
+*[entry point]: The script the README tells you to run. Read once, top to bottom, it shows the order: config, data, model, loop, evaluation, print.
+*[Entry point]: The script the README tells you to run. Read once, top to bottom, it shows the order: config, data, model, loop, evaluation, print.
+*[entry points]: The script the README tells you to run. Read once, top to bottom, it shows the order: config, data, model, loop, evaluation, print.
+*[Entry points]: The script the README tells you to run. Read once, top to bottom, it shows the order: config, data, model, loop, evaluation, print.
 *[epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
 *[Epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
 *[epochs]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
@@ -1037,6 +1053,14 @@
 *[Reproducible plot]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
 *[reproducible plots]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
 *[Reproducible plots]: A figure that one command regenerates from a named input file, with the git hash of script and data in its filename or caption. No hand step.
+*[reproduction]: Getting a paper's number again from the same recipe: same data, preprocessing, model and metric. Counts as done when the result lands inside a stated tolerance.
+*[Reproduction]: Getting a paper's number again from the same recipe: same data, preprocessing, model and metric. Counts as done when the result lands inside a stated tolerance.
+*[reproductions]: Getting a paper's number again from the same recipe: same data, preprocessing, model and metric. Counts as done when the result lands inside a stated tolerance.
+*[Reproductions]: Getting a paper's number again from the same recipe: same data, preprocessing, model and metric. Counts as done when the result lands inside a stated tolerance.
+*[reproduction report]: One paragraph, six sentences: target, setup, result, verdict, explanation, residue. Committed next to the config and seed so the number can be judged and rerun.
+*[Reproduction report]: One paragraph, six sentences: target, setup, result, verdict, explanation, residue. Committed next to the config and seed so the number can be judged and rerun.
+*[reproduction reports]: One paragraph, six sentences: target, setup, result, verdict, explanation, residue. Committed next to the config and seed so the number can be judged and rerun.
+*[Reproduction reports]: One paragraph, six sentences: target, setup, result, verdict, explanation, residue. Committed next to the config and seed so the number can be judged and rerun.
 *[residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[Residual connection]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
 *[residual connections]: Add a block's input to its output, so the block only learns a correction. Gives gradients a straight path back through any depth. The ResNet idea, used in every transformer.
@@ -1170,6 +1194,12 @@
 *[Tensor]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
 *[tensors]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
 *[Tensors]: A box of numbers arranged along zero or more axes. A single number, a list, a table and a stack of images are all tensors.
+*[three-pass reading]: Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
+*[Three-pass reading]: Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
+*[three passes]: Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
+*[Three passes]: Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
+*[three-pass]: Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
+*[Three-pass]: Reading a paper with one question per pass: pass one for the claim and which table, pass two for figures, tables and details, pass three with the code open.
 *[tiny Shakespeare]: A one-megabyte text file of Shakespeare's plays, about a million characters. The standard tiny corpus for training a first language model in minutes.
 *[Tiny Shakespeare]: A one-megabyte text file of Shakespeare's plays, about a million characters. The standard tiny corpus for training a first language model in minutes.
 *[TM report template]: Your fixed section list and rules for an ETRI Technical Memo, stored as project instructions so every TM draft starts in the right shape and language.
@@ -1204,6 +1234,10 @@
 *[Tokenization artefact]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
 *[tokenization artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
 *[Tokenization artefacts]: An odd model behaviour caused by how text was cut into tokens, not by the model: miscounted letters, arithmetic slips, spaces that change the answer, costly Korean.
+*[tolerance]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
+*[Tolerance]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
+*[tolerances]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
+*[Tolerances]: How far a reproduced number may land from the claimed one and still count as the same: two test-set standard errors, or the seed spread, whichever is larger.
 *[tool call]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[Tool call]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.
 *[tool calls]: The agent asking to run something outside itself: read a file, run a command, search the web. The result comes back into the context.

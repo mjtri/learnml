@@ -119,8 +119,13 @@ hide:
     - ⬜ [Lesson 5 · Pre-registration for yourself](week-10/day-5.md)
     - ⬜ [Build · Two candidates, one plan, one pipeline](week-10/build.md)
 
-??? note "Week 11 · Reproduce one number from a paper · not generated yet"
-    `python gen_week.py 11` prints the prompt that builds it.
+??? note "⬜ Week 11 · Reproduce one number from a paper · 0/6"
+    - ⬜ [Lesson 1 · Read a paper in three passes](week-11/day-1.md)
+    - ⬜ [Lesson 2 · From paper to checklist](week-11/day-2.md)
+    - ⬜ [Lesson 3 · Reading someone else's repo](week-11/day-3.md)
+    - ⬜ [Lesson 4 · When the number does not match](week-11/day-4.md)
+    - ⬜ [Lesson 5 · The one-paragraph reproduction report](week-11/day-5.md)
+    - ⬜ [Build · Reproduce one number](week-11/build.md)
 
 ??? note "Week 12 · A small sensory-substitution experiment · not generated yet"
     `python gen_week.py 12` prints the prompt that builds it.
