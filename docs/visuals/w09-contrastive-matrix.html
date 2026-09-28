@@ -42,7 +42,7 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 <div class="hint">Rows are four images, columns their four captions. Dashed cells are the true partners (positives); every other cell is a negative. Cell shading = softmax probability within its row.</div>
 <div class="grid" id="grid"></div>
 <div class="btns">
-<button id="minus">−0.1</button><button id="plus">+0.1</button><button id="reset">reset</button><button id="rand">random</button>
+<button id="minus">−0.1</button><button id="plus">+0.1</button><button id="reset">reset</button><button id="rand">random</button><button id="ident">identity</button>
 </div>
 <div class="sl"><span>temperature τ</span><output id="ot"></output></div>
 <input id="st" type="range" min="0.05" max="2" step="0.05" value="1">
@@ -69,6 +69,7 @@ document.getElementById("minus").onclick=function(){S[sel[0]][sel[1]]=clamp(S[se
 document.getElementById("plus").onclick=function(){S[sel[0]][sel[1]]=clamp(S[sel[0]][sel[1]]+0.1);draw()};
 document.getElementById("reset").onclick=function(){S=DEF.map(function(r){return r.slice()});draw()};
 document.getElementById("rand").onclick=function(){for(var i=0;i<4;i++)for(var j=0;j<4;j++)S[i][j]=i===j?clamp(0.5+Math.random()*0.4):clamp(Math.random()*0.6);draw()};
+document.getElementById("ident").onclick=function(){for(var i=0;i<4;i++)for(var j=0;j<4;j++)S[i][j]=i===j?1:0;draw()};
 st.oninput=draw;
 function heat(p){var h=getComputedStyle(document.documentElement).getPropertyValue("--acc").trim(),r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return"rgba("+r+","+g+","+b+","+(p*0.7).toFixed(2)+")"}
 function softmaxRow(vals,tau){var m=-1e9,i;for(i=0;i<vals.length;i++)m=Math.max(m,vals[i]/tau);var s=0,e=[];for(i=0;i<vals.length;i++){e[i]=Math.exp(vals[i]/tau-m);s+=e[i]}return e.map(function(v){return v/s})}

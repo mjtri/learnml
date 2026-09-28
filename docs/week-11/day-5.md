@@ -35,7 +35,8 @@ zero-shot CIFAR-10, 91.3. Setup: open_clip <ver>,
 pretrained=openai, 10,000 test images, shipped
 preprocess, 18 templates averaged, T4 fp32, commit
 <hash>, no seed (deterministic). Result: <acc>,
-tolerance +-0.6 (test-set SE 0.28). Verdict: <in/out>
+tolerance +-0.1 (same images, numerics only; the
+claim's test-set SE is 0.28). Verdict: <in/out>
 by <gap>. Explanation: 1 template instead of 18
 moves it <d1>; laion2b weights instead of openai
 move it <d2> (ruled out as the cause). Residue:
@@ -43,9 +44,9 @@ move it <d2> (ruled out as the cause). Residue:
 10 min.
 ```
 
-The same paragraph for week 10's probe fits in four lines, and its explanation sentence is "seeds 0–9 give 66 ± 8; the claimed 71.1 was the mean of three draws".
+The same paragraph for week 10's probe fits in four lines, and its explanation sentence is "seeds 0–9 give (the build's mean ± spread); the claimed 71.1 was the mean of three draws".
 
-Where it goes: `week11_report.md` beside `week10_plan.md`, plus one row in the run log from week 7 with the same commit hash. The report says what the number means; the run log says how to get it again.
+Where it goes: `week11_report.md` beside `week10_plan.md`, plus one row in `week11_runs.jsonl`, week 7's run log, with the same commit hash. The report says what the number means; the run log says how to get it again.
 
 A registered report's results section is the analogy: the plan was fixed, so the results are written against it, and "did not replicate" is publishable because the protocol was. It holds through sentence 4 and breaks at sentence 5: a replication rarely gets to explain its gap by re-running with one thing changed; you can, for a few minutes each, so your explanation sentence is expected to contain measurements.
 
@@ -57,7 +58,7 @@ Before filling: guess which of the six fields the template will refuse most ofte
 
 1. Fill the CLIP case with 89.8 against 91.3 on 10,000 images. Read the verdict the template computes and the paragraph it prints.
 2. Leave the residue field empty and tap **check**. What does it say?
-3. Fill the week-10 case, 66 against 71.1 with a seed spread of 8. Does the explanation sentence change the verdict?
+3. Tap **week-10 case** (a ten-seed rerun with a wider spread). Does the explanation sentence change the verdict?
 
 ## Retrieval
 

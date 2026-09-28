@@ -27,13 +27,14 @@ A ladder with three rungs, climbed in order; each answers a different objection.
 | Method | Rung | Budget |
 |---|---|---|
 | pixel distance (no training) | trivial | 0 |
-| hand-designed vOICe mapping + fixed encoder | trivial | 0 |
+| distance between vOICe sound vectors (no training) | trivial | 0 |
 | pixel-loss encoder, tuned | strong, same compute | 5 seeds × 5 min |
 | contrastive image–sound encoder (yours) | the claim | 5 seeds × 5 min |
 
 If row 4 does not beat row 3 by the \(X\) you wrote down, the idea is not dead, but the *prediction* is, and the prediction is what you registered.
 
 The user-study analogy is the comparison condition, with one difference. In a study the comparison is "current practice" and reviewers accept it. In ML they ask the sharper question from canvas step 10: *what baseline would make this result go away?* Where the analogy breaks: an ML baseline can be tuned as hard as you like at almost no cost, so "default settings for B" is not neutral, it is a thumb on the scale.
+
 ## Try it
 
 <div class="visual"><iframe src="../visuals/w10-baseline-ladder.html" title="Baseline ladder: trivial, strong, same compute" loading="lazy"></iframe></div>

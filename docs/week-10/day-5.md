@@ -40,7 +40,8 @@ task/metric 20 rendered shapes; agreement between
 baseline    pixel distance (trivial); pixel-loss
             encoder, same sweep and steps (strong)
 prediction  beats pixel-loss encoder by >= 0.2
-ablation    swap contrastive for pixel loss: >= 0.2
+ablation    A - sound side (frozen random sound
+            encoder, nothing else): costs >= 0.2
 seeds       5 per row (detects delta >= 1.8)
 budget      4 rows x 5 seeds x 5 min = 1.7 T4-h
 ```

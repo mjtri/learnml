@@ -14,11 +14,11 @@ card: build-step6
 
 ## The rule of the session
 
-Every experiment cell is preceded by a **predict cell**; the notebook refuses an empty prediction. A `SMOKE` flag near the top keeps the notebook under five minutes on CPU; `False` runs the full sweep, still under a minute.
+Every experiment cell is preceded by a **predict cell**; the notebook refuses an empty prediction. A `SMOKE` flag near the top keeps the notebook under five minutes on CPU; `False` runs the full sweep, still under a minute of compute.
 
 ## The choice
 
-The data pipeline **defaults to the cross-modal contrastive embedding** (`OPTION = "contrastive"`): 16×16 rendered shapes → vOICe-style sonifier → pitch-by-time energy vectors. The alternative (`OPTION = "codec"`) feeds the same shapes to a 4×4, 8-level haptic-grid downsampler. Both go into `week10_data.npz` (images, sound vectors, haptic codes, labels), the file weeks 11–12 and Track B week 7 read.
+The data pipeline **defaults to the cross-modal contrastive embedding** (`OPTION = "contrastive"`): 16×16 rendered shapes → vOICe-style sonifier → pitch-by-time energy vectors. The alternative (`OPTION = "codec"`) feeds the same shapes to a 4×4, 8-level haptic-grid downsampler. Both go into `week10_data.npz`, the file weeks 11–12 and Track B week 7 read.
 
 ## Parts
 
@@ -27,14 +27,14 @@ The data pipeline **defaults to the cross-modal contrastive embedding** (`OPTION
 | A | Render 20 shape classes at 16×16 with jitter; both candidates through canvas steps 1–5 | 30 min |
 | B | Sonifier: image → column snippets → pitch-by-time energy vector; round-trip check | 35 min |
 | C | Haptic-grid downsampler: 16×16 → 4×4 × 8 levels; count code collisions | 20 min |
-| D | Seeds vs noise: a tiny probe per representation over seeds; spread, effect size, \(16/\Delta^2\) | 45 min |
+| D | Seeds vs noise: a tiny probe per representation; mean ± sd (and SE) over seeds, effect size, \(16/\Delta^2\) | 45 min |
 | E | Choose; fill the one-page plan; budget computed; save `week10_plan.md` | 30 min |
 | F | Stretch: week 12's trivial baseline, pixel distance vs sound distance over shape pairs | 20 min |
 
 ## Done when
 
 - `week10_data.npz` exists and Part B's round-trip check passes at the threshold you predicted.
-- Part D printed mean ± sd over seeds for two representations.
+- Part D printed mean ± sd (and SE) over seeds for two representations.
 - `week10_plan.md` names task, metric, baseline B, a prediction with a number, one ablation, seeds, a compute budget ≤ a few T4-hours, and the chosen option.
 
 ## After the session

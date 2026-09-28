@@ -47,8 +47,8 @@ Before tapping, guess which of the three repositories keeps its preprocessing fu
 ??? question "You have the README's command. Name the four stations you read next, in order, and the question each answers."
     Entry point (what runs, in what order), config file (which settings the paper never mentioned), data flow backwards from the metric (what counts as preprocessing), and the metric line (what exactly is counted).
 
-??? question "A config file sets dropout = 0.2 and the paper never mentions dropout. Is that a checklist line, and what do you do with it?"
-    Yes: an unstated setting the run depends on. Copy it into your model line with the file name, and treat any change to it as a candidate gap explanation.
+??? question "A config file sets dropout = 0.2 and the paper never mentions dropout. What do you do with a config setting the paper never mentions?"
+    Treat it as a checklist line: an unstated setting the run depends on. Copy it into your model line with the file name, and treat any change to it as a candidate gap explanation.
 
 ??? question "In nanoGPT, why does max_iters = 5000 in a config file change the run, when train.py sets max_iters = 600000?"
     The config file is executed after the defaults and its assignments overwrite the globals, so the last assignment wins.

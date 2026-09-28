@@ -1,5 +1,5 @@
 ---
-title: Lesson 3 · ViT in one page: patches as tokens
+title: "Lesson 3 · ViT in one page: patches as tokens"
 terms: [ViT, patch embedding, inductive bias]
 card: lin-vit
 ---

@@ -1,5 +1,5 @@
 ---
-title: Lesson 2 · CLIP: two encoders, one space
+title: "Lesson 2 · CLIP: two encoders, one space"
 terms: [CLIP, shared embedding space, zero-shot classification, prompt template, image–text retrieval, ImageBind]
 card: lin-clip
 ---

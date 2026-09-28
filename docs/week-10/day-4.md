@@ -14,13 +14,13 @@ Two runs of the *same* code with a different random seed (weights, data order, d
 
 ## Mechanism
 
-Measure the **variance across seeds** first: run your baseline three to five times changing only the seed, and take the standard deviation \(\sigma\) of the metric. Henderson et al. split ten seeds of one deep RL algorithm into two groups of five, and the groups differed by as much as published "improvements".
+Measure the **variance across seeds** first: run your baseline three to five times changing only the seed, and take the standard deviation \(\sigma\) of the metric.
 
 An **effect size** is the gain in units of that spread:
 
 \[ \Delta = \frac{\bar{A} - \bar{B}}{\sigma} \]
 
-A 3-point gain with \(\sigma = 1\) is \(\Delta = 3\), enormous. The same 3 points with \(\sigma = 4\) is \(\Delta = 0.75\), which five seeds show about half the time. This is Cohen's \(d\).
+A 3-point gain with \(\sigma = 1\) is \(\Delta = 3\), enormous. The same 3 points with \(\sigma = 4\) is \(\Delta = 0.75\), which five seeds per method show about one time in five. This is Cohen's \(d\).
 
 The math is the rule you use for participants. The mean of \(n\) seeds wanders by about \(\sigma/\sqrt{n}\), so the difference of two such means wanders by about \(\sigma\sqrt{2/n}\). To see an effect \(\Delta\) reliably, the rule of thumb per method is
 
@@ -36,7 +36,7 @@ pixel-loss enc.   64.2 ± 2.9             0-4
 contrastive enc.  71.0 ± 3.1             0-4
 ```
 
-The gap is 6.8 and \(\sigma \approx 3\), so \(\Delta \approx 2.3\): five seeds is enough. Swap the 3.1 for 0.4 and the table lies by omission, because 0.4 is the spread divided by \(\sqrt{5}\); a table must say which it shows.
+The gap is 6.8 and \(\sigma \approx 3\), so \(\Delta \approx 2.3\): five seeds is enough. Week 9 reported ± standard error; this table shows the standard deviation because \(\Delta\) needs it, and either is honest when labelled. Swap the 3.1 for 1.4 without saying so and the table lies by omission, because 1.4 is the spread divided by \(\sqrt{5}\).
 
 The part people skip: **tune the baseline as hard as your method**. Six learning rates for you and one for the baseline is six draws against one, and the best of six is higher by construction. Same sweep, same seeds, same steps, or the spread column is fiction.
 

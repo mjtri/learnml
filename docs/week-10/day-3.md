@@ -10,11 +10,11 @@ card: build-step6
 
 ## Idea
 
-Beating the baseline says your *method* works. It does not say *why*, and a method is usually three or four decisions bundled together. An ML paper owes the reader the unbundling: which part carries the gain, which parts are decoration. The tool is the one you use in a study with a manipulation check: change one thing, hold the rest, measure. In ML the changed-one-thing run is a **control**, and the table of them is an **ablation study**.
+Beating the baseline says your *method* works. It does not say *why*; a method is usually three or four decisions bundled together. An ML paper owes the reader the unbundling: which part carries the gain, which parts are decoration. The tool is the one a study uses: change one thing, hold the rest, measure. In ML the changed-one-thing run is a **control condition**, and the table of them is an **ablation study**.
 
 ## Mechanism
 
-Start from your full method, \(A\). Each ablation row removes or swaps *one* component and re-runs everything else unchanged:
+Start from your full method, \(A\). Each ablation row removes or swaps *one* component and re-runs the rest unchanged:
 
 | Row | What changed | Reads as |
 |---|---|---|
@@ -23,15 +23,16 @@ Start from your full method, \(A\). Each ablation row removes or swaps *one* com
 | A − sound side | image-only encoder | does the second modality matter? |
 | A − jitter | shapes always centred | is the augmentation doing the work? |
 
-Every row is a pair with the full method, and each pair differs in exactly one thing. A row that changes two things, "no jitter and a smaller encoder", is not a control but a second experiment with a confounded answer.
+Each row pairs with the full method and differs from it in exactly one thing. A row that changes two things, "no jitter and a smaller encoder", is not a control but a second experiment with a confounded answer.
 
-Two kinds of control: A *removal* control deletes a part (drop the sound branch). A *swap* control replaces it with something dumb of the same shape (a random frozen sound encoder). The swap is often more honest, because removal also changes the parameter count, so architecture and objective moved together in one row. Henderson et al. saw the same in deep RL: gains vanished when the method was re-run in a different code base.
+Two kinds of control: A *removal* control deletes a part (drop the sound branch). A *swap* control replaces it with something dumb of the same shape (a random frozen sound encoder). The swap is often more honest: removal also changes the parameter count, so architecture and objective moved together in one row.
 
-**In practice**, the CLIP paper's figure 2 reads like a lab notebook: swap the contrastive objective for predicting the caption's words, same data, same encoder, and transfer to new datasets falls several times over. The number is not the point; the row *structure* is: one column says what was swapped, the rest of the setup is stated once and never varies.
+**In practice**, the CLIP paper's figure 2 reads like a lab notebook: same data, same image encoder, three objectives. Predicting the caption's bag of words reaches a given zero-shot ImageNet accuracy with 3× fewer images than predicting the exact caption; the contrastive objective needs 4× fewer again. The number is not the point; the row *structure* is: one column says what was swapped, everything else is stated once.
 
-The perception analogy is direct: a control condition in psychophysics is a stimulus identical in everything but the manipulated cue. Where it breaks: participants carry state between conditions (learning, fatigue), so you counter-balance order; a model carries no memory across runs but it *does* carry a seed, which must be the same across rows or the row differs in two things again.
+The perception analogy is direct: a control condition in psychophysics is a stimulus identical in everything but the manipulated cue. Where it breaks: participants carry state between conditions (learning, fatigue), so you counter-balance order; a model carries no memory across runs but *does* carry a seed, which must be the same across rows or the row differs in two things again.
 
-A plan for week 12 needs one ablation, not five: the one that tests your lever directly. If the lever is the objective, the ablation swaps the objective and nothing else. Write it as a prediction too: "removing the contrastive loss costs at least \(Y\)". If it costs nothing, the lever did nothing.
+A plan for week 12 needs one ablation, not five: the one that tests your lever without repeating a baseline row. Swapping the objective for pixel loss *is* lesson 2's strong baseline, so the default ablation is the swap control: a frozen random sound encoder, nothing else changed. Write it as a prediction: "A − sound side costs at least \(Y\)". If it costs nothing, the sound signal did nothing.
+
 ## Try it
 
 <div class="visual"><iframe src="../visuals/w10-confound-checker.html" title="Which pairs of runs are fair comparisons?" loading="lazy"></iframe></div>
@@ -40,7 +41,7 @@ Six runs of a shape–sound experiment. Before tapping, guess how many pairs dif
 
 1. Tap two rows. The readout names every column that differs and says whether the pair is fair.
 2. Find the row that looks like an ablation but silently changed the steps too. Fix it with the **steps** button and watch the pair turn fair.
-3. Build the smallest row set that isolates the objective lever. How many runs at three seeds each?
+3. Which two of the six rows form the pair that isolates the objective lever, and how many runs at three seeds?
 
 ## Retrieval
 
@@ -48,7 +49,7 @@ Six runs of a shape–sound experiment. Before tapping, guess how many pairs dif
     Removing the branch changes objective and architecture at once. Keep the branch but freeze it with random weights: same parameter count, only the learned sound signal is gone.
 
 ??? question "Write the one ablation that tests the codec candidate's lever (architecture: a display-shaped code), with a number."
-    Replace the 4×4-by-8-level code with an unconstrained one of the same width, everything else fixed. Prediction: shape accuracy from the code drops by at most 3 points.
+    Replace the 4×4-by-8-level code with an unconstrained one of the same width, everything else fixed. Prediction: the unconstrained code beats the 4×4×8 code by at most 3 points, so the constraint costs little.
 
 ??? question "A colleague's table has rows 'full' and 'no augmentation', trained for 3000 and 2000 steps. What can the reader conclude?"
     Nothing about augmentation. The rows differ in two things, so the gap could be steps alone. Re-run the second row at 3000 steps with the same seed.

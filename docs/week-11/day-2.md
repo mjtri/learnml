@@ -26,24 +26,24 @@ The checklist for the CLIP cell:
 
 Preprocessing came from three places; it is where most gaps start.
 
-Tolerance has two sources; take the larger. First, a finite test set: an accuracy \(p\) measured on \(n\) images has a standard error of
+Tolerance comes from wherever randomness enters, and in the CLIP cell it enters nowhere: fixed weights, the same 10,000 images, no seed. A faithful rerun matches to numerics, about 0.1 point from fp16 or GPU summation order; 89.8 against 91.3 is 150 images classified differently: a recipe gap. When the evaluation *is* seeded (a trained probe, a random split), the band is twice week 10's seed spread, and the paper's number is one draw: the week-10 probe's 71.1 % is a three-seed mean with spread 2.5, so ±5. The test-set standard error answers a third question, how precise the paper's *claim* is on new images:
 
 \[ \sqrt{\frac{p(1-p)}{n}} \]
 
-For 91.3 % on 10,000 images that is 0.28 points, a band of ±0.6 at two standard errors; 89.8 is five standard errors away, a real gap. Second, seed spread, from week 10: if the number depends on random choices, the standard deviation across seeds is the band, and the paper's number is one draw from it. CLIP's zero-shot evaluation has no seed. The week-10 probe you will reproduce in the build's rehearsal has one: 71.1 % on 60 held-out images has a standard error of 5.9 points and its three seeds spread by 2.5, so the band is about ±12 and almost anything reproduces. That is not a comfort; it is the finding that the number was never precise.
+0.28 points for 91.3 % on 10,000 images, 5.9 for 71.1 % on 60. It says the probe's number was never precise; it does not excuse a gap on the same images.
 
 **In practice**, week 9's notebook loaded `ViT-B-32` with `pretrained="laion2b_s34b_b79k"`: the same architecture, different weights, trained by a different group on different data. OpenCLIP's results table reports 93.6 % on CIFAR-10 for them and 89.8 % for `pretrained="openai"`. Both runs "work"; only one attempts Table 11, and the model line tells them apart before the download.
 
-The analogy is a replication study: same protocol, then the effect lands inside or outside the original's confidence interval, temptations included. Where it breaks: a replication's noise comes from new participants, so a bigger sample tightens it; a reproduction's comes from a fixed test set and from seeds, and only more seeds tighten the second.
+The analogy is a replication study: same protocol, then the effect lands inside or outside the original's confidence interval. Where it breaks: a replication's noise comes from new participants, so a bigger sample tightens it; a reproduction on the same images has no sampling noise, only seeds, and only more seeds tighten those.
 
 ## Try it
 
 <div class="visual"><iframe src="../visuals/w11-tolerance-calculator.html" title="Tolerance calculator: test-set size, seed spread, and whether your number is inside the band" loading="lazy"></iframe></div>
 
-Before moving anything: 91.3 claimed on 10,000 images, your run 89.8. Inside or outside?
+Before moving anything: 91.3 claimed on 10,000 images, your run 89.8 on the same images. Inside or outside?
 
-1. Enter that case, then shrink the test set to 500 images and watch the verdict flip.
-2. Set 71.1 claimed on 60 images with a seed spread of 2.5; find the smallest gap the calculator calls real.
+1. Tap **CLIP cell** and read the band. Then tap **a new sample of n images**, set n to 500: the verdict flips.
+2. Tap **week-10 probe** (seed spread 2.5); find the smallest gap the calculator calls real.
 3. Give the CLIP case a seed spread of 2 points. What happens to the verdict?
 
 ## Retrieval
@@ -51,8 +51,8 @@ Before moving anything: 91.3 claimed on 10,000 images, your run 89.8. Inside or 
 ??? question "Write the five checklist lines for a table cell from memory, and say which one most often takes three sources to fill."
     Data (split, size), preprocessing (transforms, prompts, tokenization), model (architecture, which weights), metric (what is counted), and the claimed number. Preprocessing is assembled from paper, appendix and code.
 
-??? question "A paper reports 84.0 % accuracy on 2,000 test images. Compute the standard error and say whether your 82.9 % reproduces it."
-    \(\sqrt{0.84 \times 0.16 / 2000} = 0.0082\), so 0.8 points; two standard errors give ±1.6. 82.9 is 1.1 below: inside the band, so it reproduces.
+??? question "A paper reports 84.0 % on 2,000 test images; your run on the same 2,000 images gives 82.9 %. Compute the standard error and say whether it reproduces."
+    \(\sqrt{0.84 \times 0.16 / 2000} = 0.0082\), so 0.8 points: the claim is precise to about ±1.6 on new images. On the same images, 1.1 points is 22 images classified differently: outside, a recipe gap, not noise.
 
 ??? question "Two runs give 93.6 and 89.8 for 'ViT-B/32 on CIFAR-10'. What checklist line explains the spread, and which run reproduces the paper's 91.3?"
     The model line: same architecture, different weights (LAION-trained versus OpenAI's). Neither lands within tolerance, but only the OpenAI-weights run is a reproduction attempt.
@@ -65,6 +65,6 @@ Before moving anything: 91.3 claimed on 10,000 images, your run 89.8. Inside or 
 
 ## Ledger prompt
 
-> Next to `core-tooling`: write the tolerance for the number you will reproduce, with its source (test-set size, seed spread, or both), before the build session.
+> Next to `core-tooling`: write the tolerance for the number you will reproduce, with its source (numerics or seed spread), before the build session.
 
 **Next:** the repository: where the entry point is, what the config file overrides, and how data flows to the line that prints the number.

@@ -46,7 +46,7 @@ Predict first, then tap:
 
 1. Raise one off-diagonal cell until it equals the diagonal in its row. Before you do, guess that row's loss (two equal candidates).
 2. Drag the temperature from 1 to 0.05, matrix unchanged. Which rows' losses fall, and does any row get *worse*?
-3. Set diagonals to 1.0 and everything else to 0.0. Predict the total loss at \(\tau = 0.1\), then explain why it is not zero.
+3. Tap **identity** (diagonals 1.0, everything else 0.0). Predict the row loss at \(\tau = 0.5\), then explain why a perfect matrix still does not score zero.
 
 ## Retrieval
 

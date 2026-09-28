@@ -14,18 +14,18 @@ card: core-tooling
 
 ## The rule of the session
 
-Every experiment cell is preceded by a **predict cell**; the notebook refuses an empty prediction. `SMOKE = True` reproduces a number from *this course* (week 10's sound-probe accuracy) on CPU in under five minutes, so the whole workflow (checklist → run → tolerance → gap → report) is rehearsed with no download; `False` on a T4 adds Part E, OpenCLIP zero-shot CIFAR-10 against Table 11.
+Every experiment cell is preceded by a **predict cell**; the notebook refuses an empty prediction. `SMOKE = True` reproduces a number from *this course* (week 10's sound-probe accuracy) on CPU in under five minutes, so the whole workflow is rehearsed with no download; `False` on a T4 adds Part E, OpenCLIP zero-shot CIFAR-10 against Table 11.
 
 ## Parts
 
 | Part | What you do | Time |
 |---|---|---|
 | A | Three passes over the target; five checklist lines as form fields, a source for each | 25 min |
-| B | Load `week10_data.npz` (regenerated if missing); check it against the checklist: size, option, seed | 20 min |
-| C | Run the reproduction; tolerance from test-set size and seed spread; verdict | 25 min |
-| D | Debugging order: seeds 0–9, 500 steps, one deliberate preprocessing mismatch, each move recorded | 35 min |
+| B | Load `week10_data.npz` (regenerated if missing) and check it against the checklist | 20 min |
+| C | Run the reproduction; tolerance from seed spread (or numerics); verdict | 25 min |
+| D | Debugging order: seeds 0–9; probe steps 200 → 500 as the deliberate optimisation change; one deliberate preprocessing mismatch | 35 min |
 | E | T4: OpenCLIP ViT-B/32, `openai` weights, CIFAR-10 test set; 1 template versus 18; the `laion2b` swap as a ruled-out cause | 45 min |
-| F | The six-sentence report from the recorded numbers, saved as `week11_report.md`, plus a run-log row | 20 min |
+| F | The six-sentence report from the recorded numbers, saved as `week11_report.md`, plus a row in `week11_runs.jsonl` | 20 min |
 
 ## Done when
 
@@ -37,7 +37,7 @@ Every experiment cell is preceded by a **predict cell**; the notebook refuses an
 ## After the session
 
 1. Paste the prediction table into your insight ledger; mark the biggest surprise.
-2. Commit `week11_report.md` with the run-log row; the hash goes into the report's setup sentence.
+2. Commit `week11_report.md` with the `week11_runs.jsonl` row; the hash goes into the report's setup sentence.
 3. `python track.py done week-11/build --rating <1-5> --minutes 180 --note "biggest surprise"`
 4. `python gen_week.py 12` and paste the printed prompt into Claude Code.
 

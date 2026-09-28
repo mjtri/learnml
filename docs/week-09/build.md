@@ -25,14 +25,14 @@ Every experiment cell is preceded by a **predict cell**; the notebook refuses an
 | A | Make 8×8 shape images and their vOICe-style "sound" vectors; the pairing is free | 20 min |
 | B | Two small encoders and InfoNCE from scratch; similarity matrix before and after; held-out retrieval accuracy against chance | 40 min |
 | C | Ablations: temperature, batch size, and the shuffled-pairing run that must sit at chance | 25 min |
-| D | Three seeds as three participants, mean ± standard error; a bootstrap interval on held-out pairs | 25 min |
+| D | Three seeds as three participants, mean ± sd (and SE); a bootstrap interval on held-out pairs | 25 min |
 | E | OpenCLIP zero-shot CIFAR-10 on the T4: bare labels versus three prompt templates, with bootstrap intervals | 40 min |
 | F | Image↔text retrieval on a small custom set: your own XR or haptics screenshots | 30 min |
 
 ## Done when
 
 - Part B's held-out retrieval accuracy is well above \(1/B\) and Part C's shuffled-pairing run sits at chance.
-- Part D is written as "mean ± standard error over 3 seeds" plus a bootstrap interval.
+- Part D is written as "mean ± sd (and SE) over 3 seeds" plus a bootstrap interval.
 - Part E compares templates as intervals, not bare numbers.
 - The final cell has printed your prediction table.
 

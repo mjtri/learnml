@@ -29,21 +29,23 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 <body>
 <h1>Tolerance: how far off still counts as the same number</h1>
 <div class="row"><button id="pClip">CLIP cell</button><button id="pProbe">week-10 probe</button></div>
+<div class="f">your images, compared with the paper's</div>
+<div class="row"><button id="mSame" class="on">the same images</button><button id="mNew">a new sample of n images</button></div>
 <label class="f">claimed accuracy, %<input id="claimed" type="number" inputmode="decimal" step="0.1" min="0.1" max="99.9" value="91.3"></label>
 <label class="f">test-set size n (images the number was measured on)<input id="n" type="number" inputmode="numeric" step="1" min="1" value="10000"></label>
 <label class="f">seed spread, sd across seeds in points (0 if the evaluation has no randomness)<input id="sd" type="number" inputmode="decimal" step="0.1" min="0" value="0"></label>
 <label class="f">your number, %<input id="mine" type="number" inputmode="decimal" step="0.1" min="0" max="100" value="89.8"></label>
 <canvas id="cv" aria-label="Number line with the claimed number, its tolerance band and your number"></canvas>
 <div class="read">
-  <span class="k">test-set standard error √(p(1−p)/n)</span><span id="rse"></span>
-  <span class="k">band = 2 × max(SE, seed sd)</span><span id="rband"></span>
+  <span class="k">test-set SE √(p(1−p)/n): how precise the claim is on new images</span><span id="rse"></span>
+  <span class="k">band (tolerance)</span><span id="rband"></span>
   <span class="k">gap (yours − claimed)</span><span id="rgap"></span>
-  <span class="k">gap in standard errors</span><span id="rz"></span>
+  <span class="k" id="kz">images classified differently</span><span id="rz"></span>
 </div>
 <div class="verdict" id="verdict" aria-live="polite"></div>
 <details><summary>ⓘ Words used here</summary><dl>
-<dt>tolerance</dt><dd>How far a reproduced number may land from the claimed one and still count as the same: two standard errors of the test set, or the seed spread, whichever is larger.</dd>
-<dt>standard error</dt><dd>How much a measured accuracy would wobble if the test set were drawn again: √(p(1−p)/n), with p as a fraction.</dd>
+<dt>tolerance</dt><dd>How far a reproduced number may land from the claimed one and still count as the same. Same images and no seed: numerics only, about 0.1 point. Seeded: twice the seed spread. A new sample of images adds twice the test-set standard error.</dd>
+<dt>standard error</dt><dd>How much a measured accuracy would wobble if the test images were drawn again: √(p(1−p)/n), with p as a fraction. It says how precise the claim is, not how far a rerun on the same images may drift.</dd>
 <dt>seed spread</dt><dd>The standard deviation of the number across runs that differ only in the random seed. The paper's number is one draw from it.</dd>
 <dt>verdict</dt><dd>Inside the band: reproduced. Outside: a real gap that needs an explanation.</dd>
 </dl></details>
@@ -52,14 +54,22 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 function $(id){return document.getElementById(id)}
 var cv=$("cv"),ctx=cv.getContext("2d");
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var same=true;
 function calc(){
   var p=Math.min(99.9,Math.max(0.1,+$("claimed").value||0))/100,n=Math.max(1,+$("n").value||1),sd=Math.max(0,+$("sd").value||0),m=+$("mine").value||0;
-  var se=Math.sqrt(p*(1-p)/n)*100,band=2*Math.max(se,sd),gap=m-p*100,z=gap/se;
-  $("rse").textContent=se.toFixed(2)+" pts";$("rband").textContent="±"+band.toFixed(2)+" pts"+(sd>se?" (seeds)":" (test set)");
-  $("rgap").textContent=(gap>=0?"+":"")+gap.toFixed(2)+" pts";$("rz").textContent=(z>=0?"+":"")+z.toFixed(1)+" SE";
+  var se=Math.sqrt(p*(1-p)/n)*100,gap=m-p*100,band,src;
+  if(same){if(sd>0){band=2*sd;src="2 × seed sd"}else{band=0.1;src="numerics only: no seed, same images"}}
+  else{band=2*Math.max(se,sd);src=sd>se?"2 × seed sd":"2 × test-set SE, new sample"}
+  var changed=Math.round(Math.abs(gap)/100*n);
+  $("mSame").className=same?"on":"";$("mNew").className=same?"":"on";
+  $("rse").textContent=se.toFixed(2)+" pts";$("rband").textContent="±"+band.toFixed(2)+" pts ("+src+")";
+  $("rgap").textContent=(gap>=0?"+":"")+gap.toFixed(2)+" pts";
+  $("kz").textContent=same?"images classified differently":"gap in test-set SE";
+  $("rz").textContent=same?changed+" of "+n:(gap>=0?"+":"")+(gap/se).toFixed(1)+" SE";
   var inside=Math.abs(gap)<=band,v;
   if(inside)v='<span class="ok">Inside the band: reproduced.</span> A gap of '+Math.abs(gap).toFixed(1)+' points is within ±'+band.toFixed(1)+'; write "within tolerance" and move on.';
-  else v='<span class="bad">Outside the band by '+(Math.abs(gap)-band).toFixed(1)+' points: a real gap.</span> Test-set noise alone would put the number within ±'+(2*se).toFixed(1)+'; this needs the debugging order and an explanation sentence.';
+  else if(same&&sd===0)v='<span class="bad">Outside the band by '+(Math.abs(gap)-band).toFixed(1)+' points: a recipe gap.</span> Nothing was sampled: same images, same weights should match to about 0.1. '+changed+' images changed class, and no test-set size makes that noise; run the debugging order.';
+  else v='<span class="bad">Outside the band by '+(Math.abs(gap)-band).toFixed(1)+' points: a real gap.</span> '+(same?'Seeds alone would put the number within ±'+(2*sd).toFixed(1):'Sampling noise alone would put the number within ±'+(2*se).toFixed(1))+'; this needs the debugging order and an explanation sentence.';
   if(band>10)v+=' <span class="acc">Band wider than 10 points:</span> the claimed number was never precise; the reproduction can hardly fail, and that is the finding.';
   $("verdict").innerHTML=v;
   draw(p*100,band,m);
@@ -77,9 +87,10 @@ function draw(c,band,m){
   ctx.textAlign="left";ctx.fillStyle=css("--mut");ctx.fillText(lo.toFixed(0),14,102);ctx.textAlign="right";ctx.fillText(hi.toFixed(0),W-14,102);
 }
 ["claimed","n","sd","mine"].forEach(function(id){$(id).oninput=calc});
-function preset(c,n,sd,m){$("claimed").value=c;$("n").value=n;$("sd").value=sd;$("mine").value=m;calc()}
+function preset(c,n,sd,m){$("claimed").value=c;$("n").value=n;$("sd").value=sd;$("mine").value=m;same=true;calc()}
 $("pClip").onclick=function(){preset(91.3,10000,0,89.8)};
 $("pProbe").onclick=function(){preset(71.1,60,2.5,66.2)};
+$("mSame").onclick=function(){same=true;calc()};$("mNew").onclick=function(){same=false;calc()};
 window.redraw=calc;addEventListener("resize",calc);
 
 /* theme + height: shared boilerplate */
