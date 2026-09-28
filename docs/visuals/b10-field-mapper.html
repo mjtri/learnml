@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field mapper: keys to cells</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+h2{font-size:12px;color:var(--mut);margin:10px 0 4px;font-weight:600}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.keys button{font:inherit;font-size:12px;font-family:ui-monospace,Menlo,Consolas,monospace;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.keys button.sel{border:2px solid var(--acc);font-weight:700}
+.keys button.used{opacity:.6}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cell{min-height:48px;padding:5px 8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:12px;text-align:left;cursor:pointer;touch-action:manipulation}
+.cell b{display:block;font-size:12px}
+.cell span{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--acc)}
+.cell.gap{border:2px solid var(--bad)}
+.cell.gap span{color:var(--bad)}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.acts button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px;font-family:ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
+.status.bad{border-left:4px solid var(--bad)}
+.status.ok{border-left:4px solid var(--ok)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>trip.yaml keys onto three forms</h1>
+<p class="hint">Tap a key, then the cell it fills (tap a filled cell to clear it). Red cells have no key: check.py counts them.</p>
+<h2>trip.yaml keys</h2>
+<div class="keys" id="keys"></div>
+<div class="acts"><button id="auto">Auto-map by name</button><button id="rename">Office renames a cell</button><button id="clear">Clear all</button></div>
+<div id="forms"></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>field map</dt><dd>The table from data-file keys to the cell, placeholder or macro each format uses; a gap is a cell nobody fills.</dd>
+<dt>data file</dt><dd>trip.yaml: one key per fact, the only thing you type per run.</dd>
+<dt>label</dt><dd>The text in the cell to the left of a value cell; python-hwpx fills "label &gt; right", so a renamed label breaks the map.</dd>
+<dt>oracle</dt><dd>check.py: opens each output, exits 0 when every mapped cell holds its value and 1 when any is empty.</dd>
+</dl></details>
+<script>
+(function(){
+var KEYS=["name","dept","destination","period","purpose","budget_code","cost"];
+var FORMS=[
+ {n:"request.hwpx (python-hwpx, label > right)",cells:[{l:"성명",k:"name"},{l:"소속",k:"dept"},{l:"출장지",k:"destination"},{l:"출장기간",k:"period"},{l:"출장목적",k:"purpose"},{l:"예산과목",k:"budget_code"},{l:"소요경비",k:"cost"}]},
+ {n:"report.docx (document skill, label | value)",cells:[{l:"Name",k:"name"},{l:"Destination",k:"destination"},{l:"Period",k:"period"},{l:"Purpose",k:"purpose"},{l:"Cost",k:"cost"}]},
+ {n:"fields.tex (\\newcommand macros)",cells:[{l:"\\tripName",k:"name"},{l:"\\tripDest",k:"destination"},{l:"\\tripDates",k:"period"},{l:"\\tripPurpose",k:"purpose"},{l:"\\tripCost",k:"cost"}]}
+];
+var map={},sel=null,renamed=false;
+var initial={"0:0":"name","0:1":"dept","0:2":"destination","0:3":"period","0:4":"purpose","1:0":"name","1:1":"destination","1:2":"period","2:0":"name","2:1":"destination","2:2":"period","2:3":"purpose"};
+Object.keys(initial).forEach(function(k){map[k]=initial[k]});
+var kb=document.getElementById("keys");
+KEYS.forEach(function(k){var b=document.createElement("button");b.textContent=k;b.dataset.k=k;b.onclick=function(){sel=(sel===k)?null:k;draw()};kb.appendChild(b)});
+var fb=document.getElementById("forms");
+FORMS.forEach(function(f,fi){var h=document.createElement("h2");h.textContent=f.n;fb.appendChild(h);var g=document.createElement("div");g.className="form";f.cells.forEach(function(c,ci){var b=document.createElement("button");b.className="cell";b.id="c"+fi+"_"+ci;
+ b.onclick=function(){var id=fi+":"+ci;if(sel){map[id]=sel;sel=null}else if(map[id])delete map[id];draw()};g.appendChild(b)});fb.appendChild(g)});
+document.getElementById("auto").onclick=function(){FORMS.forEach(function(f,fi){f.cells.forEach(function(c,ci){var id=fi+":"+ci;if(!map[id]&&!c.broken)map[id]=c.k})});sel=null;draw()};
+document.getElementById("rename").onclick=function(){var c=FORMS[0].cells[2];if(!renamed){c.l="출장장소";c.broken=true;delete map["0:2"];renamed=true}else{c.l="출장지";c.broken=false;renamed=false}sel=null;draw()};
+document.getElementById("clear").onclick=function(){map={};sel=null;draw()};
+function draw(){
+ var used={};Object.keys(map).forEach(function(id){used[map[id]]=true});
+ Array.prototype.forEach.call(kb.children,function(b){b.className=(b.dataset.k===sel?"sel":"")+(used[b.dataset.k]?" used":"")});
+ var report=[],total=0;
+ FORMS.forEach(function(f,fi){var gaps=[];f.cells.forEach(function(c,ci){var id=fi+":"+ci,b=document.getElementById("c"+fi+"_"+ci),k=map[id];
+   b.className="cell"+(k?"":" gap");b.innerHTML="<b>"+c.l+(c.broken?" (renamed)":"")+"</b><span>"+(k?"← "+k:"empty")+"</span>";if(!k)gaps.push(c.l)});
+  total+=gaps.length;report.push(f.n.split(" ")[0]+": "+(gaps.length?gaps.length+" empty ("+gaps.join(", ")+")":"all cells filled"))});
+ var st=document.getElementById("st");st.className="status "+(total?"bad":"ok");
+ st.textContent=report.join("\n")+"\ncheck.py → exit "+(total?"1 ("+total+" empty cell"+(total>1?"s":"")+")":"0")+(renamed?"\nthe map still says 출장지; the office now says 출장장소: fix field-map.yaml, not the master":"")+(sel?"\nselected: "+sel+" — tap a cell":"");
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

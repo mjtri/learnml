@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recipe builder: five parts</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.parts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.part{min-height:56px;padding:6px 8px;border-radius:10px;border:2px solid var(--ok);background:var(--card);color:var(--fg);font:inherit;font-size:13px;text-align:left;cursor:pointer;touch-action:manipulation}
+.part.off{border-color:var(--bad);border-style:dashed;opacity:.75}
+.part b{display:block;font-size:13px}
+.part span{font-size:11px;color:var(--mut)}
+.flow{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;padding:8px 10px;border-radius:10px;background:var(--card);margin:6px 0;min-height:44px;word-break:break-word}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.bad{border-left:4px solid var(--bad)}
+.status.ok{border-left:4px solid var(--ok)}
+.status.warn{border-left:4px solid var(--acc2)}
+.sl{margin:8px 0 2px}
+.sl label{display:block;font-size:12px;color:var(--mut)}
+.sl label b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+input[type=range]{width:100%;height:44px;margin:0;touch-action:pan-y}
+.pay{font-size:13px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:8px}
+.pay b{font-family:ui-monospace,Menlo,Consolas,monospace}
+.pay .v{color:var(--acc)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>A recipe from five parts</h1>
+<p class="hint">Tap a part to remove it and read what a run then does. The sliders below give the payoff for one of your forms.</p>
+<div class="parts" id="parts"></div>
+<div class="flow" id="flow"></div>
+<div class="status" id="st"></div>
+<div class="sl"><label>Minutes by hand per form <b id="hv"></b></label><input type="range" id="hand" min="5" max="60" step="5" value="25"></div>
+<div class="sl"><label>Runs per year <b id="rv"></b></label><input type="range" id="runs" min="1" max="30" step="1" value="8"></div>
+<div class="sl"><label>Times the office changes the form per year <b id="cv"></b></label><input type="range" id="chg" min="0" max="6" step="1" value="1"></div>
+<div class="pay" id="pay"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>data file</dt><dd>The one file you type per run (trip.yaml): one key per fact, kept outside every repository.</dd>
+<dt>template</dt><dd>The form with its cells empty, as the office issued it; replaced whole, never edited.</dd>
+<dt>oracle</dt><dd>A check the agent can run: check.py opens each output and exits non-zero on a missing or wrong field.</dd>
+<dt>trigger</dt><dd>What starts a run: you typing /trip-forms, or a clock (desktop task, cloud routine).</dd>
+</dl></details>
+<script>
+(function(){
+var P=[
+ {k:"data",n:"Data file",s:"trip.yaml, one key per fact",off:"Facts are retyped into the prompt each run: a typo lands in the form and there is nothing to diff against."},
+ {k:"tpl",n:"Template",s:"request-master.hwpx, cells empty",off:"The agent rebuilds the layout from memory each run: cells drift and the office rejects the form."},
+ {k:"skill",n:"Skill",s:"field map + fill.py, both tools",off:"The mapping lives in tonight's prompt: two runs put the same key in different cells."},
+ {k:"oracle",n:"Oracle",s:"check.py exits 0 or 1",off:"Looks right, is wrong: an empty budget cell reaches the approver with your name on it."},
+ {k:"trig",n:"Trigger",s:"you: /trip-forms, or a local clock",off:"Nothing runs. The form is filled by hand at 11 pm the night before, again."}
+];
+var on={},box=document.getElementById("parts");
+P.forEach(function(p){on[p.k]=true;var b=document.createElement("button");b.className="part";b.id="p-"+p.k;b.innerHTML="<b>"+p.n+"</b><span>"+p.s+"</span>";
+ b.setAttribute("aria-pressed","true");b.onclick=function(){on[p.k]=!on[p.k];draw()};box.appendChild(b)});
+var hand=document.getElementById("hand"),runs=document.getElementById("runs"),chg=document.getElementById("chg");
+[hand,runs,chg].forEach(function(s){s.addEventListener("input",draw)});
+function draw(){
+ var missing=[];
+ P.forEach(function(p){var b=document.getElementById("p-"+p.k);b.className="part"+(on[p.k]?"":" off");b.setAttribute("aria-pressed",on[p.k]?"true":"false");if(!on[p.k])missing.push(p)});
+ var f=[];f.push(on.trig?"/trip-forms":"(nothing starts)");f.push(on.data?"trip.yaml":"facts in prompt");f.push(on.skill?"fill.py + field map":"ad-hoc mapping");f.push(on.tpl?"masters/*.hwpx .docx .tex":"layout from memory");f.push(on.oracle?"check.py → exit 0":"no check");
+ document.getElementById("flow").textContent=f.join(" → ");
+ var st=document.getElementById("st");
+ if(!missing.length){st.className="status ok";st.textContent="All five present. A run reads trip.yaml, fills three documents into out/<date>/, check.py exits 0, and you copy the file into the upload form yourself. Signature, approval and submission stay yours."}
+ else{st.className="status "+(on.oracle?"warn":"bad");st.innerHTML=missing.map(function(p){return "<b>No "+p.n.toLowerCase()+":</b> "+p.off}).join("<br>")}
+ var h=+hand.value,r=+runs.value,c=+chg.value;
+ document.getElementById("hv").textContent=h+" min";document.getElementById("rv").textContent=r;document.getElementById("cv").textContent=c;
+ var perRun=on.oracle?3:3+Math.round(h*0.4);           /* without an oracle you re-check by hand: about 40 % of the manual time */
+ var handYear=h*r,build=60,upkeep=c*10,recipeYear=build+upkeep+perRun*r,saved=handYear-recipeYear;
+ var be=Math.ceil((build+upkeep)/Math.max(1,h-perRun));
+ var pay=document.getElementById("pay");
+ pay.innerHTML="By hand: <b>"+h+" × "+r+" = "+handYear+" min</b> a year. Recipe, year one: build <b>60</b> + changes <b>"+c+" × 10</b> + runs <b>"+r+" × "+perRun+"</b> = <b>"+recipeYear+" min</b>."
+  +"<br>Saved in year one: <b class='v'>"+(saved>=0?"+":"")+saved+" min</b>. Breaks even after <b>"+be+"</b> runs"+(be>r?" (not this year)":"")+"."
+  +(on.oracle?"":"<br>Without an oracle each run costs you a manual re-read (about 40 % of the hand time), so the recipe barely pays.")
+  +(saved<0?" Fill this one by hand with the document skill.":"");
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
