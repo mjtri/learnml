@@ -58,7 +58,10 @@ WATCHLIST = ["logits", "epoch", "backprop", "backpropagation", "softmax", "embed
              "instruction file", "allowlist", "approval policy", "cloud routine", "trigger", "teleport", "DOI",
              "record mode", "project instructions", "progress file", "CHANGELOG", "unattended run",
              "spend limit", "seat type", "usage report", "budget rule", "weekly review", "limit reset", "fast mode",
-             "effort level"]
+             "effort level",
+             "plugin marketplace", "allowed-tools", "extension layer", "star history", "worth-it rubric", "tool radar",
+             "A/B week", "data file", "form template", "dry run", "field map", "HWPX", "latexmk", "pandoc",
+             "personal data boundary", "automation recipe"]
 DAY_WORDS_RE = re.compile(r"\*\*(Yesterday|Tomorrow)[^*]*\*\*|\bYesterday's\b|\bTomorrow's\b|^# (B\d · )?Day \d", re.M)
 
 
