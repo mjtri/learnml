@@ -41,9 +41,24 @@ WATCHLIST = ["logits", "epoch", "backprop", "backpropagation", "softmax", "embed
              "checkpoint", "regularization", "normalization", "cross-entropy", "LoRA", "rank",
              "context window", "compaction", "subagent", "MCP", "worktree", "sandbox",
              "usage credits", "prompt cache", "CLAUDE.md", "AGENTS.md", "plan mode", "permission mode",
-             "dropout", "residual", "LayerNorm", "BPE", "tokenizer", "positional encoding", "causal mask",
+             "dropout", "LayerNorm", "BPE", "tokenizer", "positional encoding", "causal mask",
              "query vector", "key vector", "value vector", "temperature", "perplexity", "InfoNCE", "contrastive", "zero-shot",
-             "linear probe", "bootstrap", "standard error", "ablation", "baseline", "seed", "VAE", "ELBO"]
+             "linear probe", "bootstrap", "standard error", "ablation", "baseline", "seed", "VAE", "ELBO",
+             # proposed by the week-generation agents
+             "neuron", "activation function", "ReLU", "MLP", "hidden layer", "training loop", "loss curve",
+             "mini-batch", "momentum", "Adam", "SGD", "weight decay", "early stopping", "BatchNorm", "one-hot",
+             "DataLoader", "underfitting", "vanishing gradient", "exploding gradient", "residual connection",
+             "bigram", "language model", "context length", "cosine similarity", "multi-head attention",
+             "residual stream", "pre-norm", "top-k", "greedy decoding", "sampling", "feed-forward", "parameter count",
+             "vocabulary", "scaling law", "power law", "FLOPs", "compute-optimal", "Chinchilla", "encoder", "decoder",
+             "model card", "hidden state", "run log", "git hash", "SVD", "singular value", "adapter", "target module",
+             "PEFT", "catastrophic forgetting", "data leakage", "effect size", "pre-registration", "compute budget",
+             "tolerance", "entry point", "config file", "spectrogram",
+             "plugin", "background agent", "agent teams", "ultrareview", "adversarial review", "auto memory",
+             "instruction file", "allowlist", "approval policy", "cloud routine", "trigger", "teleport", "DOI",
+             "record mode", "project instructions", "progress file", "CHANGELOG", "unattended run",
+             "spend limit", "seat type", "usage report", "budget rule", "weekly review", "limit reset", "fast mode",
+             "effort level"]
 DAY_WORDS_RE = re.compile(r"\*\*(Yesterday|Tomorrow)[^*]*\*\*|\bYesterday's\b|\bTomorrow's\b|^# (B\d · )?Day \d", re.M)
 
 

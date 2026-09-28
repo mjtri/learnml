@@ -27,7 +27,7 @@ Every experiment cell is preceded by a **predict cell**. Write what you expect, 
 | C | Nudge-and-measure vs autograd on the same function | 20 min |
 | D | Lesson 4's graph by hand on paper, then checked three ways | 30 min |
 | E | Fit a line with hand-written gradient descent and an **MSE** loss; then break it with the learning rate | 45 min |
-| F | Stretch: a 25-line `Value` class with `+` and `×` that does its own backward pass (next week's seed) | 25 min |
+| F | Stretch: a 25-line `Value` class with `+` and `×` that does its own backward pass (the start of next week) | 25 min |
 
 ## Done when
 

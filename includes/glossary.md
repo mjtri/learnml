@@ -1017,6 +1017,10 @@
 *[Random seed]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
 *[random seeds]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
 *[Random seeds]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[seed]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[Seed]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[seeds]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
+*[Seeds]: The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
 *[rank]: How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
 *[Rank]: How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.
 *[matrix rank]: How many independent directions a matrix really uses: the number of dimensions its outputs can fill. A 2 by 2 matrix whose columns line up has rank 1.

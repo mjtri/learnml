@@ -1775,7 +1775,7 @@ In attention, the vector a token uses to ask: what am I looking for? Compared by
 ## R
 
 <div class="gl-entry" id="random-seed" markdown>
-**random seed** <small>(also: random seeds)</small>
+**random seed** <small>(also: random seeds, seed, seeds)</small>
 
 The starting number for a random number generator. Same seed, same sequence of random choices: initial weights, data shuffles, sampled tokens.
 
