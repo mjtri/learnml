@@ -10,7 +10,7 @@ card: core-transformer
 
 ## Idea
 
-A model never sees text. It sees integers, one per position, and someone has to decide what an integer stands for. Week 5 chose characters, which is honest but expensive: a 64-position window holds one sentence, and attention cost grows with the square of the length. Whole words are the opposite failure: an unbounded **vocabulary**, every typo unseen, no plan for Korean. **Tokenization** is the compromise in between, and the modern recipe, **BPE**, is learned from data rather than designed. It also explains half of the "the model is oddly bad at X" stories, which is the next lesson.
+A model never sees text. It sees integers, one per position, and someone has to decide what an integer stands for. Week 5 chose characters, which is honest but expensive: this week's small model has a 64-position window, one sentence's worth, and attention cost grows with the square of the length. Whole words are the opposite failure: an unbounded **vocabulary**, every typo unseen, no plan for Korean. **Tokenization** is the compromise in between, and the modern recipe, **BPE**, is learned from data rather than designed. It also explains half of the "the model is oddly bad at X" stories, which is the next lesson.
 
 ## Mechanism
 

@@ -17,7 +17,7 @@ On the table: a model made of Values, the MSE loss from week 1, a backward pass,
 \[ \text{forward} \to \text{loss} \to \text{zero grads} \to \text{backward} \to \text{update} \]
 
 ```python
-for step in range(200):
+for step in range(400):
     preds = [model(x) for x in xs]              # 1 forward
     loss = sum((p - y) * (p - y)
                for p, y in zip(preds, ys))      # 2 loss

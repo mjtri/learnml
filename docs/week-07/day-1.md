@@ -23,11 +23,11 @@ Open the Hub page for SmolLM2-360M and tap *Files*. Every model repository has t
 | `tokenizer.json`, `vocab.json`, `merges.txt` | the text → token rules, fixed at pretraining | 3.4 MB |
 | `README.md` | the model card | 7 KB |
 
-The first three rows are the **checkpoint files**: the config to build an empty model, the weights to fill it, the tokenizer to feed it. Lose any one and the other two are useless: weights without a config have no shapes to load into, and a model fed by the wrong tokenizer gets ids that point at the wrong rows of its embedding table and produces gibberish without an error.
+The first three rows are the **checkpoint files**: the config to build an empty model, the weights to fill it, the tokenizer to feed it. Lose any one and the other two are useless: weights without a config have no shapes to load into; the wrong tokenizer gives ids that index the wrong rows of the embedding table, gibberish without an error.
 
-The size is arithmetic you already own: 362 million parameters × 2 bytes = 724 MB, so the weights are stored in 16-bit; 4 bytes per parameter would mean 32-bit.
+The size is arithmetic you already own: 362 million parameters × 2 bytes = 724 MB, so the weights are stored in 16-bit, not 32.
 
-The model card answers three questions before you write code: the pretraining data (here 4 trillion tokens of web text, code and maths), the licence (Apache 2.0), and the scores, measured with no task-specific training at all.
+The model card answers three questions before you write code: the pretraining data (here 4 trillion tokens of web text, code and maths), the licence (Apache 2.0), and the scores, measured with no task-specific training.
 
 Three things you can do with a checkpoint, the plan for the week:
 
@@ -35,9 +35,9 @@ Three things you can do with a checkpoint, the plan for the week:
 2. **Read its hidden states and train something tiny on top.** No weight changes, no GPU. Lessons 2 and 3.
 3. **Fine-tuning.** Keep training the weights on your data with a small learning rate. Lesson 4 prices it.
 
-**Transfer learning** is the umbrella name for routes 2 and 3: what was learned on the big task carries over to your small one.
+**Transfer learning** is the umbrella name for routes 2 and 3: what the big task taught carries over to your small one.
 
-**In practice**, the card's *How to use* block is six lines, and every Hub card has a variant:
+**In practice**, the card's *How to use* block is six lines, and every Hub card has one:
 
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -48,9 +48,9 @@ ids = tokenizer.encode("Gravity is", return_tensors="pt")
 print(tokenizer.decode(model.generate(ids)[0]))
 ```
 
-`from_pretrained` downloads the checkpoint files into `~/.cache/huggingface/hub` once and reads them from there after that. Because the repository is git, `revision="<commit>"` pins the exact weights.
+`from_pretrained` downloads the checkpoint files into `~/.cache/huggingface/hub` once, then reads them from there. Because the repository is git, `revision="<commit>"` pins the exact weights.
 
-An honest analogy: a pretrained model is an expert participant rather than a novice. Where it breaks: a participant's prior experience is a black box; a checkpoint's is on the card, in a file you can inspect.
+An honest analogy from your lab: the gaze model that ships in a headset was pretrained on thousands of eyes, then calibrated per wearer; routes 2 and 3 are that calibration. Where it breaks: a calibration adjusts a few numbers and tells you nothing about the pretraining; a checkpoint's card does.
 
 ## Try it
 
@@ -70,8 +70,8 @@ Predict first, then tap:
 ??? question "Name the three checkpoint files you need to run a model, and say what happens if the tokenizer is the wrong one."
     Config, weights, tokenizer. A wrong tokenizer produces ids that index the wrong embedding rows: the model reads and writes nonsense, and nothing raises an error.
 
-??? question "Of prompting, probing and fine-tuning, which changes the pretrained weights, and which one needs GPU room for gradients?"
-    Only fine-tuning changes the weights, and only it needs gradient and optimizer memory for the whole model; the other two run it forward only.
+??? question "300 labelled trials, a laptop, no GPU: which route fits, and what does fine-tuning need that the laptop lacks?"
+    Route 2, a tiny model on the frozen hidden states: no weight changes, no GPU. Fine-tuning needs memory for gradients and optimizer state on every weight; the other routes run the model forward only.
 
 ## Sources
 

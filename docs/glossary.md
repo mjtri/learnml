@@ -1039,9 +1039,9 @@ The contrastive loss: for each item, a softmax over its similarities to every ca
 </div>
 
 <div class="gl-entry" id="initialization" markdown>
-**initialization** <small>(also: initialisation, init, Xavier, Kaiming, Xavier initialization, Kaiming initialization)</small>
+**initialization** <small>(also: initialisation, init, LeCun, Kaiming, LeCun initialization, Kaiming initialization)</small>
 
-The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
 
 <small>first met in [week-03/day-5](week-03/day-5.md) · canvas card `core-dl`</small>
 </div>

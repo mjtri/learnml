@@ -560,16 +560,16 @@
 *[InfoNCE]: The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
 *[InfoNCE loss]: The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
 *[NT-Xent]: The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
-*[initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[init]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Init]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Xavier]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Kaiming]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Xavier initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
-*[Kaiming initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
+*[initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[Initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[Initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[init]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[Init]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[LeCun]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[Kaiming]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[LeCun initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
+*[Kaiming initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. LeCun and Kaiming are recipes.
 *[instruction file]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[Instruction file]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.
 *[instruction files]: A file the agent loads at the start of every session: AGENTS.md, CLAUDE.md and whatever they import. You write it; every line is paid for on every turn.

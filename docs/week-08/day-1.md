@@ -24,15 +24,19 @@ The payoff is storage. A rank-1 matrix is a column times a row: \(\begin{pmatrix
 
 That is **low rank**: \(2dr\) numbers instead of \(d^2\). At \(d = 4096\) and \(r = 8\) that is 65 thousand instead of 16.8 million, a factor of 256. The factorization is exact only if the rank really is \(r\); the next lesson handles the case where it is only *nearly* so.
 
-**In practice.** PyTorch counts for you:
+**In practice.** After the build's Part E, count directions in SmolLM2-360M's first `q_proj` and in the change its rank-8 adapter learned:
 
 ```python
-W = torch.randn(4096, 8) @ torch.randn(8, 4096)
-print(torch.linalg.matrix_rank(W))   # tensor(8)
-print(W.numel())        # 16777216 stored; 65536 needed
+q = tuned.base_model.model.model.layers[0].self_attn.q_proj
+W = q.base_layer.weight.float()            # (960, 960)
+print(torch.linalg.matrix_rank(W))         # close to 960
+A = q.lora_A["default"].weight             # (8, 960)
+B = q.lora_B["default"].weight             # (960, 8)
+print(torch.linalg.matrix_rank(B @ A))     # tensor(8)
+print(W.numel(), A.numel() + B.numel())    # 921600 vs 15360
 ```
 
-A random \(4096 \times 4096\) matrix has rank 4096, and a trained weight matrix usually does too. What the LoRA paper found is that the *change* fine-tuning makes to it is nearly low rank; lesson 3 exploits that.
+The weight uses nearly every direction it has; the learned change fits in eight. That is the LoRA paper's finding, and lesson 3 exploits it.
 
 An honest analogy from your bench: a haptic sleeve with sixteen actuators driven by two input channels through a fixed mixing matrix can only produce a two-dimensional family of patterns. The mixing matrix has rank two; no sensation outside that plane is reachable. Where it breaks: actuators saturate and skin responds nonlinearly, while rank describes a linear map alone.
 

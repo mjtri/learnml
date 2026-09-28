@@ -8,7 +8,7 @@ card: core-transformer
 
 <p class="recall" markdown>**This week in one sentence:** text becomes tokens by learned merges, loss falls as a straight line on log–log axes, and a component removed on purpose tells you what it was for.</p>
 
-**Laptop · ~3 hours · T4 for parts C–E (Runtime → Change runtime type). `SMOKE = True` runs everything on a CPU in minutes at toy size; set it to `False` for the real run.**
+**Laptop · ~3 hours · GPU optional for parts C–E (a T4 is faster); lesson 5's reference numbers are CPU runs. `SMOKE = True` runs everything on a CPU in minutes at toy size; set it to `False` for the real run.**
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mjtri/learnml/blob/main/notebooks/week-06.ipynb)
 

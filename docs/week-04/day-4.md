@@ -24,9 +24,9 @@ Two engineering details make attention trainable, both inside one line of code. 
 
 Row 3, "pulse", by hand: \((4, 0, 2) / \sqrt{2} = (2.83, 0, 1.41)\). Exponentials \(16.9, 1, 4.1\), sum \(22.0\). Weights \((0.77, 0.05, 0.19)\). Output \(0.77\,(3,0) + 0.05\,(0,3) + 0.19\,(1,1) = (2.49, 0.32)\). Do rows 1 and 2 yourself.
 
-**√d scaling.** If the entries of \(q\) and \(k\) are around size 1 and unrelated, \(q \cdot k\) adds \(d\) terms with random signs, and such a sum has typical size \(\sqrt{d}\): scores near 1.4 at \(d = 2\), near 8 at \(d = 64\), near 23 at \(d = 512\). Softmax of \((23, 0, 12)\) is \((1.00, 0.00, 0.00)\): a hard pick, through which almost no gradient flows, so the head never learns. Dividing by \(\sqrt{d}\) keeps typical scores near 1 whatever \(d\) is. Any divisor here acts as a sharpness dial, sharp when small and flat when large; \(\sqrt{d}\) keeps it moderate.
+**√d scaling.** If the entries of \(q\) and \(k\) are around size 1 and unrelated, \(q \cdot k\) adds \(d\) terms with random signs, and such a sum has typical size \(\sqrt{d}\): scores near 1.4 at \(d = 2\), near 8 at \(d = 64\), near 23 at \(d = 512\). Softmax of \((23, 0, 12)\) is \((1.00, 0.00, 0.00)\): a hard pick, through which almost no gradient flows, so the head never learns. Dividing by \(\sqrt{d}\) keeps typical scores near 1 whatever \(d\) is (the paper's \(d_k\): the same thing, per head). Any divisor is a sharpness dial, sharp when small, flat when large; \(\sqrt{d}\) keeps it moderate.
 
-**Causal mask.** Before the softmax, set every score with \(j > i\) to \(-\infty\). \(e^{-\infty} = 0\), so the row renormalises over the past only and the weight matrix comes out lower-triangular. Rows 1 and 2 become \((1, 0, 0)\) and \((0.80, 0.20, 0)\); row 3 already sees only the past. Why it is not optional: training predicts all \(T\) positions in one pass, and without the mask position \(i\) reads token \(i + 1\), its own label. The loss collapses toward zero while generation produces garbage; you do this bug on purpose in the build session.
+**Causal mask.** Before the softmax, set every score with \(j > i\) to \(-\infty\). \(e^{-\infty} = 0\), so the row renormalises over the past only and the weight matrix comes out lower-triangular. Rows 1 and 2 become \((1, 0, 0)\) and \((0.80, 0.20, 0)\); row 3 already sees only the past. Why it matters: training predicts all \(T\) positions in one pass, and without the mask position \(i\) reads token \(i + 1\), its own label. The loss collapses toward zero while generation produces garbage; you do this bug on purpose in the build session.
 
 **In practice.** nanoGPT's `CausalSelfAttention.forward` is the formula, one line each; the fused `F.scaled_dot_product_attention(q, k, v, is_causal=True)` does the same, faster:
 
@@ -45,7 +45,7 @@ The signal-processing analogy is a causal filter: a real-time vibrotactile rende
 Predict first, then slide:
 
 1. At \(d = 2\), note the largest weight in the "pulse" row on the unscaled side. Predict it at \(d = 64\), then slide and compare with the scaled side.
-2. Turn the mask on. Before looking, write down row 1 and where row 2's removed mass goes.
+2. Turn the mask on. Before looking, write down the "the" row, and where the "left" row's removed mass goes.
 3. With the mask on, does every row still sum to 1? Why?
 
 ## Retrieval

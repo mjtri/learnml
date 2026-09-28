@@ -61,7 +61,7 @@ Predict first, then tap:
     Mean 4, deviations (−2, 0, 2), standard deviation 1.63, result (−1.22, 0, 1.22). None: scaling every input by 10 scales mean and standard deviation by 10 too.
 
 ??? question "A block's MLP has stream width 256. Give the shapes of its two weight matrices and of the output for 8 sequences of 64 tokens."
-    \(W_1\) is 256 × 1024, \(W_2\) is 1024 × 256. Output (8, 64, 256), the same as the input, ready to be added to the stream.
+    \(W_1\) is 1024 × 256, \(W_2\) is 256 × 1024 (out × in, week 1's convention). Output (8, 64, 256), the same as the input, ready to be added to the stream.
 
 ??? question "Why does pre-norm keep the residual stream 'a clean sum' while post-norm does not?"
     In pre-norm the LayerNorm sits on the branch, so the stream is only ever changed by additions. In post-norm it is applied to the sum itself, rescaling everything earlier blocks wrote.

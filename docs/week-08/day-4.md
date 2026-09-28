@@ -26,7 +26,7 @@ The library turns lesson 3 into four config decisions: *which* matrices get an a
 
 **Folding back: the weight merge.** After training, \(W + \frac{\alpha}{r} BA\) is itself one matrix. The **weight merge** computes it once and discards the thin matrices, so the model has no extra layers and runs at the base model's speed: the paper's "no inference latency" claim, unlike older adapters inserted in series.
 
-**In practice**, the entire config is one call, and the printout tells you whether the names matched anything:
+**In practice**, the entire config is one call, and the printout checks your hand count:
 
 ```python
 from peft import LoraConfig, get_peft_model
@@ -39,7 +39,7 @@ model.print_trainable_parameters()
 merged = model.merge_and_unload()   # plain model again
 ```
 
-Those printed numbers are the PEFT quicktour's own: a 1-billion model, only `q_proj`, \(r = 8\). Compute the count from lesson 3's formula before reading the line; zero means a misspelled module name and nothing trains. `merge_and_unload()` changes layout, not numbers: outputs before and after must agree to floating-point noise, and the build session asserts that. Two things the library will not catch: a merged model can no longer swap adapters, so keep the adapter file; and an adapter is meaningless on a different base model, since \(BA\) was learned relative to one \(W\).
+Those printed numbers are the PEFT quicktour's own: a 1-billion model, only `q_proj`, \(r = 8\). Compute the count from lesson 3's formula before reading the line. A misspelled name never prints zero: `get_peft_model` itself fails with `Target modules {'query'} not found in the base model`. `merge_and_unload()` changes layout, not numbers: outputs before and after must agree to floating-point noise, and the build session asserts that. Two things the library will not catch: a merged model can no longer swap adapters, so keep the adapter file; and an adapter is meaningless on a different base model, since \(BA\) was learned relative to one \(W\).
 
 In your lab the target-module choice has an analogue: when a mapping needs recalibration per user, you pick the stage to adjust (sensor gain, encoding, actuator drive), and alpha is the gain on that adjustment. It stops there: a device's stages are engineered to be separable; a model's layers were not.
 
@@ -55,8 +55,8 @@ Before you tap, guess:
 
 ## Retrieval
 
-??? question "You set target_modules=['query'] on a model whose layers are named q_proj. What does print_trainable_parameters show, and why?"
-    Zero trainable parameters, or an error about no matching modules: names match as suffixes and 'query' matches nothing, so no adapter is attached.
+??? question "You set target_modules=['query'] on a model whose layers are named q_proj. What happens, and why?"
+    `get_peft_model` raises `Target modules {'query'} not found in the base model`: names match as suffixes, 'query' matches nothing, so PEFT refuses.
 
 ??? question "Alpha 16 at rank 8, versus alpha 16 at rank 16: which adapter pushes harder per unit of BA, and by how much?"
     The rank-8 one: its scale is 16/8 = 2 against 16/16 = 1, twice as hard. Dividing by r is what keeps the scale comparable across ranks.

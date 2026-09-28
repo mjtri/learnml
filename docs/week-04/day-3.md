@@ -32,7 +32,7 @@ Smallest example: three tokens, two numbers each, "strong left pulse":
 
 Why three matrices? Because *what I look for*, *what I offer* and *what I hand over* are different things. "pulse" looks for an intensity word; "strong" advertises "I am an intensity word" and hands over "intensity: high".
 
-**In practice.** The head you build this week is Karpathy's `Head.forward`; every transformer has these lines:
+**In practice.** The head you build this week is Karpathy's `Head.forward`, minus the ÷√d and mask lines the next lesson adds:
 
 ```python
 k = self.key(x)                 # (B, T, hs)

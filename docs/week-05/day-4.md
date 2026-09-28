@@ -45,7 +45,7 @@ idx_next = torch.multinomial(probs, num_samples=1)
 
 `multinomial` is the draw. Replace it with `argmax` and you have greedy decoding.
 
-The analogy here is exact rather than loose: softmax with a temperature *is* the Luce choice rule from psychophysics. If you have fitted a softmax decision model to participants' choices, you have already fitted a temperature. Where it breaks: a participant's logits come from evidence; a model's come from a matrix multiply, and nothing forces them to be calibrated.
+The analogy is exact rather than loose: this is the same Luce choice rule as week 3's softmax, now with a temperature. If you have fitted a softmax decision model to participants' choices, you have already fitted a temperature. Where it breaks: a participant's logits come from evidence; a model's come from a matrix multiply, and nothing forces them to be calibrated.
 
 For your own experiments the rule is short: fix the temperature, fix \(k\), fix the random `seed`, and write all three down beside the result. Otherwise two runs of the "same" model are two different stimuli.
 

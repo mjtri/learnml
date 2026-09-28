@@ -18,13 +18,13 @@ One neuron with two inputs:
 
 \[ y = \tanh(w_1 x_1 + w_2 x_2 + b) \]
 
-**tanh** is the bend, an **activation function**: a fixed S-curve that squashes any number into \((-1, 1)\), steep near 0 and flat far out. Its flat ends pass almost no gradient back (week 1, lesson 3: the saturated knob cannot be felt). The other bend you will meet most is **ReLU**, \(\max(0, x)\): cheaper, slope exactly 0 or 1, never saturating on the positive side, which is why most large models use it. Both are a **nonlinearity**: anything that is not a plain weighted sum.
+**tanh** is the bend, an **activation function**: a fixed S-curve that squashes any number into \((-1, 1)\), steep near 0 and flat far out. Its flat ends pass almost no gradient back (week 1, lesson 3: the saturated knob cannot be felt). The other bend you will meet most is **ReLU**, \(\max(0, x)\): cheaper, slope exactly 0 or 1, never saturating on the positive side, which is why large models use it or a smoothed variant, GELU. Both are a **nonlinearity**: anything that is not a plain weighted sum.
 
 A layer of 4 neurons on 2 inputs is a \(4 \times 2\) weight matrix, 4 offsets, and tanh on each result. Feed those into 1 more neuron and you have a 2–4–1 MLP: 8 + 4 + 4 + 1 = 17 parameters. The middle layer is a **hidden layer**: its four numbers are not data and not answers, but learned in-between features nobody labelled.
 
 Why the bend is not optional. Two linear layers with nothing between them: \(W_2 (W_1 x) = (W_2 W_1)\, x\), one matrix. Now XOR: \((0,0) \to 0\), \((0,1) \to 1\), \((1,0) \to 1\), \((1,1) \to 0\). A single neuron's decision boundary is a straight line, and no line puts the two diagonal 1s on one side and the two 0s on the other: three of four at best. With a hidden layer of two tanh neurons, each hidden unit draws its own line, roughly "at least one input on" and "both on", and the output neuron combines them: *one or the other, and not both*.
 
-**In practice.** Open nanoGPT's `model.py` and find `class MLP`: a linear layer from width 768 to 3072, a bend called GELU (a smoothed ReLU), a linear layer back to 768: this lesson's 2–4–1, wider, inside every block of a large text model. The micrograd neuron as typed in the video (the repo's `nn.py` later swaps tanh for ReLU):
+**In practice.** Open nanoGPT's `model.py` and find `class MLP`: a linear layer from width 768 to 3072, a GELU bend, a linear layer back to 768: this lesson's 2–4–1, wider, inside every block of a large text model. The micrograd neuron as typed in the video (the repo's `nn.py` later swaps tanh for ReLU):
 
 ```python
 class Neuron:
@@ -52,8 +52,8 @@ Predict first, then try:
 
 ## Retrieval
 
-??? question "Two linear layers with no activation function between them: what can they represent that one linear layer cannot?"
-    Nothing. \(W_2 W_1\) is one matrix, so the stack is one linear layer with extra parameters. The bend is what makes depth mean anything.
+??? question "Why is depth without a bend worth nothing? Show it with \(W_2 W_1\)."
+    \(W_2 (W_1 x) = (W_2 W_1)\, x\): one matrix, so two layers are one linear layer with extra parameters, and only the bend makes depth mean anything.
 
 ??? question "In one sentence, why can a single neuron not fit XOR?"
     Its decision boundary is a straight line, and XOR's two 1s sit on one diagonal with the two 0s on the other, so no line separates them.

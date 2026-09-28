@@ -14,7 +14,7 @@ Fine-tuning is week 1's training loop pointed at a loaded checkpoint instead of 
 
 ## Mechanism
 
-**The loop.** Every weight is trainable, the loss is the same next-token loss the model was pretrained with, and the learning rate is a hundred times smaller than from scratch:
+**The loop.** Every weight is trainable, the loss is the same next-token loss the model was pretrained with, and the AdamW learning rate is about thirty times below nanoGPT's from-scratch 6e-4:
 
 ```python
 model = AutoModelForCausalLM.from_pretrained(ckpt)
@@ -69,7 +69,7 @@ Predict first, then tap:
 ??? question "The forward pass ran, then the first backward pass raised out-of-memory. Which memory appeared between the two, and name two knobs that shrink it."
     Gradients and Adam's state for every parameter, plus saved activations. Shrink with a smaller batch or shorter sequences, freezing most layers, or training only a small piece.
 
-??? question "Why is a fine-tuning learning rate around 2e-5 when week 1's from-scratch loop used 0.1?"
+??? question "Why is a fine-tuning learning rate around 2e-5 when nanoGPT trains from scratch with AdamW at 6e-4?"
     The weights already sit near a good minimum. Large steps would throw away the pretraining; small ones adjust it while keeping what it knows.
 
 ## Sources

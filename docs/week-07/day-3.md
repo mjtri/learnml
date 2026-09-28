@@ -10,7 +10,7 @@ card: lin-gpt3
 
 ## Idea
 
-Where is the knowledge in a pretrained model? Not in the words it emits but in the vectors between the layers. A **linear probe** is the cheapest experiment there is: fix the model's weights, take one layer's hidden state for each example, and fit a single linear layer to your labels. If a straight boundary separates the classes, that layer already holds the distinction in a readable form. No gradient reaches the model, so no fine-tuning memory, no GPU, and 300 labelled examples are often enough: lesson 1's "you need neither" route.
+Where is the knowledge in a pretrained model? Not in the words it emits but in the vectors between the layers. A **linear probe** is the cheapest experiment there is: fix the model's weights, take one layer's hidden state for each example, and fit a single linear layer to your labels. If a straight boundary separates the classes, that layer already holds the distinction in a readable form. No gradient reaches the model, so no fine-tuning memory, no GPU, and 300 labelled examples are often enough: lesson 1's route 2.
 
 ## Mechanism
 

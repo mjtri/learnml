@@ -27,7 +27,7 @@ row = dict(time=time.strftime("%Y-%m-%dT%H:%M:%S"),
            git=git_hash(), **cfg, acc=round(acc, 4),
            torch=torch.__version__,
            transformers=transformers.__version__)
-with open("runs.csv", "a", newline="") as f:
+with open("week07_runs.csv", "a", newline="") as f:
     csv.DictWriter(f, fieldnames=list(row)).writerow(row)
 ```
 
