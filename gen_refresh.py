@@ -83,8 +83,9 @@ def main() -> int:
              "(keep it under the lesson's word cap), update the stamp, and add a bullet to docs/agentic/changelog.md under a "
              f"'## {today.isoformat()}' heading: what changed, which lesson, the URL; (5) if PAGE MOVED, find the new official page, update the link, "
              "stamp it, and log it. If a fact can no longer be found on any official page, mark the sentence '(verify)' and log it.", "",
-             "Then run: python check_lessons.py && python build_today.py && mkdocs build --strict. Do not commit or push.", "",
-             "## Claims by source"]
+             "Then run, one per line: python check_lessons.py; python build_today.py; mkdocs build --strict. Do not commit or push.", ""]
+    if by_url:
+        lines.append("## Claims by source")
     for url, cls in by_url.items():
         lines.append(f"\n### {url}")
         for cl in cls:
