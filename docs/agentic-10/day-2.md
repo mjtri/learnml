@@ -22,13 +22,13 @@ Setup and oracle lines, one per line:
 /plugin marketplace add chrisryugj/kordoc
 codex mcp add kordoc -- npx -y kordoc mcp
 python -m pip install python-hwpx==6.6.0
-winget install --source winget --exact --id JohnMacFarlane.Pandoc
+winget install --source winget --exact --id JohnMacFarlane.Pandoc   # optional
 latexmk -g -pdf -halt-on-error -interaction=nonstopmode report.tex
 ```
 
 **docx and xlsx.** The docx, pdf, pptx and xlsx skills are source-available, "for demonstration and educational purposes only" ([anthropics/skills](https://github.com/anthropics/skills){ .src data-checked="2026-09-28" }), so run them on copies. The skill writes a filled copy; `check.py` reads it back with python-docx (label left, value right) or openpyxl.
 
-**LaTeX.** The skill writes `fields.tex` as `\newcommand` lines; `report.tex` does `\input{fields.tex}` and never changes. **latexmk** reruns LaTeX until references settle ([latexmk](https://www.cantab.net/users/johncollins/latexmk/)) (unverified). Tested here (4.88): with a stale PDF and `fields.tex` deleted it said "Nothing to do", exit 0; `-g` forces a run, and the missing file then exited 12. **pandoc** converts the same Markdown to docx or LaTeX (`--reference-doc` borrows office styles) ([manual](https://pandoc.org/MANUAL.html)) (unverified; not installed here).
+**LaTeX.** The skill writes `fields.tex` as `\newcommand` lines; `report.tex` does `\input{fields.tex}` and never changes. **latexmk** reruns LaTeX until references settle ([latexmk](https://www.cantab.net/users/johncollins/latexmk/)) (unverified). Tested (4.88): stale PDF, `fields.tex` deleted: "Nothing to do", exit 0; `-g` forces a run and the missing file exits 12. **pandoc** (optional) converts Markdown to docx or LaTeX; not installed here.**pandoc** converts the same Markdown to docx or LaTeX (`--reference-doc` borrows office styles) ([manual](https://pandoc.org/MANUAL.html)) (unverified; not installed here).
 
 **HWP and HWPX, three ways.** **HWPX** is Hancom's open zip-of-XML format; `.hwp` is the older closed binary.
 
