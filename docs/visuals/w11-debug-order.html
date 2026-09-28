@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Debugging order</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.f{display:block;font-size:12px;color:var(--mut)}
+.f input{display:block;width:100%;min-height:44px;margin-top:2px;font:inherit;font-size:15px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.step{display:block;width:100%;text-align:left;margin:4px 0;padding:8px 12px;line-height:1.35}
+.step b{display:block;font-size:13px}
+.step small{display:block;font-size:12px;font-weight:400;opacity:.85}
+.step.likely{border-color:var(--acc2);border-width:2px}
+.step.explains{border-color:var(--ok);border-width:2px}
+.step.done{opacity:.55}
+.note{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:13.5px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>The number is off: which check comes first?</h1>
+<div class="g">
+<label class="f">claimed %<input id="claimed" type="number" inputmode="decimal" step="0.1" value="91.3"></label>
+<label class="f">yours %<input id="mine" type="number" inputmode="decimal" step="0.1" value="47.0"></label>
+<label class="f">seed sd (0 = none)<input id="sd" type="number" inputmode="decimal" step="0.1" min="0" value="0"></label>
+</div>
+<div class="g">
+<label class="f">classes<input id="k" type="number" inputmode="numeric" step="1" min="2" value="10"></label>
+<label class="f">test images n<input id="n" type="number" inputmode="numeric" step="1" min="1" value="10000"></label>
+<div class="f" style="padding-top:18px"><button id="reset" style="width:100%">reset walk</button></div>
+</div>
+<div class="read">
+  <span class="k">gap</span><span id="rg"></span>
+  <span class="k">tolerance band</span><span id="rb"></span>
+  <span class="k">gap size class</span><span id="rc"></span>
+  <span class="k">first suspect</span><span id="rs"></span>
+</div>
+<div id="steps"></div>
+<div class="note" id="note" aria-live="polite">Set the numbers, then tap the steps from 1 downwards.</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>debugging order</dt><dd>A fixed sequence of checks when a number is off, cheapest and likeliest first; stop at the step that moves the number.</dd>
+<dt>gap</dt><dd>Your number minus the claimed one. Its size says where to look first: near chance means labels; a few points means preprocessing; tenths mean numerics.</dd>
+<dt>tolerance band</dt><dd>Two test-set standard errors, or the seed spread, whichever is larger. A gap inside it needs no explanation.</dd>
+<dt>chance level</dt><dd>What guessing scores: 100 divided by the number of classes.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var STEPS=[
+ ["Same metric?","0 runs · 2 min","Percentage vs fraction, top-1 vs mean per class, test vs validation split.","big"],
+ ["Same data?","0 runs · 3 min","len(dataset), class count, five labels next to five images.","big"],
+ ["Same preprocessing?","1 run · 10 min","One example printed after every transform; the exact prompt strings.","few"],
+ ["Same model?","1 run · 10 min","Weight source and version, model.eval(), dtype.","few big"],
+ ["Same randomness?","3 runs · 15 min","Three seeds; is the claimed number inside your spread?","seed"],
+ ["Same code and libraries?","1 run · 5 min","Git hash of the repo; versions of the libraries on the data path.","tiny"],
+ ["Same hardware numerics?","1 run · 5 min","GPU vs CPU, mixed precision. A few tenths at most.","tiny"]];
+var done=[];
+function state(){
+  var c=+$("claimed").value||0,m=+$("mine").value||0,sd=Math.max(0,+$("sd").value||0),k=Math.max(2,+$("k").value||2),n=Math.max(1,+$("n").value||1);
+  var p=Math.min(.999,Math.max(.001,c/100)),se=Math.sqrt(p*(1-p)/n)*100,band=2*Math.max(se,sd),gap=m-c,ag=Math.abs(gap),chance=100/k;
+  var cls,sus,fit;
+  if(ag<=band){cls="inside tolerance";sus="none: write 'within tolerance' and stop";fit="none"}
+  else if(m<=chance+5&&c>chance+10){cls="near chance ("+chance.toFixed(0)+" %)";sus="labels, class order, the metric";fit="big"}
+  else if(ag>=15){cls="tens of points";sus="wrong split, wrong weights, eval mode";fit="big"}
+  else if(ag>=1){cls="a few points";sus="preprocessing, then weights from another source";fit="few"}
+  else{cls="a fraction of a point";sus="seeds, versions, numerics";fit="tiny"}
+  var seedExplains=sd>0&&ag<=2*sd;
+  return {gap:gap,band:band,cls:cls,sus:sus,fit:fit,seedExplains:seedExplains,se:se,sd:sd}
+}
+function draw(){
+  var s=state();
+  $("rg").textContent=(s.gap>=0?"+":"")+s.gap.toFixed(1)+" pts";$("rb").textContent="±"+s.band.toFixed(1)+(s.sd>s.se?" (seeds)":" (test set)");
+  $("rc").textContent=s.cls;$("rs").innerHTML=s.fit==="none"?'<span class="ok">'+s.sus+'</span>':'<span class="acc">'+s.sus+'</span>';
+  var box=$("steps");box.innerHTML="";
+  STEPS.forEach(function(st,i){var b=document.createElement("button"),cl="step";
+    var likely=(st[3].split(" ").indexOf(s.fit)>=0)||(st[3]==="seed"&&s.seedExplains);
+    if(done.indexOf(i)>=0)cl+=" done";else if(st[3]==="seed"&&s.seedExplains)cl+=" explains";else if(likely&&s.fit!=="none")cl+=" likely";
+    b.className=cl;b.innerHTML="<b>"+(i+1)+" · "+st[0]+"</b><small>"+st[1]+" · "+st[2]+"</small>";
+    b.onclick=function(){tap(i)};box.appendChild(b)});
+}
+function tap(i){
+  var s=state(),st=STEPS[i],msg="<b>Step "+(i+1)+" · "+st[0]+"</b> ("+st[1]+"). "+st[2]+"<br>";
+  var skipped=[];for(var j=0;j<i;j++)if(done.indexOf(j)<0)skipped.push(j+1);
+  if(skipped.length)msg+='<span class="bad">You skipped step'+(skipped.length>1?"s":"")+' '+skipped.join(", ")+'.</span> Cheaper checks first: a wrong metric costs zero runs to find and explains a third of gaps.<br>';
+  if(s.fit==="none")msg+='<span class="ok">Gap '+Math.abs(s.gap).toFixed(1)+' is inside the band ±'+s.band.toFixed(1)+':</span> nothing to debug; the report says "within tolerance".';
+  else if(st[3]==="seed"&&s.seedExplains)msg+='<span class="ok">This step explains it:</span> the gap ('+Math.abs(s.gap).toFixed(1)+') sits inside twice the seed spread ('+(2*s.sd).toFixed(1)+'). The claimed number was one draw; report the spread, not the point.';
+  else if(st[3].split(" ").indexOf(s.fit)>=0)msg+='<span class="acc">Likely here:</span> a gap in the "'+s.cls+'" class usually comes from this step. Run the check and record what moved.';
+  else msg+='Unlikely for a gap of this size ("'+s.cls+'"), but cheap, so it goes in the report as "ruled out".';
+  if(done.indexOf(i)<0)done.push(i);$("note").innerHTML=msg;draw();
+}
+["claimed","mine","sd","k","n"].forEach(function(id){$(id).oninput=function(){done=[];draw()}});
+$("reset").onclick=function(){done=[];$("note").textContent="Tap the steps from 1 downwards.";draw()};
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
