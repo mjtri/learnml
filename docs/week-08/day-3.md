@@ -1,5 +1,5 @@
 ---
-title: Lesson 3 · LoRA: freeze W, learn BA
+title: "Lesson 3 · LoRA: freeze W, learn BA"
 terms: [LoRA, adapter, PEFT]
 card: lin-lora
 ---

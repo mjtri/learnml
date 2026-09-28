@@ -1,5 +1,5 @@
 ---
-title: B8 · Lesson 1 · Reading your own meters: what a week of usage says
+title: "B8 · Lesson 1 · Reading your own meters: what a week of usage says"
 terms: [usage report, /insights]
 playbook: weekly review
 ---

@@ -1,5 +1,5 @@
 ---
-title: Lesson 2 · Next-token prediction: the bigram model and its loss
+title: "Lesson 2 · Next-token prediction: the bigram model and its loss"
 terms: [sequence, next-token prediction, language model, bigram, context length]
 card: core-prob
 ---

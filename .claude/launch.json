@@ -4,8 +4,26 @@
     {
       "name": "learnml-site",
       "runtimeExecutable": ".venv/Scripts/python.exe",
-      "runtimeArgs": ["-m", "mkdocs", "serve", "-a", "127.0.0.1:8123"],
+      "runtimeArgs": [
+        "-m",
+        "mkdocs",
+        "serve",
+        "-a",
+        "127.0.0.1:8123"
+      ],
       "port": 8123
+    },
+    {
+      "name": "learnml-static",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8124",
+        "-d",
+        "site"
+      ],
+      "port": 8124
     }
   ]
 }

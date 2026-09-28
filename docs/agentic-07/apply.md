@@ -1,5 +1,5 @@
 ---
-title: B7 · Apply · The week-12 harness: one folder, one unit, unattended
+title: "B7 · Apply · The week-12 harness: one folder, one unit, unattended"
 playbook: experiments
 ---
 

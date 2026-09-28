@@ -1,5 +1,5 @@
 ---
-title: Lesson 5 · Encoder vs decoder: BERT and GPT
+title: "Lesson 5 · Encoder vs decoder: BERT and GPT"
 terms: [encoder, decoder, masked language model, BERT, ablation]
 card: lin-bert
 ---

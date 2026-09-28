@@ -1,5 +1,5 @@
 ---
-title: Lesson 4 · PEFT in practice: where, how hard, and folding it back
+title: "Lesson 4 · PEFT in practice: where, how hard, and folding it back"
 terms: [target module, alpha, merge (weights)]
 card: core-tooling
 ---

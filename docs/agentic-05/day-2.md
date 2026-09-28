@@ -1,5 +1,5 @@
 ---
-title: B5 · Lesson 2 · From the phone: Remote Control, Codex Remote, cloud sessions
+title: "B5 · Lesson 2 · From the phone: Remote Control, Codex Remote, cloud sessions"
 terms: [teleport, --cloud]
 playbook: automation
 ---

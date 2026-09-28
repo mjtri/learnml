@@ -1,5 +1,5 @@
 ---
-title: Lesson 1 · Tokenization: bytes → BPE merges
+title: "Lesson 1 · Tokenization: bytes → BPE merges"
 terms: [tokenization, byte, BPE, merge rule, vocabulary, GPT]
 card: core-transformer
 ---

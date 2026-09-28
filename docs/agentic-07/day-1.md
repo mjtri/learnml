@@ -1,5 +1,5 @@
 ---
-title: B7 · Lesson 1 · The long-running harness: progress file, changelog, commit per unit
+title: "B7 · Lesson 1 · The long-running harness: progress file, changelog, commit per unit"
 terms: [long-running harness, progress file, CHANGELOG, commit per unit, unattended run]
 playbook: experiments
 ---

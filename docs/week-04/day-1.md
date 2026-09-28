@@ -1,5 +1,5 @@
 ---
-title: Lesson 1 · Embeddings: a lookup table that learns
+title: "Lesson 1 · Embeddings: a lookup table that learns"
 terms: [embedding, lookup table, word2vec, cosine similarity]
 card: lin-word2vec
 ---

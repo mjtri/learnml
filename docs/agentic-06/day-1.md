@@ -1,5 +1,5 @@
 ---
-title: B6 · Lesson 1 · Literature review: search, dedupe, verify, summarise
+title: "B6 · Lesson 1 · Literature review: search, dedupe, verify, summarise"
 terms: [literature review pipeline, MCP, DOI, arXiv ID]
 playbook: research
 ---

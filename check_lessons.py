@@ -123,6 +123,12 @@ def main() -> int:
         meta, body = c.read_lesson(lesson)
         is_long = lesson.endswith("/" + c.TRACKS[track]["long"])
 
+        # Front matter must survive YAML: an unquoted title containing ": " or "#" makes MkDocs render it as body text.
+        raw = (c.DOCS / f"{lesson}.md").read_text(encoding="utf-8")
+        tm = re.search(r"^title: (.+)$", raw, re.M)
+        if tm and not tm.group(1).startswith(('"', "'")) and re.search(r": |#", tm.group(1)):
+            errors.append(f"{lesson}: front-matter title contains ': ' or '#' and must be quoted")
+
         n = c.word_count(body)
         if n > rules["max_words"]:
             errors.append(f"{lesson}: {n} words (max {rules['max_words']})")

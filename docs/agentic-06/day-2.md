@@ -1,5 +1,5 @@
 ---
-title: B6 · Lesson 2 · Drafting in Projects: TM reports, reviewer responses, KR↔EN
+title: "B6 · Lesson 2 · Drafting in Projects: TM reports, reviewer responses, KR↔EN"
 terms: [Projects, project instructions, record mode, TM report template, reviewer response, KR↔EN glossary]
 playbook: research
 ---

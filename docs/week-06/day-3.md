@@ -1,5 +1,5 @@
 ---
-title: Lesson 3 · Scaling laws: reading a log–log plot
+title: "Lesson 3 · Scaling laws: reading a log–log plot"
 terms: [scaling law, power law, log–log plot]
 card: lin-kaplan
 ---

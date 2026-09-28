@@ -1,5 +1,5 @@
 ---
-title: B3 · Lesson 2 · Permission modes and sandboxes: what each one risks
+title: "B3 · Lesson 2 · Permission modes and sandboxes: what each one risks"
 terms: [accept-edits mode, auto mode, bypass mode, dontAsk, allowlist, approval policy]
 playbook: verification
 ---

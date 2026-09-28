@@ -1,5 +1,5 @@
 ---
-title: Lesson 5 · Reproducibility basics: seeds, configs, run logs
+title: "Lesson 5 · Reproducibility basics: seeds, configs, run logs"
 terms: [reproducibility, random seed, run log, git hash]
 card: core-tooling
 ---

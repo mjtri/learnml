@@ -1,5 +1,5 @@
 ---
-title: B4 · Lesson 1 · Subagents and skills: summaries in, context saved
+title: "B4 · Lesson 1 · Subagents and skills: summaries in, context saved"
 terms: [skill, plugin]
 playbook: delegation
 ---

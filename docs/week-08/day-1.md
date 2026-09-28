@@ -1,5 +1,5 @@
 ---
-title: Lesson 1 · Rank: how many directions a matrix really uses
+title: "Lesson 1 · Rank: how many directions a matrix really uses"
 terms: [rank, low rank]
 card: core-linalg
 ---

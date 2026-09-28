@@ -1,5 +1,5 @@
 ---
-title: Lesson 3 · Attention as soft lookup: query, key, value
+title: "Lesson 3 · Attention as soft lookup: query, key, value"
 terms: [attention, query vector, key vector, value vector, attention weights]
 card: lin-attention
 ---

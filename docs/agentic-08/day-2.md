@@ -1,5 +1,5 @@
 ---
-title: B8 · Lesson 2 · Budgets and escape hatches: credits, fast mode, resets, seats
+title: "B8 · Lesson 2 · Budgets and escape hatches: credits, fast mode, resets, seats"
 terms: [budget rule, seat type, spend limit]
 playbook: budget
 ---

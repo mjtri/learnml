@@ -1,5 +1,5 @@
 ---
-title: B3 · Lesson 3 · Hooks: deterministic guard rails
+title: "B3 · Lesson 3 · Hooks: deterministic guard rails"
 terms: [hook]
 playbook: verification
 ---

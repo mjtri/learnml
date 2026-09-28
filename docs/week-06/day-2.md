@@ -1,5 +1,5 @@
 ---
-title: Lesson 2 · Tokenizer artefacts: numbers, spaces, Korean
+title: "Lesson 2 · Tokenizer artefacts: numbers, spaces, Korean"
 terms: [tokenizer artefact]
 card: core-transformer
 ---

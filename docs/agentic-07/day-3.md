@@ -1,5 +1,5 @@
 ---
-title: B7 · Lesson 3 · Reproducibility: seeds, configs, run logs, and what the agent must never do silently
+title: "B7 · Lesson 3 · Reproducibility: seeds, configs, run logs, and what the agent must never do silently"
 terms: [seed/config discipline]
 playbook: experiments
 ---

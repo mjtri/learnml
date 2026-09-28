@@ -1,5 +1,5 @@
 ---
-title: Lesson 2 · AutoTokenizer / AutoModel: shapes in, shapes out
+title: "Lesson 2 · AutoTokenizer / AutoModel: shapes in, shapes out"
 terms: [AutoTokenizer, AutoModel, config, hidden state]
 card: core-tooling
 ---

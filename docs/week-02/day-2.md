@@ -1,5 +1,5 @@
 ---
-title: Lesson 2 · Backward: local × upstream, in order
+title: "Lesson 2 · Backward: local × upstream, in order"
 terms: [topological order]
 card: core-calc
 ---

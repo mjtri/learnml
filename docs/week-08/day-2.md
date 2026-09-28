@@ -1,5 +1,5 @@
 ---
-title: Lesson 2 · SVD in pictures: a matrix as a few stretches
+title: "Lesson 2 · SVD in pictures: a matrix as a few stretches"
 terms: [SVD, singular value, low-rank approximation]
 card: core-linalg
 ---

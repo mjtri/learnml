@@ -1,5 +1,5 @@
 ---
-title: B7 · Lesson 2 · Analysis with an agent: scripts, plots, stats you can defend
+title: "B7 · Lesson 2 · Analysis with an agent: scripts, plots, stats you can defend"
 terms: [analysis script, reproducible plot]
 playbook: experiments
 ---

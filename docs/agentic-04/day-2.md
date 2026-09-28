@@ -1,5 +1,5 @@
 ---
-title: B4 · Lesson 2 · Worktrees and background agents: parallel without collisions
+title: "B4 · Lesson 2 · Worktrees and background agents: parallel without collisions"
 terms: [worktree, background agent, agent teams]
 playbook: delegation
 ---

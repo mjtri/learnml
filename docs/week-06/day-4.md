@@ -1,5 +1,5 @@
 ---
-title: Lesson 4 · Chinchilla: compute-optimal for a small lab
+title: "Lesson 4 · Chinchilla: compute-optimal for a small lab"
 terms: [FLOPs, compute-optimal, Chinchilla]
 card: lin-chinchilla
 ---
