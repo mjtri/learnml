@@ -10,7 +10,7 @@ playbook: weekly review
 
 ## Idea
 
-Seven weeks of rules and still the same Sunday question: where did the usage go? A **usage report** is six numbers written down once a week from meters you already have; the pattern in them, not the total, says what to change. Without it the playbook stays opinion.
+Same Sunday question: where did the usage go? A **usage report** is six numbers written down once a week from meters you already have; the pattern in them, not the total, says what to change. Without it the playbook stays opinion.
 
 ## How it works
 
@@ -59,6 +59,6 @@ Predict first: enter last week's numbers from memory, then the real ones from `/
 
 ## Ledger prompt
 
-> In **Weekly review**: your first usage report line ("W39: Claude 58 % / worst 92 % / subagents 31 % / long context; Codex 20 %; credits $0").
+> In **Weekly review**: your first usage report line, six numbers with the week tag.
 
-**Next:** budgets and escape hatches: credits, fast mode, resets and seat types, each with its own price.
+**Next:** budgets and escape hatches, each with its own price.
