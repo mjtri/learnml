@@ -6,7 +6,7 @@ card: build-step2
 
 # Lesson 1 · One lever at a time
 
-<p class="recall" markdown>**Previously:** contrastive learning picks the partner out of the batch, CLIP uses it to put images and text in one space, and a number is only a result once it comes with an uncertainty and a named comparison.</p>
+<p class="recall" markdown>**Previously:** pairs are free labels, so each item learns to pick its partner out of the batch, and a number becomes a result only with a metric, a held-out split and an interval against something dumb.</p>
 
 ## Idea
 

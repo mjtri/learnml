@@ -143,6 +143,16 @@
 *[Bigrams]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[bigram model]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
 *[Bigram model]: The smallest language model: predict the next token from the current token only. Learnable as a table of counts, one row per current token.
+*[bootstrap]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[Bootstrap]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[bootstrapping]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[Bootstrapping]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[bootstrapped]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[Bootstrapped]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[bootstraps]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[Bootstraps]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[bootstrap resampling]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+*[Bootstrap resampling]: Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
 *[BPE]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
 *[byte-pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
 *[Byte-pair encoding]: Byte-pair encoding: build a tokenizer by starting from bytes and repeatedly gluing the most frequent adjacent pair of pieces into one new piece.
@@ -206,6 +216,7 @@
 *[verify pass]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
 *[Verify pass]: A separate pass after drafting in which every reference is looked up by DOI or arXiv ID and dropped if no record exists or the record does not match.
 *[CLAUDE.md]: Claude Code's project instruction file, loaded into every session. Keep it short; it can import other files with @path.
+*[CLIP]: OpenAI's 2021 model: an image encoder and a text encoder trained contrastively on 400 million captioned web images, so a picture and its description land close together.
 *[cloud routine]: A saved Claude Code prompt plus repositories that runs as a cloud session whenever a trigger fires, laptop closed, without permission prompts. Research preview; spends your subscription usage.
 *[Cloud routine]: A saved Claude Code prompt plus repositories that runs as a cloud session whenever a trigger fires, laptop closed, without permission prompts. Research preview; spends your subscription usage.
 *[cloud routines]: A saved Claude Code prompt plus repositories that runs as a cloud session whenever a trigger fires, laptop closed, without permission prompts. Research preview; spends your subscription usage.
@@ -245,6 +256,10 @@
 *[Compute-optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
 *[Compute optimal]: The model size and amount of training data that give the lowest loss for a fixed training compute budget, rather than the biggest model you can afford.
+*[confidence interval]: A range around a measured number that would contain the true value most of the time if the experiment were repeated. Reported as low to high, never one number.
+*[Confidence interval]: A range around a measured number that would contain the true value most of the time if the experiment were repeated. Reported as low to high, never one number.
+*[confidence intervals]: A range around a measured number that would contain the true value most of the time if the experiment were repeated. Reported as low to high, never one number.
+*[Confidence intervals]: A range around a measured number that would contain the true value most of the time if the experiment were repeated. Reported as low to high, never one number.
 *[config]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
 *[Config]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
 *[configs]: The list of settings that decide what a model or a run is: layer count, width, vocabulary size for a model; seed, learning rate, data size for a run.
@@ -259,6 +274,14 @@
 *[Context window]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 *[context windows]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 *[Context windows]: Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
+*[contrastive learning]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[Contrastive learning]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[contrastive]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[Contrastive]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[contrastive loss]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[Contrastive loss]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[contrastive objective]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+*[Contrastive objective]: Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
 *[control condition]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
 *[Control condition]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
 *[control conditions]: A run that differs from your method in exactly one thing. Like a control condition in a user study: it makes a difference attributable to one cause.
@@ -370,6 +393,14 @@
 *[Epoch]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
 *[epochs]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
 *[Epochs]: One full pass through the training data. With a tiny data set that fits in one step, one epoch is one step of the loop.
+*[evaluation metric]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[Evaluation metric]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[evaluation metrics]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[Evaluation metrics]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[metric]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[Metric]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[metrics]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+*[Metrics]: The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
 *[exploding gradient]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[Exploding gradient]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
 *[exploding gradients]: Gradients that grow layer by layer on the way back, until updates are huge and the loss diverges. Caused by weights that are too large.
@@ -477,6 +508,14 @@
 *[Gradient descent]: The learning algorithm: compute the gradient of the loss, move every parameter a small step in the opposite direction, repeat.
 *[greedy decoding]: Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
 *[Greedy decoding]: Always pick the single most likely next token, no randomness. Deterministic, and prone to repeating itself in loops.
+*[held-out set]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[Held-out set]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[held-out sets]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[Held-out sets]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[held-out]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[Held-out]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[holdout set]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+*[Holdout set]: Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
 *[hidden layer]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
 *[Hidden layer]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
 *[hidden layers]: Any layer between the input and the output of a network. Its values are not data and not answers, but learned in-between features.
@@ -501,8 +540,26 @@
 *[Hyperparameters]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[hyper-parameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
 *[Hyper-parameter]: A setting you choose rather than learn: learning rate, batch size, hidden width, how long to train. Training never changes it; you do.
+*[ImageBind]: Meta's 2023 model that aligns six modalities (image, text, audio, depth, thermal, motion) by training each one against images only; pairs never seen together still line up.
+*[image–text retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[Image–text retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[image-text retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[Image-text retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[cross-modal retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[Cross-modal retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[text-to-image retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[Text-to-image retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[image-to-text retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[Image-to-text retrieval]: Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+*[inductive bias]: What an architecture assumes about the data before seeing any: convolutions assume nearby pixels matter; a transformer assumes little and must learn it from data.
+*[Inductive bias]: What an architecture assumes about the data before seeing any: convolutions assume nearby pixels matter; a transformer assumes little and must learn it from data.
+*[inductive biases]: What an architecture assumes about the data before seeing any: convolutions assume nearby pixels matter; a transformer assumes little and must learn it from data.
+*[Inductive biases]: What an architecture assumes about the data before seeing any: convolutions assume nearby pixels matter; a transformer assumes little and must learn it from data.
 *[inference]: Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
 *[Inference]: Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
+*[InfoNCE]: The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
+*[InfoNCE loss]: The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
+*[NT-Xent]: The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
 *[initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
 *[Initialization]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
 *[initialisation]: The starting values of the weights. Their scale must shrink with the number of inputs per unit, or signals blow up or fade with depth. Xavier and Kaiming are recipes.
@@ -807,6 +864,10 @@
 *[Parameter counts]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
 *[parameter counting]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
 *[Parameter counting]: The total number of learned weights in a model. For a transformer it is about twelve times the stream width squared per block, plus the embedding tables.
+*[patch embedding]: The linear layer that turns one flattened image patch (all its pixel values in a row) into a token vector of the model's width.
+*[Patch embedding]: The linear layer that turns one flattened image patch (all its pixel values in a row) into a token vector of the model's width.
+*[patch embeddings]: The linear layer that turns one flattened image patch (all its pixel values in a row) into a token vector of the model's width.
+*[Patch embeddings]: The linear layer that turns one flattened image patch (all its pixel values in a row) into a token vector of the model's width.
 *[PEFT]: Parameter-efficient fine-tuning: any method that adapts a big model by training a small fraction of its numbers. Also the Hugging Face library that implements LoRA and its relatives.
 *[parameter-efficient fine-tuning]: Parameter-efficient fine-tuning: any method that adapts a big model by training a small fraction of its numbers. Also the Hugging Face library that implements LoRA and its relatives.
 *[Parameter-efficient fine-tuning]: Parameter-efficient fine-tuning: any method that adapts a big model by training a small fraction of its numbers. Also the Hugging Face library that implements LoRA and its relatives.
@@ -840,6 +901,20 @@
 *[Positional embedding]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[positional embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
 *[Positional embeddings]: A vector for each position, added to the token's embedding so attention can tell first from third. Without it the tokens before you are a bag with no order.
+*[positive/negative pair]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Positive/negative pair]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[positive pair]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Positive pair]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[positive pairs]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Positive pairs]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[negative pair]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Negative pair]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[negative pairs]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Negative pairs]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[hard negative]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Hard negative]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[hard negatives]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+*[Hard negatives]: A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
 *[power law]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
 *[Power law]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
 *[power laws]: A relation where one quantity equals the other raised to a fixed power, so each tenfold increase buys the same percentage change. Straight on a log–log plot.
@@ -862,6 +937,10 @@
 *[Preregistration]: Writing the task, metric, baseline, prediction, seeds and stopping rule down before running, so the result cannot quietly reshape the question.
 *[precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 *[Precedence]: The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
+*[precision/recall]: Precision: of the items the model flagged, how many were right. Recall: of the truly positive items, how many it caught. Accuracy hides both when classes are unbalanced.
+*[Precision/recall]: Precision: of the items the model flagged, how many were right. Recall: of the truly positive items, how many it caught. Accuracy hides both when classes are unbalanced.
+*[precision and recall]: Precision: of the items the model flagged, how many were right. Recall: of the truly positive items, how many it caught. Accuracy hides both when classes are unbalanced.
+*[Precision and recall]: Precision: of the items the model flagged, how many were right. Recall: of the truly positive items, how many it caught. Accuracy hides both when classes are unbalanced.
 *[Premium seat]: A higher-priced ChatGPT Business seat: 5x the usage, no 5-hour window, weekly reset. Seats can be mixed and reassigned.
 *[Premium seats]: A higher-priced ChatGPT Business seat: 5x the usage, no 5-hour window, weekly reset. Seats can be mixed and reassigned.
 *[pretraining]: The long, expensive first training of a model on huge general data, done once by someone with a data centre. Everyone else starts from its saved weights.
@@ -885,6 +964,10 @@
 *[Cache miss]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 *[cache misses]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 *[Cache misses]: Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
+*[prompt template]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
+*[Prompt template]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
+*[prompt templates]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
+*[Prompt templates]: The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
 *[PyTorch]: The Python library this course uses for tensors, automatic gradients and neural networks. Imported as torch.
 *[query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
 *[Query vector]: In attention, the vector a token uses to ask: what am I looking for? Compared by dot product against every key.
@@ -993,6 +1076,14 @@
 *[Shape]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 *[shapes]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
 *[Shapes]: The size of a tensor along each axis, written like (32, 4, 4). Most beginner bugs in ML are shape bugs.
+*[shared embedding space]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[Shared embedding space]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[shared space]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[Shared space]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[joint embedding space]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[Joint embedding space]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[shared embedding spaces]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+*[Shared embedding spaces]: One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
 *[singular value]: The strength of one stretch in a matrix's SVD. Counting the ones that are not zero gives the rank; their sizes say how much each direction matters.
 *[Singular value]: The strength of one stretch in a matrix's SVD. Counting the ones that are not zero gives the rank; their sizes say how much each direction matters.
 *[singular values]: The strength of one stretch in a matrix's SVD. Counting the ones that are not zero gives the rank; their sizes say how much each direction matters.
@@ -1014,6 +1105,10 @@
 *[Spend limit]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 *[spend limits]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 *[Spend limits]: A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
+*[standard error]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
+*[Standard error]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
+*[standard errors]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
+*[Standard errors]: How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
 *[strong baseline]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
 *[Strong baseline]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
 *[strong baselines]: The best simple method that already exists for the task, tuned as carefully as your own method. If it wins, your idea is not needed yet.
@@ -1173,6 +1268,12 @@
 *[Vector]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
 *[Vectors]: A list of numbers; a tensor with one axis. Like one frame of readings from a row of sensors.
+*[ViT]: A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
+*[Vision Transformer]: A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
+*[vision transformer]: A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
+*[Vision transformer]: A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
+*[vision transformers]: A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
+*[Vision transformers]: A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
 *[vocabulary]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
 *[Vocabulary]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
 *[vocabularies]: The full list of pieces a tokenizer can output, each with an id number. GPT-2 has 50,257 of them; a character-level model has a few dozen.
@@ -1204,6 +1305,14 @@
 *[git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[Git worktree]: A separate checkout of the same git repository with its own files and branch, so parallel agents never write to each other's files. Claude Code keeps them under .claude/worktrees/.
 *[XOR]: Exclusive-or: true when exactly one of two inputs is on. Four points that no single straight line can split, so no single neuron can learn them.
+*[zero-shot classification]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[Zero-shot classification]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[zero-shot]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[Zero-shot]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[zero-shot classifier]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[Zero-shot classifier]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[zero-shot classifiers]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+*[Zero-shot classifiers]: Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
 *[zero_grad]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
 *[Zero_grad]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.
 *[zero the gradients]: Clearing every stored gradient before a backward pass, so the new gradient is not added on top of the old one. In PyTorch: w.grad.zero_() or the zero_grad() call.

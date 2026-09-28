@@ -304,6 +304,14 @@ The smallest language model: predict the next token from the current token only.
 <small>first met in [week-04/day-2](week-04/day-2.md) · canvas card `core-prob`</small>
 </div>
 
+<div class="gl-entry" id="bootstrap" markdown>
+**bootstrap** <small>(also: bootstrapping, bootstrapped, bootstraps, bootstrap resampling)</small>
+
+Estimate uncertainty by resampling your own results with replacement many times and recomputing the statistic each time. The spread of those recomputations is the uncertainty.
+
+<small>first met in [week-09/day-5](week-09/day-5.md) · canvas card `core-prob`</small>
+</div>
+
 <div class="gl-entry" id="bpe" markdown>
 **BPE** <small>(also: byte-pair encoding, byte pair encoding, Byte-Pair Encoding)</small>
 
@@ -426,6 +434,14 @@ Claude Code's project instruction file, loaded into every session. Keep it short
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
 </div>
 
+<div class="gl-entry" id="clip" markdown>
+**CLIP**
+
+OpenAI's 2021 model: an image encoder and a text encoder trained contrastively on 400 million captioned web images, so a picture and its description land close together.
+
+<small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-clip`</small>
+</div>
+
 <div class="gl-entry" id="cloud-routine" markdown>
 **cloud routine** <small>(also: cloud routines)</small>
 
@@ -514,6 +530,14 @@ The model size and amount of training data that give the lowest loss for a fixed
 <small>first met in [week-06/day-4](week-06/day-4.md) · canvas card `lin-chinchilla`</small>
 </div>
 
+<div class="gl-entry" id="confidence-interval" markdown>
+**confidence interval** <small>(also: confidence intervals)</small>
+
+A range around a measured number that would contain the true value most of the time if the experiment were repeated. Reported as low to high, never one number.
+
+<small>first met in [week-09/day-5](week-09/day-5.md) · canvas card `core-prob`</small>
+</div>
+
 <div class="gl-entry" id="config" markdown>
 **config** <small>(also: configs)</small>
 
@@ -536,6 +560,14 @@ How many previous tokens a model may look at when predicting the next one. A big
 Everything the model can see at once: instructions, your messages, tool results, files it read. Finite, and the main thing you spend.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="contrastive-learning" markdown>
+**contrastive learning** <small>(also: contrastive, contrastive loss, contrastive objective)</small>
+
+Training without labels by asking the model to tell matching pairs from non-matching ones: pull true partners together, push everything else in the batch apart.
+
+<small>first met in [week-09/day-1](week-09/day-1.md) · canvas card `lin-cpc`</small>
 </div>
 
 <div class="gl-entry" id="control-condition" markdown>
@@ -742,6 +774,14 @@ One full pass through the training data. With a tiny data set that fits in one s
 <small>first met in [week-02/day-5](week-02/day-5.md) · canvas card `core-calc`</small>
 </div>
 
+<div class="gl-entry" id="evaluation-metric" markdown>
+**evaluation metric** <small>(also: evaluation metrics, metric, metrics)</small>
+
+The number you report to say how good a model is, computed on data it did not train on. Chosen to match what matters, not what is easy to compute.
+
+<small>first met in [week-09/day-4](week-09/day-4.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="exploding-gradient" markdown>
 **exploding gradient** <small>(also: exploding gradients)</small>
 
@@ -908,6 +948,14 @@ Always pick the single most likely next token, no randomness. Deterministic, and
 
 ## H
 
+<div class="gl-entry" id="held-out-set" markdown>
+**held-out set** <small>(also: held-out sets, held-out, holdout set)</small>
+
+Data kept aside before any training or tuning, touched once at the end. The only number that predicts behaviour on new data. Like the participants your pilot study never saw.
+
+<small>first met in [week-09/day-4](week-09/day-4.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="hidden-layer" markdown>
 **hidden layer** <small>(also: hidden layers, hidden units, hidden unit)</small>
 
@@ -950,12 +998,44 @@ A setting you choose rather than learn: learning rate, batch size, hidden width,
 
 ## I
 
+<div class="gl-entry" id="imagebind" markdown>
+**ImageBind**
+
+Meta's 2023 model that aligns six modalities (image, text, audio, depth, thermal, motion) by training each one against images only; pairs never seen together still line up.
+
+<small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-imagebind`</small>
+</div>
+
+<div class="gl-entry" id="image-text-retrieval" markdown>
+**image–text retrieval** <small>(also: image-text retrieval, cross-modal retrieval, text-to-image retrieval, image-to-text retrieval)</small>
+
+Given a query in one modality, rank items of the other by similarity in the shared space: find the picture for a sentence, or the caption for a picture.
+
+<small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-clip`</small>
+</div>
+
+<div class="gl-entry" id="inductive-bias" markdown>
+**inductive bias** <small>(also: inductive biases)</small>
+
+What an architecture assumes about the data before seeing any: convolutions assume nearby pixels matter; a transformer assumes little and must learn it from data.
+
+<small>first met in [week-09/day-3](week-09/day-3.md) · canvas card `core-dl`</small>
+</div>
+
 <div class="gl-entry" id="inference" markdown>
 **inference**
 
 Using a trained model to produce outputs, with no learning happening. Only the forward pass runs.
 
 <small>first met in [week-01/day-4](week-01/day-4.md)</small>
+</div>
+
+<div class="gl-entry" id="infonce" markdown>
+**InfoNCE** <small>(also: InfoNCE loss, NT-Xent)</small>
+
+The contrastive loss: for each item, a softmax over its similarities to every candidate in the batch, penalised when the true partner does not win. Cross-entropy, batch as labels.
+
+<small>first met in [week-09/day-1](week-09/day-1.md) · canvas card `lin-cpc`</small>
 </div>
 
 <div class="gl-entry" id="initialization" markdown>
@@ -1442,6 +1522,14 @@ The total number of learned weights in a model. For a transformer it is about tw
 <small>first met in [week-05/day-3](week-05/day-3.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="patch-embedding" markdown>
+**patch embedding** <small>(also: patch embeddings)</small>
+
+The linear layer that turns one flattened image patch (all its pixel values in a row) into a token vector of the model's width.
+
+<small>first met in [week-09/day-3](week-09/day-3.md) · canvas card `lin-vit`</small>
+</div>
+
 <div class="gl-entry" id="peft" markdown>
 **PEFT** <small>(also: parameter-efficient fine-tuning)</small>
 
@@ -1498,6 +1586,14 @@ A vector for each position, added to the token's embedding so attention can tell
 <small>first met in [week-04/day-5](week-04/day-5.md) · canvas card `core-transformer`</small>
 </div>
 
+<div class="gl-entry" id="positive-negative-pair" markdown>
+**positive/negative pair** <small>(also: positive pair, positive pairs, negative pair, negative pairs, hard negative, hard negatives)</small>
+
+A positive pair is two things that belong together (an image and its caption). A negative pair is any mismatched combination; in a batch, every other item is a negative.
+
+<small>first met in [week-09/day-1](week-09/day-1.md) · canvas card `lin-cpc`</small>
+</div>
+
 <div class="gl-entry" id="power-law" markdown>
 **power law** <small>(also: power laws, power-law)</small>
 
@@ -1528,6 +1624,14 @@ Writing the task, metric, baseline, prediction, seeds and stopping rule down bef
 The order instruction files are read: broadest first, the nearest last. Files are joined, not replaced, so two conflicting lines leave the agent free to follow either.
 
 <small>first met in [agentic-02/day-1](agentic-02/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="precision-recall" markdown>
+**precision/recall** <small>(also: precision and recall)</small>
+
+Precision: of the items the model flagged, how many were right. Recall: of the truly positive items, how many it caught. Accuracy hides both when classes are unbalanced.
+
+<small>first met in [week-09/day-4](week-09/day-4.md) · canvas card `core-dl`</small>
 </div>
 
 <div class="gl-entry" id="premium-seat" markdown>
@@ -1568,6 +1672,14 @@ A workspace in ChatGPT or Claude that keeps its own chats, files, instructions a
 Reuse of an already-processed conversation prefix so the next turn is cheaper. It expires after idle time; a cold restart reprocesses everything.
 
 <small>first met in [agentic-01/day-1](agentic-01/day-1.md)</small>
+</div>
+
+<div class="gl-entry" id="prompt-template" markdown>
+**prompt template** <small>(also: prompt templates)</small>
+
+The sentence a class name is dropped into before embedding, such as 'a photo of a {}'. Changing the wording changes zero-shot accuracy by several points.
+
+<small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-clip`</small>
 </div>
 
 <div class="gl-entry" id="pytorch" markdown>
@@ -1768,6 +1880,14 @@ The size of a tensor along each axis, written like (32, 4, 4). Most beginner bug
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="shared-embedding-space" markdown>
+**shared embedding space** <small>(also: shared space, joint embedding space, shared embedding spaces)</small>
+
+One vector space that two different kinds of input are mapped into, so an image and a sentence can be compared directly by cosine similarity.
+
+<small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-clip`</small>
+</div>
+
 <div class="gl-entry" id="singular-value" markdown>
 **singular value** <small>(also: singular values)</small>
 
@@ -1814,6 +1934,14 @@ Turns a list of scores into probabilities that add to one: exponentiate each sco
 A monthly cap on pay-as-you-go credits: set by you in Claude's Settings > Usage, or per seat type and per user by a ChatGPT Business owner or admin.
 
 <small>first met in [agentic-08/day-2](agentic-08/day-2.md)</small>
+</div>
+
+<div class="gl-entry" id="standard-error" markdown>
+**standard error** <small>(also: standard errors)</small>
+
+How much a mean would wobble if you repeated the whole experiment: the spread of the samples divided by the square root of their number. Shrinks slowly with more runs.
+
+<small>first met in [week-09/day-5](week-09/day-5.md) · canvas card `core-prob`</small>
 </div>
 
 <div class="gl-entry" id="strong-baseline" markdown>
@@ -2094,6 +2222,14 @@ A list of numbers; a tensor with one axis. Like one frame of readings from a row
 <small>first met in [week-01/day-1](week-01/day-1.md) · canvas card `core-linalg`</small>
 </div>
 
+<div class="gl-entry" id="vit" markdown>
+**ViT** <small>(also: Vision Transformer, vision transformer, vision transformers)</small>
+
+A transformer for images: cut the picture into fixed-size patches, turn each into a token, add position information, and run the same blocks a language model uses.
+
+<small>first met in [week-09/day-3](week-09/day-3.md) · canvas card `lin-vit`</small>
+</div>
+
 <div class="gl-entry" id="vocabulary" markdown>
 **vocabulary** <small>(also: vocabularies, vocab)</small>
 
@@ -2163,6 +2299,14 @@ Exclusive-or: true when exactly one of two inputs is on. Four points that no sin
 </div>
 
 ## Z
+
+<div class="gl-entry" id="zero-shot-classification" markdown>
+**zero-shot classification** <small>(also: zero-shot, zero-shot classifier, zero-shot classifiers)</small>
+
+Classifying into categories the model was never trained on: write each category as a sentence, embed the sentences, and pick the one most similar to the image.
+
+<small>first met in [week-09/day-2](week-09/day-2.md) · canvas card `lin-clip`</small>
+</div>
 
 <div class="gl-entry" id="zero-grad" markdown>
 **zero_grad** <small>(also: zero the gradients, zeroing the gradients)</small>

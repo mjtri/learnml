@@ -6,7 +6,7 @@ card: lin-cpc
 
 # Lesson 1 · Pick your partner out of the batch
 
-<p class="recall" markdown>**Previously:** LoRA freezes the pretrained weights and trains a small low-rank update ΔW = BA on chosen attention matrices; the rank r sets how much the adapter may change.</p>
+<p class="recall" markdown>**Previously:** a matrix's rank counts the directions it really uses, the SVD sorts them by strength, and LoRA fine-tunes a frozen model by learning only a low-rank change B times A.</p>
 
 ## Idea
 

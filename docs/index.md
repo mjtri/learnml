@@ -103,8 +103,13 @@ hide:
     - ⬜ [Lesson 5 · Fine-tuning failure modes](week-08/day-5.md)
     - ⬜ [Build · LoRA by hand, then with PEFT, then a rank ablation](week-08/build.md)
 
-??? note "Week 9 · CLIP, multimodal embeddings, evaluation · not generated yet"
-    `python gen_week.py 9` prints the prompt that builds it.
+??? note "⬜ Week 9 · CLIP, multimodal embeddings, evaluation · 0/6"
+    - ⬜ [Lesson 1 · Pick your partner out of the batch](week-09/day-1.md)
+    - ⬜ [Lesson 2 · CLIP: two encoders, one space](week-09/day-2.md)
+    - ⬜ [Lesson 3 · ViT in one page: patches as tokens](week-09/day-3.md)
+    - ⬜ [Lesson 4 · A number is not a result](week-09/day-4.md)
+    - ⬜ [Lesson 5 · Seeds are participants](week-09/day-5.md)
+    - ⬜ [Build · A contrastive model from scratch, then CLIP with error bars](week-09/build.md)
 
 ??? note "⬜ Week 10 · Experiment design · 0/6"
     - ⬜ [Lesson 1 · One lever at a time](week-10/day-1.md)
