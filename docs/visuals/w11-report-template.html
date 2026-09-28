@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reproduction report template</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.f{display:block;margin:6px 0;font-size:12.5px;color:var(--mut)}
+.f input{display:block;width:100%;min-height:44px;margin-top:2px;font:inherit;font-size:14px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.f.bad input{border-color:var(--bad)}
+.verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:14px}
+pre{font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin:8px 0 0;white-space:pre-wrap;word-break:break-word}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Six sentences: the template refuses a report with a hole in it</h1>
+<div class="row"><button id="pClip">CLIP case</button><button id="pProbe">week-10 case</button></div>
+<label class="f">1 · target: paper, table, cell<input id="target" type="text" value="Radford et al. 2021, Table 11, ViT-B/32 zero-shot CIFAR-10"></label>
+<label class="f">2 · setup: weights, data, preprocessing, commit, versions, hardware, seed<input id="setup" type="text" value="open_clip, pretrained=openai, 10,000 test images, shipped preprocess, 18 templates, T4 fp32, commit ____, no seed"></label>
+<div class="g">
+<label class="f">claimed %<input id="claimed" type="number" inputmode="decimal" step="0.1" value="91.3"></label>
+<label class="f">3 · your result %<input id="mine" type="number" inputmode="decimal" step="0.1" value="89.8"></label>
+<label class="f">test images n<input id="n" type="number" inputmode="numeric" step="1" min="1" value="10000"></label>
+<label class="f">seed spread sd (0 = none)<input id="sd" type="number" inputmode="decimal" step="0.1" min="0" value="0"></label>
+</div>
+<label class="f">5 · explanation: what moved the number, by how much (measured)<input id="expl" type="text" placeholder="e.g. 1 template instead of 18 moves it -1.2 (measured); laion2b weights +3.8 (ruled out)"></label>
+<label class="f">6 · residue: what is unexplained, and the next check with its cost<input id="res" type="text" placeholder="e.g. 0.3 points unexplained; next: resize method, 10 min"></label>
+<div class="row"><button id="check">check</button></div>
+<div class="verdict" id="verdict" aria-live="polite">Sentence 4, the verdict, is computed from the numbers. Fill the rest, then tap <b>check</b>.</div>
+<pre id="out" hidden></pre>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>reproduction report</dt><dd>One paragraph, six sentences: target, setup, result, verdict, explanation, residue; committed next to the config and the seed.</dd>
+<dt>tolerance</dt><dd>Two test-set standard errors, or the seed spread, whichever is larger; the band that turns a gap into a verdict.</dd>
+<dt>residue</dt><dd>The part of the gap no measured change accounts for, stated with the next check and its cost.</dd>
+<dt>measured move</dt><dd>How much the number changed when one thing was changed and the run repeated; a guess is not a move.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function check(){
+  var c=+$("claimed").value,m=+$("mine").value,n=Math.max(1,+$("n").value||1),sd=Math.max(0,+$("sd").value||0);
+  var p=Math.min(.999,Math.max(.001,c/100)),se=Math.sqrt(p*(1-p)/n)*100,band=2*Math.max(se,sd),gap=m-c,inside=Math.abs(gap)<=band;
+  var blanks=[];
+  [["target","target"],["setup","setup"],["mine","result"],["expl","explanation"],["res","residue"]].forEach(function(f){var el=$(f[0]),ok=String(el.value).trim()!=="";el.parentNode.className="f"+(ok?"":" bad");if(!ok)blanks.push(f[1])});
+  var vague=/probably|maybe|might|likely|I think/i.test($("expl").value);
+  if(blanks.length){$("out").hidden=true;$("verdict").innerHTML='<span class="bad">Refused: '+blanks.join(", ")+' empty.</span> '+(blanks.indexOf("residue")>=0?'An unexplained residue stated is a result; hidden, it is a claim. Write "0 points unexplained" if that is true.':'Every sentence answers one question; none may be skipped.');return}
+  var verdict=inside?"within tolerance (gap "+(gap>=0?"+":"")+gap.toFixed(1)+", band ±"+band.toFixed(1)+")":"outside tolerance by "+(Math.abs(gap)-band).toFixed(1)+" points (gap "+(gap>=0?"+":"")+gap.toFixed(1)+", band ±"+band.toFixed(1)+")";
+  var src=sd>se?"seed spread "+sd.toFixed(1):"test-set SE "+se.toFixed(2);
+  var lines=["Target: "+$("target").value.trim()+", "+c+".","Setup: "+$("setup").value.trim()+".","Result: "+m+", tolerance +-"+band.toFixed(1)+" ("+src+").","Verdict: "+verdict+".","Explanation: "+$("expl").value.trim()+".","Residue: "+$("res").value.trim()+"."];
+  $("out").textContent=lines.join(" ");$("out").hidden=false;
+  var v=inside?'<span class="ok">Verdict computed: reproduced.</span> Sentence 5 may now be short; sentence 6 still names the next check.':'<span class="acc">Verdict computed: a real gap.</span> Sentence 5 must account for it with measured moves.';
+  if(vague)v+=' <span class="bad">"probably / maybe / likely" in the explanation:</span> that is a guess; move it to the residue as the next check.';
+  if(band>10)v+=' Band wider than 10 points: say so in the result sentence; the claim was imprecise.';
+  $("verdict").innerHTML=v+' Commit this paragraph as week11_report.md.'}
+function preset(t,s,c,m,n,sd,e,r){$("target").value=t;$("setup").value=s;$("claimed").value=c;$("mine").value=m;$("n").value=n;$("sd").value=sd;$("expl").value=e;$("res").value=r;$("out").hidden=true;$("verdict").textContent="Preset loaded. Tap check."}
+$("pClip").onclick=function(){preset("Radford et al. 2021, Table 11, ViT-B/32 zero-shot CIFAR-10","open_clip, pretrained=openai, 10,000 test images, shipped preprocess, 18 templates, T4 fp32, commit ____, no seed",91.3,89.8,10000,0,"","")};
+$("pProbe").onclick=function(){preset("LearnML week-10 notebook, cell 30, sound-probe held-out accuracy, seeds 0-2","week10_data.npz (smoke, seed 0, 240 images), standardise + 75/25 split, 64-unit probe, 200 Adam steps, CPU, torch ____",71.1,66.2,60,8,"seeds 0-9 give 66.2 +- 8.0; the claimed 71.1 was the mean of three draws (measured)","0 points unexplained once the spread is reported; next: 500 steps, 2 min")};
+$("check").onclick=check;
+window.redraw=function(){};
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

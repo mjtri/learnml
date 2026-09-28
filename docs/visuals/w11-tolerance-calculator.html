@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tolerance calculator</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.f{display:block;margin:6px 0;font-size:12.5px;color:var(--mut)}
+.f input{display:block;width:100%;min-height:44px;margin-top:2px;font:inherit;font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+canvas{display:block;width:100%;height:110px;border-radius:10px;background:var(--card);margin-top:8px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:14px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Tolerance: how far off still counts as the same number</h1>
+<div class="row"><button id="pClip">CLIP cell</button><button id="pProbe">week-10 probe</button></div>
+<label class="f">claimed accuracy, %<input id="claimed" type="number" inputmode="decimal" step="0.1" min="0.1" max="99.9" value="91.3"></label>
+<label class="f">test-set size n (images the number was measured on)<input id="n" type="number" inputmode="numeric" step="1" min="1" value="10000"></label>
+<label class="f">seed spread, sd across seeds in points (0 if the evaluation has no randomness)<input id="sd" type="number" inputmode="decimal" step="0.1" min="0" value="0"></label>
+<label class="f">your number, %<input id="mine" type="number" inputmode="decimal" step="0.1" min="0" max="100" value="89.8"></label>
+<canvas id="cv" aria-label="Number line with the claimed number, its tolerance band and your number"></canvas>
+<div class="read">
+  <span class="k">test-set standard error √(p(1−p)/n)</span><span id="rse"></span>
+  <span class="k">band = 2 × max(SE, seed sd)</span><span id="rband"></span>
+  <span class="k">gap (yours − claimed)</span><span id="rgap"></span>
+  <span class="k">gap in standard errors</span><span id="rz"></span>
+</div>
+<div class="verdict" id="verdict" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>tolerance</dt><dd>How far a reproduced number may land from the claimed one and still count as the same: two standard errors of the test set, or the seed spread, whichever is larger.</dd>
+<dt>standard error</dt><dd>How much a measured accuracy would wobble if the test set were drawn again: √(p(1−p)/n), with p as a fraction.</dd>
+<dt>seed spread</dt><dd>The standard deviation of the number across runs that differ only in the random seed. The paper's number is one draw from it.</dd>
+<dt>verdict</dt><dd>Inside the band: reproduced. Outside: a real gap that needs an explanation.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var cv=$("cv"),ctx=cv.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function calc(){
+  var p=Math.min(99.9,Math.max(0.1,+$("claimed").value||0))/100,n=Math.max(1,+$("n").value||1),sd=Math.max(0,+$("sd").value||0),m=+$("mine").value||0;
+  var se=Math.sqrt(p*(1-p)/n)*100,band=2*Math.max(se,sd),gap=m-p*100,z=gap/se;
+  $("rse").textContent=se.toFixed(2)+" pts";$("rband").textContent="±"+band.toFixed(2)+" pts"+(sd>se?" (seeds)":" (test set)");
+  $("rgap").textContent=(gap>=0?"+":"")+gap.toFixed(2)+" pts";$("rz").textContent=(z>=0?"+":"")+z.toFixed(1)+" SE";
+  var inside=Math.abs(gap)<=band,v;
+  if(inside)v='<span class="ok">Inside the band: reproduced.</span> A gap of '+Math.abs(gap).toFixed(1)+' points is within ±'+band.toFixed(1)+'; write "within tolerance" and move on.';
+  else v='<span class="bad">Outside the band by '+(Math.abs(gap)-band).toFixed(1)+' points: a real gap.</span> Test-set noise alone would put the number within ±'+(2*se).toFixed(1)+'; this needs the debugging order and an explanation sentence.';
+  if(band>10)v+=' <span class="acc">Band wider than 10 points:</span> the claimed number was never precise; the reproduction can hardly fail, and that is the finding.';
+  $("verdict").innerHTML=v;
+  draw(p*100,band,m);
+}
+function draw(c,band,m){
+  var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,W,H);
+  var lo=Math.min(c-band,m)-2,hi=Math.max(c+band,m)+2;lo=Math.max(0,lo);hi=Math.min(100,hi);if(hi-lo<4){lo=Math.max(0,c-2);hi=Math.min(100,c+2)}
+  function X(v){return 14+(v-lo)/(hi-lo)*(W-28)}
+  ctx.strokeStyle=css("--mut");ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(14,60);ctx.lineTo(W-14,60);ctx.stroke();
+  ctx.fillStyle=css("--acc");ctx.globalAlpha=.25;ctx.fillRect(X(c-band),40,X(c+band)-X(c-band),40);ctx.globalAlpha=1;
+  ctx.fillStyle=css("--acc");ctx.fillRect(X(c)-1.5,32,3,56);
+  ctx.fillStyle=Math.abs(m-c)<=band?css("--ok"):css("--bad");ctx.beginPath();ctx.arc(X(m),60,7,0,7);ctx.fill();
+  ctx.fillStyle=css("--fg");ctx.font="12px system-ui,sans-serif";ctx.textAlign="center";
+  ctx.fillText("claimed "+c.toFixed(1),Math.min(W-40,Math.max(40,X(c))),24);ctx.fillText("yours "+m.toFixed(1),Math.min(W-30,Math.max(30,X(m))),102);
+  ctx.textAlign="left";ctx.fillStyle=css("--mut");ctx.fillText(lo.toFixed(0),14,102);ctx.textAlign="right";ctx.fillText(hi.toFixed(0),W-14,102);
+}
+["claimed","n","sd","mine"].forEach(function(id){$(id).oninput=calc});
+function preset(c,n,sd,m){$("claimed").value=c;$("n").value=n;$("sd").value=sd;$("mine").value=m;calc()}
+$("pClip").onclick=function(){preset(91.3,10000,0,89.8)};
+$("pProbe").onclick=function(){preset(71.1,60,2.5,66.2)};
+window.redraw=calc;addEventListener("resize",calc);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+calc();
+})();
+</script>
+</body>
+</html>
