@@ -45,7 +45,7 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 <dt>field map</dt><dd>The table from data-file keys to the cell, placeholder or macro each format uses; a gap is a cell nobody fills.</dd>
 <dt>data file</dt><dd>trip.yaml: one key per fact, the only thing you type per run.</dd>
 <dt>label</dt><dd>The text in the cell to the left of a value cell; python-hwpx fills "label &gt; right", so a renamed label breaks the map.</dd>
-<dt>oracle</dt><dd>check.py: opens each output, exits 0 when every mapped cell holds its value and 1 when any is empty.</dd>
+<dt>oracle</dt><dd>check.py: walks the field map, exits 0 when every key exists in trip.yaml and every mapped cell is filled, 1 otherwise; fill.py exits 2 on a missing key.</dd>
 </dl></details>
 <script>
 (function(){

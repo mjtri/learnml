@@ -24,7 +24,7 @@ Repositories worth adopting for the long run, scored with the B9 **worth-it rubr
 | Repo | Why it is here | Score | What to take | Checked |
 |---|---|---|---|---|
 | [affaan-m/ECC](https://github.com/affaan-m/ECC) | 292 skills, 68 agents, hooks on every turn: high context cost; install one way only, never stacked | 6 | The [shortform guide](https://github.com/affaan-m/ECC/blob/main/the-shortform-guide.md), single skills copied into `.claude/skills`, AgentShield as a scanner | 2026-09-28 |
-| [mattpocock/skills](https://github.com/mattpocock/skills) | Good method pack (`grill-with-docs`, `to-spec`, `tdd`, `handoff`); overlaps superpowers | 8 | `claude plugins install mattpocock-skills` if you did not install superpowers; third-party, auto-updates | 2026-09-28 |
+| [mattpocock/skills](https://github.com/mattpocock/skills) | Good method pack (`grill-with-docs`, `to-spec`, `tdd`, `handoff`); overlaps superpowers | 8 | `claude plugin install mattpocock-skills@claude-plugins-official` if you did not install superpowers; third-party, auto-updates | 2026-09-28 |
 | [openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc) | Cross-vendor review inside Claude Code; no push since 2026-07-08 | 7 | `/plugin marketplace add openai/codex-plugin-cc` → `/plugin install codex@openai-codex`; re-check activity first | 2026-09-28 |
 | cc-switch, ruflo, gstack, claude-code-router, github-mcp-server | Popular but a poor fit: writes your configs / heavy orchestration / startup roles / not needed on Max / `gh` is cheaper | ≤ 6 | Nothing for now | 2026-09-28 |
 
@@ -32,4 +32,4 @@ Repositories worth adopting for the long run, scored with the B9 **worth-it rubr
 
 [star-history.com](https://www.star-history.com/) · [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) · [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) · [openai/skills](https://github.com/openai/skills)
 
-_Add a row when a candidate scores ≥ 8; delete a row when a monthly refresh drops it. The B9 apply task adds your first two rows._
+_Add a row when a candidate scores ≥ 8; delete a row when a monthly refresh drops it. The B9 apply task adds your first A/B numbers to the risk notes; add a row only for a tool not yet listed._

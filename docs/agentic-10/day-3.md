@@ -1,7 +1,7 @@
 ---
 title: "B10 · Lesson 3 · Run it unattended, safely: where, what it may touch, what it must never do silently"
 terms: [personal data boundary, dry run]
-playbook: automation
+playbook: automation recipes
 ---
 
 # B10 · Lesson 3 · Run it unattended, safely: where, what it may touch, what it must never do silently
@@ -16,15 +16,15 @@ Unattended means nobody answers a permission prompt or notices that a master was
 
 **Four places it can run.** Desktop scheduled task: your machine and files, only while the app is open and the computer awake; "always allow" after a first Run now ([desktop tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks){ .src data-checked="2026-09-28" }). Cloud routine: a fresh clone of a GitHub repository, no permission prompts, every connected connector included by default ([routines](https://code.claude.com/docs/en/routines){ .src data-checked="2026-09-28" }). Cowork `/schedule`: also the cloud ([Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork){ .src data-checked="2026-09-28" }). Codex: desktop tasks need the computer on and the app running; web tasks "can't work directly in a folder on your computer" ([Codex tasks](https://learn.chatgpt.com/docs/automations.md){ .src data-checked="2026-09-28" }). So your details get a local task or you; cloud clocks see only repositories.
 
-**The personal data boundary.** `trip.yaml` and the outputs live in `$HOME\forms\`, outside every repository; the skill folder holds no value. Proof, inside any repo: `git check-ignore -v trip.yaml` prints a rule and `git ls-files` never lists it. Secrets never go into `SKILL.md` or a routine's environment variables (readable by other users). Open Codex in `$HOME\forms`; edits outside the workspace need approval ([Codex sandbox](https://learn.chatgpt.com/docs/agent-approvals-security){ .src data-checked="2026-09-28" }).
+**The personal data boundary.** `trip.yaml` and the outputs live in `$HOME\forms\`, outside every repository; the skill folder holds no value. Proof, inside any repo: `git ls-files` never lists it. Secrets never go into `SKILL.md` or a routine's environment variables (readable by other users). Open Codex in `$HOME\forms`; edits outside the workspace need approval ([Codex sandbox](https://learn.chatgpt.com/docs/agent-approvals-security){ .src data-checked="2026-09-28" }).
 
-**Dry run, diff, write.** `fill.py --dry-run` prints the map with tonight's values and touches nothing. The real run writes under `out\<date>\`, never over a master; then diff, `check.py`, upload. Unattended in Claude Code (line below), anything that would have prompted is denied and the run fails loudly (v2.1.259 or later) ([programmatic runs](https://code.claude.com/docs/en/headless){ .src data-checked="2026-09-28" }).
+**Dry run, diff, write.** `fill.py --dry-run` prints the map with tonight's values and touches nothing. The real run writes under `out\<date>\`, never over a master; then diff, `check.py`, upload. Unattended in Claude Code (line below), anything that would have prompted is denied and the run fails loudly (`claude update` to v2.1.259 or later) ([programmatic runs](https://code.claude.com/docs/en/headless){ .src data-checked="2026-09-28" }).
 
 ```
 claude -p "/trip-forms" --allowedTools "Bash(python *),Read" --permission-prompts none
 ```
 
-**Never silently.** Overwrite a master. Write outside `out\`. Submit, upload or email. Place a seal. Invent a missing value: an empty budget line means exit 2. Read another data file. Change the field map. Call the network. Skip the oracle. Each is a line in `SKILL.md`; those that have bitten you become a hook (week 7).
+**Never silently.** Overwrite a master. Write outside `out\`. Submit, upload or email. Place a seal. Invent a missing value: `fill.py` exits 2 on a missing key, `check.py` 1 on an empty cell. Read another data file. Change the field map. Call the network. Skip the oracle. Each is a line in `SKILL.md`; those that have bitten you become a hook (week 7).
 
 **In practice.** A weekly trip-report reminder is a fine cloud routine: calendar in, note out. The filling needs `trip.yaml`, so it is not. Let the clock nag; you run the recipe.
 
@@ -63,6 +63,6 @@ Predict first: which runners can see `trip.yaml`? Then tap each and read the tri
 
 ## Ledger prompt
 
-> In **Automation**: where each recipe runs and its never-silently list, hooks marked.
+> In **Automation recipes**: where each recipe runs and its never-silently list, hooks marked.
 
 **Next:** the apply task: build `trip-forms`, run it in both tools, watch the oracle reject a missing field, record the minutes saved.

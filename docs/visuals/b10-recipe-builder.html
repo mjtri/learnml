@@ -47,7 +47,7 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 <details><summary>ⓘ Words used here</summary><dl>
 <dt>data file</dt><dd>The one file you type per run (trip.yaml): one key per fact, kept outside every repository.</dd>
 <dt>template</dt><dd>The form with its cells empty, as the office issued it; replaced whole, never edited.</dd>
-<dt>oracle</dt><dd>A check the agent can run: check.py opens each output and exits non-zero on a missing or wrong field.</dd>
+<dt>oracle</dt><dd>A check the agent can run: check.py walks the field map and exits 1 on a key missing from trip.yaml or an empty output cell; fill.py exits 2 on a missing key and writes nothing.</dd>
 <dt>trigger</dt><dd>What starts a run: you typing /trip-forms, or a clock (desktop task, cloud routine).</dd>
 </dl></details>
 <script>

@@ -63,7 +63,7 @@ var L=[
   where:"Nothing runs. Claude Code fetches it, and with auto-update on, rewrites installed plugin files in the background.",
   cost:"Zero tokens. The risk is not context but trust: the name says who publishes the list, not what each plugin does."},
  {k:"hook",n:"Hook",tok:0,code:true,
-  can:"A shell command (or prompt, agent, HTTP call) at one of 28 lifecycle events: before a tool call, on stop, at session start.",
+  can:"A shell command (or prompt, agent, HTTP call) at one of 30-plus lifecycle events: before a tool call, on stop, at session start.",
   where:"On your machine, outside the sandbox, with your privileges. Deterministic: it always runs.",
   cost:"Zero model tokens by itself. What it prints can enter context; a hook that filters test output saves tokens instead."},
  {k:"subagent",n:"Subagent",tok:40,code:false,

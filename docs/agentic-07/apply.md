@@ -56,11 +56,12 @@ Leave with `experiments/week12/`, a harness an agent can run unattended for one 
    print(f"OK: {len(rows)} rows, {len(full)} full config/seed pairs")
    ```
 3. **Oracle check (5 min).** Run `python experiments/week12/check.py`: FAIL. Paste the Lesson 3 row, on one line, into `runs.jsonl` (the week-12 notebook's Part D appends rows in this schema with `metric: "rank_corr"`): OK. Set its `dirty` to `true`: FAIL. Empty the file, commit `Scaffold week12 harness`.
-4. **Unit 1, Claude Code (15 min).** Unattended, one line:
+4. **Unit 1, Claude Code (15 min).** Unattended, one line each:
    ```text
+   claude update
    claude -p "Read experiments/week12/progress.md and CHANGELOG.md. Do the next unit: write run.py (pixel-distance baseline on week10_data.npz, metric rank_corr against the synthetic confusion table exactly as the week-12 notebook computes it, seeds from config.json, smoke first), append rows, run check.py, update progress.md and CHANGELOG.md, commit." --allowedTools "Read,Edit,Write,Bash(python *),Bash(git add *),Bash(git commit *)" --permission-prompts none
    ```
-   Note minutes, `/usage` delta, and a 1–5 quality score after reading the diff.
+   `--permission-prompts none` needs Claude Code v2.1.259 or later, hence `claude update` first. Note minutes, `/usage` delta, and a 1–5 quality score after reading the diff.
 5. **Unit 1, Codex (15 min).** `git checkout -b codex-unit1 <scaffold hash>` then the same prompt as a Codex cloud task or in the CLI. Note minutes, counter delta, quality. Read both diffs for silent changes: config, seeds, `check.py`, `smoke`.
 6. **Keep one (5 min).** Merge the better branch; the loser goes under Failed approaches only if it wrote a wrong row.
 7. **Meters (2 min).** `/usage` and the counter again.

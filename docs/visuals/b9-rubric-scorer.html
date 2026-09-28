@@ -53,21 +53,21 @@ dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
 <dt>worth-it rubric</dt><dd>Six lines scored 0 to 2: habit change, context and usage cost, trust, maintenance, both tools, fit. Adopt at 8 of 12 or more with no zero on trust.</dd>
 <dt>trust zero</dt><dd>The three files (hooks/hooks.json, .mcp.json, bin/) showed something you cannot explain, or the licence forbids your use. A zero here ends the scoring.</dd>
 <dt>method pack</dt><dd>A plugin that changes how you start and finish work (brainstorm, plan, test, review). Two of them change the same habit, so they count as one: keep one.</dd>
-<dt>last push</dt><dd>The date of the newest commit on GitHub. Within 30 days scores 2 on maintenance, within 90 days 1, older 0.</dd>
+<dt>last push</dt><dd>The date of the newest commit on GitHub. Within 30 days suggests 2 on maintenance, within 90 days 1, older 0; open issues and maintainer count can lower it.</dd>
 </dl></details>
 <script>
 (function(){
 var LINES=[
  {k:"habit",t:"Habit change",s:"2 changes what you do weekly · 1 improves a step · 0 adds a feature"},
  {k:"cost",t:"Context and usage cost",s:"2 nothing always-on · 1 descriptions only · 0 hooks every turn or big tool lists"},
- {k:"trust",t:"Trust",s:"2 you or Anthropic/OpenAI wrote it · 1 known author, clean three files · 0 unexplained code or licence"},
+ {k:"trust",t:"Trust",s:"2 official marketplace, clean three files, no per-repo setup step · 1 explained files, or a setup step writes into your repo · 0 unexplained code or licence"},
  {k:"maint",t:"Maintenance",s:"2 push within 30 days, issues moving · 1 within 90 days or one maintainer · 0 stale"},
  {k:"both",t:"Both tools",s:"2 Claude Code and Codex · 1 one tool, format portable · 0 one tool, locked in"},
  {k:"fit",t:"Fit",s:"2 two or more of Unity, paperwork, experiments, this repo · 1 one · 0 none"}
 ];
 var PRESETS=[
- {n:"ECC (bundle)",stars:268577,push:"2026-09-28",v:{habit:1,cost:0,trust:1,maint:2,both:2,fit:0},note:"21 hook entries, 292 skill descriptions, chrome-devtools server; MIT, 382 contributors. Radar: read, don't bundle-install."},
- {n:"mattpocock/skills",stars:270893,push:"2026-09-24",v:{habit:2,cost:1,trust:1,maint:1,both:2,fit:1},note:"No hooks, no .mcp.json, no bin/; one maintainer, 533 open issues. Passes at 8, but it changes the same habit as superpowers: keep one method pack."},
+ {n:"ECC (bundle)",stars:268577,push:"2026-09-28",v:{habit:1,cost:0,trust:1,maint:2,both:2,fit:0},note:"24 hook entries, 292 skill descriptions, chrome-devtools server; MIT, 382 contributors. Radar: read, don't bundle-install."},
+ {n:"mattpocock/skills",stars:270893,push:"2026-09-24",v:{habit:2,cost:1,trust:1,maint:1,both:2,fit:1},note:"No hooks, no .mcp.json, no bin/, but /setup-matt-pocock-skills writes into each repo; one maintainer, 533 open issues. Passes at 8, but it changes the same habit as superpowers: keep one method pack."},
  {n:"superpowers",stars:292273,push:"2026-09-27",v:{habit:2,cost:2,trust:2,maint:2,both:2,fit:1},note:"One SessionStart hook, skill bodies on demand; official marketplace, also a Codex plugin. Radar: 11, adopt."},
  {n:"Clear",stars:"",push:"",v:{habit:0,cost:0,trust:0,maint:0,both:0,fit:0},note:""}
 ];
@@ -76,7 +76,7 @@ LINES.forEach(function(l){val[l.k]=0});
 PRESETS.forEach(function(p){var b=document.createElement("button");b.textContent=p.n;b.onclick=function(){stars.value=p.stars;push.value=p.push;Object.keys(p.v).forEach(function(k){val[k]=p.v[k]});note.textContent=p.note;draw()};pr.appendChild(b)});
 LINES.forEach(function(l){var d=document.createElement("div");d.className="line";d.innerHTML='<div class="t">'+l.t+'<small>'+l.s+'</small></div><div class="seg" data-k="'+l.k+'"><button data-v="0" class="zero">0</button><button data-v="1">1</button><button data-v="2">2</button></div>';lines.appendChild(d)});
 lines.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var k=b.parentNode.dataset.k;val[k]=+b.dataset.v;if(k!=="maint")note.textContent="";draw()});
-push.addEventListener("change",function(){if(!push.value)return;var days=Math.round((Date.now()-new Date(push.value+"T00:00:00").getTime())/864e5);var m=days<=30?2:days<=90?1:0;val.maint=m;note.textContent="Last push "+days+" days ago, so maintenance reads "+m+" today (a preset shows the score on its check date).";draw()});
+push.addEventListener("change",function(){if(!push.value)return;var days=Math.round((Date.now()-new Date(push.value+"T00:00:00").getTime())/864e5);var m=days<=30?2:days<=90?1:0;note.textContent="Last push "+days+" days ago suggests maintenance "+m+" today; open issues and maintainer count can lower it, so score the line yourself (a preset shows the score on its check date)."});
 stars.addEventListener("input",function(){if(stars.value)note.textContent="Stars are traction, not a line: they got the repository onto the list. Score the six lines."});
 function draw(){
  var tot=0;
