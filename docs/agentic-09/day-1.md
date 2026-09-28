@@ -24,7 +24,7 @@ Every add-on lands in one of seven **extension layers**; each differs in what it
 
 <div class="visual"><iframe src="../visuals/b9-extension-map.html" title="Tap a layer to see its powers, where it runs and its cost per turn" loading="lazy"></iframe></div>
 
-Predict first: which two layers add no model tokens yet run code as you?
+Predict: which two layers add no model tokens yet run code as you?
 
 **Phone:** open the GitHub page of one plugin you have; note "absent" or the first command in each of the three files.
 **Laptop:** `claude plugin list`, then `claude plugin details <name>`: you will see an `Always-on` token figure per plugin.
