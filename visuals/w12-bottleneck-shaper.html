@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bottleneck shaper</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.panes{display:flex;gap:8px;align-items:flex-start;margin-top:6px}
+.pane{flex:1 1 0;min-width:0}
+.cap{font-size:12px;color:var(--mut);margin:0 0 3px;min-height:18px}
+canvas{display:block;width:100%;border-radius:8px;background:var(--card)}
+.sq{aspect-ratio:1/1}
+#curve{height:170px;margin-top:8px}
+label{display:grid;grid-template-columns:96px 1fr 70px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Shape the bottleneck like a display: how many tactors, how many levels, and what survives</h1>
+<div class="row" id="shapes"></div>
+<label>grid<input id="sg" type="range" min="1" max="4" step="1" value="2"><output id="og"></output></label>
+<label>levels<input id="sl" type="range" min="1" max="6" step="1" value="3"><output id="ol"></output></label>
+<div class="panes">
+  <div class="pane"><p class="cap">input 16×16</p><canvas id="c0" class="sq"></canvas></div>
+  <div class="pane"><p class="cap" id="capc">code</p><canvas id="c1" class="sq"></canvas></div>
+  <div class="pane"><p class="cap">rebuilt</p><canvas id="c2" class="sq"></canvas></div>
+</div>
+<div class="read">
+  <span class="k">bits per frame = cells × log₂ levels</span><span id="r1" class="acc"></span>
+  <span class="k">reconstruction error (MSE), this shape</span><span id="r2"></span>
+  <span class="k">distinct codes among the 6 shapes</span><span id="r3"></span>
+  <span class="k">collisions</span><span id="r4" class="bad"></span>
+</div>
+<canvas id="curve" aria-label="Reconstruction error against bits per frame for every grid and level setting; the current setting is highlighted."></canvas>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>bottleneck</dt><dd>The narrowest point of a network: here a grid of cells, each holding one of a few levels, exactly like a tactor array.</dd>
+<dt>quantization</dt><dd>Rounding each cell's average brightness to the nearest allowed level. Fewer levels, fewer bits, more rounding error.</dd>
+<dt>reconstruction error</dt><dd>Mean squared difference between the input and the image rebuilt from the code alone. Low error does not guarantee the shapes stay distinct.</dd>
+<dt>bits per frame</dt><dd>What the display can carry per update: number of cells times log₂ of the level count. Equal bits is the fair comparison.</dd>
+</dl></details>
+<script>
+(function(){
+var N=16,cur=0;
+function mk(f){var a=[];for(var r=0;r<N;r++)for(var c=0;c<N;c++){var dx=c-7.5,dy=r-7.5;a.push(f(dx,dy,Math.abs(dx),Math.abs(dy),dx*dx+dy*dy)?1:0)}return a}
+var SH=[
+ {n:"circle",im:mk(function(dx,dy,ax,ay,d2){return d2<=25})},
+ {n:"ring",im:mk(function(dx,dy,ax,ay,d2){return d2<=25&&d2>=9})},
+ {n:"square",im:mk(function(dx,dy,ax,ay){return Math.max(ax,ay)<=5})},
+ {n:"plus",im:mk(function(dx,dy,ax,ay){return (ax<=1.2&&ay<=5)||(ay<=1.2&&ax<=5)})},
+ {n:"X",im:mk(function(dx,dy,ax,ay){return Math.abs(ax-ay)<=1.2&&Math.max(ax,ay)<=5})},
+ {n:"rising",im:mk(function(dx,dy,ax,ay){return Math.abs(dx+dy)<=1.4&&Math.max(ax,ay)<=5})}];
+var sg=document.getElementById("sg"),sl=document.getElementById("sl");
+function cells(){return Math.pow(2,+sg.value)}function levels(){return Math.pow(2,+sl.value)}
+function encode(im,g,L){var s=N/g,code=[];for(var R=0;R<g;R++)for(var C=0;C<g;C++){var sum=0;for(var r=0;r<s;r++)for(var c=0;c<s;c++)sum+=im[(R*s+r)*N+C*s+c];code.push(Math.round(sum/(s*s)*(L-1)))}return code}
+function decode(code,g,L){var s=N/g,out=[];for(var r=0;r<N;r++)for(var c=0;c<N;c++)out.push(code[Math.floor(r/s)*g+Math.floor(c/s)]/(L-1));return out}
+function mse(a,b){var e=0;for(var i=0;i<a.length;i++){var d=a[i]-b[i];e+=d*d}return e/a.length}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function fitSq(cv){var r=window.devicePixelRatio||1,w=cv.clientWidth;cv.width=w*r;cv.height=w*r;var x=cv.getContext("2d");x.setTransform(r,0,0,r,0,0);return {x:x,w:w}}
+function grid(cv,vals,g){var o=fitSq(cv),cell=o.w/g;for(var r=0;r<g;r++)for(var c=0;c<g;c++){var v=Math.round(vals[r*g+c]*255);o.x.fillStyle="rgb("+v+","+v+","+v+")";o.x.fillRect(c*cell,r*cell,cell,cell)}
+  o.x.strokeStyle=css("--line");o.x.lineWidth=0.5;o.x.beginPath();for(var k=0;k<=g;k++){o.x.moveTo(k*cell,0);o.x.lineTo(k*cell,o.w);o.x.moveTo(0,k*cell);o.x.lineTo(o.w,k*cell)}o.x.stroke()}
+var box=document.getElementById("shapes");
+SH.forEach(function(s,i){var b=document.createElement("button");b.textContent=s.n;b.onclick=function(){cur=i;draw()};box.appendChild(b)});
+function bitsOf(g,L){return g*g*Math.log2(L)}
+function allPoints(){var pts=[];for(var a=1;a<=4;a++)for(var b=1;b<=6;b++){var g=Math.pow(2,a),L=Math.pow(2,b),e=0;SH.forEach(function(s){e+=mse(s.im,decode(encode(s.im,g,L),g,L))});pts.push({g:g,L:L,bits:bitsOf(g,L),err:e/SH.length})}return pts}
+var PTS=allPoints();
+function drawCurve(g,L){var cv=document.getElementById("curve"),r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;var x=cv.getContext("2d");x.setTransform(r,0,0,r,0,0);
+  var mut=css("--mut"),acc=css("--acc"),acc2=css("--acc2"),fg=css("--fg");x.clearRect(0,0,W,H);
+  var L0=36,B0=H-22,T0=10,R0=W-10,maxE=0.16;
+  function X(b){return L0+(Math.log2(b)-2)/(Math.log2(1536)-2)*(R0-L0)}function Y(e){return B0-Math.min(e,maxE)/maxE*(B0-T0)}
+  x.strokeStyle=mut;x.lineWidth=1;x.beginPath();x.moveTo(L0,T0);x.lineTo(L0,B0);x.lineTo(R0,B0);x.stroke();
+  x.fillStyle=mut;x.font="11px system-ui,sans-serif";x.textAlign="center";[4,16,48,192,768].forEach(function(b){x.fillText(b,X(b),H-8)});
+  x.textAlign="right";x.fillText("0",L0-4,B0+4);x.fillText(maxE.toFixed(2),L0-4,T0+8);x.save();x.translate(10,(T0+B0)/2);x.rotate(-Math.PI/2);x.textAlign="center";x.fillText("MSE (6-shape mean)",0,0);x.restore();
+  x.textAlign="center";x.fillText("bits per frame (log)",(L0+R0)/2,H-0.5);
+  [2,4,8,16].forEach(function(gg){x.strokeStyle=gg===g?acc2:mut;x.lineWidth=gg===g?2:1;x.globalAlpha=gg===g?1:0.45;x.beginPath();var first=true;PTS.filter(function(p){return p.g===gg}).forEach(function(p){if(first){x.moveTo(X(p.bits),Y(p.err));first=false}else x.lineTo(X(p.bits),Y(p.err))});x.stroke();x.globalAlpha=1;var last=PTS.filter(function(p){return p.g===gg}).pop();x.fillStyle=gg===g?acc2:mut;x.textAlign="left";x.fillText(gg+"×"+gg,Math.min(X(last.bits)+3,R0-24),Y(last.err)-3)});
+  PTS.forEach(function(p){x.fillStyle=(p.g===g&&p.L===L)?acc:mut;x.beginPath();x.arc(X(p.bits),Y(p.err),(p.g===g&&p.L===L)?6:2.5,0,7);x.fill()});
+  x.fillStyle=fg}
+function draw(){
+  var g=cells(),L=levels(),im=SH[cur].im,code=encode(im,g,L),rec=decode(code,g,L);
+  Array.prototype.forEach.call(box.children,function(b,i){b.className=i===cur?"on":""});
+  document.getElementById("og").textContent=g+"×"+g;document.getElementById("ol").textContent=L;
+  document.getElementById("capc").textContent="code "+g+"×"+g+", "+L+" levels";
+  grid(document.getElementById("c0"),im,N);grid(document.getElementById("c1"),code.map(function(v){return v/(L-1)}),g);grid(document.getElementById("c2"),rec,N);
+  var keys={},coll=[];SH.forEach(function(s){var k=encode(s.im,g,L).join(",");if(keys[k]){coll.push(keys[k]+" = "+s.n)}else keys[k]=s.n});
+  var distinct=Object.keys(keys).length;
+  document.getElementById("r1").textContent=bitsOf(g,L).toFixed(0)+" bits";
+  document.getElementById("r2").textContent=mse(im,rec).toFixed(3);
+  var r3=document.getElementById("r3");r3.textContent=distinct+" / 6";r3.className=distinct===6?"ok":"bad";
+  document.getElementById("r4").textContent=coll.length?coll.join("; "):"none";
+  drawCurve(g,L);
+}
+window.redraw=draw;sg.oninput=draw;sl.oninput=draw;addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

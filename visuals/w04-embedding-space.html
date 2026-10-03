@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Embedding space</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;height:300px;touch-action:none;border-radius:10px;background:var(--card);cursor:grab}
+.hint{font-size:12px;color:var(--mut);margin:4px 0 6px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pick label{display:block;font-size:12.5px;color:var(--mut)}
+.pick label span{display:block;margin-bottom:2px}
+select{font:inherit;min-height:44px;width:100%;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:0 8px}
+#selA{border-color:var(--acc);color:var(--acc);font-weight:700}
+#selB{border-color:var(--acc2);color:var(--acc2);font-weight:700}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.a{color:var(--acc);font-weight:700}.b{color:var(--acc2);font-weight:700}.c{color:var(--ok);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Eight words as 2-D vectors: drag them, read the cosine</h1>
+<div class="row" id="presets"></div>
+<canvas id="cv" aria-label="Words as arrows from the origin. Drag a word to move it."></canvas>
+<div class="hint">Drag any word. Pick two below to compare.</div>
+<div class="pick">
+  <label><span>word A</span><select id="selA"></select></label>
+  <label><span>word B</span><select id="selB"></select></label>
+</div>
+<div class="read">
+  <span class="k">A</span><span id="rA" class="a"></span>
+  <span class="k">B</span><span id="rB" class="b"></span>
+  <span class="k">dot product a·b</span><span id="rDot"></span>
+  <span class="k">lengths |a|, |b|</span><span id="rLen"></span>
+  <span class="k">cosine = a·b / (|a||b|)</span><span id="rCos" class="c"></span>
+  <span class="k">angle between them</span><span id="rAng"></span>
+  <span class="k">nearest to A by cosine</span><span id="rNear"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>embedding</dt><dd>A learned vector standing in for a word. Here each word is 2 numbers so you can see it; real models use hundreds.</dd>
+<dt>dot product</dt><dd>x₁·x₂ + y₁·y₂. Grows with both length and agreement of direction.</dd>
+<dt>cosine similarity</dt><dd>The dot product with the lengths divided out: 1 same direction, 0 unrelated, −1 opposite.</dd>
+<dt>Trained / Random</dt><dd>Two layouts: what a lookup table looks like at random start, and after a word2vec-style training pushed co-occurring words together.</dd>
+</dl></details>
+<script>
+(function(){
+var WORDS=["buzz","vibrate","pulse","tap","left","right","hand","wrist"];
+var LAYOUTS={
+ "Random":[[-1.8,2.1],[2.4,-1.9],[0.4,-2.6],[-2.7,-0.6],[1.9,2.4],[-0.9,-1.4],[2.6,0.7],[-0.3,1.1]],
+ "Trained":[[2.2,1.8],[2.6,1.4],[1.6,2.3],[0.6,2.6],[-2.4,0.9],[-2.6,-0.2],[-0.8,-2.2],[-1.4,-2.6]]};
+var pos=LAYOUTS.Random.map(function(p){return p.slice()}),cur="Random";
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),Wd=300,Ht=300,R=3.4;
+var selA=document.getElementById("selA"),selB=document.getElementById("selB"),box=document.getElementById("presets");
+Object.keys(LAYOUTS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){cur=n;pos=LAYOUTS[n].map(function(p){return p.slice()});draw()};box.appendChild(b)});
+WORDS.forEach(function(w,i){var o=document.createElement("option");o.value=i;o.textContent=w;selA.appendChild(o);selB.appendChild(o.cloneNode(true))});
+selA.value=0;selB.value=1;
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function X(v){return(v+R)/(2*R)*Wd}function Y(v){return Ht-(v+R)/(2*R)*Ht}
+function fit(){var r=window.devicePixelRatio||1;Wd=cv.clientWidth;Ht=cv.clientHeight;cv.width=Wd*r;cv.height=Ht*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function dot(a,b){return a[0]*b[0]+a[1]*b[1]}function len(a){return Math.sqrt(dot(a,a))}
+function cos(a,b){var l=len(a)*len(b);return l<1e-9?0:dot(a,b)/l}
+function n(v,p){return(Math.abs(v)<5e-5?0:v).toFixed(p==null?2:p)}
+function draw(){
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2");
+  var ia=+selA.value,ib=+selB.value;
+  Array.prototype.forEach.call(box.children,function(b){b.className=b.textContent===cur?"on":""});
+  ctx.clearRect(0,0,Wd,Ht);
+  ctx.lineWidth=1;ctx.strokeStyle=ln;ctx.beginPath();
+  for(var g=-3;g<=3;g++){ctx.moveTo(X(g),0);ctx.lineTo(X(g),Ht);ctx.moveTo(0,Y(g));ctx.lineTo(Wd,Y(g))}ctx.stroke();
+  ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(0,Y(0));ctx.lineTo(Wd,Y(0));ctx.moveTo(X(0),0);ctx.lineTo(X(0),Ht);ctx.stroke();
+  ctx.font="13px system-ui,sans-serif";ctx.textBaseline="middle";
+  pos.forEach(function(p,i){
+    var col=i===ia?acc:i===ib?acc2:mut;
+    ctx.strokeStyle=col;ctx.lineWidth=i===ia||i===ib?2.5:1.2;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(p[0]),Y(p[1]));ctx.stroke();
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(X(p[0]),Y(p[1]),i===ia||i===ib?7:5.5,0,7);ctx.fill();
+    ctx.fillStyle=fg;var tx=X(p[0])+9;if(tx>Wd-50)tx=X(p[0])-9-ctx.measureText(WORDS[i]).width;ctx.fillText(WORDS[i],tx,Y(p[1])-9);
+  });
+  var a=pos[ia],b=pos[ib],c=cos(a,b);
+  document.getElementById("rA").textContent=WORDS[ia]+" = ("+n(a[0])+", "+n(a[1])+")";
+  document.getElementById("rB").textContent=WORDS[ib]+" = ("+n(b[0])+", "+n(b[1])+")";
+  document.getElementById("rDot").textContent=n(dot(a,b));
+  document.getElementById("rLen").textContent=n(len(a))+", "+n(len(b));
+  document.getElementById("rCos").textContent=n(c,3);
+  document.getElementById("rAng").textContent=n(Math.acos(Math.max(-1,Math.min(1,c)))*180/Math.PI,0)+"°";
+  var best=-1,bc=-2;pos.forEach(function(p,i){if(i!==ia){var v=cos(a,p);if(v>bc){bc=v;best=i}}});
+  document.getElementById("rNear").textContent=WORDS[best]+" ("+n(bc,2)+")";
+}
+window.redraw=draw;
+selA.onchange=draw;selB.onchange=draw;
+var drag=-1;
+function at(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*2*R-R,R-(e.clientY-r.top)/r.height*2*R]}
+cv.addEventListener("pointerdown",function(e){var m=at(e),best=-1,bd=1e9;pos.forEach(function(p,i){var d=Math.hypot(X(p[0])-X(m[0]),Y(p[1])-Y(m[1]));if(d<bd){bd=d;best=i}});
+  if(bd<28){drag=best;cv.setPointerCapture(e.pointerId);e.preventDefault()}});
+cv.addEventListener("pointermove",function(e){if(drag<0)return;var m=at(e);pos[drag]=[Math.max(-3,Math.min(3,Math.round(m[0]*10)/10)),Math.max(-3,Math.min(3,Math.round(m[1]*10)/10))];draw()});
+cv.addEventListener("pointerup",function(){drag=-1});cv.addEventListener("pointercancel",function(){drag=-1});
+addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>

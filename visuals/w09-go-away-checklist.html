@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What makes it go away</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;margin:0 4px 6px 0;text-align:left}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.claim{background:var(--card);border-left:4px solid var(--acc2);border-radius:10px;padding:10px;margin-bottom:8px;font-size:14px}
+.claim b{color:var(--acc2);font-size:18px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 6px}
+.sl{margin-top:6px;font-size:13px;color:var(--mut)}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+table{width:100%;border-collapse:collapse;font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;overflow:hidden;margin-top:4px}
+th{font:12px system-ui,sans-serif;color:var(--mut);text-align:left;padding:6px;font-weight:400}
+td{padding:6px;border-top:1px solid var(--line);vertical-align:top}
+td.n{text-align:right;white-space:nowrap}
+td .why{display:block;font:12px system-ui,sans-serif;color:var(--mut);margin-top:2px}
+tr.hid{display:none}
+td.warn{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>"94% accuracy." What would make that number go away?</h1>
+<div class="claim">Claim: a hand-near-button detector scores <b id="cacc">94%</b> accuracy on 100 held-out screenshots, <span id="cpos">10</span> of which really show a hand near a button. It flagged <span id="cflag">12</span>.</div>
+<div class="hint">Write your guess for each row, then tap it. Rows show accuracy · precision · recall.</div>
+<div id="btns"></div>
+<div class="sl"><span>positives in the 100 screenshots</span><output id="op"></output></div>
+<input id="sp" type="range" min="1" max="50" step="1" value="10">
+<table><thead><tr><th>check</th><th>acc</th><th>prec</th><th>rec</th></tr></thead><tbody id="tb"></tbody></table>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>accuracy</dt><dd>Fraction of the 100 screenshots labelled correctly, positives and negatives alike.</dd>
+<dt>precision / recall</dt><dd>Precision: of the screenshots flagged, how many were right. Recall: of the true positives, how many were caught.</dd>
+<dt>majority class</dt><dd>The rule that always answers the commoner label. Its accuracy is the real chance level when classes are unbalanced.</dd>
+<dt>split by participant</dt><dd>Test on people the model never saw, so it cannot score by recognising a room or a hand.</dd>
+</dl></details>
+<script>
+(function(){
+var sp=document.getElementById("sp"),shown={};
+var CHECKS=[
+ {id:"det",n:"the detector itself: precision and recall",why:"Same 94%: of 12 flagged, 8 right; of 10 real, 8 caught.",f:function(P){return{tp:Math.round(.8*P),fp:Math.round(.044*(100-P))}}},
+ {id:"maj",n:"majority class: always say no",why:"Detects nothing and still scores the share of negatives. This is the chance level.",f:function(P){return{tp:0,fp:0}}},
+ {id:"yes",n:"always say yes",why:"Catches everything; precision equals the share of positives.",f:function(P){return{tp:P,fp:100-P}}},
+ {id:"shuf",n:"shuffled labels, same detector",why:"Flag the same 12 at random. Not 50%: with few positives, most random guesses of 'no' are right.",f:function(P){var F=Math.round(.8*P)+Math.round(.044*(100-P));return{tp:F*P/100,fp:F*(100-P)/100}}},
+ {id:"part",n:"split by participant instead of by frame",why:"Toy scenario: the 100 frames come from 5 people the model also trained on. On unseen people recall halves and false alarms double.",f:function(P){return{tp:Math.round(.5*P),fp:Math.round(.088*(100-P))}}},
+ {id:"rule",n:"one-line rule: brightness threshold",why:"A hand in front of the button dims a region. No learning at all.",f:function(P){return{tp:Math.round(.6*P),fp:Math.round(.067*(100-P))}}}];
+var btns=document.getElementById("btns");
+CHECKS.forEach(function(c){var b=document.createElement("button");b.textContent=c.n;b.onclick=function(){shown[c.id]=!shown[c.id];b.className=shown[c.id]?"on":"";draw()};btns.appendChild(b)});
+function fmt(x){return isFinite(x)?x.toFixed(2):"—"}
+function draw(){
+  var P=+sp.value,html="";document.getElementById("op").textContent=P;
+  var d=CHECKS[0].f(P),acc=(d.tp+(100-P-d.fp))/100;
+  document.getElementById("cacc").textContent=Math.round(acc*100)+"%";document.getElementById("cpos").textContent=P;document.getElementById("cflag").textContent=d.tp+d.fp;
+  html+="<tr><td>claimed detector<span class='why'>the number on the card</span></td><td class='n'>"+fmt(acc)+"</td><td class='n'>?</td><td class='n'>?</td></tr>";
+  CHECKS.forEach(function(c){var r=c.f(P),tn=100-P-r.fp,a=(r.tp+tn)/100,pr=(r.tp+r.fp)>0?r.tp/(r.tp+r.fp):NaN,rc=r.tp/P;
+    var close=Math.abs(a-acc)<0.05&&c.id!=="det";
+    html+="<tr class='"+(shown[c.id]?"":"hid")+"'><td>"+c.n+"<span class='why'>"+c.why+(close?" Within 5 points of the claim: the claim has not shown anything yet.":"")+"</span></td><td class='n"+(close?" warn":"")+"'>"+fmt(a)+"</td><td class='n'>"+fmt(pr)+"</td><td class='n'>"+fmt(rc)+"</td></tr>"});
+  document.getElementById("tb").innerHTML=html}
+sp.oninput=draw;
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
