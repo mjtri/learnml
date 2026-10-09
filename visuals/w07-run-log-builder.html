@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run log builder</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.pin{border-style:dashed}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+pre{font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin:6px 0;white-space:pre-wrap;word-break:break-all}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.score{font-weight:700;color:var(--acc2)}
+.miss{margin-top:8px;padding:10px;border-radius:10px;background:var(--card);font-size:13.5px}
+.miss b{color:var(--bad)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Tap the fields your run log should carry; read the row and what a stranger could still not repeat</h1>
+<div class="row" id="fields"></div>
+<div class="row"><button id="bMin">minimum</button><button id="bAll">everything</button><button id="bNone">clear</button></div>
+<pre id="csv"></pre>
+<div class="read">
+  <span class="k">fields chosen</span><span id="r1"></span>
+  <span class="k">repeatability score</span><span id="r2" class="score"></span>
+</div>
+<div class="miss" id="miss"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>run log</dt><dd>One row appended per experiment run, never overwritten: when, which code, which settings, which seed, which result.</dd>
+<dt>git hash</dt><dd>The short id of the exact code version, from git rev-parse. The dashed fields are the three pins: seed, config, git hash.</dd>
+<dt>revision</dt><dd>The commit of the Hub model repository you loaded. A model id alone can point at updated weights next month.</dd>
+<dt>repeatability score</dt><dd>A rough weight per field for how much a stranger needs it to get your number again. Not a standard; a prompt to think.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var F=[
+ ["time","2026-09-28T14:02:11",4,"when it ran, so rows can be ordered"],
+ ["git","7f3a2c1",14,"the exact code version",true],
+ ["dirty","false",4,"whether uncommitted edits were present"],
+ ["model","HuggingFaceTB/SmolLM2-135M",14,"which checkpoint"],
+ ["revision","e2c3f39",8,"which commit of the model repository"],
+ ["seed","0",14,"the random choices",true],
+ ["layer","12",8,"which hidden state was probed"],
+ ["pool","mean",6,"how token vectors became one vector"],
+ ["n_examples","800",5,"how much data"],
+ ["split","0.8",5,"train fraction"],
+ ["lr","0.01",5,"probe learning rate"],
+ ["steps","300",4,"probe training length"],
+ ["device","cuda",2,"where the arithmetic ran"],
+ ["torch","2.8.0",3,"library version"],
+ ["transformers","4.56.1",3,"library version"],
+ ["held_back_acc","0.8312",1,"the result itself"]];
+var on=F.map(function(){return false});
+F.forEach(function(f,i){var b=document.createElement("button");b.textContent=f[0];if(f[4])b.className="pin";b.onclick=function(){on[i]=!on[i];draw()};$("fields").appendChild(b)});
+function draw(){
+  var total=0,got=0,head=[],vals=[],miss=[];
+  F.forEach(function(f,i){total+=f[2];$("fields").children[i].className=(on[i]?"on":"")+(f[4]?" pin":"");if(on[i]){got+=f[2];head.push(f[0]);vals.push(f[1])}else if(f[2]>=5)miss.push(f[0]+" ("+f[3]+")")});
+  var cfg=["model","revision","layer","pool","n_examples","split","lr","steps"].every(function(k){return on[F.findIndex(function(f){return f[0]===k})]});
+  $("csv").textContent=head.length?head.join(",")+"\n"+vals.join(","):"(empty row: tap a field)";
+  $("r1").textContent=head.length+" / "+F.length;
+  $("r2").textContent=Math.round(100*got/total)+" / 100";
+  $("miss").innerHTML=miss.length?"A stranger could <b>not</b> repeat this because you did not log: "+miss.join("; ")+".":"A stranger has everything: code, model, settings, seed"+(cfg?", the full config":"")+".";
+}
+$("bMin").onclick=function(){on=F.map(function(f){return f[2]>=5});draw()};
+$("bAll").onclick=function(){on=F.map(function(){return true});draw()};
+$("bNone").onclick=function(){on=F.map(function(){return false});draw()};
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

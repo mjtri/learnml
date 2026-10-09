@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Broadcasting shape checker</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.presets button{font-size:13px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.editor{display:flex;align-items:center;gap:6px;margin:6px 0;flex-wrap:wrap}
+.editor .name{width:22px;font-weight:700;font-size:17px}
+.editor .paren{font:20px ui-monospace,Menlo,Consolas,monospace;color:var(--mut)}
+.dim{font:700 17px ui-monospace,Menlo,Consolas,monospace;width:44px;padding:0}
+.A .dim{border-color:var(--acc);color:var(--acc)}
+.B .dim{border-color:var(--acc2);color:var(--acc2)}
+.axisbtn{font-size:12px;color:var(--mut);padding:0 8px}
+.hint{font-size:12px;color:var(--mut);margin:2px 0 10px}
+table{border-collapse:collapse;margin:4px 0 8px;font:15px ui-monospace,Menlo,Consolas,monospace}
+td{padding:5px 8px;text-align:center;min-width:48px}
+td.lab{text-align:left;min-width:0;color:var(--mut);font:13px system-ui,sans-serif;padding-left:0}
+tr.v td{font:11px system-ui,sans-serif;color:var(--mut);vertical-align:top;line-height:1.25}
+td.okc{background:color-mix(in srgb,var(--ok) 14%,transparent)}
+td.badc{background:color-mix(in srgb,var(--bad) 18%,transparent)}
+tr.v td.badc{color:var(--bad);font-weight:700}
+.result{padding:9px 11px;border-radius:10px;background:var(--card);font-size:14px;margin-bottom:10px}
+.result b{font-family:ui-monospace,Menlo,Consolas,monospace}
+.result.err{border:1px solid var(--bad)}
+.grids{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.gwrap{font-size:12px;color:var(--mut)}
+.grid{display:grid;gap:2px;margin-top:3px}
+.cell{width:15px;height:15px;border-radius:3px}
+.gA .cell{background:var(--acc)}.gB .cell{background:var(--acc2)}.gR .cell{background:var(--ok)}
+.cell.ghost{opacity:.28;outline:1px dashed var(--fg);outline-offset:-1px}
+.op{align-self:center;font-size:18px;color:var(--mut);padding-top:14px}
+details{margin-top:12px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Can these two shapes combine?</h1>
+<div class="presets" id="presets"></div>
+<div class="editor A" id="edA"></div>
+<div class="editor B" id="edB"></div>
+<div class="hint">Tap a number to change its size (1–5). “+ axis” adds one on the left.</div>
+<table id="align"></table>
+<div class="result" id="result"></div>
+<div class="grids" id="grids"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>shape</dt><dd>The size of a tensor along each axis, e.g. (3, 4) = 3 rows, 4 columns.</dd>
+<dt>axis</dt><dd>One direction you can index along: rows, columns, a stack…</dd>
+<dt>broadcasting</dt><dd>Line shapes up from the right; a size-1 or missing axis is virtually copied to match.</dd>
+<dt>faded cells</dt><dd>Virtual copies. No memory is used; the same numbers are reused.</dd>
+</dl></details>
+<script>
+(function(){
+var S={A:[3,4],B:[4]};
+var PRESETS=[["(3,4) + (4,)",[3,4],[4]],["(3,4) + (3,)",[3,4],[3]],["(3,1) + (1,4)",[3,1],[1,4]],["(2,3,4) + (3,1)",[2,3,4],[3,1]],["(3,4) + ()",[3,4],[]]];
+function $(id){return document.getElementById(id)}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function fmt(s){return "("+s.join(", ")+(s.length===1?",":"")+")"}
+function count(s){return s.reduce(function(a,b){return a*b},1)}
+
+var pr=$("presets");
+PRESETS.forEach(function(p){var b=el("button",null,p[0]);b.onclick=function(){S.A=p[1].slice();S.B=p[2].slice();render()};pr.appendChild(b)});
+
+function editor(key){
+  var box=$("ed"+key);box.innerHTML="";
+  box.appendChild(el("span","name",key));
+  box.appendChild(el("span","paren","("));
+  S[key].forEach(function(n,i){
+    var b=el("button","dim",String(n));b.setAttribute("aria-label",key+" axis "+i+" size "+n+", tap to change");
+    b.onclick=function(){S[key][i]=n%5+1;render()};box.appendChild(b)});
+  box.appendChild(el("span","paren",")"));
+  var add=el("button","axisbtn","+ axis");add.disabled=S[key].length>=3;add.onclick=function(){S[key].unshift(2);render()};
+  var rem=el("button","axisbtn","− axis");rem.disabled=S[key].length===0;rem.onclick=function(){S[key].shift();render()};
+  box.appendChild(add);box.appendChild(rem);
+}
+
+function render(){
+  editor("A");editor("B");
+  var n=Math.max(S.A.length,S.B.length),a=[],b=[],res=[],ok=true,t=$("align");
+  for(var i=0;i<n;i++){a.push(S.A[i-(n-S.A.length)]);b.push(S.B[i-(n-S.B.length)])}
+  var rows={A:el("tr"),B:el("tr"),R:el("tr"),V:el("tr","v")};
+  rows.A.appendChild(el("td","lab","A"));rows.B.appendChild(el("td","lab","B"));rows.R.appendChild(el("td","lab","result"));rows.V.appendChild(el("td","lab",""));
+  for(i=0;i<n;i++){
+    var x=a[i],y=b[i],v,good=true,r;
+    if(x===undefined){r=y;v="missing in A → copied ×"+y}
+    else if(y===undefined){r=x;v="missing in B → copied ×"+x}
+    else if(x===y){r=x;v="equal"}
+    else if(x===1){r=y;v="A is 1 → copied ×"+y}
+    else if(y===1){r=x;v="B is 1 → copied ×"+x}
+    else{good=false;ok=false;r="✗";v=x+" ≠ "+y+", neither is 1"}
+    res.push(r);
+    var c=good?"okc":"badc";
+    rows.A.appendChild(el("td",c,x===undefined?"·":String(x)));
+    rows.B.appendChild(el("td",c,y===undefined?"·":String(y)));
+    rows.R.appendChild(el("td",c,String(r)));
+    rows.V.appendChild(el("td",c,v));
+  }
+  t.innerHTML="";
+  if(n===0){var tr=el("tr");tr.appendChild(el("td","lab","Two scalars: nothing to line up."));t.appendChild(tr)}
+  else{["A","B","R","V"].forEach(function(k){t.appendChild(rows[k])})}
+
+  var R=$("result");R.className="result"+(ok?"":" err");
+  if(ok){R.innerHTML="Result shape <b>"+fmt(res)+"</b><br>A holds "+count(S.A)+" numbers, B holds "+count(S.B)+" → result holds <b>"+count(res)+"</b>."}
+  else{R.innerHTML="<b>Error.</b> Reading from the right, a pair of sizes is different and neither is 1. PyTorch would say: <i>The size of tensor a must match the size of tensor b</i>."}
+  grids(ok?res:null);
+}
+
+function last2(s){var p=[1,1].concat(s);return p.slice(-2)}
+function grid(cls,label,own,full){
+  var w=el("div","gwrap");w.appendChild(el("div",null,label));
+  var g=el("div","grid "+cls);g.style.gridTemplateColumns="repeat("+full[1]+",15px)";
+  for(var i=0;i<full[0];i++)for(var j=0;j<full[1];j++)g.appendChild(el("div","cell"+((i<own[0]&&j<own[1])?"":" ghost")));
+  w.appendChild(g);return w;
+}
+function grids(res){
+  var G=$("grids");G.innerHTML="";
+  var a=last2(S.A),b=last2(S.B),r=res?last2(res):null;
+  G.appendChild(grid("gA","A "+fmt(S.A),a,r||a));
+  G.appendChild(el("div","op","+"));
+  G.appendChild(grid("gB","B "+fmt(S.B),b,r||b));
+  if(r){G.appendChild(el("div","op","="));G.appendChild(grid("gR","result "+fmt(res),r,r))}
+  var extra=res&&res.length>2?res[0]:0;
+  if(extra){var note=el("div","gwrap","Showing the last two axes. The whole picture is repeated ×"+extra+" along the first axis.");note.style.flexBasis="100%";G.appendChild(note)}
+}
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Budget rule builder</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.lab{font-size:12px;color:var(--mut);margin:8px 0 2px}
+.lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+.mode{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.mode button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;text-align:left}
+.mode button.on{font-weight:700;border-width:2px;border-color:var(--acc)}
+.mode.act button.on{border-color:var(--acc2)}
+input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--acc);touch-action:pan-y}
+.rule{margin-top:10px;padding:8px 10px;border-radius:10px;border:1px dashed var(--line);font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;word-break:break-word;user-select:all}
+.v{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px;border-left:4px solid var(--line)}
+.v.ok{border-left-color:var(--ok)}.v.maybe{border-left-color:var(--acc2)}.v.no{border-left-color:var(--bad)}
+.v b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Build a budget rule</h1>
+<p class="hint">Pick a meter, a threshold and an action. The readout says whether that action can work against that meter, what it costs, and which official page says so.</p>
+<div class="lab">Meter</div>
+<div class="mode" id="meter"></div>
+<div class="lab">Threshold <b id="tv"></b></div>
+<input type="range" id="t" min="10" max="100" step="5" value="70">
+<div class="lab">Action</div>
+<div class="mode act" id="action"></div>
+<div class="rule" id="rule"></div>
+<div class="v" id="verdict"></div>
+<div class="v" id="cost"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>budget rule</dt><dd>Meter, threshold, action, evidence: "when this number passes this line, do that", with the page or measurement that says the action works.</dd>
+<dt>usage credits</dt><dd>Claude's pay-as-you-go balance at API rates once the plan is spent; a monthly spend limit caps it. Fast mode always bills here.</dd>
+<dt>workspace credits</dt><dd>ChatGPT Business's shared credit pool, bought by a workspace owner, drawn on after a seat's included usage under per-seat-type limits.</dd>
+<dt>seat type</dt><dd>Standard or Premium on ChatGPT Business. Premium: 5x usage, no 5-hour limit, weekly reset; only an owner switches it.</dd>
+</dl></details>
+<script>
+(function(){
+var M=[["wk","Claude weekly cap","%"],["win","Claude 5-hour window","%"],["opus","Claude Opus limit","%"],["cr","Claude credits this month","$"],["cxw","Codex weekly allowance","%"],["cx5","Codex 5-hour window","%"]];
+var A=[["sonnet","/model sonnet"],["pool","Move the work to the other pool"],["clear","/clear, resume from a summary"],["wait","Wait and continue (/rate-limit-options)"],["reset","Free limit reset (Settings › Usage)"],["credits","Usage credits under a spend limit"],["fast","/fast for this session"],["premium","Ask the owner for a Premium seat"],["wscred","Workspace credits under a seat-type limit"],["buyreset","Buy an instant weekly reset"]];
+var m="wk",a="sonnet";
+function isClaude(x){return x==="wk"||x==="win"||x==="opus"||x==="cr"}
+function V(m,a){
+ var c=isClaude(m);
+ if(a==="sonnet"){if(m==="opus")return["ok","A model-specific limit: a model outside the Opus family keeps you working.","Plan usage, Sonnet pool","Manage costs"];
+  if(m==="cr")return["maybe","Credits bill any model at API rates; Sonnet is cheaper per token, but every token is still credits.","Credits at API rates","Manage usage credits"];
+  if(c)return["no","This limit is shared across all models, so /model does not restore access.","Nothing changes","Manage costs"];
+  return["no","Sonnet is a Claude model; Codex has its own model picker and pool.","Nothing changes","Codex developer commands"]}
+ if(a==="pool")return["ok",c?"Separate allowances: the ChatGPT Business seat is untouched by any Claude meter.":"Separate allowances: the Claude Max pool is untouched by any Codex meter.","The other tool's included usage","Max plan; ChatGPT Business models and limits"];
+ if(a==="clear")return["maybe",c?"Does not restore a spent limit, but the next turn stops paying for the whole history.":"Codex: /new starts a fresh thread the same way; the allowance itself does not return.","Free; the summary resume is one small request","Manage costs"];
+ if(a==="wait"){if(m==="cr")return["no","A spend limit is not a timed reset; raise it in the review or stop for the month.","Nothing changes","Manage costs"];
+  if(c)return["ok","Claude Code v2.1.234 or later: wait, then continue the interrupted task after the reset.","Time until the reset","Manage costs"];
+  return["no","A Claude Code feature; in Codex the reset time shows in /usage, then you start again.","Time until the reset","Codex developer commands"]}
+ if(a==="reset"){if(m==="wk"||m==="win")return["maybe","Restores the limit once, from Settings › Usage on web or desktop only, not from Claude Code; occasional and not undone.","Free","What is a limit reset"];
+  if(m==="opus")return["no","Documented for the 5-hour and weekly limits, not for a model-specific one.","Nothing changes","What is a limit reset"];
+  if(m==="cr")return["no","A reset restores plan limits; it does not refund credits or change the balance.","Nothing changes","What is a limit reset"];
+  return["no","A Claude hatch; Codex earned resets are redeemed from /usage.","Nothing changes","Codex developer commands"]}
+ if(a==="credits"){if(m==="cr")return["maybe","At the spend limit Claude Code offers to raise or remove it; decide that in the review, not at the wall.","Credits at API rates","Manage costs"];
+  if(c)return["ok","Keeps working at standard API rates; the cache lifetime drops to five minutes; set the monthly cap first.","Credits at API rates","Manage usage credits"];
+  return["no","Codex draws on workspace credits an owner buys, not Claude credits.","Nothing changes","Credits and spend controls"]}
+ if(a==="fast"){if(m==="cr")return["no","The fastest way to spend the credits you are trying to cap; fast mode never touches the plan.","Credits at $8/$40 per MTok, Opus 5.5","Fast mode"];
+  if(c)return["no","Fast mode is speed, not allowance: it always bills credits, never the plan, so the meter does not move.","Credits at $8/$40 per MTok, Opus 5.5","Fast mode"];
+  return["no","A Claude Code option only.","Nothing changes","Fast mode"]}
+ if(a==="premium"){if(m==="cx5")return["ok","Premium removes the 5-hour limit and gives 5x the usage; only a workspace owner switches the seat.","$100 to $125 per user per month","Premium seats; seat types"];
+  if(m==="cxw")return["ok","5x the usage with a weekly reset; ask when the weekly bar, not one window, stops the work.","$100 to $125 per user per month","Premium seats"];
+  return["no","A ChatGPT Business seat; Claude's step up is usage credits or a higher Max tier.","Nothing changes","Premium seats"]}
+ if(a==="wscred"){if(!c)return["ok","Eligible usage continues from the shared credit pool under the seat-type or per-user monthly limit an owner or admin set.","Workspace credits, per the rate card","Credits and spend controls"];
+  return["no","ChatGPT Business credits; a Claude meter needs usage credits.","Nothing changes","Credits and spend controls"]}
+ if(a==="buyreset"){if(!c)return["no","Plus and Pro only; not available on Business. Wait, use workspace credits, or ask for Premium.","Nothing changes","Paid weekly resets"];
+  return["no","Not a Claude Code action; the free limit reset lives in Settings › Usage.","Nothing changes","What is a limit reset"]}
+ return["no","","",""]}
+function row(id,list,get,set){var d=document.getElementById(id);list.forEach(function(x){var b=document.createElement("button");b.textContent=x[1];b.dataset.k=x[0];b.onclick=function(){set(x[0]);draw()};d.appendChild(b)})}
+row("meter",M,null,function(k){m=k});row("action",A,null,function(k){a=k});
+var t=document.getElementById("t");t.addEventListener("input",draw);
+function draw(){
+ Array.prototype.forEach.call(document.getElementById("meter").children,function(b){b.className=b.dataset.k===m?"on":""});
+ Array.prototype.forEach.call(document.getElementById("action").children,function(b){b.className=b.dataset.k===a?"on":""});
+ var mm=M.filter(function(x){return x[0]===m})[0],aa=A.filter(function(x){return x[0]===a})[0];
+ var unit=mm[2]==="$"?"$"+t.value:t.value+" %";document.getElementById("tv").textContent=unit;
+ var v=V(m,a);
+ document.getElementById("rule").textContent="When "+mm[1]+" passes "+unit+", "+aa[1]+". Evidence: "+v[3]+".";
+ var vd=document.getElementById("verdict");vd.className="v "+v[0];vd.textContent=(v[0]==="ok"?"Works. ":v[0]==="maybe"?"Partly. ":"Cannot work. ")+v[1];
+ document.getElementById("cost").innerHTML="Costs: <b>"+v[2]+"</b>";
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

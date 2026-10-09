@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Which tool for which job</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+.q{font-size:13px;color:var(--mut);margin:8px 0 4px}
+.opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.opts button{font:inherit;font-size:12.5px;min-height:44px;padding:4px 6px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;line-height:1.2}
+.opts button.on{border:2px solid var(--acc);font-weight:700}
+.ex{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.ex button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px dashed var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.out{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card);border-left:4px solid var(--acc)}
+.out h2{font-size:15px;margin:0 0 4px}
+.out p{margin:4px 0;font-size:13.5px}
+.out .why{color:var(--mut);font-size:12.5px}
+.out .alt{font-size:12.5px;margin-top:6px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Three questions, then the tool picks itself</h1>
+<div class="ex" id="ex"></div>
+<div class="q">1 · Where does the task have to run?</div>
+<div class="opts" id="q1"><button data-v="local">On my machine<br><small>Unity editor, headset, local data</small></button><button data-v="cloud">A copy of the repo<br><small>self-contained code change</small></button><button data-v="none">No repo<br><small>text, search, analysis in chat</small></button></div>
+<div class="q">2 · Who verifies the result?</div>
+<div class="opts" id="q2"><button data-v="oracle">A test / build / checker</button><button data-v="me">Me, reading it</button><button data-v="human">Another person later</button></div>
+<div class="q">3 · How much context does it need?</div>
+<div class="opts" id="q3"><button data-v="file">One file or one question</button><button data-v="project">A whole project</button><button data-v="web">The open web / many papers</button></div>
+<div class="out" id="out"><h2>Pick one answer per question</h2><p class="why">Or tap an example above to see a real case.</p></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>oracle</dt><dd>A check the agent can run itself: tests, a compile, a checker script.</dd>
+<dt>cloud task</dt><dd>Codex cloud or a Claude cloud session: the agent works on an isolated copy of the repo and returns a pull request.</dd>
+<dt>plan mode</dt><dd>Claude Code proposes before it edits; you approve the approach first.</dd>
+<dt>Deep Research</dt><dd>ChatGPT's long web-research mode; citations must be verified.</dd>
+</dl></details>
+<script>
+(function(){
+var A={};
+var EX=[
+ {n:"Unity: haptic pulse stutters at 90 Hz",a:{q1:"local",q2:"me",q3:"project"}},
+ {n:"Add unit tests to SonifierUtils",a:{q1:"cloud",q2:"oracle",q3:"file"}},
+ {n:"Rewrite reviewer 2 response",a:{q1:"none",q2:"me",q3:"file"}},
+ {n:"Generate LearnML week 2",a:{q1:"local",q2:"oracle",q3:"project"}},
+ {n:"Lit review: cross-modal codecs",a:{q1:"none",q2:"human",q3:"web"}},
+ {n:"Plot study data, run the stats",a:{q1:"local",q2:"me",q3:"file"}}
+];
+var ex=document.getElementById("ex");
+EX.forEach(function(e){var b=document.createElement("button");b.textContent=e.n;b.onclick=function(){A={q1:e.a.q1,q2:e.a.q2,q3:e.a.q3};paint();decide(e.n)};ex.appendChild(b)});
+["q1","q2","q3"].forEach(function(q){document.getElementById(q).addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;A[q]=b.dataset.v;paint();decide()})});
+function paint(){["q1","q2","q3"].forEach(function(q){Array.prototype.forEach.call(document.getElementById(q).children,function(b){b.className=A[q]===b.dataset.v?"on":""})})}
+function decide(name){
+ var o=document.getElementById("out");
+ if(!(A.q1&&A.q2&&A.q3)){o.innerHTML="<h2>"+(name?name:"Pick one answer per question")+"</h2><p class='why'>"+(2-Object.keys(A).length+1)+" more to go.</p>";return}
+ var tool,why,alt,mode="";
+ if(A.q1==="none"){
+  if(A.q3==="web"){tool="ChatGPT Deep Research (or Claude research on claude.ai)";why="No repo and many sources: this is what Deep Research is for. Separate usage pool from Claude Code.";alt="Then a verification pass on every citation before it enters a document (week B6)."}
+  else{tool="ChatGPT chat, in a Project with the paper attached";why="No repo, one document, and "+(A.q2==="me"?"you read the result":"someone else reads it later")+": keep it in a chat you will actually read.";alt="Claude on claude.ai works the same way; pick whichever pool has room today."}
+ } else if(A.q1==="cloud"){
+  if(A.q2==="oracle"){tool="Codex cloud task (or a Claude cloud session)";why="Self-contained and it has an oracle: hand it off, get a PR back, review the diff. Your laptop stays free and your Claude window stays empty.";alt="If the Claude weekly cap has room and the Codex pool does not, a Claude cloud session is the same move."}
+  else{tool="Codex cloud task, but keep it small";why="Cloud is fine for a copy of the repo, but without an oracle you are the reviewer; small PRs are the only ones you will actually read.";alt="Add a test first, then it becomes a hand-off."}
+ } else {
+  if(A.q2==="oracle"){tool="Claude Code locally, plan mode first";mode="Sonnet if the work is mechanical.";why="Needs your machine (editor, headset, data) and has a check it can run: let it run, approve the plan, verify with the oracle.";alt="Codex CLI is equivalent here; use whichever pool has room. Prefer Claude Code for multi-file exploration, Codex for terminal-heavy work (unverified, community opinion)."}
+  else if(A.q3==="project"){tool="Claude Code locally, plan mode, subagents for the search";why="Whole-project context on your machine with you as verifier: plan first so you approve the approach before it touches anything, and push the exploration into subagents.";alt="Run the review from the other vendor when done (week B4)."}
+  else{tool="Claude Code or Codex CLI, single file, accept-edits mode";why="Small local task, you verify by reading: no plan needed for a one-file change, just read the diff.";alt="Same task in both tools once, timed and measured, is exactly the B1 apply exercise."}
+ }
+ o.innerHTML="<h2>"+(name?name+" → ":"")+tool+"</h2>"+(mode?"<p>"+mode+"</p>":"")+"<p class='why'>"+why+"</p><p class='alt'>"+alt+"</p>";
+}
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

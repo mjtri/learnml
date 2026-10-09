@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tokenizer artefact explorer</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+input[type=text]{width:100%;min-height:44px;font:14px ui-monospace,Menlo,Consolas,monospace;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);margin-bottom:8px}
+.toks{display:flex;flex-wrap:wrap;gap:4px;padding:10px;background:var(--card);border-radius:10px;min-height:56px;margin-bottom:8px}
+.t{display:block;font:14px ui-monospace,Menlo,Consolas,monospace;padding:4px 7px;border-radius:7px;border:1px solid var(--line);background:var(--bg);white-space:pre}
+.t.h{color:var(--mut);font-size:12px;border-style:dashed}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.big{color:var(--acc2);font-weight:700}.g{color:var(--ok);font-weight:700}
+.note{font-size:12.5px;color:var(--mut);margin:6px 0 0}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>What a tokenizer does to letters, numbers, spaces and Korean</h1>
+<div class="row" id="presets"></div>
+<input id="txt" type="text" aria-label="Text to tokenize" spellcheck="false">
+<div class="toks" id="toks" aria-live="polite"></div>
+<div class="read">
+  <span class="k">toy BPE tokens (trained here, on 3 KB of English)</span><span id="r1" class="big"></span>
+  <span class="k">GPT-2 tokens (real, presets only)</span><span id="r2" class="g"></span>
+  <span class="k">GPT-4 tokens (real, presets only)</span><span id="r3"></span>
+  <span class="k">characters · bytes</span><span id="r4"></span>
+  <span class="k">characters per toy token</span><span id="r5"></span>
+</div>
+<p class="note" id="status">Training the toy tokenizer…</p>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>tokenizer artefact</dt><dd>An odd model behaviour caused by how the text was cut, not by the model.</dd>
+<dt>pre-tokenizer</dt><dd>The rule that splits text into word-like chunks before BPE; GPT-2 attaches the leading space to the word, so " world" and "world" differ.</dd>
+<dt>byte</dt><dd>A number 0–255. English letters are one byte each, a Korean syllable is three. Dashed chips are lone bytes, not whole characters.</dd>
+<dt>merge</dt><dd>One learned BPE rule gluing two chunks. The toy learned 500 from English only; GPT-2 learned 50,000 from the web.</dd>
+</dl></details>
+<script>
+(function(){
+var CORPUS="In 2019 the lab moved its haptic glove study to a bigger room, and in 2020 we ran it again with 24 participants. The glove has 16 actuators on the palm and 8 on the fingers; each actuator can buzz at 3 levels. The first pilot in 2018 used only 4 levels and 12 participants, and the second pilot in 2021 used 5 levels and 30 participants. We found that people could feel the difference between the levels after about 20 minutes of practice, but the difference between a strawberry and a raspberry was harder to feel than the difference between a strawberry and a stone. The strawberry texture was rated as soft by most of the participants, and the stone texture was rated as hard by all of them. Every session was 45 minutes long, with a break after 20 minutes. In the world of haptic feedback, latency matters: the feedback must arrive within 20 milliseconds or the hand feels that the world is late. Hello world is the first program most people write, and hello world is also the first message our glove sent when it was switched on in 2017. The world model in the headset predicts where the hand will be in 50 milliseconds, and the haptic feedback is scheduled from that prediction. We measured the error of the prediction at 100 frames per second over 1000 frames for each of the 24 participants, and the mean error was 4 millimetres with a standard deviation of 2 millimetres. When the error was above 10 millimetres the feedback felt wrong, and the participants said so in the interview after the session. The interview took 15 minutes. We asked about the strawberry, the raspberry and the stone, and about the feedback in general. Most people said the feedback for the stone was the best and the feedback for the strawberry was the most surprising. The world is full of textures, and a glove with 24 actuators cannot render all of them, but it can render enough of them to make a virtual strawberry feel different from a virtual stone. That is the whole point of the study: feel the difference, then measure it. In 2022, 2023 and 2024 we repeated the sessions with a new glove, new participants and the same three textures, and the numbers held: soft for the strawberry, hard for the stone, and a mean prediction error of about 4 millimetres. The dates of the sessions were 20220314, 20230512 and 20240928. Every participant was paid 20000 won per hour and every session lasted 45 minutes, so the budget for 24 participants was 360000 won for the sessions alone, plus 12000 won each for travel. The glove costs 1200 dollars and the headset costs 500 dollars. The room is 6 metres by 8 metres and the tracking cameras run at 120 frames per second. We hope the next study will feel as good as this one, and that the world will feel a little more real to the people who wear the glove.";
+var PRESETS=[["strawberry","strawberry",3,3],[" strawberry"," strawberry",1,1],["Hello world","Hello world",2,2],["two spaces","Hello  world",3,3],["20240928","20240928",4,3],["1234567890","1234567890",4,4],["haptic feedback","haptic feedback",3,3],["촉각 피드백","촉각 피드백",16,11],["English welcome","Hello, welcome to Seoul.",6,6],["Korean welcome","안녕하세요, 서울에 오신 것을 환영합니다.",50,20],["Unity call","GetComponent<Rigidbody>()",9,3]];
+var N_MERGES=500,enc=new TextEncoder(),dec=new TextDecoder("utf-8",{fatal:true});
+var PRE=/ ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+/gu;
+var merges=[],vocab=[],rank={};
+function chunks(s){return s.match(PRE)||[]}
+function trainToy(){
+  var words=chunks(CORPUS).map(function(w){return Array.from(enc.encode(w))});
+  for(var i=0;i<256;i++)vocab.push([i]);
+  for(var k=0;k<N_MERGES;k++){
+    var c={},best=null,bn=1;
+    words.forEach(function(w){for(var i=0;i+1<w.length;i++){var key=w[i]*100000+w[i+1];c[key]=(c[key]||0)+1;if(c[key]>bn){bn=c[key];best=[w[i],w[i+1]]}}});
+    if(!best)break;
+    var nid=vocab.length;vocab.push(vocab[best[0]].concat(vocab[best[1]]));merges.push(best);rank[best[0]+","+best[1]]=k;
+    words=words.map(function(w){var o=[];for(var i=0;i<w.length;i++){if(w[i]===best[0]&&w[i+1]===best[1]){o.push(nid);i++}else o.push(w[i])}return o});
+  }
+}
+function encodeWord(w){
+  var ids=Array.from(enc.encode(w));
+  while(ids.length>1){
+    var bi=-1,br=1e9;
+    for(var i=0;i+1<ids.length;i++){var r=rank[ids[i]+","+ids[i+1]];if(r!==undefined&&r<br){br=r;bi=i}}
+    if(bi<0)break;
+    ids.splice(bi,2,256+br);
+  }
+  return ids;
+}
+function label(id){var b=vocab[id];try{return dec.decode(new Uint8Array(b))}catch(e){return b.map(function(x){return x.toString(16).toUpperCase().padStart(2,"0")}).join(" ")}}
+function whole(id){try{dec.decode(new Uint8Array(vocab[id]));return true}catch(e){return false}}
+var txt=document.getElementById("txt"),box=document.getElementById("presets");
+PRESETS.forEach(function(p,i){var b=document.createElement("button");b.textContent=p[0];b.onclick=function(){txt.value=p[1];draw()};box.appendChild(b)});
+function draw(){
+  var s=txt.value,ids=[];chunks(s).forEach(function(w){ids=ids.concat(encodeWord(w))});
+  var t=document.getElementById("toks");t.textContent="";
+  ids.forEach(function(id){var e=document.createElement("span");e.className="t"+(whole(id)?"":" h");e.textContent=label(id).replace(/ /g,"␣");t.appendChild(e)});
+  var pi=-1;PRESETS.forEach(function(p,i){if(p[1]===s)pi=i});
+  Array.prototype.forEach.call(box.children,function(b,i){b.className=i===pi?"on":""});
+  var chars=Array.from(s).length,bytes=enc.encode(s).length;
+  document.getElementById("r1").textContent=ids.length;
+  document.getElementById("r2").textContent=pi>=0?PRESETS[pi][2]:"type a preset to compare";
+  document.getElementById("r3").textContent=pi>=0?PRESETS[pi][3]:"–";
+  document.getElementById("r4").textContent=chars+" · "+bytes;
+  document.getElementById("r5").textContent=ids.length?(chars/ids.length).toFixed(2):"–";
+}
+txt.oninput=draw;
+setTimeout(function(){var t0=Date.now();trainToy();document.getElementById("status").textContent="Toy tokenizer: "+merges.length+" merges learned from 3 KB of English in "+(Date.now()-t0)+" ms. GPT-2 counts were measured with tiktoken; the toy has never seen Korean, so it cannot do better than one token per byte there.";txt.value=PRESETS[0][1];draw()},0);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

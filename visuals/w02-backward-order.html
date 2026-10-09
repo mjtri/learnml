@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backward, in order</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+svg{display:block;width:100%;max-width:400px;margin:0 auto;height:auto}
+.node{cursor:pointer}
+.node rect{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.node.done rect{stroke:var(--acc2);stroke-width:2.5}
+.node.bad rect{stroke:var(--bad);stroke-width:2.5}
+.node.next rect{stroke-dasharray:5 4;stroke:var(--ok);stroke-width:2}
+.node text{font:12px system-ui,sans-serif;fill:var(--mut);text-anchor:middle;pointer-events:none}
+.node text.nm{font:700 13px ui-monospace,Menlo,Consolas,monospace;fill:var(--fg)}
+.node text.val{font:12px ui-monospace,Menlo,Consolas,monospace;fill:var(--acc)}
+.node text.gr{font:700 12px ui-monospace,Menlo,Consolas,monospace;fill:var(--acc2)}
+.node text.gr.part{font-weight:400;fill:var(--mut)}
+.edge{stroke:var(--mut);stroke-width:1.5;fill:none}
+.legend{font-size:12px;color:var(--mut);text-align:center;margin:2px 0 6px}
+label{display:grid;grid-template-columns:20px 1fr 44px;align-items:center;gap:8px;font:700 14px ui-monospace,Menlo,Consolas,monospace}
+label output{text-align:right;font-weight:400}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read span:not(.k){overflow-wrap:anywhere;text-align:right}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.say{background:var(--card);border-radius:10px;padding:10px;font-size:13.5px;min-height:84px;margin-top:6px}
+.say b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{display:block;min-height:44px;line-height:44px;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Tap the nodes in the order the backward pass must run them</h1>
+<svg id="g" viewBox="0 0 340 392" role="img" aria-label="Computation graph for L equals e squared, e equals a times b plus c; tap nodes to process them"></svg>
+<div class="legend">a node may run only when its gradient is <b>complete</b>: every node that uses it has already run</div>
+<label>a<input id="sa" type="range" min="-5" max="5" step="0.5" value="2"><output id="oa"></output></label>
+<label>b<input id="sb" type="range" min="-5" max="5" step="0.5" value="-3"><output id="ob"></output></label>
+<label>c<input id="sc" type="range" min="-10" max="10" step="0.5" value="10"><output id="oc"></output></label>
+<div class="btns"><button id="reset">Reset the walk</button></div>
+<div class="read">
+  <span class="k">order so far</span><span id="r1"></span>
+  <span class="k">wrong taps</span><span id="r2"></span>
+  <span class="k">∂L/∂a · ∂L/∂b · ∂L/∂c</span><span id="r3"></span>
+</div>
+<div class="say" id="say" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>topological order</dt><dd>Nodes listed so every node comes after its parents. The backward pass walks it in reverse: consumers before the values they consume.</dd>
+<dt>local derivative</dt><dd>One box's own sensitivity to its direct input: for d = a × b, nudging a moves d by b.</dd>
+<dt>upstream gradient</dt><dd>The gradient a node has already received from the nodes that use it. Only complete once all of them have run.</dd>
+<dt>_backward</dt><dd>The small function attached to each node that hands each parent local derivative × the node's own gradient.</dd>
+</dl></details>
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("g");
+var POS={a:[58,36],b:[170,36],c:[282,150],d:[114,150],e:[198,264],L:[198,356]};
+var LABEL={a:"a",b:"b",c:"c",d:"d = a × b",e:"e = d + c",L:"L = e × e"};
+var EDGES=[["a","d"],["b","d"],["d","e"],["c","e"],["e","L"]];
+var USERS={a:["d"],b:["d"],c:["e"],d:["e"],e:["L"],L:[]};
+var done=[],wrong=0,G={},flash=null;
+function mk(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e}
+var els={};
+EDGES.forEach(function(p){var A=POS[p[0]],B=POS[p[1]];svg.appendChild(mk("line",{x1:A[0],y1:A[1]+30,x2:B[0],y2:B[1]-30,"class":"edge"}))});
+Object.keys(POS).forEach(function(k){var p=POS[k],g=mk("g",{"class":"node",transform:"translate("+(p[0]-52)+","+(p[1]-30)+")",tabindex:"0",role:"button"});
+  g.appendChild(mk("rect",{width:104,height:60,rx:10}));g.appendChild(mk("text",{x:52,y:17,"class":"nm"},LABEL[k]));
+  var v=mk("text",{x:52,y:35,"class":"val"}),gr=mk("text",{x:52,y:52,"class":"gr"});g.appendChild(v);g.appendChild(gr);svg.appendChild(g);
+  els[k]={g:g,v:v,gr:gr};g.addEventListener("pointerdown",function(ev){ev.preventDefault();tap(k)});
+  g.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();tap(k)}})});
+function f(n){if(Math.abs(n)<5e-5)n=0;return(Math.round(n*100)/100).toString()}
+function vals(){var a=+sa.value,b=+sb.value,c=+sc.value,d=a*b,e=d+c;return{a:a,b:b,c:c,d:d,e:e,L:e*e}}
+function reset(){done=[];wrong=0;G={a:0,b:0,c:0,d:0,e:0,L:0};flash=null;render(null)}
+function tap(k){
+  var V=vals(),msg;flash=null;
+  if(done.indexOf(k)>=0){msg="<b>"+k+"</b> has already run. Pick a node whose gradient is now complete."}
+  else{var block=USERS[k].filter(function(u){return done.indexOf(u)<0});
+    if(k!=="L"&&done.indexOf("L")<0){wrong++;flash=k;msg="Not yet. Every backward pass starts at the output: <b>L.grad = 1</b>. Nothing else has a gradient to pass on."}
+    else if(block.length){wrong++;flash=k;msg="Not yet. <b>"+k+".grad</b> is not complete: <b>"+block.join(", ")+"</b> still has to run its _backward and add to it. Right now "+k+".grad so far = <b>"+f(G[k])+"</b>, which would be passed on as if final."}
+    else{done.push(k);
+      if(k==="L"){G.L=1;G.e+=V.e*1;G.e+=V.e*1;msg="Start: <b>L.grad = 1</b>. L = e × e, so e receives e × 1 <b>twice</b> (multiply swaps, and both inputs are e): e.grad so far = 2e = <b>"+f(G.e)+"</b>."}
+      else if(k==="e"){G.d+=G.e;G.c+=G.e;msg="<b>e.grad = "+f(G.e)+"</b> is complete: L was its only user. e = d + c: add copies, so d and c each receive <b>"+f(G.e)+"</b>."}
+      else if(k==="d"){G.a+=V.b*G.d;G.b+=V.a*G.d;msg="<b>d.grad = "+f(G.d)+"</b> complete. d = a × b: multiply swaps. a receives b × "+f(G.d)+" = <b>"+f(V.b*G.d)+"</b>; b receives a × "+f(G.d)+" = <b>"+f(V.a*G.d)+"</b>."+(V.b===0?" With b = 0, a gets 0: it cannot influence L right now.":"")}
+      else msg="<b>"+k+".grad = "+f(G[k])+"</b> complete. "+k+" is a leaf: nothing upstream to pass to."
+      if(done.length===6)msg+="<br><b>Done.</b> Order used: "+done.join(" → ")+". Wrong taps: "+wrong+". ∂L/∂a = "+f(G.a)+", ∂L/∂b = "+f(G.b)+", ∂L/∂c = "+f(G.c)+"."}}
+  render(msg);
+}
+function render(msg){
+  var V=vals();
+  document.getElementById("oa").textContent=f(V.a);document.getElementById("ob").textContent=f(V.b);document.getElementById("oc").textContent=f(V.c);
+  Object.keys(els).forEach(function(k){var isDone=done.indexOf(k)>=0,ready=!isDone&&(k==="L"||(done.indexOf("L")>=0&&USERS[k].every(function(u){return done.indexOf(u)>=0})));
+    els[k].v.textContent="value "+f(V[k]);
+    els[k].gr.textContent=isDone?"grad = "+f(G[k]):"so far "+f(G[k]);
+    els[k].gr.setAttribute("class","gr"+(isDone?"":" part"));
+    els[k].g.setAttribute("class","node"+(isDone?" done":"")+(flash===k?" bad":"")+(ready&&done.length?" next":""))});
+  document.getElementById("r1").textContent=done.length?done.join(" → "):"(tap L to start)";
+  document.getElementById("r2").textContent=wrong;
+  document.getElementById("r3").textContent=done.length===6?f(G.a)+" · "+f(G.b)+" · "+f(G.c):"? · ? · ?";
+  document.getElementById("say").innerHTML=msg||"Forward pass done: every box has a value. Write down the order you think the six nodes must run in, then tap them in that order. Dashed green = nodes whose gradient is complete right now.";
+}
+window.redraw=function(){render(null)};
+var sa=document.getElementById("sa"),sb=document.getElementById("sb"),sc=document.getElementById("sc");
+[sa,sb,sc].forEach(function(s){s.oninput=reset});
+document.getElementById("reset").onclick=reset;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+reset();
+})();
+</script>
+</body>
+</html>

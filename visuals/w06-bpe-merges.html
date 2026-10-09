@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BPE merge stepper</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.go{background:var(--acc2);border-color:var(--acc2);color:#fff;font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+input[type=text]{width:100%;min-height:44px;font:14px ui-monospace,Menlo,Consolas,monospace;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);margin-bottom:8px}
+.toks{display:flex;flex-wrap:wrap;gap:4px;padding:10px;background:var(--card);border-radius:10px;min-height:60px;margin-bottom:8px}
+.t{display:block;font:14px ui-monospace,Menlo,Consolas,monospace;padding:4px 7px;border-radius:7px;border:1px solid var(--line);background:var(--bg);white-space:pre}
+.t.m{border-color:var(--acc);color:var(--acc);font-weight:700}
+.t.h{color:var(--mut);font-size:12px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.big{color:var(--acc2);font-weight:700}
+table{width:100%;border-collapse:collapse;font:13px ui-monospace,Menlo,Consolas,monospace;margin-top:8px}
+td,th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:pre}
+th{color:var(--mut);font:12px system-ui,sans-serif}
+tr.top td{color:var(--acc2);font-weight:700}
+.note{font-size:12.5px;color:var(--mut);margin:6px 0 0}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>BPE: tap <b>merge</b> and the most frequent adjacent pair becomes one token</h1>
+<div class="row" id="presets"></div>
+<input id="txt" type="text" aria-label="Text to tokenize" spellcheck="false">
+<div class="row">
+  <button id="reset">↺ reset</button>
+  <button id="one" class="go">merge ▶</button>
+  <button id="ten">merge ×10</button>
+</div>
+<div class="toks" id="toks" aria-live="polite"></div>
+<div class="read">
+  <span class="k">tokens now</span><span id="r1" class="big"></span>
+  <span class="k">bytes at the start</span><span id="r2"></span>
+  <span class="k">merges learned (vocabulary = 256 + this)</span><span id="r3"></span>
+  <span class="k">bytes per token</span><span id="r4"></span>
+  <span class="k">last rule</span><span id="r5"></span>
+</div>
+<table><thead><tr><th>pair</th><th>count</th></tr></thead><tbody id="pairs"></tbody></table>
+<p class="note">Grey hex chips are single bytes that are not a whole character yet (a Korean syllable is three). Ties go to the pair seen first, as in Python's Counter.</p>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>byte</dt><dd>A number 0–255. Text is stored as bytes: one per English letter, three per Korean syllable.</dd>
+<dt>merge rule</dt><dd>One learned step: glue these two tokens into one new token. Applied in learned order.</dd>
+<dt>vocabulary</dt><dd>All tokens the tokenizer can output: 256 bytes plus one per merge.</dd>
+<dt>bytes per token</dt><dd>Compression: how many original bytes an average token now covers.</dd>
+</dl></details>
+<script>
+(function(){
+var PRESETS=[["aaabdaaabac","aaabdaaabac"],["cat & mat","the cat sat on the mat, the cat ate the rat"],["Korean","hello 서울, hello 서울, hello 서울"]];
+var enc=new TextEncoder(),dec=new TextDecoder("utf-8",{fatal:true});
+var txt=document.getElementById("txt"),box=document.getElementById("presets");
+var ids=[],vocab=[],rules=[],base=0,cur=0;
+PRESETS.forEach(function(p,i){var b=document.createElement("button");b.textContent=p[0];b.onclick=function(){cur=i;txt.value=p[1];reset()};box.appendChild(b)});
+function reset(){
+  Array.prototype.forEach.call(box.children,function(b,i){b.className=(i===cur&&txt.value===PRESETS[i][1])?"on":""});
+  ids=Array.from(enc.encode(txt.value));base=ids.length;vocab=[];rules=[];
+  for(var i=0;i<256;i++)vocab.push([i]);
+  draw();
+}
+function counts(){var c={},order=[];for(var i=0;i+1<ids.length;i++){var k=ids[i]+","+ids[i+1];if(!(k in c)){c[k]=0;order.push(k)}c[k]++}
+  return order.map(function(k){return{k:k,a:+k.split(",")[0],b:+k.split(",")[1],n:c[k]}}).sort(function(x,y){return y.n-x.n})}
+function label(id){var b=vocab[id];try{return dec.decode(new Uint8Array(b))}catch(e){return b.map(function(x){return x.toString(16).toUpperCase().padStart(2,"0")}).join(" ")}}
+function whole(id){try{dec.decode(new Uint8Array(vocab[id]));return true}catch(e){return false}}
+function merge(){
+  var cs=counts();if(!cs.length||cs[0].n<2)return false;
+  var p=cs[0],nid=vocab.length;vocab.push(vocab[p.a].concat(vocab[p.b]));rules.push([p.a,p.b,nid]);
+  var out=[];for(var i=0;i<ids.length;i++){if(ids[i]===p.a&&ids[i+1]===p.b){out.push(nid);i++}else out.push(ids[i])}
+  ids=out;return true;
+}
+function draw(){
+  var t=document.getElementById("toks");t.textContent="";
+  var last=rules.length?rules[rules.length-1][2]:-1;
+  ids.forEach(function(id){var s=document.createElement("span");var w=whole(id);s.className="t"+(id>=256?" m":"")+(w?"":" h");
+    var l=label(id);s.textContent=l.replace(/ /g,"␣");if(id===last)s.style.background="var(--card)";t.appendChild(s)});
+  var pb=document.getElementById("pairs");pb.textContent="";
+  counts().slice(0,5).forEach(function(p,i){var tr=document.createElement("tr");if(i===0&&p.n>=2)tr.className="top";
+    var a=document.createElement("td"),b=document.createElement("td");a.textContent=(label(p.a)+" + "+label(p.b)).replace(/ /g,"␣");b.textContent=p.n+(i===0?(p.n>=2?"  ← next merge":"  (nothing repeats)"):"");tr.appendChild(a);tr.appendChild(b);pb.appendChild(tr)});
+  document.getElementById("r1").textContent=ids.length;
+  document.getElementById("r2").textContent=base;
+  document.getElementById("r3").textContent=rules.length;
+  document.getElementById("r4").textContent=ids.length?(base/ids.length).toFixed(2):"–";
+  var r=rules[rules.length-1];
+  document.getElementById("r5").textContent=r?("'"+label(r[0])+"' + '"+label(r[1])+"' → id "+r[2]).replace(/ /g,"␣"):"none yet";
+}
+document.getElementById("one").onclick=function(){merge();draw()};
+document.getElementById("ten").onclick=function(){for(var i=0;i<10;i++)if(!merge())break;draw()};
+document.getElementById("reset").onclick=reset;
+txt.oninput=reset;
+txt.value=PRESETS[0][1];reset();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

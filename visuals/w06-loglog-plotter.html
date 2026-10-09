@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Log–log scaling-law plotter</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;height:260px;touch-action:pan-y;border-radius:10px;background:var(--card)}
+.sl{display:grid;grid-template-columns:96px 1fr 62px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.sl output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.a{color:var(--acc2);font-weight:700}.b{color:var(--ok);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>A power law is a straight line on log–log axes; its slope is the exponent</h1>
+<div class="row" id="presets"></div>
+<div class="row">
+  <button id="axLog" class="on">log–log axes</button>
+  <button id="axLin">linear axes</button>
+</div>
+<canvas id="cv" aria-label="Loss against parameter count with two markers"></canvas>
+<div class="sl">exponent α<input id="sa" type="range" min="0.02" max="0.30" step="0.002" value="0.076"><output id="oa"></output></div>
+<div class="sl">floor E<input id="se" type="range" min="0" max="2.5" step="0.05" value="0"><output id="oe"></output></div>
+<div class="sl"><span class="a">marker 1</span><input id="s1" type="range" min="5" max="12" step="0.05" value="6"><output id="o1"></output></div>
+<div class="sl"><span class="b">marker 2</span><input id="s2" type="range" min="5" max="12" step="0.05" value="9"><output id="o2"></output></div>
+<div class="read">
+  <span class="k">loss at marker 1</span><span id="r1" class="a"></span>
+  <span class="k">loss at marker 2</span><span id="r2" class="b"></span>
+  <span class="k">decades apart</span><span id="r3"></span>
+  <span class="k">loss ratio (2 ÷ 1)</span><span id="r4"></span>
+  <span class="k">measured slope between markers</span><span id="r5"></span>
+  <span class="k">10× more parameters buys</span><span id="r6"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>power law</dt><dd>loss = (N₀ ÷ N)^α: each tenfold increase in N multiplies the loss by the same factor, 10^−α.</dd>
+<dt>log–log plot</dt><dd>Both axes in powers of ten. A power law becomes a straight line; the slope is −α.</dd>
+<dt>floor E</dt><dd>Loss the model can never remove (the noise in the text). It bends the line flat at the right.</dd>
+<dt>decade</dt><dd>One factor of ten on a log axis.</dd>
+</dl></details>
+<script>
+(function(){
+var PRESETS=[{n:"Kaplan: parameters",a:0.076,c:8.8e13,e:0},{n:"Kaplan: data tokens",a:0.095,c:5.4e13,e:0},{n:"with a floor",a:0.076,c:8.8e13,e:1.7}];
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),Wd=300,Ht=260,logAx=true,Nc=8.8e13;
+var sa=document.getElementById("sa"),se=document.getElementById("se"),s1=document.getElementById("s1"),s2=document.getElementById("s2");
+var box=document.getElementById("presets");
+PRESETS.forEach(function(p,i){var b=document.createElement("button");b.textContent=p.n;b.onclick=function(){sa.value=p.a;se.value=p.e;Nc=p.c;mark(i);draw()};box.appendChild(b)});
+function mark(i){Array.prototype.forEach.call(box.children,function(b,j){b.className=i===j?"on":""})}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function L(logN){var a=+sa.value,E=+se.value;return E+Math.pow(Nc/Math.pow(10,logN),a)}
+function fit(){var r=window.devicePixelRatio||1;Wd=cv.clientWidth;Ht=cv.clientHeight;cv.width=Wd*r;cv.height=Ht*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+var PL=44,PB=28,PT=10,PR=10;
+function draw(){
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok");
+  var x0=5,x1=12,ys=[],i;for(i=0;i<=140;i++)ys.push(L(x0+(x1-x0)*i/140));
+  var ymax=Math.max.apply(null,ys),ymin=Math.min.apply(null,ys);
+  var lo=logAx?Math.log10(Math.max(ymin,0.05))-0.05:0,hi=logAx?Math.log10(ymax)+0.05:ymax*1.05;
+  function X(lg){var v=logAx?lg:Math.pow(10,lg)/1e12;var v0=logAx?x0:0,v1=logAx?x1:1;return PL+(v-v0)/(v1-v0)*(Wd-PL-PR)}
+  function Y(l){var v=logAx?Math.log10(Math.max(l,0.05)):l;return PT+(1-(v-lo)/(hi-lo))*(Ht-PT-PB)}
+  ctx.clearRect(0,0,Wd,Ht);ctx.font="11px system-ui,sans-serif";ctx.fillStyle=mut;ctx.strokeStyle=ln;ctx.lineWidth=1;
+  if(logAx){for(var g=5;g<=12;g++){ctx.beginPath();ctx.moveTo(X(g),PT);ctx.lineTo(X(g),Ht-PB);ctx.stroke();ctx.fillText("10^"+g,X(g)-10,Ht-8)}
+    for(var d=Math.ceil(lo*2)/2;d<=hi;d+=0.5){var yy=Y(Math.pow(10,d));ctx.beginPath();ctx.moveTo(PL,yy);ctx.lineTo(Wd-PR,yy);ctx.stroke();ctx.fillText(Math.pow(10,d).toPrecision(2),2,yy+4)}}
+  else{for(var k=0;k<=5;k++){var xx=PL+k/5*(Wd-PL-PR);ctx.beginPath();ctx.moveTo(xx,PT);ctx.lineTo(xx,Ht-PB);ctx.stroke();ctx.fillText((k*0.2).toFixed(1)+"e12",xx-12,Ht-8)}
+    for(var m=0;m<=4;m++){var y2=Y(hi*m/4);ctx.beginPath();ctx.moveTo(PL,y2);ctx.lineTo(Wd-PR,y2);ctx.stroke();ctx.fillText((hi*m/4).toFixed(1),2,y2+4)}}
+  ctx.fillText(logAx?"parameters N (log)":"parameters N (linear)",Wd-130,Ht-PB-6);
+  ctx.strokeStyle=acc;ctx.lineWidth=2.5;ctx.beginPath();
+  for(i=0;i<=140;i++){var lg=x0+(x1-x0)*i/140,px=X(lg),py=Y(ys[i]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)}ctx.stroke();
+  var m1=+s1.value,m2=+s2.value,l1=L(m1),l2=L(m2);
+  [[m1,l1,acc2],[m2,l2,ok]].forEach(function(p){ctx.setLineDash([3,3]);ctx.strokeStyle=p[2];ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(p[0]),Y(p[1]));ctx.lineTo(X(p[0]),Ht-PB);ctx.moveTo(X(p[0]),Y(p[1]));ctx.lineTo(PL,Y(p[1]));ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=p[2];ctx.beginPath();ctx.arc(X(p[0]),Y(p[1]),6,0,7);ctx.fill()});
+  if(+se.value>0){ctx.strokeStyle=mut;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(PL,Y(+se.value));ctx.lineTo(Wd-PR,Y(+se.value));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=mut;ctx.fillText("floor E",Wd-PR-44,Y(+se.value)-4)}
+  document.getElementById("oa").textContent=(+sa.value).toFixed(3);document.getElementById("oe").textContent=(+se.value).toFixed(2);
+  document.getElementById("o1").textContent="10^"+m1.toFixed(2);document.getElementById("o2").textContent="10^"+m2.toFixed(2);
+  document.getElementById("r1").textContent=l1.toFixed(3);document.getElementById("r2").textContent=l2.toFixed(3);
+  var dd=m2-m1;document.getElementById("r3").textContent=dd.toFixed(2);
+  document.getElementById("r4").textContent=(l2/l1).toFixed(3);
+  document.getElementById("r5").textContent=Math.abs(dd)<1e-9?"–":(Math.log10(l2/l1)/dd).toFixed(3)+(+se.value>0?"  (pure law: "+(-(+sa.value)).toFixed(3)+")":"");
+  document.getElementById("r6").textContent="−"+((1-Math.pow(10,-(+sa.value)))*100).toFixed(1)+"% loss (no floor)";
+}
+window.redraw=draw;
+[sa,se,s1,s2].forEach(function(s){s.oninput=function(){if(s===sa||s===se)mark(-1);draw()}});
+document.getElementById("axLog").onclick=function(){logAx=true;this.className="on";document.getElementById("axLin").className="";draw()};
+document.getElementById("axLin").onclick=function(){logAx=false;this.className="on";document.getElementById("axLog").className="";draw()};
+addEventListener("resize",fit);
+mark(0);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>
