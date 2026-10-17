@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Temperature and top-k</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+label{display:grid;grid-template-columns:92px 1fr 52px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;height:200px;border-radius:10px;background:var(--card)}
+.hint{font-size:12px;color:var(--mut);margin:4px 0}
+.out{font:15px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px;word-break:break-all;min-height:44px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>After “th”, which character next? Reshape the model's belief, then draw</h1>
+<canvas id="cv" aria-label="Bars: probability of each candidate character after applying temperature and top-k"></canvas>
+<div class="hint">Grey bars: the model's raw belief (T = 1, no cut). Coloured: after your knobs.</div>
+<label>temperature T<input id="sT" type="range" min="0.1" max="3" step="0.1" value="1"><output id="oT"></output></label>
+<label>top-k<input id="sK" type="range" min="1" max="8" step="1" value="8"><output id="oK"></output></label>
+<div class="row"><button id="d1">draw 1</button><button id="d50">draw 50</button><button id="clr">clear</button></div>
+<div class="out" id="out" aria-live="polite"></div>
+<div class="read">
+  <span class="k">p(favourite “e”)</span><span id="r1"></span>
+  <span class="k">characters with p above 0</span><span id="r2"></span>
+  <span class="k">draws so far</span><span id="r3"></span>
+  <span class="k">share of draws that were “e”</span><span id="r4"></span>
+  <span class="k">distinct characters drawn</span><span id="r5"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>logits</dt><dd>The raw scores the model outputs, one per character, before they are turned into probabilities.</dd>
+<dt>temperature</dt><dd>Logits are divided by T before softmax. Below 1 sharpens towards the favourite; above 1 flattens towards uniform. Near 0 it is greedy decoding.</dd>
+<dt>top-k</dt><dd>Keep only the k highest logits; the rest get probability 0, and the survivors are renormalised.</dd>
+<dt>draw</dt><dd>One random pick in proportion to the bars. Sampling is one draw per character.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var CH=["e","a","o","i","r","u","␣","y"],Z=[3.0,1.8,1.5,1.2,0.6,0.3,0.0,-0.5];
+var cv=$("cv"),ctx=cv.getContext("2d"),draws=[];
+function probs(T,k){var idx=Z.map(function(z,i){return i}).sort(function(a,b){return Z[b]-Z[a]}),cut=Z[idx[k-1]];
+  var e=Z.map(function(z){return z<cut?0:Math.exp((z-Z[0])/T)}),s=e.reduce(function(a,b){return a+b},0);return e.map(function(v){return v/s})}
+function draw(){var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);
+  var T=+$("sT").value,k=+$("sK").value;$("oT").textContent=T.toFixed(1);$("oK").textContent=k;
+  var p=probs(T,k),p0=probs(1,8),acc=css("--acc"),mut=css("--mut"),fg=css("--fg"),line=css("--line");
+  ctx.clearRect(0,0,W,H);var n=CH.length,gw=(W-16)/n,bw=(gw-10)/2,base=H-26,sc=(H-44);
+  for(var i=0;i<n;i++){var x=8+i*gw+5;
+    ctx.fillStyle=line;ctx.fillRect(x,base-p0[i]*sc,bw,p0[i]*sc);
+    ctx.fillStyle=p[i]>0?acc:mut;ctx.fillRect(x+bw+2,base-p[i]*sc,bw,Math.max(p[i]*sc,p[i]>0?1:0));
+    ctx.fillStyle=fg;ctx.font="13px ui-monospace,Menlo,Consolas,monospace";ctx.textAlign="center";ctx.fillText(CH[i],x+bw+1,H-8);
+    ctx.fillStyle=mut;ctx.font="10px system-ui,sans-serif";ctx.fillText(p[i]>0?(100*p[i]).toFixed(p[i]<0.1?1:0)+"%":"0",x+bw+1,base-p[i]*sc-3)}
+  $("r1").textContent=(100*p[0]).toFixed(1)+"%";$("r2").textContent=p.filter(function(v){return v>0}).length+" of 8";
+  var ne=draws.filter(function(c){return c==="e"}).length,ds={};draws.forEach(function(c){ds[c]=1});
+  $("r3").textContent=draws.length;$("r4").textContent=draws.length?(100*ne/draws.length).toFixed(0)+"%":"–";
+  $("r5").textContent=Object.keys(ds).length;$("out").textContent=draws.join("")||"(tap draw)"}
+function one(){var p=probs(+$("sT").value,+$("sK").value),u=Math.random(),c=0;for(var i=0;i<p.length;i++){c+=p[i];if(u<c)return CH[i]}return CH[0]}
+$("d1").onclick=function(){draws.push(one());draw()};
+$("d50").onclick=function(){for(var i=0;i<50;i++)draws.push(one());draw()};
+$("clr").onclick=function(){draws=[];draw()};
+$("sT").oninput=draw;$("sK").oninput=draw;
+window.redraw=draw;addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

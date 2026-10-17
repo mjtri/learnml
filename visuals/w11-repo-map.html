@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repo map</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.seen{border-color:var(--ok)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.st{display:block;width:100%;text-align:left;margin:4px 0;padding:8px 12px;line-height:1.35}
+.st b{display:block;font-size:13px}
+.st small{display:block;font-size:12px;opacity:.85;font-weight:400}
+.arrow{color:var(--mut);text-align:center;font-size:12px;line-height:1}
+.note{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:13.5px}
+.note code{font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--bg);padding:1px 4px;border-radius:4px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.ok{color:var(--ok);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Five stations from the README's command to the printed number</h1>
+<div class="row" id="repos"></div>
+<div id="stations"></div>
+<div class="note" id="note" aria-live="polite">Pick a repository, then tap the stations in order.</div>
+<div class="read">
+  <span class="k">stations visited</span><span id="rv">0 / 5</span>
+  <span class="k">files on the path</span><span id="rf">–</span>
+  <span class="k">preprocessing lives in</span><span id="rp">–</span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>entry point</dt><dd>The script the README tells you to run; read once, top to bottom, for the order of things.</dd>
+<dt>config file</dt><dd>The settings the entry point reads and lets overwrite its defaults; every line is a checklist line or an unstated detail.</dd>
+<dt>data flow</dt><dd>The path from a file on disk through loading and preprocessing to the model and the metric line; read it backwards from the metric.</dd>
+<dt>metric line</dt><dd>The one line that computes the number you are reproducing; everything upstream of it is the recipe.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var NAMES=["entry point","config","data","model","metric"];
+var R=[
+ {n:"nanoGPT",files:"4 (train.py, the config, prepare.py, model.py)",pre:"prepare.py and get_batch() in train.py",s:[
+  ["train.py, lines 1–75","Defaults for every setting, then <code>exec(open('configurator.py').read())</code>: whatever the config file assigns overwrites these globals. Then data, model, loop, evaluation, in that order."],
+  ["config/train_shakespeare_char.py","Plain Python: <code>max_iters = 5000</code>, <code>dropout = 0.2</code>, <code>eval_iters = 200</code>, <code>batch_size = 64</code>. Every line here is a setting the paper-equivalent (the README) never states; copy each into the checklist."],
+  ["data/shakespeare_char/prepare.py → train.bin, val.bin","Characters mapped to integers, split 90/10, written as binary. In train.py, <code>get_batch('val')</code> reads random windows of <code>block_size</code> tokens. That windowing is preprocessing."],
+  ["model.py, class GPT","<code>model(X, Y)</code> returns logits and the cross-entropy loss. The architecture comes from the config (<code>n_layer = 6</code>, <code>n_head = 6</code>, <code>n_embd = 384</code>)."],
+  ["train.py, estimate_loss()","Averages the loss over <code>eval_iters</code> random validation batches and prints <code>val loss</code>. The README's 1.4697 is this number at the best step: random batches, so it moves a little between runs."]]},
+ {n:"OpenCLIP zero-shot",files:"2 (your notebook cell, plus a prompt file from another repo)",pre:"the transform returned with the weights, and prompts you type",s:[
+  ["your notebook cell (no script)","The README snippet: <code>create_model_and_transforms('ViT-B-32', pretrained=...)</code>, <code>get_tokenizer</code>, then your own loop. The entry point is the cell you write."],
+  ["no config file: the arguments","<code>pretrained='openai'</code> reproduces the paper; <code>'laion2b_s34b_b79k'</code> (the README default, and week 9's choice) is a different model. The template list and the batch size are arguments too."],
+  ["torchvision CIFAR10(train=False)","10,000 test images, ten classes, loaded with the <code>preprocess</code> transform returned beside the model: resize 224, centre crop, CLIP mean/std."],
+  ["model.encode_image / encode_text","Image features and one text feature per class: the 18 templates from openai/CLIP <code>data/prompts.md</code>, embedded, averaged, normalised. The templates are not in this repository at all."],
+  ["argmax over cosine similarities == label","Mean over the 10,000 images gives top-1 accuracy. Paper: 91.3. OpenCLIP's own table for the same weights: 89.8."]]},
+ {n:"week-10 notebook",files:"1 notebook, 6 cells on the path",pre:"the sonifier cell and the standardisation inside probe_accuracy()",s:[
+  ["cell 1, setup; cell 3, config","The helper cell, then the config cell: <code>SMOKE</code>, <code>OPTION</code>, and <code>cfg</code>. The entry point of a notebook is the cell order."],
+  ["cell 3: cfg","<code>n_per_class = 12</code>, <code>seeds = [0, 1, 2]</code>, <code>probe_steps = 200</code>, <code>seed = 0</code> (SMOKE). The full run uses 60, ten seeds, 500 steps: a different number."],
+  ["cells 4–8 render; cell 20 sound vectors; cell 26 saves week10_data.npz","Twenty shapes at 16×16 with jitter, sonified, mapped back to 256-number vectors. The saved file carries <code>smoke</code>, <code>seed</code> and <code>option</code>: the checklist can be checked against it."],
+  ["cell 28, probe_accuracy()","Standardise, split 75/25 with the seed, one hidden layer of 64, Adam for <code>probe_steps</code> steps on mini-batches of 64."],
+  ["cell 30","Held-out accuracy per seed on 60 images, then <code>mean</code> and <code>sd</code> printed. That printed mean is the rehearsal target: 71.1 on the author's machine."]]}
+];
+var cur=0,seen=[];
+R.forEach(function(r,i){var b=document.createElement("button");b.textContent=r.n;b.onclick=function(){cur=i;seen=[];$("note").textContent="Tap the stations in order.";draw()};$("repos").appendChild(b)});
+function draw(){
+  Array.prototype.forEach.call($("repos").children,function(b,i){b.className=i===cur?"on":""});
+  var box=$("stations");box.innerHTML="";
+  R[cur].s.forEach(function(s,i){var b=document.createElement("button");b.className="st"+(seen.indexOf(i)>=0?" seen":"");
+    b.innerHTML="<b>"+(i+1)+" · "+NAMES[i]+"</b><small>"+s[0]+"</small>";b.onclick=function(){if(seen.indexOf(i)<0)seen.push(i);$("note").innerHTML="<b>"+NAMES[i]+"</b> · "+s[0]+"<br>"+s[1];draw()};
+    box.appendChild(b);if(i<4){var a=document.createElement("div");a.className="arrow";a.textContent="↓";box.appendChild(a)}});
+  $("rv").textContent=seen.length+" / 5";
+  $("rf").textContent=seen.length===5?R[cur].files:"visit all five";
+  $("rp").innerHTML=seen.indexOf(2)>=0?'<span class="acc">'+R[cur].pre+'</span>':"–";
+}
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

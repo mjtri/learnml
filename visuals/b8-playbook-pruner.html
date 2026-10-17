@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Playbook pruner</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 8px}
+.stat{padding:8px;border-radius:10px;background:var(--card);text-align:center}
+.stat b{display:block;font:700 18px/1.2 ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.stat span{display:block;font-size:11px;color:var(--mut)}
+.stat.bad b{color:var(--bad)}.stat.warn b{color:var(--acc2)}.stat.ok b{color:var(--ok)}
+.rule{display:block;width:100%;min-height:44px;margin:0 0 6px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:13px;text-align:left;cursor:pointer;touch-action:manipulation;border-left-width:4px}
+.rule.link{border-left-color:var(--acc)}.rule.number{border-left-color:var(--ok)}.rule.measure{border-left-color:var(--acc2)}.rule.none{border-left-color:var(--bad);color:var(--mut)}
+.rule .tag{font:700 11px/1 ui-monospace,Menlo,Consolas,monospace;padding:3px 6px;border-radius:6px;background:var(--bg);margin-right:6px;color:var(--fg)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px;border-left:4px solid var(--line)}
+.status.warn{border-left-color:var(--acc2)}.status.ok{border-left-color:var(--ok)}
+.status b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Which rules survive the prune?</h1>
+<p class="hint">Tap a rule to cycle its evidence: link → number → measure next week → neither. Only link and number count toward the 20; "neither" is deleted at the review.</p>
+<div class="stats">
+ <div class="stat" id="s1"><b id="kept"></b><span>kept of 20</span></div>
+ <div class="stat" id="s2"><b id="meas"></b><span>to measure</span></div>
+ <div class="stat" id="s3"><b id="del"></b><span>deleted</span></div>
+</div>
+<div id="list"></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>link</dt><dd>An official page states the rule; the playbook line carries the URL and a checked date.</dd>
+<dt>number</dt><dd>A measurement from an apply task backs the rule: minutes, a usage delta, a quality score, a verified fraction.</dd>
+<dt>measure next week</dt><dd>Kept on probation with a planned measurement; more than two open at once will not get done.</dd>
+<dt>installed file</dt><dd>The kept rules as imperatives, one line each, copied to both global instruction files; every line loads on every session.</dd>
+</dl></details>
+<script>
+(function(){
+var R=[["Give the agent a check it can run: a test, a build, a done-when.","link"],
+["Explore, plan, then code; skip the plan only for one-line diffs.","link"],
+["One short AGENTS.md imported by CLAUDE.md; prune it.","link"],
+["/clear between unrelated tasks instead of piling on corrections.","link"],
+["Hand noisy output to subagents that return summaries.","link"],
+["Progress file and a commit per unit of work.","link"],
+["A different agent grades the work, ideally a different vendor.","link"],
+["Switch to Sonnet when the Opus bar passes 70 %.","none"],
+["Draft reviewer responses in ChatGPT; keep Claude for repo work.","none"],
+["Small oracle-backed tasks go to Codex (task X: 11 min / 3 vs 14 min / 4).","number"],
+["Fast mode stays off unless a deadline rule turns it on for one session.","link"],
+["Always use Opus for Unity C# work.","none"],
+["Verify every reference by identifier before it enters a document (15 of 18 ok).","number"],
+["Automate only after three correction-free manual runs.","none"]];
+var ORDER=["link","number","measure","none"],LABEL={link:"link",number:"number",measure:"measure",none:"neither"};
+var list=document.getElementById("list");
+R.forEach(function(r,i){var b=document.createElement("button");b.className="rule "+r[1];b.setAttribute("aria-label","rule "+(i+1));
+ b.onclick=function(){r[1]=ORDER[(ORDER.indexOf(r[1])+1)%ORDER.length];draw()};r.el=b;list.appendChild(b)});
+function draw(){
+ var kept=0,meas=0,del=0,words=0;
+ R.forEach(function(r){r.el.className="rule "+r[1];r.el.innerHTML="<span class=\"tag\">"+LABEL[r[1]]+"</span>"+r[0];
+  if(r[1]==="link"||r[1]==="number"){kept++;words+=r[0].split(" ").length}else if(r[1]==="measure"){meas++;words+=r[0].split(" ").length}else del++});
+ set("kept",kept,"s1",kept>20?"bad":"ok");set("meas",meas,"s2",meas>2?"warn":"");set("del",del,"s3","");
+ var st=document.getElementById("st"),lines=kept+meas;
+ if(kept>20){st.className="status warn";st.textContent="Over 20 kept: merge duplicates or demand a number from the weakest link-only rule."}
+ else if(meas>2){st.className="status warn";st.textContent=meas+" measurements scheduled: more than two will not get done in one week; delete the rest."}
+ else if(del>0){st.className="status";st.textContent=del+" rule"+(del>1?"s":"")+" with neither: deleted at this review, back when they earn evidence. Installed file: "+lines+" lines, about "+words+" words, loaded on every session in both tools."}
+ else{st.className="status ok";st.textContent="Every rule earns its place. Installed file: "+lines+" lines, about "+words+" words, loaded on every session in both tools."}
+}
+function set(id,v,sid,cls){document.getElementById(id).textContent=v;document.getElementById(sid).className="stat"+(cls?" "+cls:"")}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LayerNorm and where it sits</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pane{display:none}.pane.on{display:block}
+label{display:grid;grid-template-columns:44px 1fr 52px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;height:170px;border-radius:10px;background:var(--card);margin-top:6px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.eq{font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:8px 10px;margin-top:8px;color:var(--fg)}
+.hint{font-size:12px;color:var(--mut);margin:4px 0 8px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>LayerNorm: one token, then where to put it</h1>
+<div class="row"><button id="t1" class="on">one token</button><button id="t2">placement</button></div>
+
+<div class="pane on" id="p1">
+<label>x[0]<input id="s0" type="range" min="-10" max="10" step="1" value="1"><output id="o0"></output></label>
+<label>x[1]<input id="s1" type="range" min="-10" max="10" step="1" value="3"><output id="o1"></output></label>
+<label>x[2]<input id="s2" type="range" min="-10" max="10" step="1" value="5"><output id="o2"></output></label>
+<label>x[3]<input id="s3" type="range" min="-10" max="10" step="1" value="-1"><output id="o3"></output></label>
+<canvas id="c1" aria-label="Bars of the token before and after LayerNorm"></canvas>
+<div class="hint">Left bars: the token as it is. Right bars: after LayerNorm (before the learned scale and shift).</div>
+<div class="read">
+  <span class="k">mean</span><span id="m"></span>
+  <span class="k">variance</span><span id="v"></span>
+  <span class="k">standard deviation</span><span id="sd"></span>
+  <span class="k">LayerNorm(x)</span><span id="ln"></span>
+  <span class="k">mean, std of the result</span><span id="chk"></span>
+</div>
+</div>
+
+<div class="pane" id="p2">
+<div class="row"><button id="pre" class="on">pre-norm</button><button id="post">post-norm</button></div>
+<div class="eq" id="eq"></div>
+<canvas id="c2" aria-label="Size of the stream after each of eight blocks"></canvas>
+<div class="hint">Bars: the size |x| of the stream after each block, same eight fixed blocks either way.</div>
+<div class="read">
+  <span class="k">|x| after block 8</span><span id="n8"></span>
+  <span class="k">share of x0 left (cosine)</span><span id="cs"></span>
+  <span class="k">how many blocks saw a mean-0, std-1 input</span><span id="saw"></span>
+</div>
+</div>
+
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>LayerNorm</dt><dd>For one token's vector: subtract its mean, divide by its standard deviation. Then a learned scale and shift (not shown).</dd>
+<dt>pre-norm</dt><dd>x ← x + f(LN(x)). The norm sits on the branch; the stream stays a plain sum.</dd>
+<dt>post-norm</dt><dd>x ← LN(x + f(x)). The norm is applied to the sum itself after every block, as in the 2017 figure.</dd>
+<dt>cosine</dt><dd>1 when the final stream points exactly like x₀, 0 when unrelated.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var mode="pre",pane=1;
+function setup(cv){var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;var c=cv.getContext("2d");c.setTransform(r,0,0,r,0,0);return {c:c,W:W,H:H}}
+function lnorm(x){var m=x.reduce(function(a,b){return a+b},0)/x.length,v=x.reduce(function(a,b){return a+(b-m)*(b-m)},0)/x.length,s=Math.sqrt(v+1e-5);return {m:m,v:v,s:s,y:x.map(function(t){return(t-m)/s})}}
+function f2(v){return(v>=0?" ":"")+v.toFixed(2)}
+function bars(g,groups,cols,labels){var c=g.c,W=g.W,H=g.H,ln=css("--line"),mut=css("--mut");c.clearRect(0,0,W,H);
+  var mx=1;groups.forEach(function(s){s.forEach(function(v){mx=Math.max(mx,Math.abs(v))})});
+  var n=groups.length,gw=(W-16)/n,bw=Math.max(3,(gw-8)/groups[0].length),mid=H*0.5,sc=(H*0.42)/mx;
+  c.strokeStyle=ln;c.beginPath();c.moveTo(0,mid);c.lineTo(W,mid);c.stroke();
+  groups.forEach(function(s,k){var x0=8+k*gw+4;s.forEach(function(v,i){c.fillStyle=cols[i%cols.length];var h=v*sc;c.fillRect(x0+i*bw,Math.min(mid,mid-h),bw-1,Math.abs(h)||1)});
+    c.fillStyle=mut;c.font="11px system-ui,sans-serif";c.textAlign="center";c.fillText(labels[k],x0+gw/2-4,H-4)})}
+function draw1(){var x=[0,1,2,3].map(function(i){var v=+$("s"+i).value;$("o"+i).textContent=v;return v}),L=lnorm(x);
+  bars(setup($("c1")),[x,L.y],[css("--acc"),css("--acc2"),css("--ok"),css("--bad")],["x","LayerNorm(x)"]);
+  $("m").textContent=f2(L.m);$("v").textContent=f2(L.v);$("sd").textContent=f2(L.s);
+  $("ln").textContent=L.y.map(f2).join(" ");var R=lnorm(L.y);$("chk").textContent=f2(R.m)+", "+f2(R.s)}
+function rng(seed){var s=seed*9301+49297;return function(){s=(s*9301+49297)%233280;return s/233280}}
+function fblock(id,x){var r=rng(id),o=[];for(var i=0;i<4;i++){var s=0;for(var j=0;j<4;j++)s+=(r()-0.5)*2.2*x[j];o.push(Math.tanh(s)*1.2)}return o}
+function draw2(){var X0=[1,0,2,-1],x=X0.slice(),sizes=[Math.sqrt(6)],saw=0;
+  for(var b=1;b<=8;b++){if(mode==="pre"){var u=fblock(b,lnorm(x).y);saw++;x=x.map(function(v,i){return v+u[i]})}
+    else{var u2=fblock(b,x);var s=x.map(function(v,i){return v+u2[i]});x=lnorm(s).y;if(b>1)saw++}
+    sizes.push(Math.sqrt(x.reduce(function(a,v){return a+v*v},0)))}
+  bars(setup($("c2")),sizes.map(function(v){return[v]}),[mode==="pre"?css("--acc"):css("--acc2")],["x0","1","2","3","4","5","6","7","8"]);
+  var d=x.reduce(function(a,v,i){return a+v*X0[i]},0)/(sizes[8]*sizes[0]);
+  $("n8").textContent=sizes[8].toFixed(2);var e=$("cs");e.textContent=d.toFixed(3);e.className=d>=0.5?"ok":"bad";
+  $("saw").textContent=saw+" of 8";
+  $("eq").textContent=mode==="pre"?"x = x + f(LN(x))   (GPT-2, nanoGPT)":"x = LN(x + f(x))   (the 2017 figure)";
+  $("pre").className=mode==="pre"?"on":"";$("post").className=mode==="post"?"on":""}
+function draw(){if(pane===1)draw1();else draw2()}
+window.redraw=draw;
+[0,1,2,3].forEach(function(i){$("s"+i).oninput=draw1});
+$("t1").onclick=function(){pane=1;$("p1").className="pane on";$("p2").className="pane";this.className="on";$("t2").className="";draw()};
+$("t2").onclick=function(){pane=2;$("p2").className="pane on";$("p1").className="pane";this.className="on";$("t1").className="";draw()};
+$("pre").onclick=function(){mode="pre";draw2()};$("post").onclick=function(){mode="post";draw2()};
+addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
