@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LoRA attach points</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.mod{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;flex:1}
+button.mod.on{background:var(--acc2);border-color:var(--acc2)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.blk{border:1px dashed var(--line);border-radius:10px;padding:8px;margin-bottom:8px}
+.blk .t{font-size:12px;color:var(--mut);margin:0 0 6px}
+.stream{font-size:12px;color:var(--mut);text-align:center;margin:0 0 6px}
+label{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:8px;font-size:13px;color:var(--mut);margin-top:4px}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.tot{font-weight:700;color:var(--acc2)}.zero{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Tap the modules of one transformer layer that get an adapter; read what trains</h1>
+<div class="row" id="models"></div>
+<p class="stream">residual stream in ↓</p>
+<div class="blk"><p class="t">attention (every layer)</p><div class="row" id="attn"></div></div>
+<div class="blk"><p class="t">MLP block (every layer)</p><div class="row" id="mlp"></div></div>
+<p class="stream">↓ residual stream out · embedding table and output head stay frozen</p>
+<label>rank r<input id="sr" type="range" min="0" max="7" step="1" value="3"><output id="or"></output></label>
+<label>alpha<input id="sa" type="range" min="1" max="64" step="1" value="16"><output id="oa"></output></label>
+<div class="read">
+  <span class="k">trainable per layer, Σ r·(in + out)</span><span id="r1"></span>
+  <span class="k">layers</span><span id="r2"></span>
+  <span class="k">trainable total</span><span id="r3" class="tot"></span>
+  <span class="k">all parameters (≈, from the config)</span><span id="r4"></span>
+  <span class="k">trainable %</span><span id="r5" class="tot"></span>
+  <span class="k">adapter file, 32-bit</span><span id="r6"></span>
+  <span class="k">update scale alpha / r</span><span id="r7"></span>
+  <span class="k">same budget as q_proj + v_proj at r ≈</span><span id="r8"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>target module</dt><dd>A linear layer chosen by name to get an adapter. PEFT matches the name in every layer at once.</dd>
+<dt>q, k, v, o_proj</dt><dd>The four attention matrices: query, key, value, output. k and v are narrower in these models (grouped heads).</dd>
+<dt>gate, up, down_proj</dt><dd>The MLP block's three matrices: two widen the stream, one narrows it back.</dd>
+<dt>alpha / r</dt><dd>The gain the learned change is multiplied by before it is added. It changes how hard the adapter pushes, not how many numbers train.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var MODELS=[["SmolLM2-360M",960,32,320,2560,49152,true],["Qwen2.5-0.5B",896,24,128,4864,151936,true],["Llama-3-8B",4096,32,1024,14336,128256,false]];
+var cur=0,on={q_proj:true,k_proj:false,v_proj:true,o_proj:false,gate_proj:false,up_proj:false,down_proj:false};
+function shapes(m){var d=m[1],kv=m[3],ff=m[4];return{q_proj:[d,d],k_proj:[d,kv],v_proj:[d,kv],o_proj:[d,d],gate_proj:[d,ff],up_proj:[d,ff],down_proj:[ff,d]}}
+function total(m){var s=shapes(m),per=0;for(var k in s)per+=s[k][0]*s[k][1];return per*m[2]+m[5]*m[1]*(m[6]?1:2)}
+MODELS.forEach(function(m,i){var b=document.createElement("button");b.textContent=m[0];b.onclick=function(){cur=i;draw()};$("models").appendChild(b)});
+[["attn",["q_proj","k_proj","v_proj","o_proj"]],["mlp",["gate_proj","up_proj","down_proj"]]].forEach(function(g){g[1].forEach(function(n){var b=document.createElement("button");b.className="mod";b.textContent=n;b.dataset.n=n;b.onclick=function(){on[n]=!on[n];draw()};$(g[0]).appendChild(b)})});
+function fmt(n){return n>=1e9?(n/1e9).toFixed(2)+" B":n>=1e6?(n/1e6).toFixed(2)+" M":n>=1e3?(n/1e3).toFixed(1)+" K":String(n)}
+function draw(){var m=MODELS[cur],r=Math.pow(2,+$("sr").value),a=+$("sa").value,s=shapes(m);
+  $("or").textContent=r;$("oa").textContent=a;
+  Array.prototype.forEach.call($("models").children,function(b,i){b.className=i===cur?"on":""});
+  Array.prototype.forEach.call(document.querySelectorAll("button.mod"),function(b){b.className="mod"+(on[b.dataset.n]?" on":"")});
+  var per=0,qv=0;for(var k in s){if(on[k])per+=r*(s[k][0]+s[k][1])}qv=(s.q_proj[0]+s.q_proj[1])+(s.v_proj[0]+s.v_proj[1]);
+  var tot=per*m[2],all=total(m);
+  $("r1").textContent=fmt(per);$("r2").textContent=m[2];
+  var e=$("r3");e.textContent=fmt(tot);e.className=tot?"tot":"zero";
+  $("r4").textContent=fmt(all);var p=$("r5");p.textContent=tot?(100*tot/all).toFixed(tot/all<0.001?3:2)+" %":"0 % (nothing trains)";p.className=tot?"tot":"zero";
+  $("r6").textContent=(tot*4/1e6).toFixed(1)+" MB";$("r7").textContent=(a/r).toFixed(2);
+  $("r8").textContent=tot?(per/qv).toFixed(1):"—"}
+window.redraw=draw;["sr","sa"].forEach(function(id){$(id).oninput=draw});
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

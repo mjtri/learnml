@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Init scale through eight layers</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;align-items:center}
+.row .k{font-size:13px;color:var(--mut);padding-right:4px}
+.sl{display:block;font-size:13px;color:var(--mut);margin:2px 0}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.sl input[type=range]{display:block;width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;border-radius:10px;background:var(--card);touch-action:pan-y;margin:6px 0}
+#std{height:150px}#hist{height:130px}
+.hint{font-size:12px;color:var(--mut);margin:4px 0;text-align:center}
+.read{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.read div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;font:14px ui-monospace,Menlo,Consolas,monospace}
+.read span{display:block;font:11px system-ui,sans-serif;color:var(--mut)}
+.verdict{font-size:13.5px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card)}
+details{margin-top:10px;font-size:13px;color:var(--fg)}
+details{color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Random weights, eight layers of 64 units: does the signal survive?</h1>
+<label class="sl"><span>weight scale σ (each unit sums 64 inputs)</span><output id="os"></output><input id="ss" type="range" min="0" max="100" step="1" value="72"></label>
+<div class="row"><span class="k">unit:</span><button id="bt" class="on">tanh</button><button id="br">ReLU</button><span class="k" style="padding-left:8px">normalize:</span><button id="bn">off</button></div>
+<canvas id="std" aria-label="Spread of activations at each of eight layers, log scale."></canvas>
+<div class="hint">Spread (standard deviation) of the activations after each layer. The dashed line is 1: the goal.</div>
+<div class="read"><div><span>σ·√64</span><b id="rg"></b></div><div><span>spread at layer 8</span><b id="r8"></b></div><div><span id="satk">saturated at layer 8</span><b id="rs"></b></div></div>
+<canvas id="hist" aria-label="Histogram of the activations at layer 8."></canvas>
+<div class="hint">Histogram of layer-8 activations, 128 inputs × 64 units.</div>
+<div class="verdict" id="vd" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>initialization scale</dt><dd>The spread σ of the random starting weights. Each unit's sum of 64 inputs has spread about σ·√64 times its input spread.</dd>
+<dt>saturated</dt><dd>A tanh unit with |output| above 0.99: its slope is nearly zero, so almost no gradient passes through it. For ReLU: units that are exactly zero (dead for this input).</dd>
+<dt>normalize</dt><dd>Rescale each unit's outputs across the 128 inputs to mean 0 and spread 1 before the unit, the way BatchNorm does.</dd>
+</dl></details>
+<script>
+(function(){
+var NI=128,W=64,L=8,seed=4242;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+function gauss(){var u=rnd()||1e-9,v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2831853*v)}
+var X0=new Float32Array(NI*W),Ws=[];for(var i=0;i<NI*W;i++)X0[i]=gauss();
+for(var l=0;l<L;l++){var m=new Float32Array(W*W);for(i=0;i<W*W;i++)m[i]=gauss();Ws.push(m)}
+var ss=document.getElementById("ss"),relu=false,norm=false;
+function sigma(){return Math.pow(10,-2+2.5*(+ss.value)/100)}
+function forward(){var sg=sigma(),x=X0,out=[],stds=[],sat=[];
+  for(var l=0;l<L;l++){var y=new Float32Array(NI*W),Wm=Ws[l];
+    for(var n=0;n<NI;n++)for(var j=0;j<W;j++){var s=0;for(var k=0;k<W;k++)s+=x[n*W+k]*Wm[k*W+j];y[n*W+j]=s*sg}
+    if(norm)for(j=0;j<W;j++){var mu=0,v=0;for(n=0;n<NI;n++)mu+=y[n*W+j]/NI;for(n=0;n<NI;n++)v+=(y[n*W+j]-mu)*(y[n*W+j]-mu)/NI;var sd=Math.sqrt(v+1e-5);for(n=0;n<NI;n++)y[n*W+j]=(y[n*W+j]-mu)/sd}
+    var cnt=0,mu2=0,v2=0;for(i=0;i<NI*W;i++){y[i]=relu?Math.max(0,y[i]):Math.tanh(y[i]);if(relu?y[i]===0:Math.abs(y[i])>0.99)cnt++;mu2+=y[i]/(NI*W)}
+    for(i=0;i<NI*W;i++)v2+=(y[i]-mu2)*(y[i]-mu2)/(NI*W);
+    stds.push(Math.sqrt(v2));sat.push(cnt/(NI*W));out.push(y);x=y}
+  return{stds:stds,sat:sat,last:out[L-1]}}
+var c1=document.getElementById("std"),c2=document.getElementById("hist"),x1=c1.getContext("2d"),x2=c2.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function prep(c,ctx){var r=window.devicePixelRatio||1,Wd=c.clientWidth,H=c.clientHeight;c.width=Wd*r;c.height=H*r;ctx.setTransform(r,0,0,r,0,0);return[Wd,H]}
+function draw(){
+  var r=forward(),sg=sigma(),acc=css("--acc"),acc2=css("--acc2"),mut=css("--mut"),ln=css("--line"),bad=css("--bad");
+  document.getElementById("os").textContent=sg.toFixed(3);document.getElementById("rg").textContent=(sg*8).toFixed(2);
+  document.getElementById("r8").textContent=r.stds[L-1]<1e-3?r.stds[L-1].toExponential(1):r.stds[L-1].toFixed(3);
+  document.getElementById("satk").textContent=(relu?"dead":"saturated")+" at layer 8";document.getElementById("rs").textContent=(r.sat[L-1]*100).toFixed(0)+"%";
+  document.getElementById("bt").className=relu?"":"on";document.getElementById("br").className=relu?"on":"";document.getElementById("bn").className=norm?"on":"";document.getElementById("bn").textContent=norm?"on":"off";
+  var s=prep(c1,x1),Wd=s[0],H=s[1],lo=Math.log10(1e-4),hi=Math.log10(3);
+  x1.clearRect(0,0,Wd,H);var Y=function(v){return H-16-(Math.log10(Math.max(1e-4,Math.min(3,v)))-lo)/(hi-lo)*(H-26)},bw=(Wd-40)/L;
+  x1.strokeStyle=ln;x1.beginPath();[1e-3,1e-2,1e-1].forEach(function(v){x1.moveTo(32,Y(v));x1.lineTo(Wd-6,Y(v))});x1.stroke();
+  x1.fillStyle=mut;x1.font="11px system-ui";x1.fillText("1",18,Y(1)+4);x1.fillText("0.1",8,Y(.1)+4);x1.fillText("0.01",4,Y(.01)+4);x1.fillText("0.001",0,Y(.001)+4);
+  x1.setLineDash([4,4]);x1.strokeStyle=acc2;x1.beginPath();x1.moveTo(32,Y(1));x1.lineTo(Wd-6,Y(1));x1.stroke();x1.setLineDash([]);
+  r.stds.forEach(function(v,l){var x=34+l*bw,h=H-16-Y(v);x1.fillStyle=v<0.05||r.sat[l]>0.5?bad:acc;x1.fillRect(x,Y(v),bw-6,Math.max(1,h));x1.fillStyle=mut;x1.fillText("L"+(l+1),x+bw/2-9,H-3)});
+  s=prep(c2,x2);Wd=s[0];H=s[1];x2.clearRect(0,0,Wd,H);
+  var nb=40,bins=new Array(nb).fill(0),lo2=relu?0:-1,hi2=relu?Math.max(1e-6,Math.max.apply(null,Array.prototype.slice.call(r.last,0,2000))):1;
+  for(var i=0;i<r.last.length;i++){var b=Math.floor((r.last[i]-lo2)/(hi2-lo2)*nb);if(b>=nb)b=nb-1;if(b<0)b=0;bins[b]++}
+  var mx=Math.max.apply(null,bins),bw2=(Wd-16)/nb;
+  bins.forEach(function(c,k){x2.fillStyle=(!relu&&(k===0||k===nb-1))||(relu&&k===0)?bad:acc;x2.fillRect(8+k*bw2,H-14-(c/mx)*(H-24),bw2-1,(c/mx)*(H-24))});
+  x2.fillStyle=mut;x2.font="11px system-ui";x2.fillText(relu?"0":"−1",6,H-2);x2.fillText(relu?hi2.toFixed(1):"+1",Wd-24,H-2);
+  var v=document.getElementById("vd"),e=r.stds[L-1],t;
+  if(norm)t="Normalization resets the spread to 1 at every layer, so σ barely matters. This is what BatchNorm and LayerNorm buy you.";
+  else if(e<0.05)t="Vanishing: by layer 8 the signal is "+(e<1e-3?e.toExponential(1):e.toFixed(3))+" wide. Gradients shrink by the same factors on the way back; the early layers will not learn.";
+  else if(!relu&&r.sat[L-1]>0.4)t="Saturated: "+(r.sat[L-1]*100).toFixed(0)+"% of tanh units are pinned at ±1, where the slope is about 0. Almost no gradient gets through. The first loss would read far above 2.3.";
+  else if(relu&&e>3)t="Exploding: spread "+e.toFixed(1)+" and growing each layer. Gradients grow the same way; the loss will diverge at any learning rate.";
+  else t="Healthy: the spread stays near 1 through all eight layers. Compare σ with 1/√64 = 0.125"+(relu?" times √2 for ReLU (Kaiming)":" times the tanh gain 5/3 (0.21)")+".";
+  v.textContent=t;
+}
+ss.oninput=draw;document.getElementById("bt").onclick=function(){relu=false;draw()};document.getElementById("br").onclick=function(){relu=true;draw()};
+document.getElementById("bn").onclick=function(){norm=!norm;draw()};window.redraw=draw;addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

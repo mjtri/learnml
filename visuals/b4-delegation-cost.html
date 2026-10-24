@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delegation cost calculator</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.presets button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.ctl{margin:4px 0 6px}
+.ctl label{display:block;font-size:12px;color:var(--mut)}
+.ctl label b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--acc);touch-action:pan-y}
+.row{margin:8px 0 4px}
+.row .lab{font-size:12px;color:var(--mut);margin-bottom:3px}
+.row .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+.track{height:18px;border-radius:9px;background:var(--line);overflow:hidden;position:relative}
+.seg{position:absolute;top:0;bottom:0}
+.seg.main{background:var(--acc)}
+.seg.sub{background:var(--acc2)}
+.seg.sum{background:var(--ok)}
+.legend{font-size:11px;color:var(--mut);margin:4px 0 6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:3px}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status b{font-family:ui-monospace,Menlo,Consolas,monospace}
+.status.win{border-left:4px solid var(--ok)}
+.status.lose{border-left:4px solid var(--bad)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Does the subagent pay for itself?</h1>
+<p class="hint">A big tool result read into the main window is re-sent on every later turn. A subagent reads it once in its own window and returns a summary. Sizes are illustrative; cache reads cost less, but the window still fills.</p>
+<div class="presets" id="presets"></div>
+<div class="ctl"><label for="r">Raw output the task needs (k tokens) <b id="rv"></b></label><input type="range" id="r" min="1" max="40" value="6"></div>
+<div class="ctl"><label for="s">Summary the subagent returns (k tokens) <b id="sv"></b></label><input type="range" id="s" min="0.1" max="5" step="0.1" value="0.4"></div>
+<div class="ctl"><label for="t">Turns of work after the read <b id="tv"></b></label><input type="range" id="t" min="0" max="30" value="8"></div>
+<div class="ctl"><label for="o">Subagent overhead: its prompt, CLAUDE.md, reasoning (k tokens) <b id="ov"></b></label><input type="range" id="o" min="1" max="30" value="6"></div>
+<div class="row"><div class="lab">Read it in the main window <b id="aTot"></b></div><div class="track" id="aBar"></div></div>
+<div class="row"><div class="lab">Delegate to a subagent <b id="bTot"></b></div><div class="track" id="bBar"></div></div>
+<div class="legend"><i style="background:var(--acc)"></i>main window re-sends &nbsp;<i style="background:var(--acc2)"></i>subagent's own window &nbsp;<i style="background:var(--ok)"></i>summary re-sends</div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>subagent</dt><dd>A helper agent with its own fresh window that does a bounded job and returns a summary.</dd>
+<dt>context window</dt><dd>Everything the model sees at once; the whole of it is sent again on every turn.</dd>
+<dt>token</dt><dd>The unit usage is counted in; about three-quarters of an English word. k = thousand.</dd>
+<dt>break-even</dt><dd>The number of later turns at which delegating costs the same as reading directly; beyond it, delegating is cheaper.</dd>
+</dl></details>
+<script>
+(function(){
+var ids=["r","s","t","o"],el={};
+ids.forEach(function(i){el[i]=document.getElementById(i);el[i].addEventListener("input",draw)});
+var PRESETS={"Test log, 8 turns":{r:6,s:0.4,t:8,o:6},"Grep call sites":{r:3,s:0.3,t:5,o:4},"One-shot fix":{r:4,s:0.4,t:0,o:6},"Whole Unity scene":{r:30,s:1,t:15,o:8}};
+var pr=document.getElementById("presets");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){var p=PRESETS[n];ids.forEach(function(i){el[i].value=p[i]});draw()};pr.appendChild(b)});
+function fmt(x){return (Math.round(x*10)/10)+"k"}
+function bar(id,parts,scale){var t=document.getElementById(id);t.innerHTML="";var x=0;parts.forEach(function(p){var d=document.createElement("div");d.className="seg "+p[0];d.style.left=(x/scale*100)+"%";d.style.width=(p[1]/scale*100)+"%";t.appendChild(d);x+=p[1]})}
+function draw(){
+ var r=+el.r.value,s=+el.s.value,t=+el.t.value,o=+el.o.value;
+ document.getElementById("rv").textContent=fmt(r);document.getElementById("sv").textContent=fmt(s);
+ document.getElementById("tv").textContent=t;document.getElementById("ov").textContent=fmt(o);
+ var a=r*(t+1);            /* read once, re-sent on each of t later turns */
+ var bSub=o+r;             /* the subagent's own window processes it once, plus its overhead */
+ var bMain=s*(t+1);        /* only the summary lives on in the main window */
+ var b=bSub+bMain;
+ var scale=Math.max(a,b)*1.02;
+ bar("aBar",[["main",a]],scale);bar("bBar",[["sub",bSub],["sum",bMain]],scale);
+ document.getElementById("aTot").textContent=fmt(a);document.getElementById("bTot").textContent=fmt(b);
+ var st=document.getElementById("st"),msg;
+ if(r<=s){msg="The summary is as big as the raw output: nothing to save. Delegating only adds "+fmt(o)+" of overhead.";st.className="status lose"}
+ else{var be=Math.ceil((o+r)/(r-s))-1;
+  if(b<a){msg="Delegating wins by "+fmt(a-b)+". Break-even was at "+be+" later turn"+(be===1?"":"s")+"; you planned "+t+". The main window stays "+fmt(r-s)+" smaller for the rest of the session.";st.className="status win"}
+  else{msg="Reading directly is cheaper by "+fmt(b-a)+". The subagent pays for itself only after "+be+" later turn"+(be===1?"":"s")+"; you planned "+t+". One-shot work: read it yourself.";st.className="status lose"}}
+ st.textContent=msg;
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
