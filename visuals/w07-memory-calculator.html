@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GPU memory calculator</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+.k{font-size:12.5px;color:var(--mut);margin:6px 0 2px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+label{display:grid;grid-template-columns:82px 1fr 66px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.bar{display:flex;height:24px;border-radius:6px;overflow:hidden;margin:8px 0 4px;background:var(--card);position:relative}
+.bar div{height:100%}
+.bar i{position:absolute;top:0;bottom:0;width:2px;background:var(--bad)}
+.leg{font-size:12px;color:var(--mut);margin-bottom:6px}
+.leg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center;margin:0}
+.tot{font-weight:700;color:var(--acc2)}.no{color:var(--bad);font-weight:700}.yes{color:var(--ok);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Parameters × bytes per parameter × what you are doing: does it fit?</h1>
+<div class="row" id="presets"></div>
+<label>parameters<input id="sN" type="range" min="7" max="10.3" step="0.02" value="8.56"><output id="oN"></output></label>
+<div class="k">what you are doing</div>
+<div class="row" id="modes"></div>
+<div class="k">weights stored in</div>
+<div class="row" id="dtypes"></div>
+<label>batch B<input id="sB" type="range" min="1" max="32" step="1" value="8"><output id="oB"></output></label>
+<label>tokens T<input id="sT" type="range" min="6" max="12" step="1" value="8"><output id="oT"></output></label>
+<div class="k">GPU</div>
+<div class="row" id="gpus"></div>
+<div class="bar" id="bar"><i id="lim"></i></div>
+<div class="leg"><b id="l1"></b>weights <b id="l2"></b>gradients <b id="l3"></b>Adam state <b id="l4"></b>activations</div>
+<div class="read">
+  <span class="k">weights</span><span id="r1"></span>
+  <span class="k">gradients</span><span id="r2"></span>
+  <span class="k">Adam's two averages</span><span id="r3"></span>
+  <span class="k">activations for one step</span><span id="r4"></span>
+  <span class="k">bytes per trained parameter</span><span id="r5"></span>
+  <span class="k">total</span><span id="r6" class="tot"></span>
+  <span class="k">fits this GPU?</span><span id="r7"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>memory footprint</dt><dd>Bytes the run needs on the GPU: parameters times bytes per parameter, plus the activations saved for the backward pass.</dd>
+<dt>Adam state</dt><dd>Two running averages per trained parameter, 8 bytes in 32-bit. Kept only while training.</dd>
+<dt>activations</dt><dd>Hidden states saved during the forward pass so the backward pass can use them. Grow with batch × tokens × width × layers; estimated here as 34 bytes each.</dd>
+<dt>16-bit</dt><dd>fp16 or bf16 weights: 2 bytes each instead of 4. Halves the weights row; gradients and Adam state stay 32-bit in the usual mixed recipe.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var PRE=[["SmolLM2-135M",135e6,576,30],["SmolLM2-360M",362e6,960,32],["SmolLM2-1.7B",1.71e9,2048,24],["Llama-3 8B",8.03e9,4096,32]];
+var MODES=[["inference / prompt",0],["frozen + probe",0],["full fine-tune (Adam)",1]];
+var DT=[["32-bit",4],["16-bit",2]];
+var GPUS=[["T4 · 15 GB",15],["L4 · 22.5 GB",22.5],["A100 · 40 GB",40]];
+var pi=1,mi=2,di=0,gi=0,d=960,L=32;
+function mk(box,arr,get,set){arr.forEach(function(a,i){var b=document.createElement("button");b.textContent=a[0];b.onclick=function(){set(i);draw()};$(box).appendChild(b)})}
+mk("presets",PRE,0,function(i){pi=i;$("sN").value=Math.log10(PRE[i][1]).toFixed(2);d=PRE[i][2];L=PRE[i][3]});
+mk("modes",MODES,0,function(i){mi=i});mk("dtypes",DT,0,function(i){di=i});mk("gpus",GPUS,0,function(i){gi=i});
+function M(n){return n>=1e9?(n/1e9).toFixed(2)+" B":(n/1e6).toFixed(0)+" M"}
+function GB(b){return b>=1e9?(b/1e9).toFixed(2)+" GB":(b/1e6).toFixed(0)+" MB"}
+function draw(){
+  var N=Math.pow(10,+$("sN").value),B=+$("sB").value,T=Math.pow(2,+$("sT").value),train=MODES[mi][1]===1,gpu=GPUS[gi][1];
+  if(Math.abs(Math.log10(N)-Math.log10(PRE[pi][1]))>0.03){pi=-1}
+  Array.prototype.forEach.call($("presets").children,function(b,i){b.className=i===pi?"on":""});
+  Array.prototype.forEach.call($("modes").children,function(b,i){b.className=i===mi?"on":""});
+  Array.prototype.forEach.call($("dtypes").children,function(b,i){b.className=i===di?"on":""});
+  Array.prototype.forEach.call($("gpus").children,function(b,i){b.className=i===gi?"on":""});
+  $("oN").textContent=M(N);$("oB").textContent=B;$("oT").textContent=T;
+  var w=N*DT[di][1],g=train?N*4:0,o=train?N*8:0;
+  var act=train?34*B*T*d*L:2*B*T*d*4;
+  if(mi===1)act+=B*T*d*4;
+  var tot=w+g+o+act,scale=Math.max(tot,gpu*1e9);
+  var bar=$("bar");Array.prototype.slice.call(bar.querySelectorAll("div")).forEach(function(x){bar.removeChild(x)});
+  [[w,"--acc"],[g,"--acc2"],[o,"--bad"],[act,"--ok"]].forEach(function(p,i){var s=document.createElement("div");s.style.width=(100*p[0]/scale)+"%";s.style.background=css(p[1]);bar.insertBefore(s,$("lim"));$("l"+(i+1)).style.background=css(p[1])});
+  $("lim").style.left=(100*gpu*1e9/scale)+"%";
+  $("r1").textContent=GB(w);$("r2").textContent=GB(g);$("r3").textContent=GB(o);$("r4").textContent=GB(act);
+  $("r5").textContent=train?(DT[di][1]+12)+" B":DT[di][1]+" B (nothing trained"+(mi===1?" inside the model":"")+")";
+  $("r6").textContent=GB(tot);
+  var ok=tot<gpu*1e9;$("r7").textContent=ok?"yes, "+GB(gpu*1e9-tot)+" spare":"no, over by "+GB(tot-gpu*1e9);$("r7").className=ok?"yes":"no";
+}
+window.redraw=draw;["sN","sB","sT"].forEach(function(id){$(id).oninput=draw});
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
