@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scheduler safety matrix</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+h2{font-size:12px;color:var(--mut);margin:8px 0 4px;font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+.row button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.row button.on{border:2px solid var(--acc);font-weight:700}
+.row.t button.on{border-color:var(--acc2)}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+td{padding:6px 6px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{color:var(--mut);width:34%;font-size:12px}
+td.y{color:var(--ok)}td.n{color:var(--bad)}
+.verdict{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:8px}
+.verdict.ok{border-left:4px solid var(--ok)}.verdict.bad{border-left:4px solid var(--bad)}.verdict.warn{border-left:4px solid var(--acc2)}
+.never{font-size:12px;color:var(--mut);margin-top:6px}
+.never b{color:var(--bad)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Where the recipe runs decides what it may touch</h1>
+<p class="hint">Tap a runner, then a task. Read reach, cost and the verdict. Facts from the official pages checked 2026-09-28; costs are what the pages say, not numbers.</p>
+<h2>Runner</h2>
+<div class="row" id="run"></div>
+<h2>Task</h2>
+<div class="row t" id="task"></div>
+<table id="tbl"></table>
+<div class="verdict" id="v"></div>
+<div class="never" id="nv"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>desktop scheduled task</dt><dd>A Claude Code Desktop routine marked Local: a fresh session on your machine, only while the app is open and the computer awake.</dd>
+<dt>cloud routine</dt><dd>A saved prompt plus repositories run on Anthropic's machines from a fresh clone; no permission prompts; connectors included by default.</dd>
+<dt>personal data boundary</dt><dd>What a run may read and where it may write; your details and secrets stay outside every repository and every cloud runner.</dd>
+<dt>never silently</dt><dd>Actions the recipe may not take without a line in the transcript and your eyes on it: submit, seal, overwrite a master, invent a value.</dd>
+</dl></details>
+<script>
+(function(){
+var R=[
+ {n:"You: /trip-forms",on:"Your machine, in your session",local:true,awake:"You are there",perm:"Your permission mode; you answer prompts",cost:"One session, your usage pool",extra:"Never Bypass mode for a recipe that writes files."},
+ {n:"Claude desktop task",on:"Your machine, fresh session per run",local:true,awake:"App open and computer awake; one catch-up run after sleep",perm:"Per-task mode; 'always allow' after a first Run now",cost:"A fresh session per fire, your usage pool",extra:"A 9 am task may run at 11 pm: put a time guard in the prompt."},
+ {n:"Cloud routine",on:"Anthropic's cloud, fresh clone of a GitHub repo",local:false,awake:"No",perm:"None: runs autonomously; every connected connector included by default",cost:"Subscription usage plus a daily cap on runs",extra:"Environment variables are visible to anyone using that environment; the data file would have to be committed."},
+ {n:"Cowork /schedule",on:"Cloud",local:false,awake:"No",perm:"Cloud run; Cowork on the desktop asks before deleting files",cost:"Your Claude plan",extra:"The scheduled run cannot open $HOME\\forms."},
+ {n:"Codex desktop task",on:"Your machine, project folder or worktree",local:true,awake:"Computer on and app running",perm:"Codex approval policy and sandbox (workspace-write)",cost:"Your ChatGPT pool; no per-run figure published",extra:"Open Codex in $HOME\\forms so out\\ is inside the workspace."},
+ {n:"Codex web task",on:"OpenAI's cloud",local:false,awake:"No",perm:"Uploaded context and connected tools only",cost:"Your ChatGPT pool; no figure published",extra:"'Can't work directly in a folder on your computer'; event triggers can be admin-gated."}
+];
+var T=[
+ {n:"trip-forms (reads $HOME\\forms\\trip.yaml)",needLocal:true,needRepo:false},
+ {n:"repo checker (check_lessons.py, repo only)",needLocal:false,needRepo:true},
+ {n:"weekly reminder (calendar connector → note)",needLocal:false,needRepo:false}
+];
+var NEVER="Never silently, on any runner: <b>submit or upload</b>, <b>place a seal</b>, <b>overwrite a master</b>, <b>write outside out\\</b>, <b>invent a missing value</b>.";
+var ri=1,ti=0;
+var rb=document.getElementById("run"),tb=document.getElementById("task");
+R.forEach(function(r,i){var b=document.createElement("button");b.textContent=r.n;b.onclick=function(){ri=i;draw()};rb.appendChild(b)});
+T.forEach(function(t,i){var b=document.createElement("button");b.textContent=t.n;b.onclick=function(){ti=i;draw()};tb.appendChild(b)});
+function draw(){
+ Array.prototype.forEach.call(rb.children,function(b,i){b.className=i===ri?"on":""});
+ Array.prototype.forEach.call(tb.children,function(b,i){b.className=i===ti?"on":""});
+ var r=R[ri],t=T[ti];
+ var rows=[["Runs on",r.on,""],["Sees local files",r.local?"yes":"no (repositories or uploads only)",r.local?"y":"n"],["Needs your machine awake",r.awake,""],["Permission prompts",r.perm,""],["Cost per run",r.cost,""],["Note",r.extra,""]];
+ document.getElementById("tbl").innerHTML=rows.map(function(x){return "<tr><td>"+x[0]+"</td><td class='"+x[2]+"'>"+x[1]+"</td></tr>"}).join("");
+ var v=document.getElementById("v"),msg,cls;
+ if(t.needLocal&&!r.local){cls="bad";msg="Unfit: this runner cannot see $HOME\\forms, and putting trip.yaml in a repository crosses the personal data boundary. Use a local runner or run it yourself."}
+ else if(t.needLocal&&r.local){cls="ok";msg="Fit: local files, your login, prompts you can answer. Dry-run first, write to out\\<date>\\, diff, then upload by hand."}
+ else if(t.needRepo&&!r.local){cls="ok";msg="Fit: a repository-only task suits a cloud clock; a clean clone is exactly what a checker wants. Scope the repo and drop unused connectors."}
+ else if(t.needRepo&&r.local){cls="warn";msg="Works, but it ties the run to your machine being awake; a cloud routine does this with the laptop closed."}
+ else if(!t.needLocal&&!t.needRepo&&!r.local){cls="ok";msg="Fit: no files at all, one connector. Remove every other connector from the routine before saving."}
+ else{cls="warn";msg="Works, but a reminder does not need your machine; a cloud clock or Cowork /schedule is cheaper in attention."}
+ v.className="verdict "+cls;v.textContent=msg;
+ document.getElementById("nv").innerHTML=NEVER;
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

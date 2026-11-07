@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shapes in, shapes out</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+label{display:grid;grid-template-columns:70px 1fr 62px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+pre{font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin:6px 0;white-space:pre-wrap;word-break:break-word}
+.read{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:4px}
+.read span{min-width:0;overflow-wrap:anywhere;text-align:right}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center;text-align:left}
+.hi{color:var(--acc2);font-weight:700}.big{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Pick a Hub model and a batch; predict every shape, then read it</h1>
+<div class="row" id="models"></div>
+<pre id="cfg"></pre>
+<label>batch B<input id="sB" type="range" min="1" max="32" step="1" value="2"><output id="oB"></output></label>
+<label>tokens T<input id="sT" type="range" min="0" max="13" step="1" value="3"><output id="oT"></output></label>
+<pre id="shapes"></pre>
+<div class="read">
+  <span class="k">all hidden states, 32-bit</span><span id="r1"></span>
+  <span class="k">logits (B, T, V), 32-bit</span><span id="r2" class="hi"></span>
+  <span class="k">weights, 16-bit</span><span id="r3"></span>
+  <span class="k">week-5 rule 12·d²·L + V·d</span><span id="r4"></span>
+  <span class="k">count from this config</span><span id="r5" class="hi"></span>
+  <span class="k">why they differ</span><span id="r6"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>input_ids / attention_mask</dt><dd>What the tokenizer returns: integer token ids, batch by tokens, and a 1/0 mask marking real tokens versus padding.</dd>
+<dt>hidden state</dt><dd>The vector for one token after one layer: batch by tokens by width. A model with L layers returns L + 1 of them, the embedding first.</dd>
+<dt>logits</dt><dd>One score per vocabulary entry per position, batch by tokens by vocabulary. Only the ForCausalLM class returns them.</dd>
+<dt>config</dt><dd>The numbers in config.json that fix every shape: layers L, width d, vocabulary V, plus the MLP width and the number of key/value heads.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var MODELS=[
+ {n:"pythia-14m (SMOKE)",L:6,d:128,V:50304,h:4,kv:4,inter:512,gated:false,tied:false,pos:0},
+ {n:"SmolLM2-135M",L:30,d:576,V:49152,h:9,kv:3,inter:1536,gated:true,tied:true,pos:0},
+ {n:"SmolLM2-360M",L:32,d:960,V:49152,h:15,kv:5,inter:2560,gated:true,tied:true,pos:0},
+ {n:"GPT-2 small",L:12,d:768,V:50257,h:12,kv:12,inter:3072,gated:false,tied:true,pos:1024}];
+var mi=1;
+MODELS.forEach(function(m,i){var b=document.createElement("button");b.textContent=m.n;b.onclick=function(){mi=i;draw()};$("models").appendChild(b)});
+function M(n){return n>=1e9?(n/1e9).toFixed(2)+" B":n>=1e6?(n/1e6).toFixed(1)+" M":n>=1e3?(n/1e3).toFixed(1)+" K":String(n)}
+function B(b){return b>=1e9?(b/1e9).toFixed(2)+" GB":b>=1e6?(b/1e6).toFixed(1)+" MB":(b/1e3).toFixed(1)+" KB"}
+function count(m){var hd=m.d/m.h,att=m.d*(m.d+2*m.kv*hd+m.d),mlp=(m.gated?3:2)*m.d*m.inter;
+  var emb=m.V*m.d*(m.tied?1:2)+m.pos*m.d;return {block:att+mlp,total:(att+mlp)*m.L+emb,att:att,mlp:mlp}}
+function draw(){
+  var m=MODELS[mi],b=+$("sB").value,T=Math.pow(2,+$("sT").value);
+  Array.prototype.forEach.call($("models").children,function(x,i){x.className=i===mi?"on":""});
+  $("oB").textContent=b;$("oT").textContent=T.toLocaleString();
+  $("cfg").textContent='config.json: num_hidden_layers '+m.L+', hidden_size '+m.d+', vocab_size '+m.V+',\n  num_attention_heads '+m.h+', num_key_value_heads '+m.kv+', intermediate_size '+m.inter+', tie_word_embeddings '+m.tied;
+  $("shapes").textContent=
+   'tok(texts, padding=True)\n  input_ids       ('+b+', '+T+')\n  attention_mask  ('+b+', '+T+')\n'+
+   'model(**enc, output_hidden_states=True)\n  hidden_states   '+(m.L+1)+' × ('+b+', '+T+', '+m.d+')\n  last_hidden_state   ('+b+', '+T+', '+m.d+')\n'+
+   'AutoModelForCausalLM adds\n  logits          ('+b+', '+T+', '+m.V+')';
+  var c=count(m),rule=12*m.d*m.d*m.L+m.V*m.d;
+  $("r1").textContent=B((m.L+1)*b*T*m.d*4);
+  var lg=b*T*m.V*4;$("r2").textContent=B(lg);$("r2").className=lg>c.total*2?"big":"hi";
+  $("r3").textContent=B(c.total*2);$("r4").textContent=M(rule);$("r5").textContent=M(c.total)+" ("+Math.round(100*c.total/rule)+"% of rule)";
+  var why=[];if(m.kv<m.h)why.push("shared key/value heads");if(m.gated&&m.inter<4*m.d)why.push("MLP "+m.inter+" not 4d");if(!m.gated&&m.inter===4*m.d&&m.tied&&m.pos===0)why.push("matches");if(!m.tied)why.push("untied output layer +V·d");if(m.pos)why.push("position table +"+m.pos+"·d");if(m.gated&&m.inter>=4*m.d)why.push("gated MLP, 3 matrices");
+  $("r6").textContent=why.join(", ")||"rounding only";
+}
+window.redraw=draw;$("sB").oninput=draw;$("sT").oninput=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A matrix moves space</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;max-width:420px;margin:0 auto;touch-action:none;border-radius:10px;background:var(--card);cursor:grab}
+.hint{font-size:12px;color:var(--mut);margin:6px 0 8px;text-align:center}
+.read{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px}
+.read .k{color:var(--mut);font:12px system-ui,sans-serif}
+.mat{justify-self:start;display:inline-grid;grid-template-columns:auto auto;gap:0 12px;border-left:2px solid var(--fg);border-right:2px solid var(--fg);padding:0 6px;border-radius:3px}
+.ci{color:var(--acc);font-weight:700}.cj{color:var(--acc2);font-weight:700}.cy{color:var(--ok);font-weight:700}
+.warn{color:var(--bad);font:700 12px system-ui,sans-serif}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>y = W x: the columns of W are where the unit arrows land</h1>
+<div class="presets" id="presets"></div>
+<canvas id="cv" aria-label="Plane transformed by the matrix W. Drag the blue and orange arrow tips, or the hollow input point."></canvas>
+<div class="hint">Drag the <span class="ci">blue</span> / <span class="cj">orange</span> arrow tips (columns of W) or the hollow dot (input x).</div>
+<div class="read">
+  <span class="k">W</span><span class="mat"><span class="ci" id="a"></span><span class="cj" id="c"></span><span class="ci" id="b"></span><span class="cj" id="d"></span></span>
+  <span class="k">x</span><span id="x"></span>
+  <span class="k">y₁ = row 1 · x</span><span id="y1"></span>
+  <span class="k">y₂ = row 2 · x</span><span id="y2"></span>
+  <span class="k">area ×</span><span id="det"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>dot product</dt><dd>Multiply matching numbers and add: row · x = w₁x₁ + w₂x₂.</dd>
+<dt>matmul</dt><dd>Matrix multiply: each output is one row of W dotted with x.</dd>
+<dt>area × (determinant)</dt><dd>How much W scales areas. 0 means the plane was squashed onto a line: information is lost.</dd>
+</dl></details>
+<script>
+(function(){
+var W={a:1,b:0,c:0,d:1},X={x:1,y:1},R=3.2,cv=document.getElementById("cv"),ctx=cv.getContext("2d"),size=300,drag=null;
+var PRESETS=[["Identity",1,0,0,1],["Rotate 90°",0,1,-1,0],["Stretch",2,0,0,.5],["Shear",1,0,1,1],["Flip",-1,0,0,1],["Squash",1,.5,2,1]];
+var pr=document.getElementById("presets");
+PRESETS.forEach(function(p){var b=document.createElement("button");b.textContent=p[0];b.onclick=function(){W={a:p[1],b:p[2],c:p[3],d:p[4]};draw()};pr.appendChild(b)});
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function fit(){var w=Math.min(cv.parentNode.clientWidth-26,420),r=window.devicePixelRatio||1;size=w;cv.style.height=w+"px";cv.width=w*r;cv.height=w*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function px(x,y){return[size/2+x/R*size/2,size/2-y/R*size/2]}
+function un(X0,Y0){return[(X0-size/2)/(size/2)*R,-(Y0-size/2)/(size/2)*R]}
+function T(x,y){return[W.a*x+W.c*y,W.b*x+W.d*y]}
+function line(p,q,col,w,dash){ctx.beginPath();ctx.setLineDash(dash||[]);ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();ctx.setLineDash([])}
+function arrow(x,y,col,w){var o=px(0,0),t=px(x,y);line(o,t,col,w);var ang=Math.atan2(t[1]-o[1],t[0]-o[0]);ctx.beginPath();ctx.moveTo(t[0],t[1]);ctx.lineTo(t[0]-11*Math.cos(ang-.4),t[1]-11*Math.sin(ang-.4));ctx.lineTo(t[0]-11*Math.cos(ang+.4),t[1]-11*Math.sin(ang+.4));ctx.closePath();ctx.fillStyle=col;ctx.fill()}
+function f(n){var s=(Math.round(n*100)/100).toString();return s==="-0"?"0":s}
+function draw(){
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok");
+  ctx.clearRect(0,0,size,size);
+  var k;
+  for(k=-3;k<=3;k++){line(px(k,-R),px(k,R),ln,1);line(px(-R,k),px(R,k),ln,1)}
+  ctx.globalAlpha=.55;
+  for(k=-6;k<=6;k++){var p=T(k,-9),q=T(k,9);line(px(p[0],p[1]),px(q[0],q[1]),mut,k===0?1.6:.8);p=T(-9,k);q=T(9,k);line(px(p[0],p[1]),px(q[0],q[1]),mut,k===0?1.6:.8)}
+  ctx.globalAlpha=1;
+  var c1=px(0,0),c2=px(W.a,W.b),c3=px(W.a+W.c,W.b+W.d),c4=px(W.c,W.d);
+  ctx.beginPath();ctx.moveTo(c1[0],c1[1]);ctx.lineTo(c2[0],c2[1]);ctx.lineTo(c3[0],c3[1]);ctx.lineTo(c4[0],c4[1]);ctx.closePath();ctx.globalAlpha=.16;ctx.fillStyle=ok;ctx.fill();ctx.globalAlpha=1;
+  arrow(W.a,W.b,acc,3);arrow(W.c,W.d,acc2,3);
+  var y=T(X.x,X.y),xp=px(X.x,X.y),yp=px(y[0],y[1]);
+  line(xp,yp,fg,1,[4,4]);
+  ctx.beginPath();ctx.arc(xp[0],xp[1],7,0,7);ctx.strokeStyle=fg;ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.arc(yp[0],yp[1],7,0,7);ctx.fillStyle=ok;ctx.fill();
+  ctx.font="12px system-ui,sans-serif";ctx.fillStyle=fg;ctx.fillText("x",xp[0]+10,xp[1]-8);ctx.fillStyle=ok;ctx.fillText("y",yp[0]+10,yp[1]-8);
+  var g=function(id){return document.getElementById(id)};
+  g("a").textContent=f(W.a);g("b").textContent=f(W.b);g("c").textContent=f(W.c);g("d").textContent=f(W.d);
+  g("x").textContent="("+f(X.x)+", "+f(X.y)+")";
+  g("y1").innerHTML=f(W.a)+"·"+f(X.x)+" + "+f(W.c)+"·"+f(X.y)+" = <span class=cy>"+f(y[0])+"</span>";
+  g("y2").innerHTML=f(W.b)+"·"+f(X.x)+" + "+f(W.d)+"·"+f(X.y)+" = <span class=cy>"+f(y[1])+"</span>";
+  var det=W.a*W.d-W.b*W.c;
+  g("det").innerHTML=f(det)+(Math.abs(det)<.06?' <span class="warn">squashed onto a line: inputs collide</span>':(det<0?' <span class="k">(negative: flipped)</span>':""));
+}
+window.redraw=draw;
+function pos(e){var r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+function snap(v){return Math.max(-3,Math.min(3,Math.round(v*4)/4))}
+cv.addEventListener("pointerdown",function(e){
+  var m=pos(e),best=null,bd=34,c={i:px(W.a,W.b),j:px(W.c,W.d),x:px(X.x,X.y)};
+  for(var k in c){var dd=Math.hypot(c[k][0]-m[0],c[k][1]-m[1]);if(dd<bd){bd=dd;best=k}}
+  drag=best;if(drag){cv.setPointerCapture(e.pointerId);cv.style.cursor="grabbing";e.preventDefault()}});
+cv.addEventListener("pointermove",function(e){if(!drag)return;var m=pos(e),u=un(m[0],m[1]),x=snap(u[0]),y=snap(u[1]);
+  if(drag==="i"){W.a=x;W.b=y}else if(drag==="j"){W.c=x;W.d=y}else{X.x=x;X.y=y}draw()});
+function end(){drag=null;cv.style.cursor="grab"}
+cv.addEventListener("pointerup",end);cv.addEventListener("pointercancel",end);
+addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>

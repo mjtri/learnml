@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hook builder</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.q{font-size:12px;color:var(--mut);margin:8px 0 4px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts button{font:inherit;font-size:12.5px;min-height:44px;padding:4px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;line-height:1.2}
+.opts button.on{border:2px solid var(--acc);font-weight:700}
+.opts button:disabled{opacity:.45;cursor:default}
+.opts button.two.on{border-color:var(--bad)}
+.range{margin:8px 0 2px;font-size:12px;color:var(--mut)}
+.range b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--acc)}
+pre{margin:8px 0 0;padding:10px;border-radius:10px;background:var(--card);font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.out{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--card);border-left:4px solid var(--acc)}
+.out.two{border-left-color:var(--bad)}
+.out p{margin:3px 0;font-size:13px}
+.out .why{color:var(--mut);font-size:12.5px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Build a hook: event × command → JSON</h1>
+<p class="hint">Pick when it fires, what it runs and how it ends. The JSON is what goes in .claude/settings.json; the readout says what the exit code does there.</p>
+<div class="q">1 · Event: when does it fire?</div>
+<div class="opts" id="ev"><button data-v="PreToolUse" class="on">PreToolUse</button><button data-v="PostToolUse">PostToolUse</button><button data-v="Stop">Stop</button><button data-v="SessionStart">SessionStart</button></div>
+<div class="q">2 · Matcher: which tool? (tool events only)</div>
+<div class="opts" id="mt"><button data-v="Edit|Write" class="on">Edit|Write</button><button data-v="Bash">Bash</button><button data-v="">any tool</button></div>
+<div class="q">3 · Command</div>
+<div class="opts" id="cmd"></div>
+<div class="q">4 · How the script ends</div>
+<div class="opts" id="ex"><button data-v="0" class="on">exit 0</button><button data-v="2" class="two">exit 2 + a line on stderr</button></div>
+<div class="range">timeout: <b id="tv">120 s</b> (default 600 s)</div>
+<input type="range" id="to" min="5" max="600" step="5" value="120" aria-label="timeout in seconds">
+<pre id="json"></pre>
+<div class="out" id="out"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>hook</dt><dd>A command Claude Code or Codex runs itself at a fixed moment, every time; deterministic, unlike an instruction.</dd>
+<dt>matcher</dt><dd>Which tool a PreToolUse or PostToolUse hook applies to, such as Edit|Write. Stop and SessionStart take none.</dd>
+<dt>exit code</dt><dd>The number a script returns. 0 lets the action proceed; 2 blocks it and sends stderr back as the reason.</dd>
+<dt>Stop event</dt><dd>Fires whenever the agent finishes responding. A blocking Stop hook makes it keep working instead.</dd>
+</dl></details>
+<script>
+(function(){
+var CMDS=[
+ {n:"Run the checker (this repo)",c:"python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop_check.py",best:"Stop"},
+ {n:"Refuse edits to generated files",c:"python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect_generated.py",best:"PreToolUse"},
+ {n:"Format the edited file",c:"\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format_changed.sh",best:"PostToolUse"},
+ {n:"Print recent commits into context",c:"git log --oneline -5",best:"SessionStart"}
+];
+var FIRES={PreToolUse:"before every matching tool call",PostToolUse:"after every matching tool call",Stop:"every time Claude finishes responding",SessionStart:"once, when the session starts"};
+var EFFECT={
+ PreToolUse:{0:"The tool call goes through the normal permission flow.",2:"The tool call is refused. Claude reads your stderr line and adjusts."},
+ PostToolUse:{0:"Nothing visible; stdout goes to the debug log.",2:"The tool already ran; your stderr line is fed back to Claude as feedback."},
+ Stop:{0:"Claude stops.",2:"Claude keeps working; your stderr line becomes its next instruction. Overridden after 8 blocks in a row without progress; read stop_hook_active."},
+ SessionStart:{0:"Your stdout is added to Claude's context.",2:"Cannot block: stderr is shown to you and the session starts anyway."}
+};
+var S={ev:"PreToolUse",mt:"Edit|Write",cmd:1,ex:"0",to:120};
+var cmd=document.getElementById("cmd");
+CMDS.forEach(function(c,i){var b=document.createElement("button");b.textContent=c.n;b.onclick=function(){S.cmd=i;paint();draw()};cmd.appendChild(b)});
+["ev","mt","ex"].forEach(function(id){document.getElementById(id).addEventListener("click",function(e){var b=e.target.closest("button");if(!b||b.disabled)return;S[id]=b.dataset.v;paint();draw()})});
+var to=document.getElementById("to");to.addEventListener("input",function(){S.to=+to.value;draw()});
+function paint(){
+ var toolEvent=S.ev==="PreToolUse"||S.ev==="PostToolUse";
+ Array.prototype.forEach.call(document.getElementById("ev").children,function(b){b.className=S.ev===b.dataset.v?"on":""});
+ Array.prototype.forEach.call(document.getElementById("mt").children,function(b){b.disabled=!toolEvent;b.className=toolEvent&&S.mt===b.dataset.v?"on":""});
+ Array.prototype.forEach.call(cmd.children,function(b,i){b.className=S.cmd===i?"on":""});
+ Array.prototype.forEach.call(document.getElementById("ex").children,function(b){b.className=(b.dataset.v==="2"?"two":"")+(S.ex===b.dataset.v?" on":"")});
+}
+function draw(){
+ var toolEvent=S.ev==="PreToolUse"||S.ev==="PostToolUse",c=CMDS[S.cmd];
+ var h={type:"command",command:c.c,timeout:S.to};
+ var g=toolEvent&&S.mt?{matcher:S.mt,hooks:[h]}:{hooks:[h]};
+ var o={hooks:{}};o.hooks[S.ev]=[g];
+ document.getElementById("json").textContent=JSON.stringify(o,null,2);
+ document.getElementById("tv").textContent=S.to+" s";
+ var out=document.getElementById("out");out.className="out"+(S.ex==="2"?" two":"");
+ var fit=c.best===S.ev?"":"<p class='why'>This command was written for a "+c.best+" hook; here it fires "+FIRES[S.ev]+", which is probably not what you meant.</p>";
+ out.innerHTML="<p><b>Fires:</b> "+FIRES[S.ev]+(toolEvent&&S.mt?", tool "+S.mt:"")+". Killed after "+S.to+" s.</p><p><b>On exit "+S.ex+":</b> "+EFFECT[S.ev][S.ex]+"</p>"+fit+"<p class='why'>Codex: the same block goes in .codex/hooks.json; PreToolUse, PostToolUse, Stop and SessionStart exist there too, and Stop ignores the matcher.</p>";
+}
+paint();draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

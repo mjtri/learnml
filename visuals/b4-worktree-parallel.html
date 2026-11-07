@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Worktree parallelism</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.presets button,.mode button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.mode{display:flex;gap:6px;margin:6px 0 8px}
+.mode button{flex:1}
+.mode button.on{font-weight:700;border-width:2px;border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:minmax(88px,1.4fr) repeat(3,1fr);gap:3px;margin-bottom:8px}
+.grid .h{font-size:11px;color:var(--mut);text-align:center;align-self:end;padding-bottom:2px}
+.grid .f{font-size:11px;font-family:ui-monospace,Menlo,Consolas,monospace;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cell{min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--card);cursor:pointer;touch-action:manipulation;font-size:11px;display:block;width:100%;padding:0;color:var(--fg)}
+.cell.on{background:color-mix(in srgb,var(--acc) 55%,var(--card));color:#fff}
+.cell.clash{outline:2px solid var(--bad);outline-offset:-2px}
+.cell.merge{outline:2px solid var(--acc2);outline-offset:-2px}
+.lanes{margin:4px 0 8px;font-size:11px;color:var(--mut)}
+.lane{margin:3px 0;padding:6px 8px;border-radius:8px;background:var(--card);border-left:4px solid var(--acc)}
+.lane b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+.lane.idle{opacity:.5;border-left-color:var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.stat{text-align:center;padding:6px 2px;border-radius:10px;border:1px solid var(--line)}
+.stat b{display:block;font-size:20px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:10px;color:var(--mut)}
+.stat.bad b{color:var(--bad)}.stat.warn b{color:var(--acc2)}.stat.ok b{color:var(--ok)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.bad{border-left:4px solid var(--bad)}.status.ok{border-left:4px solid var(--ok)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Three sessions, six files: who overwrites whom?</h1>
+<p class="hint">Tap a cell to say that a session edits that file. Then switch between one shared checkout and one worktree per session, and read the counts.</p>
+<div class="presets" id="presets"></div>
+<div class="mode" id="mode"><button class="on" data-m="same">Same checkout</button><button data-m="wt">Worktrees</button></div>
+<div class="grid" id="grid"></div>
+<div class="lanes" id="lanes"></div>
+<div class="stats"><div class="stat" id="s1"><b>0</b><span>silent overwrites</span></div><div class="stat" id="s2"><b>0</b><span>merge conflicts</span></div><div class="stat" id="s3"><b>0</b><span>windows paid</span></div></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>worktree</dt><dd>A separate checkout of the same repository with its own files and branch. Claude Code puts them under .claude/worktrees/.</dd>
+<dt>checkout</dt><dd>The working copy of the files on disk. One shared checkout means every session writes to the same files.</dd>
+<dt>merge conflict</dt><dd>Git refusing to combine two branches that changed the same lines, so you decide. Loud, and both versions are kept.</dd>
+<dt>window paid</dt><dd>Each running session is a full context window sent on every turn; three sessions cost about three times one, whatever the file layout.</dd>
+</dl></details>
+<script>
+(function(){
+var FILES=["check_lessons.py","day-1.md","terms.jsonl","mkdocs.yml","visual.html","playbook.md"],S=["A","B","C"],mode="same",on={};
+var PRESETS={"Independent":{"A":[1,2],"B":[4],"C":[5]},"Shared checker":{"A":[0,1],"B":[0,4],"C":[5]},"Everyone hits mkdocs.yml":{"A":[1,3],"B":[2,3],"C":[3,4]},"Clear":{}};
+var pr=document.getElementById("presets");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){on={};var p=PRESETS[n];Object.keys(p).forEach(function(s){p[s].forEach(function(fi){on[s+fi]=true})});draw()};pr.appendChild(b)});
+var g=document.getElementById("grid"),cells={};
+g.appendChild(document.createElement("div"));S.forEach(function(s){var e=document.createElement("div");e.className="h";e.textContent="session "+s;g.appendChild(e)});
+FILES.forEach(function(f,fi){var e=document.createElement("div");e.className="f";e.textContent=f;e.title=f;g.appendChild(e);
+ S.forEach(function(s){var b=document.createElement("button");b.className="cell";var k=s+fi;cells[k]=b;b.setAttribute("aria-label","session "+s+" edits "+f);
+  b.onclick=function(){on[k]=!on[k];draw()};g.appendChild(b)})});
+document.getElementById("mode").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.className=x===b?"on":""});draw()});
+function draw(){
+ var shared=0,active={},names=[];
+ FILES.forEach(function(f,fi){var n=0;S.forEach(function(s){if(on[s+fi]){n++;active[s]=true}});if(n>1){shared++;names.push(f)}
+  S.forEach(function(s){var c=cells[s+fi];c.className="cell"+(on[s+fi]?" on":"")+(on[s+fi]&&n>1?(mode==="same"?" clash":" merge"):"");c.textContent=on[s+fi]?"edit":""})});
+ var win=Object.keys(active).length;
+ var L=document.getElementById("lanes");L.innerHTML="";
+ S.forEach(function(s){var d=document.createElement("div");d.className="lane"+(active[s]?"":" idle");
+  d.innerHTML="<b>"+s+"</b> · "+(mode==="same"?"writes into the main checkout":"branch worktree-"+s.toLowerCase()+", merged at the end")+(active[s]?"":" · idle");L.appendChild(d)});
+ var ov=mode==="same"?shared:0,mc=mode==="same"?0:shared;
+ set("s1",ov,ov?"bad":"ok");set("s2",mc,mc?"warn":"ok");set("s3",win,"");
+ var st=document.getElementById("st");
+ if(!win){st.className="status";st.textContent="No session is editing anything yet. Tap cells or pick a preset."}
+ else if(shared===0){st.className="status ok";st.textContent=win+" session"+(win>1?"s":"")+" on disjoint files: safe either way. Worktrees only add a merge step; the "+win+" window"+(win>1?"s are":" is")+" paid regardless."}
+ else if(mode==="same"){st.className="status bad";st.textContent=shared+" file"+(shared>1?"s":"")+" ("+names.join(", ")+") edited by two sessions in one checkout: the last writer wins and nobody is told. You find out when the build breaks."}
+ else{st.className="status ok";st.textContent="Same edits, one worktree each: "+shared+" merge conflict"+(shared>1?"s":"")+" to resolve at the end, loudly, with both versions kept. Cost unchanged: "+win+" windows."}
+}
+function set(id,v,cls){var e=document.getElementById(id);e.className="stat "+cls;e.firstChild.textContent=v}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

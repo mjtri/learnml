@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Context budget</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f;--c1:#4051b5;--c2:#1f9d63;--c3:#d9531e;--c4:#8a5bd6}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b;--c1:#8fa2ff;--c2:#5fd39a;--c3:#ff9b73;--c4:#c3a3ff}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;text-align:left}
+button b{display:block;font-size:13px}button small{color:var(--mut);font-size:11px}
+button:disabled{opacity:.45}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.acts button.wide{grid-column:1/-1;text-align:center}
+.barwrap{height:34px;border-radius:9px;background:var(--card);border:1px solid var(--line);overflow:hidden;display:flex}
+.seg{height:100%;transition:width .25s}
+.s1{background:var(--c1)}.s2{background:var(--c2)}.s3{background:var(--c3)}.s4{background:var(--c4)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;font-size:12px;color:var(--mut);margin:6px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.read{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.read div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;font:14px ui-monospace,Menlo,Consolas,monospace}
+.read span{display:block;font:11px system-ui,sans-serif;color:var(--mut)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card)}
+.status.bad{color:var(--bad);font-weight:700}.status.good{color:var(--ok)}
+.log{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mut);max-height:110px;overflow:auto;margin-top:6px;padding:0 2px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>One window, four fillers. Predict what runs it out.</h1>
+<div class="barwrap" aria-label="context window fill"><div class="seg s1" id="b1"></div><div class="seg s2" id="b2"></div><div class="seg s3" id="b3"></div><div class="seg s4" id="b4"></div></div>
+<div class="legend"><span><i class="s1"></i>instructions</span><span><i class="s2"></i>your messages</span><span><i class="s3"></i>tool results</span><span><i class="s4"></i>agent reasoning + edits</span></div>
+<div class="read"><div><span>used</span><b id="used">0%</b></div><div><span>turns</span><b id="turns">0</b></div><div><span>re-read so far</span><b id="reread">0k</b></div></div>
+<div class="acts" id="acts"></div>
+<div class="status" id="st">Window is empty except the instruction file. Tap actions; each one is a turn, and every turn re-reads the whole window.</div>
+<div class="log" id="log"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>context window</dt><dd>Everything the model sees on one turn. Here it is 200k tokens wide.</dd>
+<dt>token</dt><dd>About three-quarters of a word. Numbers here are rough, for shape not precision.</dd>
+<dt>compaction</dt><dd>Summarising the window to free space. Automatic near the limit; on demand with /compact.</dd>
+<dt>re-read</dt><dd>Tokens processed again because the window is re-sent every turn. This is where idle time and long sessions cost.</dd>
+</dl></details>
+<script>
+(function(){
+var CAP=200,S,ACTS=[
+ {k:"ask",  t:"Ask a clear question", s:"+0.3k msg, +2k reasoning", f:function(){add(2,.3);add(4,2);say("Cheap. Clear asks keep the reply short.")}},
+ {k:"vague",t:"Ask vaguely",          s:"+0.2k msg, +12k tool, +4k reasoning", f:function(){add(2,.2);add(3,12);add(4,4);say("The agent had to explore to guess what you meant: 12k of tool results you did not need.")}},
+ {k:"file", t:"Read a big file in full", s:"+18k tool results", f:function(){add(3,18);say("One 2,000-line file: 18k tokens, stays in the window until you clear it.")}},
+ {k:"test", t:"Run failing tests (full log)", s:"+9k tool results", f:function(){add(3,9);say("A full test log. A subagent could have returned the 3 failing lines.")}},
+ {k:"sub",  t:"Same search via subagent", s:"+0.8k summary here", f:function(){add(3,.8);S.saved+=17;say("The 18k search happened in the subagent's own window; only a 0.8k summary came back. Saved ~17k here.")}},
+ {k:"fix",  t:"'No, I meant…' correction", s:"+0.4k msg, +6k reasoning", f:function(){add(2,.4);add(4,6);say("A correction never removes the wrong attempt; both stay. Three of these and you are better off with /clear.")}},
+ {k:"idle", t:"Idle 90 min, come back", s:"cache expired", f:function(){var w=total();S.reread+=w;say("Prompt cache expired (1 h on a subscription). Next turn re-processes all "+Math.round(w)+"k at full price. Nothing new in the window, but it was paid for again.")}},
+ {k:"compact",t:"/compact (keep plan + failing test)", s:"window → summary", f:function(){var w=total();S.f={1:S.f[1],2:1,3:2,4:3};S.turns++;say("Compacted "+Math.round(w)+"k down to "+Math.round(total())+"k. Detail is gone; the plan and the failing test survived because you said so.")}},
+ {k:"clear",t:"/clear (new task)", s:"fresh window", f:function(){reset();say("Fresh window with only the instruction file. The right move whenever the previous task is done.")}}
+];
+function reset(){S={f:{1:6,2:0,3:0,4:0},turns:0,reread:0,saved:0,dead:false};document.getElementById("log").innerHTML=""}
+function total(){return S.f[1]+S.f[2]+S.f[3]+S.f[4]}
+function add(k,v){S.f[k]+=v}
+function say(t,cls){var s=document.getElementById("st");s.textContent=t;s.className="status"+(cls?" "+cls:"")}
+function logline(t){var l=document.getElementById("log");l.innerHTML="<div>"+t+"</div>"+l.innerHTML}
+var box=document.getElementById("acts");
+ACTS.forEach(function(a){var b=document.createElement("button");b.innerHTML="<b>"+a.t+"</b><small>"+a.s+"</small>";if(a.k==="clear"||a.k==="compact")b.className="wide";
+ b.onclick=function(){if(S.dead&&a.k!=="clear"&&a.k!=="compact")return;var before=total();S.reread+=before;a.f();S.turns++;draw();logline("turn "+S.turns+": "+a.t+" → "+Math.round(total())+"k")};box.appendChild(b)});
+function draw(){var w=total(),pct=Math.min(100,w/CAP*100);
+ [1,2,3,4].forEach(function(k){document.getElementById("b"+k).style.width=(S.f[k]/CAP*100)+"%"});
+ document.getElementById("used").textContent=Math.round(pct)+"%";
+ document.getElementById("turns").textContent=S.turns;
+ document.getElementById("reread").textContent=Math.round(S.reread)+"k";
+ if(w>=CAP*0.95&&!S.dead){S.dead=true;say("Auto-compaction fired at "+Math.round(w)+"k. You did not choose what to keep. Use /compact with a focus, or /clear.","bad")}
+ Array.prototype.forEach.call(box.children,function(b,i){b.disabled=S.dead&&ACTS[i].k!=="clear"&&ACTS[i].k!=="compact"});
+}
+reset();draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

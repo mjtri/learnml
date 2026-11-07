@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Decision matrix</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+label{display:grid;grid-template-columns:120px 1fr 62px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;height:96px;border-radius:10px;background:var(--card);margin-top:6px}
+.mx{margin-top:8px}
+.cell{padding:10px 12px;border-radius:10px;border:1px solid var(--line);margin-top:6px;font-size:13.5px;min-height:44px;color:var(--mut)}
+.cell b{color:var(--fg)}
+.cell.hit{border-color:var(--acc2);background:var(--card);color:var(--fg)}
+.cell.hit b{color:var(--acc2)}
+pre{font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin:8px 0 0;white-space:pre-wrap;word-break:break-word}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Kill, pivot or scale up: the rule reads the numbers, not you</h1>
+<label>X (the plan's)<input id="x" type="range" min="0.05" max="0.5" step="0.05" value="0.2"><output id="ox"></output></label>
+<label>kill line (the plan's)<input id="k" type="range" min="0" max="0.5" step="0.05" value="0.1"><output id="ok"></output></label>
+<label>gap A − B<input id="g" type="range" min="-0.3" max="0.6" step="0.01" value="0.25"><output id="og"></output></label>
+<label>95% interval ± half-width<input id="h" type="range" min="0.02" max="0.5" step="0.01" value="0.2"><output id="oh"></output></label>
+<label>ablation cost<input id="a" type="range" min="-0.3" max="0.5" step="0.01" value="0.2"><output id="oa"></output></label>
+<label>ablation floor (the plan's)<input id="f" type="range" min="0" max="0.3" step="0.01" value="0.05"><output id="of"></output></label>
+<canvas id="cv" aria-label="Number line showing zero, X, and the interval around the gap."></canvas>
+<div class="mx">
+  <div class="cell" id="ck"><b>KILL</b> if the gap is under the plan's kill line, the interval includes zero, or the gap never reaches X. The lever is dead; the plan's alternative is the next plan.</div>
+  <div class="cell" id="cp"><b>PIVOT</b> if the gap survived the kill line with the interval above zero, but the ablation cost less than the plan's floor. The gain is real but not for the claimed reason; start from the plan's pivot target.</div>
+  <div class="cell" id="cs"><b>SCALE UP</b> if the gap clears X, the interval is above zero, and the ablation cost at least the floor. 50 shapes, real listeners.</div>
+</div>
+<pre id="out"></pre>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>gap A − B</dt><dd>Mean of the metric for your method minus the mean for the baseline, over seeds.</dd>
+<dt>95% interval</dt><dd>The bootstrap range for the gap. If it includes zero, the data cannot tell the gap from no difference.</dd>
+<dt>ablation cost</dt><dd>How much the metric drops when the claimed ingredient (the sound side) is removed. Under the plan's floor means the ingredient did nothing; negative means removing it helped.</dd>
+<dt>kill / pivot / scale up</dt><dd>The three pre-registered outcomes, with the plan's own numbers (X, kill line, ablation floor). "Run more seeds and look again" is deliberately not one of them.</dd>
+</dl></details>
+<script>
+(function(){
+var ids=["x","k","g","h","a","f"],el={};ids.forEach(function(i){el[i]=document.getElementById(i);el[i].oninput=draw});
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function draw(){
+  var X=+el.x.value,K=+el.k.value,g=+el.g.value,h=+el.h.value,a=+el.a.value,Fl=+el.f.value,lo=g-h,hi=g+h;
+  document.getElementById("ox").textContent=X.toFixed(2);document.getElementById("og").textContent=g.toFixed(2);
+  document.getElementById("oh").textContent="±"+h.toFixed(2);document.getElementById("oa").textContent=a.toFixed(2);document.getElementById("ok").textContent=K.toFixed(2);document.getElementById("of").textContent=Fl.toFixed(2);
+  var dec,why;
+  if(g<K||lo<=0){dec="KILL";why=g<K?"gap "+g.toFixed(2)+" < kill line "+K.toFixed(2):"interval ["+lo.toFixed(2)+", "+hi.toFixed(2)+"] includes 0"}
+  else if(a<Fl){dec="PIVOT";why="gap survived the kill line, but ablation cost "+a.toFixed(2)+" < floor "+Fl.toFixed(2)}
+  else if(g>=X){dec="SCALE UP";why="gap "+g.toFixed(2)+" ≥ X, interval above 0, ablation cost "+a.toFixed(2)+" ≥ floor"}
+  else{dec="KILL";why="gap "+g.toFixed(2)+" cleared the kill line but missed X = "+X.toFixed(2)}
+  ["ck","cp","cs"].forEach(function(i){document.getElementById(i).className="cell"+((i==="ck"&&dec==="KILL")||(i==="cp"&&dec==="PIVOT")||(i==="cs"&&dec==="SCALE UP")?" hit":"")});
+  document.getElementById("out").textContent="RESULT    A − B = "+g.toFixed(2)+"  95% CI ["+lo.toFixed(2)+", "+hi.toFixed(2)+"]"+(lo<=0?"  (includes 0: no detectable difference)":"")+"\n          ablation cost "+a.toFixed(2)+(a<0?"  (negative: dropping the ingredient helped; a finding)":"")+"\nDECISION  "+dec+"  (rule: "+why+")";
+  var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);
+  var mut=css("--mut"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok"),bad=css("--bad");ctx.clearRect(0,0,W,H);
+  var L0=16,R0=W-16,y=H/2+8;function P(v){return L0+(v+0.5)/1.3*(R0-L0)}
+  ctx.strokeStyle=mut;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L0,y);ctx.lineTo(R0,y);ctx.stroke();
+  ctx.font="11px system-ui,sans-serif";ctx.fillStyle=mut;ctx.textAlign="center";
+  [-0.4,-0.2,0,0.2,0.4,0.6].forEach(function(v){ctx.beginPath();ctx.moveTo(P(v),y-4);ctx.lineTo(P(v),y+4);ctx.stroke();ctx.fillText(v.toFixed(1),P(v),y+18)});
+  ctx.strokeStyle=bad;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(P(0),8);ctx.lineTo(P(0),y+6);ctx.stroke();
+  ctx.strokeStyle=ok;ctx.beginPath();ctx.moveTo(P(X),8);ctx.lineTo(P(X),y+6);ctx.stroke();ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(P(K),8);ctx.lineTo(P(K),y+6);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=bad;ctx.fillText("0",P(0),H-36);ctx.fillStyle=ok;ctx.fillText("X",P(X),H-36);ctx.fillStyle=mut;ctx.fillText("kill",P(K),H-48);
+  ctx.strokeStyle=acc;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(P(lo),y-14);ctx.lineTo(P(hi),y-14);ctx.stroke();
+  ctx.fillStyle=acc2;ctx.beginPath();ctx.arc(P(g),y-14,6,0,7);ctx.fill();
+}
+window.redraw=draw;addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>
