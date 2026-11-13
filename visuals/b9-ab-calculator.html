@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Adoption A/B calculator</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.presets button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.col{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--card)}
+.col h2{font-size:13px;margin:0 0 4px}
+.col.a h2{color:var(--acc)}.col.b h2{color:var(--acc2)}
+.f{margin:4px 0 6px}
+.f .lab{font-size:12px;color:var(--mut)}
+.f .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--acc)}
+.col.b input[type=range]{accent-color:var(--acc2)}
+.out{margin-top:8px}
+.d{display:grid;grid-template-columns:1fr 110px;gap:6px;align-items:center;min-height:28px;font-size:13px}
+.d .v{font-family:ui-monospace,Menlo,Consolas,monospace;text-align:right}
+.d .v.good{color:var(--ok)}.d .v.badv{color:var(--bad)}
+.verdict{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.verdict.ok{color:var(--ok);font-weight:700}.verdict.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>One tool, one week: with and without</h1>
+<p class="hint">Slide the three B8 numbers for the same kind of task done with the tool and without it. The readout says keep, uninstall, or measure again.</p>
+<div class="presets" id="presets"></div>
+<div class="cols">
+ <div class="col a"><h2>With the tool</h2>
+  <div class="f"><div class="lab">Minutes <b id="am"></b></div><input type="range" id="a_min" min="5" max="120" step="1" value="22"></div>
+  <div class="f"><div class="lab">Usage delta, points <b id="au"></b></div><input type="range" id="a_use" min="0" max="30" step="1" value="6"></div>
+  <div class="f"><div class="lab">Quality 1–5 <b id="aq"></b></div><input type="range" id="a_q" min="1" max="5" step="1" value="4"></div>
+ </div>
+ <div class="col b"><h2>Without it</h2>
+  <div class="f"><div class="lab">Minutes <b id="bm"></b></div><input type="range" id="b_min" min="5" max="120" step="1" value="31"></div>
+  <div class="f"><div class="lab">Usage delta, points <b id="bu"></b></div><input type="range" id="b_use" min="0" max="30" step="1" value="5"></div>
+  <div class="f"><div class="lab">Quality 1–5 <b id="bq"></b></div><input type="range" id="b_q" min="1" max="5" step="1" value="3"></div>
+ </div>
+</div>
+<div class="out">
+ <div class="d"><div>Time saved</div><div class="v" id="dm"></div></div>
+ <div class="d"><div>Usage change</div><div class="v" id="du"></div></div>
+ <div class="d"><div>Quality change</div><div class="v" id="dq"></div></div>
+ <div class="d"><div>Minutes per usage point (what the tool buys)</div><div class="v" id="rate"></div></div>
+</div>
+<div class="verdict" id="verdict"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>usage delta</dt><dd>How far the weekly bar in /usage (or Codex /usage weekly) moved during the task, in percentage points, read before and after.</dd>
+<dt>quality 1–5</dt><dd>Your score after reading the result: 1 unusable, 3 needed real fixes, 5 shipped as is.</dd>
+<dt>A/B week</dt><dd>One week with the tool installed, logging the same kind of task with it and without it; the three numbers decide keep or uninstall.</dd>
+<dt>noise</dt><dd>One task is one sample. A difference under about 15 % of minutes with equal quality could be the task, not the tool; log a second pair before deciding.</dd>
+</dl></details>
+<script>
+(function(){
+var IDS=["a_min","a_use","a_q","b_min","b_use","b_q"],LAB={a_min:"am",a_use:"au",a_q:"aq",b_min:"bm",b_use:"bu",b_q:"bq"};
+var PRESETS={"Method pack, Unity feature":[22,6,4,31,5,3],"Document skill, ETRI form":[12,3,4,25,2,4],"Bundle with hooks every turn":[30,14,3,31,5,3],"Nice but no difference":[28,5,3,30,5,3]};
+var pr=document.getElementById("presets");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){PRESETS[n].forEach(function(v,i){document.getElementById(IDS[i]).value=v});draw()};pr.appendChild(b)});
+IDS.forEach(function(id){document.getElementById(id).addEventListener("input",draw)});
+function g(id){return +document.getElementById(id).value}
+function draw(){
+ IDS.forEach(function(id){document.getElementById(LAB[id]).textContent=g(id)});
+ var dm=g("b_min")-g("a_min"),du=g("a_use")-g("b_use"),dq=g("a_q")-g("b_q");
+ var pct=Math.round(dm/g("b_min")*100);
+ set("dm",(dm>=0?"+":"")+dm+" min ("+(pct>=0?"+":"")+pct+" %)",dm>0,dm<0);
+ set("du",(du>0?"+":"")+du+" pts",du<0,du>0);
+ set("dq",(dq>0?"+":"")+dq,dq>0,dq<0);
+ var rate=document.getElementById("rate");rate.className="v";rate.textContent=du>0?(dm/du).toFixed(1)+" min / pt":dm>0?"free":"n/a";
+ var v=document.getElementById("verdict");
+ if(dq<0){v.className="verdict bad";v.textContent="Uninstall: the tool cost quality ("+dq+"). No time saving pays for output you have to redo."}
+ else if(dm<=0&&du>=0){v.className="verdict bad";v.textContent="Uninstall: no time saved and usage not lower. Nothing on the radar earns a row from this."}
+ else if(pct>=15||du<0){v.className="verdict ok";v.textContent="Keep: equal or better quality and "+(pct>=15?pct+" % less time":"less usage")+(du>0?", at "+(dm/du).toFixed(1)+" minutes per usage point":"")+". Write the line into the playbook Tools section."}
+ else{v.className="verdict";v.textContent="Measure again: "+pct+" % time and "+(du>0?"+":"")+du+" usage points with equal quality is inside one-task noise. Log a second pair before deciding."}
+}
+function set(id,t,good,bad){var e=document.getElementById(id);e.textContent=t;e.className="v"+(good?" good":bad?" badv":"")}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

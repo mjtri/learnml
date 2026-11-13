@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Failure cards</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.good{background:var(--ok);border-color:var(--ok);color:var(--bg);font-weight:700}
+button.wrong{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+button:disabled{opacity:.7;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.card{background:var(--card);border-radius:10px;padding:10px 12px}
+.card .n{font-size:12px;color:var(--mut);margin:0 0 4px}
+.card p{margin:0 0 6px}
+table{border-collapse:collapse;width:100%;font:13px ui-monospace,Menlo,Consolas,monospace;margin-top:4px}
+td{padding:3px 4px;border-top:1px solid var(--line)}
+td.k{font:12.5px system-ui,sans-serif;color:var(--mut)}
+td.v{text-align:right;white-space:nowrap}
+.tell{margin-top:8px;padding:8px 10px;border-left:3px solid var(--acc2);font-size:14px;display:none}
+.tell.show{display:block}
+.score{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--mut);margin:6px 0 0}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Read the run's numbers, then name the failure before you reveal it</h1>
+<div class="card"><p class="n" id="num"></p><p id="story"></p><table id="tbl"></table><div class="tell" id="tell"></div></div>
+<div class="row" id="choices"></div>
+<div class="row"><button id="next">next card →</button><button id="reset">start over</button></div>
+<p class="score" id="score"></p>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>train loss / unseen loss</dt><dd>Loss on the rows the model trained on, and on rows it never saw. The gap between them is the first thing to read.</dd>
+<dt>base-text loss</dt><dd>Loss of the model on a fixed plain paragraph, measured before and after fine-tuning. It tracks what the model still remembers.</dd>
+<dt>catastrophic forgetting</dt><dd>The new task overwrote old ability: base-text loss jumps.</dd>
+<dt>data leakage</dt><dd>Test rows reached the training data: unseen loss looks too good, or a few items sit near zero.</dd>
+<dt>memorising</dt><dd>Overfitting a tiny set: train loss keeps falling while unseen loss turns upward.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var C=["forgetting","leakage","memorising","healthy"];
+var CARDS=[
+ {s:"LoRA r = 16 on 400 instruction rows, 600 steps. Generations follow the new style well.",t:[["train loss","0.40"],["unseen-row loss","0.35"],["base-text loss before → after","3.0 → 6.1"]],a:0,
+  w:"Task numbers are fine; the plain paragraph's loss doubled. The adapter overwrote general ability. Lower r or stop earlier, then re-measure."},
+ {s:"Full run on a scraped Q&A set, split 90 / 10 by random row.",t:[["train loss","0.90"],["unseen-row loss","0.20"],["three unseen rows","0.01, 0.02, 0.01"],["base-text loss before → after","3.0 → 3.1"]],a:1,
+  w:"Unseen loss far below train loss is impossible for a model that learned a skill. Three rows near zero are memorised copies: duplicates crossed the split. Hash and dedupe first."},
+ {s:"LoRA r = 64, 200 rows, 2000 steps, no dropout. Loss logged every 100 steps.",t:[["train loss","1.1 → 0.05"],["unseen-row loss, step 300","1.15 (lowest)"],["unseen-row loss, step 2000","1.90"],["base-text loss before → after","3.0 → 3.3"]],a:2,
+  w:"The unseen curve turned upward after step 300 while train kept falling: the model stored the 200 answers. Stop at 300, lower r, add dropout, or find more data."},
+ {s:"LoRA r = 8 on 400 rows, 300 steps, alpha 16, dropout 0.05.",t:[["train loss","1.10 → 0.80"],["unseen-row loss","1.20 → 0.90"],["base-text loss before → after","3.0 → 3.1"],["leak check","0 test rows in train"]],a:3,
+  w:"Train and unseen fall together, the gap stays small, the paragraph barely moved, and the leak check passed. Nothing to fix; log it with cfg and seed."},
+ {s:"Each source document was cut into 6 rows; rows were then shuffled and split 80 / 20.",t:[["train loss","0.90"],["unseen-row loss","0.40"],["base-text loss before → after","3.0 → 3.2"]],a:1,
+  w:"Rows from the same document sit on both sides of the split, so the model has seen the test rows' neighbours. Split by source before cutting into rows."},
+ {s:"Prompts were built as 'Context: … Answer: … Question: …'; the response repeats the answer.",t:[["train loss","0.30"],["unseen-row loss","0.25"],["base-text loss before → after","3.0 → 3.1"]],a:1,
+  w:"The answer is inside the prompt, so the model copies rather than answers, on unseen rows too. A near-perfect score with no skill: leakage through the prompt template."},
+ {s:"Full fine-tuning, learning rate 1e-3, 400 rows. Every generation, even 'What is 2 + 2?', comes out in the new style.",t:[["train loss","0.50"],["unseen-row loss","0.60"],["base-text loss before → after","3.0 → 9.8"]],a:0,
+  w:"Base-text loss tripled and unrelated prompts are hijacked by the new style. The model forgot how to be itself. Use LoRA, lower the learning rate, fewer steps."},
+ {s:"LoRA r = 4, 400 rows, 150 steps.",t:[["train loss","2.1 → 1.6"],["unseen-row loss","2.2 → 1.7"],["base-text loss before → after","3.0 → 3.0"]],a:3,
+  w:"Everything moved together and nothing was forgotten. It may be undertrained, but that is a different question from the three failures; take more steps and re-check."}];
+var i=0,score=0,answered=0,done=false;
+C.forEach(function(c){var b=document.createElement("button");b.textContent=c;b.onclick=function(){pick(c)};$("choices").appendChild(b)});
+function show(){var c=CARDS[i];done=false;$("num").textContent="card "+(i+1)+" of "+CARDS.length;$("story").textContent=c.s;
+  $("tbl").innerHTML=c.t.map(function(r){return "<tr><td class=k>"+r[0]+"</td><td class=v>"+r[1]+"</td></tr>"}).join("");
+  var t=$("tell");t.className="tell";t.textContent="";
+  Array.prototype.forEach.call($("choices").children,function(b){b.className="";b.disabled=false});
+  $("score").textContent=score+" / "+answered+" correct so far"}
+function pick(c){if(done)return;done=true;answered++;var ok=C[CARDS[i].a]===c;if(ok)score++;
+  Array.prototype.forEach.call($("choices").children,function(b){b.disabled=true;if(b.textContent===C[CARDS[i].a])b.className="good";else if(b.textContent===c)b.className="wrong"});
+  var t=$("tell");t.className="tell show";t.textContent=(ok?"Yes: ":"No, it is "+C[CARDS[i].a]+": ")+CARDS[i].w;
+  $("score").textContent=score+" / "+answered+" correct so far"}
+$("next").onclick=function(){i=(i+1)%CARDS.length;show()};
+$("reset").onclick=function(){i=0;score=0;answered=0;show()};
+show();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

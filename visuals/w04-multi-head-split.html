@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Multi-head split</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.on2{background:var(--acc2);border-color:var(--acc2);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;align-items:center}
+.lbl{font-size:13px;color:var(--mut);padding-right:2px}
+.heads{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0}
+.head{background:var(--card);border-radius:10px;padding:6px 8px}
+.head .cap{font:12px system-ui,sans-serif;color:var(--mut);margin-bottom:2px}
+table{border-collapse:collapse;font:12px ui-monospace,Menlo,Consolas,monospace}
+th{font:11px system-ui,sans-serif;color:var(--mut);font-weight:400;padding:0 1px}
+td{text-align:center;width:38px;height:30px;border:1px solid var(--line);padding:0}
+td.lab{text-align:left;font:11px system-ui,sans-serif;color:var(--mut);border:0;width:auto;padding-right:3px}
+td.m{color:var(--mut);background:repeating-linear-gradient(45deg,transparent 0 4px,var(--line) 4px 6px)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>One 4-number vector, split into heads; then shuffle the tokens</h1>
+<div class="row"><span class="lbl">heads</span><button data-h="1">1</button><button data-h="2">2</button><button data-h="4">4</button></div>
+<div class="row"><button id="bp">Positions: off</button><button id="bs">Shuffle (swap first two)</button></div>
+<div class="heads" id="heads"></div>
+<div class="read">
+  <span class="k">token order</span><span id="rOrd"></span>
+  <span class="k">shapes</span><span id="rShape"></span>
+  <span class="k">÷√ per head</span><span id="rScale"></span>
+  <span class="k">output for "pulse" (concat)</span><span id="rOut"></span>
+  <span class="k">changed by the shuffle?</span><span id="rChg"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>multi-head attention</dt><dd>Split each q, k, v vector into h slices; each slice runs its own attention with its own softmax; the outputs are joined end to end.</dd>
+<dt>head size</dt><dd>Numbers per head: the full width divided by h. Here 4 ÷ h. Scores are divided by its square root.</dd>
+<dt>positional encoding</dt><dd>A fixed vector per position added to q, k and v. With it off, the tokens before you are a bag with no order.</dd>
+<dt>causal mask</dt><dd>Hatched cells: a token cannot look at later tokens.</dd>
+</dl></details>
+<script>
+(function(){
+var BASE={strong:{q:[0,1,0,0],k:[2,0,1,0],v:[3,0,0,2]},left:{q:[1,0,2,0],k:[0,2,0,1],v:[0,3,2,0]},pulse:{q:[2,0,0,2],k:[1,1,1,1],v:[1,1,1,1]}};
+var P=[[0,0,0,0],[0.5,0,0,0.5],[0,0.5,0.5,0]];
+var order=["strong","left","pulse"],h=1,usePos=false,ref=null;
+var headsEl=document.getElementById("heads");
+function softmax(r){var m=-Infinity;r.forEach(function(x){if(x>m)m=x});var e=r.map(function(x){return x===-Infinity?0:Math.exp(x-m)}),z=e.reduce(function(a,b){return a+b},0);return e.map(function(x){return x/z})}
+function n(v,p){return(Math.abs(v)<5e-5?0:v).toFixed(p==null?2:p)}
+function compute(ord,hh,pos){var hs=4/hh,toks=ord.map(function(t,i){var b=BASE[t],add=function(a){return a.map(function(x,j){return x+(pos?P[i][j]:0)})};return{q:add(b.q),k:add(b.k),v:add(b.v)}});
+  var heads=[],out=toks.map(function(){return[]});
+  for(var H=0;H<hh;H++){var lo=H*hs,W=[];toks.forEach(function(ti,i){var s=toks.map(function(tj,j){if(j>i)return-Infinity;var d=0;for(var x=lo;x<lo+hs;x++)d+=ti.q[x]*tj.k[x];return d/Math.sqrt(hs)});W.push(softmax(s))});
+    heads.push(W);toks.forEach(function(_,i){for(var x=lo;x<lo+hs;x++){var o=0;W[i].forEach(function(w,j){o+=w*toks[j].v[x]});out[i].push(o)}})}
+  return{heads:heads,out:out,hs:hs}}
+function draw(){
+  Array.prototype.forEach.call(document.querySelectorAll("button[data-h]"),function(b){b.className=+b.dataset.h===h?"on":""});
+  var bp=document.getElementById("bp");bp.textContent="Positions: "+(usePos?"on":"off");bp.className=usePos?"on2":"";
+  var R=compute(order,h,usePos);
+  headsEl.innerHTML=R.heads.map(function(W,H){var lo=H*R.hs,cap="head "+(H+1)+" · dims "+lo+(R.hs>1?"–"+(lo+R.hs-1):"");
+    var t='<tr><th></th>'+order.map(function(x){return'<th>'+x.slice(0,3)+'</th>'}).join("")+'</tr>';
+    W.forEach(function(r,i){t+='<tr><td class="lab">'+order[i]+'</td>';r.forEach(function(w,j){t+=j>i?'<td class="m">0</td>':'<td style="background:color-mix(in srgb,var(--acc) '+Math.round(w*80)+'%,transparent)">'+n(w)+'</td>'});t+='</tr>'});
+    return'<div class="head"><div class="cap">'+cap+'</div><table>'+t+'</table></div>'}).join("");
+  document.getElementById("rOrd").textContent=order.join(" ");
+  document.getElementById("rShape").textContent="(3, 4) → "+h+" × (3, "+R.hs+") → weights "+h+" × (3, 3) → out "+h+" × (3, "+R.hs+") → (3, 4)";
+  document.getElementById("rScale").textContent="√"+R.hs+" = "+n(Math.sqrt(R.hs));
+  var ip=order.indexOf("pulse"),o=R.out[ip];
+  document.getElementById("rOut").textContent="("+o.map(function(x){return n(x)}).join(", ")+")";
+  var e=document.getElementById("rChg");
+  if(ref===null){ref={o:o.slice(),h:h,p:usePos};e.textContent="tap Shuffle";e.className=""}
+  else{var d=0;o.forEach(function(x,i){d=Math.max(d,Math.abs(x-ref.o[i]))});e.textContent=(d<1e-6?"no":"yes")+"  (max change "+n(d,3)+")";e.className=d<1e-6?"ok":"bad"}
+}
+window.redraw=draw;
+Array.prototype.forEach.call(document.querySelectorAll("button[data-h]"),function(b){b.onclick=function(){h=+b.dataset.h;ref=null;order=["strong","left","pulse"];draw()}});
+document.getElementById("bp").onclick=function(){usePos=!usePos;ref=null;order=["strong","left","pulse"];draw()};
+document.getElementById("bs").onclick=function(){if(ref===null){var R=compute(order,h,usePos);ref={o:R.out[order.indexOf("pulse")].slice()}}order=[order[1],order[0],order[2]];draw()};
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

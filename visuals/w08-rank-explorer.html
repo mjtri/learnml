@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rank explorer</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;height:260px;touch-action:none;border-radius:10px;background:var(--card);cursor:grab}
+label{display:grid;grid-template-columns:110px 1fr 58px;align-items:center;gap:8px;font-size:13px;color:var(--mut);margin-top:6px}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.c1{color:var(--acc);font-weight:700}.c2{color:var(--acc2);font-weight:700}
+.rank{font-weight:700;color:var(--ok)}.rank.low{color:var(--bad)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Drag the two columns of a 2×2 matrix; read its rank</h1>
+<div class="row" id="presets"></div>
+<canvas id="cv" aria-label="Two column vectors drawn as arrows from the origin with the parallelogram they span. Drag an arrow tip to move it."></canvas>
+<label>zero below<input id="tol" type="range" min="0" max="3" step="0.05" value="2"><output id="otol"></output></label>
+<div class="read">
+  <span class="k">matrix W (columns <span class="c1">c₁</span>, <span class="c2">c₂</span>)</span><span id="r0"></span>
+  <span class="k">stretch strengths σ₁ ≥ σ₂</span><span id="r1"></span>
+  <span class="k">area of the parallelogram |det|</span><span id="r2"></span>
+  <span class="k">angle between columns</span><span id="r3"></span>
+  <span class="k">rank (σ counted as zero below the slider)</span><span id="r4" class="rank"></span>
+  <span class="k">outputs fill</span><span id="r5"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>column vector</dt><dd>Where the matrix sends one unit arrow. The shaded shape is where the unit square lands.</dd>
+<dt>rank</dt><dd>How many independent directions the outputs fill: 2 for the plane, 1 when the columns line up (a line), 0 when both are zero (a point).</dd>
+<dt>σ (singular value)</dt><dd>The strength of one stretch. Counting the σ that are not zero gives the rank; in floating point you must say what counts as zero.</dd>
+<dt>det</dt><dd>The signed area of the parallelogram; zero exactly when the rank drops below 2.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var cv=$("cv"),ctx=cv.getContext("2d"),Wd=300,Ht=260,R=3.3;
+var c1=[1,2],c2=[2,4.1];
+var PRESETS=[["rank 2",[1,2],[2,4.1]],["nearly rank 1",[1,2],[2,4.02]],["rank 1",[1,2],[2,4]],["rank 0",[0,0],[0,0]],["random",null]];
+PRESETS.forEach(function(p){var b=document.createElement("button");b.textContent=p[0];b.onclick=function(){
+  if(p[1]){c1=p[1].slice();c2=p[2].slice()}else{c1=[rnd(),rnd()];c2=[rnd(),rnd()]}draw()};$("presets").appendChild(b)});
+function rnd(){return Math.round((Math.random()*5-2.5)*10)/10}
+function X(v){return Wd/2+v/R*Wd/2}function Y(v){return Ht/2-v/R*Ht/2}
+function fit(){var r=window.devicePixelRatio||1;Wd=cv.clientWidth;Ht=cv.clientHeight;cv.width=Wd*r;cv.height=Ht*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function sv(a,b,c,d){var s1=a*a+b*b+c*c+d*d,det=a*d-b*c,disc=Math.sqrt(Math.max(0,s1*s1-4*det*det));
+  return [Math.sqrt((s1+disc)/2),Math.sqrt(Math.max(0,(s1-disc)/2)),det]}
+function arrow(v,col){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke();
+  ctx.beginPath();ctx.arc(X(v[0]),Y(v[1]),9,0,7);ctx.fill()}
+function draw(){
+  var a=c1[0],c=c1[1],b=c2[0],d=c2[1];  // W = [[a,b],[c,d]], columns c1=(a,c), c2=(b,d)
+  var tol=Math.pow(10,-+$("tol").value);$("otol").textContent=tol.toFixed(3);
+  var s=sv(a,b,c,d),rank=(s[0]>tol?1:0)+(s[1]>tol?1:0);
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2");
+  ctx.clearRect(0,0,Wd,Ht);
+  ctx.lineWidth=1;ctx.strokeStyle=ln;ctx.beginPath();
+  for(var g=-3;g<=3;g++){ctx.moveTo(X(g),0);ctx.lineTo(X(g),Ht);ctx.moveTo(0,Y(g));ctx.lineTo(Wd,Y(g))}ctx.stroke();
+  ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(0,Y(0));ctx.lineTo(Wd,Y(0));ctx.moveTo(X(0),0);ctx.lineTo(X(0),Ht);ctx.stroke();
+  ctx.fillStyle=rank===2?acc:acc2;ctx.globalAlpha=0.18;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(a),Y(c));ctx.lineTo(X(a+b),Y(c+d));ctx.lineTo(X(b),Y(d));ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+  if(rank===1){ctx.save();ctx.setLineDash([6,5]);ctx.strokeStyle=acc2;ctx.lineWidth=1.5;var v=s[0]>0?(Math.abs(a)+Math.abs(c)>1e-9?[a,c]:[b,d]):[1,0];var len=Math.hypot(v[0],v[1])||1;
+    ctx.beginPath();ctx.moveTo(X(-R*v[0]/len),Y(-R*v[1]/len));ctx.lineTo(X(R*v[0]/len),Y(R*v[1]/len));ctx.stroke();ctx.restore()}
+  arrow(c1,acc);arrow(c2,acc2);
+  ctx.fillStyle=fg;ctx.font="13px system-ui,sans-serif";ctx.fillText("c₁",X(a)+12,Y(c)-8);ctx.fillText("c₂",X(b)+12,Y(d)+16);
+  function n(v,p){return(Math.abs(v)<5e-4?0:v).toFixed(p==null?2:p)}
+  $("r0").innerHTML='<span class="c1">'+n(a,1)+'</span> '+'<span class="c2">'+n(b,1)+'</span><br><span class="c1">'+n(c,1)+'</span> '+'<span class="c2">'+n(d,1)+'</span>';
+  $("r1").textContent=n(s[0],3)+"  "+n(s[1],3);
+  $("r2").textContent=n(Math.abs(s[2]),3);
+  var l1=Math.hypot(a,c),l2=Math.hypot(b,d),ang=(l1<1e-9||l2<1e-9)?NaN:Math.acos(Math.max(-1,Math.min(1,(a*b+c*d)/(l1*l2))))*180/Math.PI;
+  $("r3").textContent=isNaN(ang)?"—":n(ang,1)+"°";
+  var e=$("r4");e.textContent=String(rank);e.className="rank"+(rank<2?" low":"");
+  $("r5").textContent=["a point","a line","the plane"][rank];
+}
+window.redraw=draw;
+$("tol").oninput=draw;
+var drag=null;
+function pos(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*2*R-R,R-(e.clientY-r.top)/r.height*2*R]}
+cv.addEventListener("pointerdown",function(e){var p=pos(e),d1=Math.hypot(p[0]-c1[0],p[1]-c1[1]),d2=Math.hypot(p[0]-c2[0],p[1]-c2[1]);
+  drag=d1<=d2?c1:c2;cv.setPointerCapture(e.pointerId);move(e)});
+function move(e){if(!drag)return;var p=pos(e);drag[0]=Math.max(-3,Math.min(3,Math.round(p[0]*10)/10));drag[1]=Math.max(-3,Math.min(3,Math.round(p[1]*10)/10));draw()}
+cv.addEventListener("pointermove",move);
+cv.addEventListener("pointerup",function(){drag=null});cv.addEventListener("pointercancel",function(){drag=null});
+addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>

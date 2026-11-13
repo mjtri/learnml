@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seeds vs noise</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+canvas{display:block;width:100%;height:230px;border-radius:10px;background:var(--card)}
+label{display:grid;grid-template-columns:104px 1fr 56px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.hint{font-size:12px;color:var(--mut);margin:4px 0}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Method A is truly better than B by the gain you set. How often will n seeds show it?</h1>
+<div class="row"><button id="mSim" class="on">simulate</button><button id="mEff">effect vs noise</button></div>
+<canvas id="cv" aria-label="Simulation of seed scores for two methods and a histogram of observed gaps, or a curve of detectable effect against seed count"></canvas>
+<div class="hint" id="hint">Dots: one experiment's seed scores (A orange, B blue). Bars: observed A − B gap over all experiments so far. Dashed: the true gain. Grey band: gaps the noise alone can produce.</div>
+<label>true gain<input id="sG" type="range" min="0" max="6" step="0.5" value="3"><output id="oG"></output></label>
+<label>spread σ per seed<input id="sS" type="range" min="0.5" max="6" step="0.5" value="3"><output id="oS"></output></label>
+<label>seeds per method<input id="sN" type="range" min="1" max="20" step="1" value="1"><output id="oN"></output></label>
+<div class="row" id="btns"><button id="b1">run 1 experiment</button><button id="b100">run 100 experiments</button><button id="clr">clear</button></div>
+<div class="read">
+  <span class="k">effect size Δ = gain / σ</span><span id="r1"></span>
+  <span class="k">experiments run</span><span id="r2">0</span>
+  <span class="k">A's mean beat B's mean</span><span id="r3">–</span>
+  <span class="k">gap larger than the noise band</span><span id="r4">–</span>
+  <span class="k">rule of thumb: seeds ≈ 16 / Δ²</span><span id="r5"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>seed</dt><dd>The number that fixes a run's random draws. Changing only the seed and re-running measures how noisy one number is.</dd>
+<dt>variance across seeds</dt><dd>How far repeats of the same setup land from each other; here the spread σ of one seed's score.</dd>
+<dt>effect size</dt><dd>The true gain divided by σ. Δ = 1 means the two methods differ by one seed's worth of noise.</dd>
+<dt>noise band</dt><dd>Gaps the dice alone produce most of the time: about ±2 · σ · √(2 / n) around zero. A gap inside it proves nothing.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var cv=$("cv"),ctx=cv.getContext("2d"),mode="sim",gaps=[],last=null,wins=0,seen=0;
+function randn(){var u=1-Math.random(),v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(6.283185307*v)}
+function P(){return {g:+$("sG").value,s:+$("sS").value,n:+$("sN").value}}
+function band(p){return 2*p.s*Math.sqrt(2/p.n)}
+function run(k){var p=P();for(var e=0;e<k;e++){var A=[],B=[],ma=0,mb=0;for(var i=0;i<p.n;i++){var a=70+p.g+p.s*randn(),b=70+p.s*randn();A.push(a);B.push(b);ma+=a;mb+=b}ma/=p.n;mb/=p.n;var gap=ma-mb;gaps.push(gap);if(gap>0)wins++;if(gap>band(p))seen++;last={A:A,B:B,ma:ma,mb:mb}}draw()}
+function reset(){gaps=[];last=null;wins=0;seen=0;draw()}
+function draw(){
+  var p=P(),r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok"),bad=css("--bad");
+  ctx.clearRect(0,0,W,H);ctx.font="11px system-ui,sans-serif";
+  var d=p.s>0?p.g/p.s:0;
+  $("oG").textContent=p.g.toFixed(1);$("oS").textContent=p.s.toFixed(1);$("oN").textContent=p.n;
+  $("r1").textContent=d.toFixed(2);$("r5").textContent=d>0?Math.max(1,Math.ceil(16/(d*d)))+" per method":"∞ (no effect)";
+  $("btns").style.display=mode==="sim"?"":"none";
+  if(mode==="eff"){
+    $("hint").textContent="Curve: the smallest effect size Δ that n seeds per method can show reliably (Δ ≈ 4 / √n). Marker: your seed count and spread.";
+    var x0=44,x1=W-12,y0=14,y1=H-26,NMAX=20,DMAX=4.5;
+    function X(n){return x0+(x1-x0)*(n-1)/(NMAX-1)}function Y(v){return y1-(y1-y0)*v/DMAX}
+    ctx.strokeStyle=ln;ctx.beginPath();for(var g=1;g<=DMAX;g++){ctx.moveTo(x0,Y(g));ctx.lineTo(x1,Y(g))}ctx.stroke();
+    ctx.fillStyle=mut;ctx.textAlign="right";for(g=1;g<=DMAX;g++)ctx.fillText("Δ "+g,x0-4,Y(g)+4);
+    ctx.textAlign="center";for(var n=1;n<=NMAX;n+=(n<5?1:5))ctx.fillText(n+" seeds",X(n),H-8);
+    ctx.strokeStyle=acc;ctx.lineWidth=2.5;ctx.beginPath();for(n=1;n<=NMAX;n+=0.25){var v=4/Math.sqrt(n);if(n===1)ctx.moveTo(X(n),Y(Math.min(v,DMAX)));else ctx.lineTo(X(n),Y(Math.min(v,DMAX)))}ctx.stroke();
+    var dn=4/Math.sqrt(p.n);ctx.fillStyle=acc2;ctx.beginPath();ctx.arc(X(p.n),Y(Math.min(dn,DMAX)),6,0,7);ctx.fill();
+    ctx.fillStyle=fg;ctx.textAlign="left";ctx.fillText("n = "+p.n+": detects Δ ≥ "+dn.toFixed(2)+" = a gain of "+(dn*p.s).toFixed(1)+" points at σ = "+p.s.toFixed(1),x0+4,y0+10);
+    if(d>0){ctx.strokeStyle=d>=dn?ok:bad;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(x0,Y(Math.min(d,DMAX)));ctx.lineTo(x1,Y(Math.min(d,DMAX)));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=d>=dn?ok:bad;ctx.fillText("your Δ = "+d.toFixed(2)+(d>=dn?": detectable":": below the curve, needs "+Math.ceil(16/(d*d))+" seeds"),x0+4,Y(Math.min(d,DMAX))-6)}
+    $("r2").textContent=gaps.length;return}
+  $("hint").textContent="Dots: one experiment's seed scores (A orange, B blue). Bars: observed A − B gap over all experiments so far. Dashed: the true gain. Grey band: gaps the noise alone can produce.";
+  var top=H*0.36,x0=12,x1=W-12,LO=55,HI=90;
+  function XS(v){return x0+(x1-x0)*(v-LO)/(HI-LO)}
+  ctx.strokeStyle=ln;ctx.beginPath();ctx.moveTo(x0,top-2);ctx.lineTo(x1,top-2);ctx.stroke();
+  ctx.fillStyle=mut;ctx.textAlign="left";ctx.fillText("B seeds",x0,12);ctx.fillText("A seeds",x0,40);
+  if(last){last.B.forEach(function(v){ctx.fillStyle=acc;ctx.beginPath();ctx.arc(XS(v),20,4,0,7);ctx.fill()});last.A.forEach(function(v){ctx.fillStyle=acc2;ctx.beginPath();ctx.arc(XS(v),48,4,0,7);ctx.fill()});
+    ctx.strokeStyle=acc;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(XS(last.mb),8);ctx.lineTo(XS(last.mb),30);ctx.stroke();ctx.strokeStyle=acc2;ctx.beginPath();ctx.moveTo(XS(last.ma),36);ctx.lineTo(XS(last.ma),58);ctx.stroke();
+    ctx.fillStyle=fg;ctx.textAlign="right";ctx.fillText("means: B "+last.mb.toFixed(1)+"  A "+last.ma.toFixed(1)+"  gap "+(last.ma-last.mb).toFixed(1),x1,12)}
+  else{ctx.fillStyle=mut;ctx.textAlign="center";ctx.fillText("press run",W/2,32)}
+  var GL=-10,GH=16,by0=top+6,by1=H-22;
+  function XG(v){return x0+(x1-x0)*(v-GL)/(GH-GL)}
+  var bw=band(p);ctx.fillStyle=ln;ctx.fillRect(XG(-bw),by0,XG(bw)-XG(-bw),by1-by0);
+  var bins=new Array(26).fill(0);gaps.forEach(function(g){var k=Math.floor(g-GL);if(k>=0&&k<26)bins[k]++});var mx=Math.max.apply(null,bins.concat([1]));
+  for(var k=0;k<26;k++){if(!bins[k])continue;var h=(by1-by0)*bins[k]/mx,lo=GL+k,c=lo+0.5>bw?ok:(lo+0.5>0?acc2:bad);ctx.fillStyle=c;ctx.fillRect(XG(lo)+1,by1-h,XG(lo+1)-XG(lo)-2,h)}
+  ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(XG(0),by0);ctx.lineTo(XG(0),by1);ctx.stroke();
+  ctx.strokeStyle=fg;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(XG(p.g),by0);ctx.lineTo(XG(p.g),by1);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=mut;ctx.textAlign="center";[-10,-5,0,5,10,15].forEach(function(v){ctx.fillText((v>0?"+":"")+v,XG(v),H-8)});
+  ctx.fillStyle=fg;ctx.textAlign="left";ctx.fillText("observed gap A − B, noise band ±"+bw.toFixed(1),x0,top+16);
+  $("r2").textContent=gaps.length;
+  $("r3").textContent=gaps.length?Math.round(100*wins/gaps.length)+"% of experiments":"–";
+  $("r4").innerHTML=gaps.length?'<span class="'+(seen/gaps.length>=0.8?"ok":"bad")+'">'+Math.round(100*seen/gaps.length)+'%</span> of experiments':"–";
+}
+window.redraw=draw;
+$("b1").onclick=function(){run(1)};$("b100").onclick=function(){run(100)};$("clr").onclick=reset;
+["sG","sS","sN"].forEach(function(id){$(id).oninput=reset});
+$("mSim").onclick=function(){mode="sim";$("mSim").className="on";$("mEff").className="";draw()};
+$("mEff").onclick=function(){mode="eff";$("mEff").className="on";$("mSim").className="";draw()};
+addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

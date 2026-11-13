@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Usage windows and caps</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.grid{display:grid;grid-template-columns:38px repeat(7,1fr);gap:3px;margin-bottom:8px}
+.grid .d{font-size:11px;color:var(--mut);text-align:center}
+.grid .r{font-size:11px;color:var(--mut);align-self:center}
+.cell{min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--card);cursor:pointer;touch-action:manipulation;font-size:11px;display:block;width:100%;padding:0;color:var(--fg)}
+.cell.o1{background:color-mix(in srgb,var(--acc) 35%,var(--card))}.cell.o2{background:color-mix(in srgb,var(--acc) 70%,var(--card));color:#fff}
+.cell.s1{background:color-mix(in srgb,var(--ok) 35%,var(--card))}.cell.s2{background:color-mix(in srgb,var(--ok) 70%,var(--card));color:#fff}
+.cell.g1{background:color-mix(in srgb,var(--acc2) 35%,var(--card))}.cell.g2{background:color-mix(in srgb,var(--acc2) 70%,var(--card));color:#fff}
+.cell.blocked{outline:2px solid var(--bad);outline-offset:-2px}
+.mode{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.mode button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.mode button.on{font-weight:700;border-width:2px}
+.mode .o.on{border-color:var(--acc)}.mode .s.on{border-color:var(--ok)}.mode .g.on{border-color:var(--acc2)}
+.meter{margin:6px 0}
+.meter .lab{font-size:12px;color:var(--mut);margin-bottom:2px}
+.meter .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+progress{width:100%;height:10px;appearance:none;-webkit-appearance:none;border:0;border-radius:5px;overflow:hidden;background:var(--line)}
+progress::-webkit-progress-bar{background:var(--line)}progress::-webkit-progress-value{background:var(--acc)}progress::-moz-progress-bar{background:var(--acc)}
+progress.ok::-webkit-progress-value{background:var(--ok)}progress.ok::-moz-progress-bar{background:var(--ok)}
+progress.warn::-webkit-progress-value{background:var(--acc2)}progress.warn::-moz-progress-bar{background:var(--acc2)}
+progress.bad::-webkit-progress-value{background:var(--bad)}progress.bad::-moz-progress-bar{background:var(--bad)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.bad{color:var(--bad);font-weight:700}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.presets button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>A week of sessions against two clocks</h1>
+<p class="hint">Tap a block to add a 5-hour session in the selected tool (tap again for a heavy session, again to clear). Windows are 5 h; the Claude weekly cap spans all seven days. Sizes are illustrative, not published numbers.</p>
+<div class="presets" id="presets"></div>
+<div class="mode" id="mode">
+ <button class="o on" data-m="o">Claude · Opus</button><button class="s" data-m="s">Claude · Sonnet</button><button class="g" data-m="g">ChatGPT / Codex</button>
+</div>
+<div class="grid" id="grid"></div>
+<div class="meter"><div class="lab">Claude weekly cap (all models) <b id="wk"></b></div><progress id="pw" max="100" value="0"></progress></div>
+<div class="meter"><div class="lab">Opus pool, worst window <b id="op"></b></div><progress id="po" max="100" value="0"></progress></div>
+<div class="meter"><div class="lab">Sonnet pool, worst window <b id="so"></b></div><progress id="ps" max="100" value="0" class="ok"></progress></div>
+<div class="meter"><div class="lab">ChatGPT Business seat (separate pool), worst window <b id="gp"></b></div><progress id="pg" max="100" value="0" class="warn"></progress></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>usage window</dt><dd>A 5-hour block with a fixed allowance. Here: one block = one window, light session = 40 %, heavy = 80 % of a window (Opus); Sonnet counts about a third of that.</dd>
+<dt>weekly cap</dt><dd>The Claude allowance for all seven days across all models. Here it equals about six heavy Opus windows.</dd>
+<dt>usage pool</dt><dd>Separate allowances: Opus and Sonnet inside Claude; ChatGPT/Codex is another pool entirely.</dd>
+<dt>worst window</dt><dd>The single 5-hour block that came closest to its limit this week.</dd>
+</dl></details>
+<script>
+(function(){
+var DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],ROWS=["AM","PM","Eve"],mode="o",cells={};
+var W={o:{1:40,2:80},s:{1:14,2:28},g:{1:35,2:70}};   // % of a window per light/heavy session
+var WEEK_CAP=480;                                      // opus-equivalent % points per week (≈ 6 heavy opus windows)
+var PRESETS={"Typical week":{"Tue-Eve":"o1","Thu-Eve":"o1","Sat-PM":"o2","Sat-Eve":"o1"},"Build on Sonnet":{"Tue-Eve":"o1","Thu-Eve":"o1","Sat-PM":"s2","Sat-Eve":"s1"},"Deadline week":{"Mon-Eve":"o2","Tue-Eve":"o2","Wed-Eve":"o2","Thu-PM":"o2","Thu-Eve":"o2","Fri-Eve":"o2","Sat-PM":"o2"},"Split by pool":{"Mon-Eve":"g1","Tue-Eve":"o1","Wed-Eve":"g2","Thu-Eve":"o1","Sat-PM":"s2","Sat-Eve":"g1"},"Clear":{}};
+var pr=document.getElementById("presets");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){Object.keys(cells).forEach(function(k){cells[k].v=""});var p=PRESETS[n];Object.keys(p).forEach(function(k){cells[k].v=p[k]});draw()};pr.appendChild(b)});
+var g=document.getElementById("grid");
+g.appendChild(document.createElement("div"));DAYS.forEach(function(d){var e=document.createElement("div");e.className="d";e.textContent=d;g.appendChild(e)});
+ROWS.forEach(function(r){var e=document.createElement("div");e.className="r";e.textContent=r;g.appendChild(e);
+ DAYS.forEach(function(d){var b=document.createElement("button");b.className="cell";var k=d+"-"+r;cells[k]={el:b,v:""};b.setAttribute("aria-label",d+" "+r);
+  b.onclick=function(){var v=cells[k].v;if(!v||v[0]!==mode)cells[k].v=mode+"1";else if(v[1]==="1")cells[k].v=mode+"2";else cells[k].v="";draw()};g.appendChild(b)})});
+document.getElementById("mode").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.className=x.dataset.m+(x===b?" on":"")})});
+function draw(){
+ var wk=0,worst={o:0,s:0,g:0},blockedAny=false,order=[];
+ ROWS.forEach(function(r,ri){DAYS.forEach(function(d,di){order.push({k:d+"-"+r,t:di*3+ri})})});
+ order.sort(function(a,b){return a.t-b.t});
+ order.forEach(function(o){var c=cells[o.k],v=c.v;c.el.className="cell"+(v?" "+v:"");c.el.textContent=v?(v[1]==="2"?"heavy":"light"):"";
+  if(!v)return;var m=v[0],w=W[m][v[1]];
+  if(m==="o")wk+=w;if(m==="s")wk+=w*0.35;
+  var blocked=w>100;if(m==="o"&&wk>WEEK_CAP)blocked=true;
+  if(blocked){blockedAny=true;c.el.classList.add("blocked")}
+  worst[m]=Math.max(worst[m],w)});
+ var wkPct=Math.min(100,Math.round(wk/WEEK_CAP*100));
+ set("pw","wk",wkPct);set("po","op",worst.o);set("ps","so",worst.s);set("pg","gp",worst.g);
+ var st=document.getElementById("st");
+ if(blockedAny){st.className="status bad";st.textContent="A session went past the Claude weekly cap: from that block on, Opus and Sonnet both wait for the weekly reset. Move work to the other pool (ChatGPT/Codex) or spread it."}
+ else if(wkPct>=70){st.className="status";st.textContent="Weekly cap at "+wkPct+"%: this is the point to switch mechanical work to Sonnet or to the ChatGPT pool before the wall."}
+ else{st.className="status";st.textContent="Comfortable. Note that the window meters never went red: with sessions spread out, the weekly cap is the binding limit, not the 5-hour window."}
+}
+function set(pid,lid,v){var p=document.getElementById(pid);p.value=Math.min(100,v);p.className=v>=100?"bad":v>=70?"warn":(pid==="ps"?"ok":pid==="pg"?"warn":"");document.getElementById(lid).textContent=Math.round(v)+"%"}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Automation payoff calculator</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.presets button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.ctl{margin:4px 0 6px}
+.ctl label{display:block;font-size:12px;color:var(--mut)}
+.ctl label b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--acc);touch-action:pan-y}
+.row{margin:8px 0 4px}
+.row .lab{font-size:12px;color:var(--mut);margin-bottom:3px}
+.row .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+.track{height:18px;border-radius:9px;background:var(--line);overflow:hidden;position:relative}
+.seg{position:absolute;top:0;bottom:0;background:var(--acc)}
+.seg.ok{background:var(--ok)}.seg.bad{background:var(--bad)}.seg.warn{background:var(--acc2)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.pays{border-left:4px solid var(--ok)}
+.status.wait{border-left:4px solid var(--acc2)}
+.status.burn{border-left:4px solid var(--bad)}
+.status b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Does this automation pay?</h1>
+<p class="hint">Enter what you measured doing the task by hand. Usage per run comes from a /usage delta or the run's session; there are no published numbers to look up.</p>
+<div class="presets" id="presets"></div>
+<div class="ctl"><label for="man">Minutes per manual run <b id="manv"></b></label><input type="range" id="man" min="1" max="90" value="25"></div>
+<div class="ctl"><label for="runs">Runs per week <b id="runsv"></b></label><input type="range" id="runs" min="0" max="8" value="0"></div>
+<div class="ctl"><label for="succ">Manual runs that worked first time, last ten <b id="succv"></b></label><input type="range" id="succ" min="0" max="10" value="9"></div>
+<div class="ctl"><label for="use">Usage per automated run, % of the weekly cap <b id="usev"></b></label><input type="range" id="use" min="0.5" max="25" step="0.5" value="6"></div>
+<div class="ctl"><label for="read">Minutes to read one run's transcript <b id="readv"></b></label><input type="range" id="read" min="0" max="20" value="3"></div>
+<div class="row"><div class="lab">Weekly usage on this clock <b id="ut"></b></div><div class="track" id="ub"></div></div>
+<div class="row"><div class="lab">Minutes saved per week, after reading the transcripts <b id="mt"></b></div><div class="track" id="mb"></div></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>weekly cap</dt><dd>The Claude allowance for seven days across all models. Usage here is a share of it, read from /usage before and after a run.</dd>
+<dt>cloud routine</dt><dd>A saved prompt that runs as a cloud session on a schedule or event, laptop closed, without permission prompts.</dd>
+<dt>transcript</dt><dd>The run's full conversation. A green run means the session exited cleanly, not that the task worked; someone reads the transcript, or nobody does.</dd>
+<dt>first time</dt><dd>A manual run that needed no correction from you. Automation repeats the correction-free version only.</dd>
+</dl></details>
+<script>
+(function(){
+var RUNS=[1,2,3,5,7,14,21,84,168];
+var ids=["man","runs","succ","use","read"],el={};
+ids.forEach(function(i){el[i]=document.getElementById(i);el[i].addEventListener("input",draw)});
+var PRESETS={"Weekly site refresh":{man:25,runs:0,succ:9,use:6,read:3},"Hourly CI babysitter":{man:5,runs:8,succ:9,use:1.5,read:1},"PR review on event":{man:15,runs:2,succ:8,use:3,read:4},"Daily Unity compile":{man:20,runs:4,succ:6,use:4,read:2}};
+var pr=document.getElementById("presets");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){var p=PRESETS[n];ids.forEach(function(i){el[i].value=p[i]});draw()};pr.appendChild(b)});
+function bar(id,v,max,cls){var t=document.getElementById(id);t.innerHTML="";var s=document.createElement("div");s.className="seg "+cls;s.style.left="0";s.style.width=Math.max(0,Math.min(100,v/max*100))+"%";t.appendChild(s)}
+function draw(){
+ var man=+el.man.value,runs=RUNS[+el.runs.value],succ=+el.succ.value,use=+el.use.value,read=+el.read.value;
+ document.getElementById("manv").textContent=man+" min";document.getElementById("runsv").textContent=runs+(runs===168?" (hourly)":runs===84?" (every 2 h)":runs===7?" (daily)":runs===1?" (weekly)":"");
+ document.getElementById("succv").textContent=succ+"/10";document.getElementById("usev").textContent=use+" %";document.getElementById("readv").textContent=read+" min";
+ var usage=use*runs,saved=(man-read)*runs;
+ var ucls=usage>=100?"bad":usage>=30?"warn":"ok";
+ document.getElementById("ut").textContent=(Math.round(usage*10)/10)+" % of the cap";bar("ub",usage,100,ucls);
+ document.getElementById("mt").textContent=(saved>=0?"":"−")+Math.abs(Math.round(saved))+" min";bar("mb",Math.max(0,saved),600,saved>0?"ok":"bad");
+ var st=document.getElementById("st"),msg,cls;
+ if(succ<9){cls="wait";msg="Not yet: the manual version worked "+succ+" times in ten. On a clock it would fail about "+Math.round((10-succ)/10*runs*10)/10+" times a week with nobody watching. Fix the workflow first, then come back."}
+ else if(usage>=100){cls="burn";msg="Burns usage: "+Math.round(usage)+" % of the weekly cap on one automation leaves nothing for the sessions you sit in. Slow the clock or shrink the run."}
+ else if(saved<=0){cls="burn";msg="No time won: reading "+runs+" transcript"+(runs===1?"":"s")+" costs as much as doing it by hand. Either the clock is faster than the change rate, or the check should be a script, not an agent."}
+ else if(usage>=30){cls="wait";msg="Marginal: "+Math.round(saved)+" min saved for "+Math.round(usage)+" % of the cap every week. Pays only if that usage was not needed elsewhere; try a slower clock."}
+ else{cls="pays";msg="Pays: about "+Math.round(saved)+" min a week for "+(Math.round(usage*10)/10)+" % of the cap. Write both numbers in the playbook; that is the line the routine has to keep earning."}
+ st.className="status "+cls;st.textContent=msg;
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

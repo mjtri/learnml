@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Attention heatmap</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+table{border-collapse:collapse;font:13px ui-monospace,Menlo,Consolas,monospace}
+th{font:12px system-ui,sans-serif;color:var(--mut);font-weight:400;padding:2px 1px}
+td{padding:1px;text-align:center}
+td.lab{text-align:left;font:13px system-ui,sans-serif;font-weight:700;padding-right:4px}
+input[type=number]{font:14px ui-monospace,Menlo,Consolas,monospace;width:40px;min-height:44px;padding:0;text-align:center;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.q input{border-color:var(--acc)}.k input{border-color:var(--acc2)}.v input{border-color:var(--ok)}
+.tq{color:var(--acc)}.tk{color:var(--acc2)}.tv{color:var(--ok)}
+#heat td.c{width:60px;height:44px;border:1px solid var(--line);font-size:14px}
+#heat td.lab button{width:100%;min-width:0;padding:0 6px;font-size:13px;text-align:left}
+#heat tr.sel td.c{outline:2px solid var(--fg);outline-offset:-2px}
+.sub{font-size:12.5px;color:var(--mut);margin:8px 0 4px}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.acc{color:var(--acc);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Three tokens: edit <span class="tq">q</span>, <span class="tk">k</span>, <span class="tv">v</span> and watch who reads whom</h1>
+<div class="row" id="presets"></div>
+<table id="edit"></table>
+<div class="sub">Weights = softmax(q·k ÷ √2), one row per asking token. Tap a row for its arithmetic.</div>
+<table id="heat"></table>
+<div class="read">
+  <span class="k">row</span><span id="rRow" class="acc"></span>
+  <span class="k">scores q·k</span><span id="rS"></span>
+  <span class="k">÷ √2</span><span id="rSc"></span>
+  <span class="k">exp</span><span id="rE"></span>
+  <span class="k">weights (sum)</span><span id="rW" class="acc"></span>
+  <span class="k">output = Σ weight × v</span><span id="rO"></span>
+</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>query (q)</dt><dd>What this token is looking for. Dotted against every key.</dd>
+<dt>key (k)</dt><dd>What a token advertises. A query that matches it gets a big score.</dd>
+<dt>value (v)</dt><dd>What a token hands over. The output is the weighted mix of values.</dd>
+<dt>softmax</dt><dd>Exponentiate each score and divide by the total, so a row becomes weights ≥ 0 that sum to 1.</dd>
+</dl></details>
+<script>
+(function(){
+var TOK=["strong","left","pulse"];
+var PRESETS={
+ "Default":{q:[[0,1],[1,0],[2,0]],k:[[2,0],[0,2],[1,1]],v:[[3,0],[0,3],[1,1]]},
+ "Same keys":{q:[[0,1],[1,0],[2,0]],k:[[2,0],[2,0],[1,1]],v:[[3,0],[0,3],[1,1]]},
+ "Zero queries":{q:[[0,0],[0,0],[0,0]],k:[[2,0],[0,2],[1,1]],v:[[3,0],[0,3],[1,1]]},
+ "Look at self":{q:[[2,0],[0,2],[1,1]],k:[[2,0],[0,2],[1,1]],v:[[3,0],[0,3],[1,1]]}};
+var S=JSON.parse(JSON.stringify(PRESETS.Default)),row=2,cur="Default";
+var box=document.getElementById("presets"),edit=document.getElementById("edit"),heat=document.getElementById("heat");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){cur=n;S=JSON.parse(JSON.stringify(PRESETS[n]));build();draw()};box.appendChild(b)});
+function build(){
+  var h='<tr><th></th><th class="tq" colspan="2">q asks</th><th class="tk" colspan="2">k offers</th><th class="tv" colspan="2">v hands over</th></tr>';
+  TOK.forEach(function(t,i){h+='<tr><td class="lab">'+t+'</td>';["q","k","v"].forEach(function(m){for(var d=0;d<2;d++)h+='<td class="'+m+'"><input type="number" step="0.5" min="-4" max="4" value="'+S[m][i][d]+'" data-m="'+m+'" data-i="'+i+'" data-d="'+d+'" aria-label="'+t+' '+m+d+'"></td>'});h+='</tr>'});
+  edit.innerHTML=h;
+  Array.prototype.forEach.call(edit.querySelectorAll("input"),function(inp){inp.oninput=function(){var v=parseFloat(inp.value);if(isNaN(v))return;S[inp.dataset.m][inp.dataset.i][inp.dataset.d]=v;cur="";draw()}});
+}
+function dot(a,b){return a[0]*b[0]+a[1]*b[1]}
+function n(v,p){return(Math.abs(v)<5e-5?0:v).toFixed(p==null?2:p)}
+function compute(){var out=[];for(var i=0;i<3;i++){var s=S.k.map(function(k){return dot(S.q[i],k)}),sc=s.map(function(x){return x/Math.SQRT2});
+  var m=Math.max.apply(null,sc),e=sc.map(function(x){return Math.exp(x-m)}),z=e.reduce(function(a,b){return a+b},0),w=e.map(function(x){return x/z});
+  var o=[0,0];w.forEach(function(wj,j){o[0]+=wj*S.v[j][0];o[1]+=wj*S.v[j][1]});
+  out.push({s:s,sc:sc,e:sc.map(Math.exp),w:w,o:o})}return out}
+function draw(){
+  Array.prototype.forEach.call(box.children,function(b){b.className=b.textContent===cur?"on":""});
+  var R=compute();
+  var h='<tr><th></th>'+TOK.map(function(t){return'<th>'+t+'</th>'}).join("")+'</tr>';
+  R.forEach(function(r,i){h+='<tr'+(i===row?' class="sel"':'')+'><td class="lab"><button'+(i===row?' class="on"':'')+' data-i="'+i+'">'+TOK[i]+' →</button></td>';
+    r.w.forEach(function(w){h+='<td class="c" style="background:color-mix(in srgb,var(--acc) '+Math.round(w*80)+'%,transparent)">'+n(w)+'</td>'});h+='</tr>'});
+  heat.innerHTML=h;
+  Array.prototype.forEach.call(heat.querySelectorAll("button"),function(b){b.onclick=function(){row=+b.dataset.i;draw()}});
+  var r=R[row],f=function(a,p){return"["+a.map(function(x){return n(x,p)}).join(", ")+"]"};
+  document.getElementById("rRow").textContent='"'+TOK[row]+'" asks with q = ('+n(S.q[row][0],1)+", "+n(S.q[row][1],1)+")";
+  document.getElementById("rS").textContent=f(r.s,1);
+  document.getElementById("rSc").textContent=f(r.sc,2);
+  document.getElementById("rE").textContent=f(r.e,1);
+  document.getElementById("rW").textContent=f(r.w,2)+" ("+n(r.w[0]+r.w[1]+r.w[2])+")";
+  document.getElementById("rO").textContent="("+n(r.o[0])+", "+n(r.o[1])+")";
+}
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+build();draw();
+})();
+</script>
+</body>
+</html>

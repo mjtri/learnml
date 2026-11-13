@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instruction-file precedence explorer</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.mode{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.mode button,.tree button{font:inherit;font-size:13px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;text-align:left}
+.mode button{flex:1 1 40%}
+.mode button.on{font-weight:700;border:2px solid var(--acc)}
+.tree{margin:6px 0}
+.tree button{display:block;width:100%;margin:4px 0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.tree button.on{border:2px solid var(--acc2);font-weight:700}
+.tree button span{color:var(--mut);font-family:system-ui,sans-serif;font-size:11px;font-weight:400}
+.opt{font-size:13px;min-height:44px;padding:10px 0;display:block}
+.opt input{width:22px;height:22px;vertical-align:middle;margin-right:6px}
+.out{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--card);font-size:13px}
+.out h2{font-size:12px;margin:6px 0 2px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.out ol,.out ul{margin:0;padding-left:20px}
+.out li{margin:2px 0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.out li i{font-family:system-ui,sans-serif;color:var(--mut);font-style:normal}
+.out li.last{color:var(--acc2);font-weight:700}
+.out li.cut{color:var(--bad);text-decoration:line-through}
+.meter{margin:8px 0 2px}
+.meter .lab{font-size:12px;color:var(--mut);margin-bottom:2px}
+.meter .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+progress{width:100%;height:10px;appearance:none;-webkit-appearance:none;border:0;border-radius:5px;overflow:hidden;background:var(--line)}
+progress::-webkit-progress-bar{background:var(--line)}progress::-webkit-progress-value{background:var(--acc)}progress::-moz-progress-bar{background:var(--acc)}
+progress.warn::-webkit-progress-value{background:var(--acc2)}progress.warn::-moz-progress-bar{background:var(--acc2)}
+progress.bad::-webkit-progress-value{background:var(--bad)}progress.bad::-moz-progress-bar{background:var(--bad)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:8px}
+.status.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Which instruction files load, and in what order?</h1>
+<p class="hint">Pick a tool, then tap the folder you launch the agent from. Line counts are illustrative; the loading rules are the documented ones.</p>
+<div class="mode" id="mode"><button class="on" data-m="c">Claude Code</button><button data-m="x">Codex</button></div>
+<div class="tree" id="tree"></div>
+<label class="opt" id="optrow"><input type="checkbox" id="hasClaude" checked> repo/CLAUDE.md and CLAUDE.local.md exist (CLAUDE.md starts with the @ line importing AGENTS.md)</label>
+<div class="out">
+ <h2>Loaded at launch, in reading order</h2><ol id="launch"></ol>
+ <h2>Loads later, when a matching file is opened</h2><ul id="later"></ul>
+ <div class="meter"><div class="lab" id="mlab"></div><progress id="pm" max="100" value="0"></progress></div>
+</div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>instruction file</dt><dd>CLAUDE.md, AGENTS.md and what they pull in: loaded at session start, paid for on every turn.</dd>
+<dt>precedence</dt><dd>The reading order: broadest first, nearest last. Files are joined, never replaced, so two conflicting lines leave the agent free to follow either.</dd>
+<dt>size cap</dt><dd>Codex stops adding AGENTS.md files once their combined size reaches 32 KiB (default). Claude Code has no byte cap; it targets 200 lines per file.</dd>
+<dt>on demand</dt><dd>A file below the launch folder, or a rules file with a paths: line, loads only when the agent opens a matching file.</dd>
+</dl></details>
+<script>
+(function(){
+var DIRS=["repo","repo/Assets","repo/Assets/Scripts","repo/Assets/Scripts/Haptics"];
+var NOTE={"repo":"the git root","repo/Assets":"Unity assets","repo/Assets/Scripts":"C# code","repo/Assets/Scripts/Haptics":"one feature folder"};
+/* Claude Code files: [path, lines, depth of the directory that holds it, kind] */
+var CF=[["~/.claude/CLAUDE.md",12,-1,"user"],["repo/CLAUDE.md",4,0,"proj"],["repo/AGENTS.md (via the @ line)",48,0,"import"],["repo/CLAUDE.local.md",6,0,"local"],["repo/.claude/rules/csharp.md (paths: Assets/**/*.cs)",15,0,"rule"],["repo/Assets/CLAUDE.md",20,1,"sub"]];
+/* Codex files: [path, KB, depth] */
+var XF=[["~/.codex/AGENTS.md",0.4,-1],["repo/AGENTS.md",2.1,0],["repo/Assets/AGENTS.md",0.9,1],["repo/Assets/Scripts/AGENTS.md (a pasted API dump)",30.5,2]];
+var XCAP=32;
+var mode="c",cwd=1;
+var tree=document.getElementById("tree");
+DIRS.forEach(function(d,i){var b=document.createElement("button");b.innerHTML=d+"/ <span>"+NOTE[d]+"</span>";b.onclick=function(){cwd=i;draw()};tree.appendChild(b)});
+document.getElementById("mode").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;mode=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.className=x===b?"on":""});draw()});
+document.getElementById("hasClaude").addEventListener("change",draw);
+function li(text,cls){var e=document.createElement("li");e.innerHTML=text;if(cls)e.className=cls;return e}
+function draw(){
+ Array.prototype.forEach.call(tree.children,function(b,i){b.className=i===cwd?"on":""});
+ var L=document.getElementById("launch"),T=document.getElementById("later"),lab=document.getElementById("mlab"),pm=document.getElementById("pm"),st=document.getElementById("st");
+ L.innerHTML="";T.innerHTML="";st.className="status";
+ document.getElementById("optrow").style.display=mode==="c"?"block":"none";
+ if(mode==="c"){
+  var has=document.getElementById("hasClaude").checked,lines=0,launch=[],later=[];
+  /* a CLAUDE.md in the launch folder or above it makes Claude read CLAUDE.md files only; AGENTS.md is then reached through the @ line */
+  var claudeAbove=has||cwd>=1;
+  CF.forEach(function(f){
+   var path=f[0],n=f[1],depth=f[2],kind=f[3];
+   if((kind==="proj"||kind==="local")&&!has)return;
+   if(kind==="import"){ if(has){launch.push([path,n,depth])} else if(!claudeAbove){launch.push(["repo/AGENTS.md (read directly: no CLAUDE.md on the path)",n,depth])} else {later.push(["repo/AGENTS.md <i>never: repo/Assets/CLAUDE.md sits above the launch folder, so only CLAUDE.md files count</i>",0,depth,"cut"])} return}
+   if(kind==="rule"){later.push([path,n,depth]);return}
+   if(depth<=cwd)launch.push([path,n,depth]);else later.push([path+" <i>(below the launch folder)</i>",n,depth]);
+  });
+  launch.sort(function(a,b){return a[2]-b[2]});
+  launch.forEach(function(f,i){lines+=f[1];L.appendChild(li(f[0]+" <i>"+f[1]+" lines</i>",i===launch.length-1?"last":""))});
+  if(launch.length)L.lastChild.innerHTML+=" <i>← read last</i>";
+  later.forEach(function(f){T.appendChild(li(f[0]+(f[1]?" <i>"+f[1]+" lines</i>":""),f[3]||""))});
+  var pct=Math.round(lines/200*100);
+  lab.innerHTML="Lines loaded at launch <b>"+lines+"</b> (docs: under 200 per file; a combined-size warning also exists)";
+  pm.value=Math.min(100,pct);pm.className=pct>=100?"bad":pct>=70?"warn":"";
+  if(!has&&claudeAbove){st.className="status bad";st.textContent="Trap: repo/Assets/CLAUDE.md is on the path, so Claude reads CLAUDE.md files only and AGENTS.md is skipped. Delete the stray file or add a repo/CLAUDE.md with the @ line."}
+  else if(!has){st.textContent="No CLAUDE.md anywhere on the path, so Claude reads AGENTS.md directly (v2.1.277 or later). The rules file still waits for a matching .cs file."}
+  else st.textContent=launch.length+" files, "+lines+" lines, every turn. The nearest file is read last, but nothing above it is dropped: a rule in repo/Assets/CLAUDE.md that contradicts AGENTS.md is a coin toss.";
+ } else {
+  var kb=0,stop=false;
+  XF.forEach(function(f){
+   var path=f[0],size=f[1],depth=f[2];
+   if(depth>cwd){T.appendChild(li(path+" <i>(below the launch folder: not read)</i>"));return}
+   if(stop||kb+size>XCAP){stop=true;L.appendChild(li(path+" <i>"+size+" KB: past the 32 KiB cap, not added</i>","cut"));return}
+   kb+=size;L.appendChild(li(path+" <i>"+size+" KB</i>"));
+  });
+  var lastOk=null;Array.prototype.forEach.call(L.children,function(e){if(e.className!=="cut")lastOk=e});
+  if(lastOk){lastOk.className="last";lastOk.innerHTML+=" <i>← read last</i>"}
+  var pct2=Math.round(kb/XCAP*100);
+  lab.innerHTML="Combined size <b>"+kb.toFixed(1)+" KB</b> of the 32 KiB cap (project_doc_max_bytes)";
+  pm.value=Math.min(100,pct2);pm.className=stop?"bad":pct2>=70?"warn":"";
+  if(stop){st.className="status bad";st.textContent="The pasted API dump pushes the total past 32 KiB, so Codex stops adding files there. Everything the agent cannot guess must fit in what came before."}
+  else st.textContent="Global file first, then one AGENTS.md per folder from the git root down to the launch folder, joined with blank lines. Codex never sees a folder below where you launched.";
+ }
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

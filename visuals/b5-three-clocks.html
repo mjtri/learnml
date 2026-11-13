@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Three clocks: where a scheduled prompt runs and what it costs</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.presets button,.mode button{font:inherit;font-size:12px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.mode{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.mode button.on{font-weight:700;border-width:2px;border-color:var(--acc)}
+.ctl{margin:4px 0 6px}
+.ctl label{display:block;font-size:12px;color:var(--mut)}
+.ctl label b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+input[type=range]{width:100%;min-height:44px;margin:0;accent-color:var(--acc);touch-action:pan-y}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;table-layout:fixed}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{width:38%;color:var(--mut);font-weight:400}
+td b{font-family:ui-monospace,Menlo,Consolas,monospace}
+td.no{color:var(--bad)}td.yes{color:var(--ok)}
+.row{margin:8px 0 4px}
+.row .lab{font-size:12px;color:var(--mut);margin-bottom:3px}
+.row .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+.track{height:18px;border-radius:9px;background:var(--line);overflow:hidden;position:relative}
+.seg{position:absolute;top:0;bottom:0;background:var(--acc)}
+.seg.over{background:var(--bad)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.bad{border-left:4px solid var(--bad)}
+.status.ok{border-left:4px solid var(--ok)}
+.status.warn{border-left:4px solid var(--acc2)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Pick a clock, set the interval, read the week</h1>
+<p class="hint">Facts per clock come from the docs; token sizes are illustrative. A fresh session (desktop, cloud) pays its start-up plus the work; a /loop fire re-sends the whole conversation.</p>
+<div class="presets" id="presets"></div>
+<div class="mode" id="mode">
+ <button class="on" data-m="loop">/loop</button><button data-m="desk">Desktop task</button><button data-m="cloud">Cloud routine</button>
+</div>
+<div class="ctl"><label for="iv">Interval <b id="ivv"></b></label><input type="range" id="iv" min="0" max="11" value="3"></div>
+<div class="ctl"><label for="hrs">Hours per week the laptop is awake with the session or app open <b id="hrsv"></b></label><input type="range" id="hrs" min="1" max="168" value="12"></div>
+<div class="ctl" id="ctxRow"><label for="ctx">Conversation size a /loop fire re-sends (k tokens) <b id="ctxv"></b></label><input type="range" id="ctx" min="5" max="200" value="60"></div>
+<div class="ctl" id="workRow"><label for="work">Work per fresh run: start-up plus reads and edits (k tokens) <b id="workv"></b></label><input type="range" id="work" min="5" max="120" value="25"></div>
+<table id="facts"></table>
+<div class="row"><div class="lab">Fires this week <b id="fires"></b> · tokens this week <b id="tok"></b></div><div class="track" id="bar"></div></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>/loop</dt><dd>A prompt re-run on an interval inside the open Claude Code session. Stops with the session; expires after seven days.</dd>
+<dt>desktop scheduled task</dt><dd>A prompt the Desktop app starts as a fresh session on your machine, only while the app is open and the computer awake.</dd>
+<dt>cloud routine</dt><dd>A saved prompt plus repositories that runs as a cloud session on a trigger, laptop closed, without permission prompts.</dd>
+<dt>weekly cap</dt><dd>The Claude allowance for seven days across all models; here the bar is drawn against an illustrative 3,000k tokens.</dd>
+</dl></details>
+<script>
+(function(){
+var STEPS=[1,2,5,10,15,30,60,120,360,720,1440,10080];
+var CAP=3000; /* illustrative weekly cap in k tokens for the bar only */
+var FACTS={
+ loop:{name:"/loop",runs:"Your machine, inside the open session",machine:"Yes, and the session must stay open",closed:"no",files:"Yes",prompts:"Inherits the session's permission mode",min:"1 minute",life:"Expires 7 days after creation; up to 50 per session; fires up to 30 min late"},
+ desk:{name:"Desktop scheduled task",runs:"Your machine, a fresh session per run",machine:"Yes: app open and computer awake",closed:"no",files:"Yes",prompts:"Per task; 'always allow' after a manual run",min:"1 minute",life:"Persists; a missed day gets one catch-up run on wake"},
+ cloud:{name:"Cloud routine",runs:"Anthropic's cloud, fresh clone per run",machine:"No",closed:"yes",files:"No (fresh clone of the GitHub repo)",prompts:"None: runs autonomously",min:"1 hour",life:"Persists; research preview; daily cap on runs per account"}
+};
+var mode="loop",el={};
+["iv","hrs","ctx","work"].forEach(function(i){el[i]=document.getElementById(i);el[i].addEventListener("input",draw)});
+var PRESETS={"Deploy check, 10 min":{m:"loop",iv:3,hrs:4,ctx:60,work:25},"Weekly site refresh":{m:"cloud",iv:11,hrs:12,ctx:60,work:40},"Hourly CI babysitter":{m:"cloud",iv:6,hrs:12,ctx:60,work:20},"Daily Unity compile":{m:"desk",iv:10,hrs:30,ctx:60,work:30}};
+var pr=document.getElementById("presets");
+Object.keys(PRESETS).forEach(function(n){var b=document.createElement("button");b.textContent=n;b.onclick=function(){var p=PRESETS[n];setMode(p.m);el.iv.value=p.iv;el.hrs.value=p.hrs;el.ctx.value=p.ctx;el.work.value=p.work;draw()};pr.appendChild(b)});
+var md=document.getElementById("mode");
+function setMode(m){mode=m;Array.prototype.forEach.call(md.children,function(x){x.className=x.dataset.m===m?"on":""})}
+md.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;setMode(b.dataset.m);draw()});
+function ivText(m){return m<60?m+" min":m<1440?(m/60)+" h":m<10080?(m/1440)+" d":"1 week"}
+function fmt(x){return x>=1000?(Math.round(x/100)/10)+"M":Math.round(x)+"k"}
+function draw(){
+ var iv=STEPS[+el.iv.value],hrs=+el.hrs.value,ctx=+el.ctx.value,work=+el.work.value,f=FACTS[mode];
+ document.getElementById("ivv").textContent=ivText(iv);document.getElementById("hrsv").textContent=hrs+" h";
+ document.getElementById("ctxv").textContent=ctx+"k";document.getElementById("workv").textContent=work+"k";
+ document.getElementById("ctxRow").style.display=mode==="loop"?"":"none";
+ document.getElementById("workRow").style.display=mode==="loop"?"none":"";
+ var t=document.getElementById("facts");t.innerHTML="";
+ [["Runs on",f.runs],["Needs the laptop on",f.machine],["Survives laptop closed",f.closed==="yes"?"Yes":"No"],["Sees your local files",f.files],["Permission prompts",f.prompts],["Minimum interval",f.min],["Lifetime",f.life]].forEach(function(r){var tr=document.createElement("tr");var th=document.createElement("th");th.textContent=r[0];var td=document.createElement("td");td.textContent=r[1];if(r[0]==="Survives laptop closed")td.className=f.closed==="yes"?"yes":"no";tr.appendChild(th);tr.appendChild(td);t.appendChild(tr)});
+ var fires,per,st=document.getElementById("st"),msg,cls="ok";
+ if(mode==="cloud"){
+  if(iv<60){fires=0;per=0;msg="A cloud routine's minimum interval is one hour: this schedule is rejected. Pick 1 h or slower, or use /loop or a desktop task while you are at the machine.";cls="bad"}
+  else{fires=Math.floor(10080/iv);per=work+8;msg=fires+" runs with the laptop closed, each a fresh clone plus "+work+"k of work. About "+Math.ceil(fires/7)+" run"+(fires>7?"s":"")+" a day against the daily run cap. Nobody is asked anything: scope the repo and connected services first."}
+ }else{
+  fires=Math.min(Math.floor(10080/iv),Math.floor(hrs*60/iv));
+  if(mode==="loop"){per=ctx;msg=fires+" fires while the session is open, each re-sending the whole "+ctx+"k conversation: "+fmt(fires*ctx)+" tokens to run the same prompt. After 7 days the loop deletes itself; a new conversation clears it sooner. Keep loops short and the session small.";cls=fires*ctx>CAP*0.3?"warn":"ok"}
+  else{per=work+5;msg=fires+" fresh sessions on your machine with your files, only while the app is open and the laptop awake ("+hrs+" h). A missed time gets one catch-up run on wake, so write the prompt to check the clock.";cls="ok"}
+ }
+ var tot=fires*per;
+ document.getElementById("fires").textContent=fires;document.getElementById("tok").textContent=fmt(tot);
+ var bar=document.getElementById("bar");bar.innerHTML="";var s=document.createElement("div");s.className="seg"+(tot>CAP?" over":"");s.style.left="0";s.style.width=Math.min(100,tot/CAP*100)+"%";bar.appendChild(s);
+ if(tot>CAP&&cls!=="bad"){msg+=" That is more than the whole illustrative weekly cap.";cls="bad"}
+ st.className="status "+cls;st.textContent=msg;
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

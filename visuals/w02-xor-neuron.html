@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One neuron vs a hidden layer on XOR</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on,button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
+.k{font-size:12.5px;color:var(--mut)}
+canvas{display:block;width:100%;border-radius:10px;background:var(--card);touch-action:pan-y}
+label{display:grid;grid-template-columns:24px 1fr 52px;align-items:center;gap:8px;font:700 14px ui-monospace,Menlo,Consolas,monospace}
+label output{text-align:right;font-weight:400}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read span:not(.k){overflow-wrap:anywhere;text-align:right}
+.read .k{align-self:center}
+.say{background:var(--card);border-radius:10px;padding:10px;font-size:13.5px;min-height:64px;margin-top:6px}
+.say b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{display:block;min-height:44px;line-height:44px;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Four XOR points. One neuron draws one line; a hidden layer draws several and combines them.</h1>
+<div class="k">model</div>
+<div class="btns"><button id="h0" class="on">1 neuron</button><button id="h2">hidden 2</button><button id="h4">hidden 4</button></div>
+<div class="k">bend (activation function)</div>
+<div class="btns"><button id="b1" class="on">tanh</button><button id="b0">no bend</button></div>
+<canvas id="cv" aria-label="The four XOR points over a map of the model's output"></canvas>
+<div class="k" style="text-align:center">blue = output near 0 · orange = output near 1 · red ring = wrong</div>
+<div id="sl">
+<label>w₁<input id="w1" type="range" min="-6" max="6" step="0.1" value="0"><output id="o1"></output></label>
+<label>w₂<input id="w2" type="range" min="-6" max="6" step="0.1" value="0"><output id="o2"></output></label>
+<label>b<input id="bb" type="range" min="-6" max="6" step="0.1" value="0"><output id="o3"></output></label>
+</div>
+<div class="btns"><button id="train" class="pri">Train</button><button id="reset">Reset weights</button></div>
+<div class="read">
+  <span class="k">loss (sum of squared errors)</span><span id="r0"></span>
+  <span class="k">correct</span><span id="r1"></span>
+  <span class="k">steps trained</span><span id="r2"></span>
+  <span class="k">4 of 4 first reached at step</span><span id="r3"></span>
+  <span class="k">parameters</span><span id="r4"></span>
+</div>
+<div class="say" id="say" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>neuron</dt><dd>tanh(w₁x₁ + w₂x₂ + b): a weighted sum, an offset b, and a bend. Its decision boundary is one straight line.</dd>
+<dt>hidden layer</dt><dd>Neurons between input and output. Each draws its own line; the output neuron combines them.</dd>
+<dt>activation function / bend</dt><dd>tanh here. With "no bend", two stacked layers collapse into one line.</dd>
+<dt>XOR</dt><dd>Output 1 when exactly one input is 1: the points (0,1) and (1,0) are 1, the other two are 0.</dd>
+</dl></details>
+<script>
+(function(){
+var X=[[0,0],[0,1],[1,0],[1,1]],Y=[0,1,1,0],H=0,bend=true,P,steps,first,loss,score,timer=null;
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),say=document.getElementById("say");
+var sl=["w1","w2","bb"].map(function(id){return document.getElementById(id)});
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function f(n){return(Math.round(n*1000)/1000).toString()}
+var seed;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647*2-1}
+function act(z){return bend?Math.tanh(z):z}function dact(z,a){return bend?1-a*a:1}
+function init(){seed=42;steps=0;first=null;
+  if(H===0){P={W1:[[+sl[0].value,+sl[1].value]],b1:[+sl[2].value],W2:[1],b2:0}}
+  else{P={W1:[],b1:[],W2:[],b2:0};for(var i=0;i<H;i++)P.W1.push([rnd(),rnd()]);for(i=0;i<H;i++)P.b1.push(rnd());for(i=0;i<H;i++)P.W2.push(rnd());P.b2=rnd()}}
+function fwd(x1,x2){var hs=[],zs=[];
+  if(H===0){var z=P.W1[0][0]*x1+P.W1[0][1]*x2+P.b1[0];return{o:act(z),zo:z,hs:hs,zs:zs}}
+  for(var i=0;i<H;i++){var zi=P.W1[i][0]*x1+P.W1[i][1]*x2+P.b1[i];zs.push(zi);hs.push(act(zi))}
+  var zo=P.b2;for(i=0;i<H;i++)zo+=P.W2[i]*hs[i];return{o:act(zo),zo:zo,hs:hs,zs:zs}}
+function evaluate(){loss=0;score=0;for(var k=0;k<4;k++){var o=fwd(X[k][0],X[k][1]).o;loss+=(o-Y[k])*(o-Y[k]);if((o>0.5)===(Y[k]===1))score++}}
+function gdStep(lr){var g={W1:P.W1.map(function(){return[0,0]}),b1:P.W1.map(function(){return 0}),W2:P.W1.map(function(){return 0}),b2:0};
+  for(var k=0;k<4;k++){var x1=X[k][0],x2=X[k][1],r=fwd(x1,x2),go=2*(r.o-Y[k])*dact(r.zo,r.o);
+    if(H===0){g.W1[0][0]+=go*x1;g.W1[0][1]+=go*x2;g.b1[0]+=go;continue}
+    for(var i=0;i<H;i++){g.W2[i]+=go*r.hs[i];var gh=go*P.W2[i]*dact(r.zs[i],r.hs[i]);g.W1[i][0]+=gh*x1;g.W1[i][1]+=gh*x2;g.b1[i]+=gh}
+    g.b2+=go}
+  for(var j=0;j<P.W1.length;j++){P.W1[j][0]-=lr*g.W1[j][0];P.W1[j][1]-=lr*g.W1[j][1];P.b1[j]-=lr*g.b1[j];if(H)P.W2[j]-=lr*g.W2[j]}
+  if(H)P.b2-=lr*g.b2;steps++}
+function train(){if(timer){clearInterval(timer);timer=null;render("Paused at step "+steps+".");return}
+  document.getElementById("train").textContent="Pause";
+  timer=setInterval(function(){for(var i=0;i<20;i++){gdStep(bend?0.1:0.05);evaluate();if(score===4&&first===null)first=steps;if(loss<0.02||steps>=2000)break}
+    if(H===0){sl[0].value=P.W1[0][0];sl[1].value=P.W1[0][1];sl[2].value=P.b1[0]}
+    var done=loss<0.02||steps>=2000;render(done?(loss<0.02?"Converged at step "+steps+": loss "+f(loss)+", "+score+" of 4. "+(H?"Each hidden unit settled on its own line; the output neuron combines them.":""):"Stopped at "+steps+" steps: loss "+f(loss)+", "+score+" of 4. "+(H===0?"One line cannot split XOR. By hand you can reach 3 of 4; gradient descent instead settles on outputs near 0.5 for all four points (loss 1.0), the best a single line can do on average.":bend?"":"Without a bend the two layers are one line (W₂W₁): no better than one neuron, whatever the hidden size.")):null);
+    if(done){clearInterval(timer);timer=null;document.getElementById("train").textContent="Train"}},16)}
+function draw(){
+  var r=window.devicePixelRatio||1,W=cv.clientWidth,Hh=Math.round(W*0.72);cv.style.height=Hh+"px";cv.width=W*r;cv.height=Hh*r;ctx.setTransform(r,0,0,r,0,0);
+  var acc=css("--acc"),acc2=css("--acc2");
+  function px(v){return(v+0.5)/2*W}function py(v){return Hh-(v+0.5)/2*Hh}
+  var nx=32,ny=24;for(var i=0;i<nx;i++)for(var j=0;j<ny;j++){var x1=-0.5+2*(i+0.5)/nx,x2=-0.5+2*(j+0.5)/ny,o=Math.max(0,Math.min(1,fwd(x1,x2).o));
+    ctx.fillStyle=o>0.5?acc2:acc;ctx.globalAlpha=0.08+0.5*Math.abs(o-0.5)*2;ctx.fillRect(px(x1)-W/nx/2,py(x2)-Hh/ny/2,W/nx+1,Hh/ny+1)}
+  ctx.globalAlpha=1;ctx.strokeStyle=css("--mut");ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px(0),0);ctx.lineTo(px(0),Hh);ctx.moveTo(0,py(0));ctx.lineTo(W,py(0));ctx.stroke();
+  for(var k=0;k<4;k++){var o=fwd(X[k][0],X[k][1]).o,ok=(o>0.5)===(Y[k]===1),cx=px(X[k][0]),cy=py(X[k][1]);
+    if(!ok){ctx.strokeStyle=css("--bad");ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,17,0,7);ctx.stroke()}
+    ctx.fillStyle=Y[k]?acc2:acc;ctx.beginPath();ctx.arc(cx,cy,12,0,7);ctx.fill();ctx.strokeStyle=css("--bg");ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=css("--bg");ctx.font="700 13px system-ui,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(Y[k],cx,cy+0.5);
+    ctx.fillStyle=css("--fg");ctx.font="11px ui-monospace,Menlo,Consolas,monospace";ctx.fillText("out "+f(o),cx,cy+26)}}
+function render(msg){evaluate();
+  document.getElementById("o1").textContent=f(+sl[0].value);document.getElementById("o2").textContent=f(+sl[1].value);document.getElementById("o3").textContent=f(+sl[2].value);
+  document.getElementById("sl").style.display=H===0?"":"none";
+  ["h0","h2","h4"].forEach(function(id,i){document.getElementById(id).className=H===[0,2,4][i]?"on":""});
+  document.getElementById("b1").className=bend?"on":"";document.getElementById("b0").className=bend?"":"on";
+  document.getElementById("r0").textContent=f(loss);document.getElementById("r1").textContent=score+" of 4";document.getElementById("r2").textContent=steps;
+  document.getElementById("r3").textContent=first===null?"not yet":first;
+  document.getElementById("r4").textContent=H===0?3:(H*2+H)+(H+1);
+  if(msg)say.innerHTML=msg;draw()}
+function stop(){if(timer){clearInterval(timer);timer=null;document.getElementById("train").textContent="Train"}}
+sl.forEach(function(s){s.oninput=function(){stop();steps=0;first=null;init();render("Sliders set w₁ = "+f(+sl[0].value)+", w₂ = "+f(+sl[1].value)+", b = "+f(+sl[2].value)+". The boundary is the line w₁x₁ + w₂x₂ + b = 0.")}});
+function setH(h){stop();H=h;init();render(h===0?"One neuron: drag the sliders, or press Train. Predict the best score first.":"Hidden "+h+", "+(bend?"tanh":"no bend")+": "+((h*2+h)+(h+1))+" parameters from a fixed random start. Predict the final score and how many steps to reach it, then press Train.")}
+["h0","h2","h4"].forEach(function(id,i){document.getElementById(id).onclick=function(){setH([0,2,4][i])}});
+document.getElementById("b1").onclick=function(){bend=true;setH(H)};document.getElementById("b0").onclick=function(){bend=false;setH(H)};
+document.getElementById("train").onclick=train;
+document.getElementById("reset").onclick=function(){stop();if(H===0){sl[0].value=0;sl[1].value=0;sl[2].value=0}setH(H)};
+addEventListener("resize",function(){render()});
+window.redraw=function(){render()};
+init();render("One neuron: drag the sliders and try to get all four points right. Predict the best score you can reach before you start.");
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
