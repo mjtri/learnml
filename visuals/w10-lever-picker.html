@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lever picker</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.warn{background:var(--acc2);border-color:var(--acc2);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.row button{flex:1 1 40%}
+.idea{background:var(--card);border-radius:10px;padding:10px 12px;min-height:44px;margin:6px 0}
+.idea .n{font-size:12px;color:var(--mut)}
+textarea{width:100%;min-height:44px;font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);resize:vertical}
+.hint{font-size:12px;color:var(--mut);margin:4px 0}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:14px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Which one thing does the idea change? Tap the lever(s), then read the verdict</h1>
+<div class="row" id="cards"></div>
+<div class="idea" id="idea"></div>
+<textarea id="own" placeholder="Or write your own idea here, then tap its lever" aria-label="Your own idea"></textarea>
+<div class="hint">Levers (canvas step 2). Tap every one the idea moves.</div>
+<div class="row" id="levers"></div>
+<div class="row"><button id="split">split into one-lever ideas</button><button id="clr">clear</button></div>
+<div class="read">
+  <span class="k">levers moved</span><span id="r1">0</span>
+  <span class="k">experiments needed</span><span id="r2">0</span>
+  <span class="k">frozen (must not change)</span><span id="r3">all five</span>
+</div>
+<div class="verdict" id="verdict" aria-live="polite">Pick a card or write an idea, then tap the lever it moves.</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>lever</dt><dd>The one thing an idea changes: data, architecture, objective, optimization or inference. The other four stay frozen.</dd>
+<dt>objective</dt><dd>What the training loop minimises: the loss. Swapping pixel loss for a contrastive loss moves this lever.</dd>
+<dt>inference</dt><dd>How a trained model is used at test time, e.g. averaging several passes. Changing it needs no retraining.</dd>
+<dt>falsifiable prediction</dt><dd>"On task T, A beats B by at least X on metric M." One lever gives one such sentence; two levers give two.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+var L=["data","architecture","objective","optimization","inference"];
+var CARDS=[
+ {t:"contrastive loss",s:"Train the sonifier's image encoder with a contrastive image–sound loss instead of a pixel loss.",a:[2]},
+ {t:"display bottleneck",s:"Shape the codec's bottleneck like a 4×4 actuator grid with 8 levels, everything else as before.",a:[1]},
+ {t:"jittered shapes",s:"Render the training shapes with random position and size jitter; same model, same loss, same steps.",a:[0]},
+ {t:"depth + bigger",s:"Use depth-camera images instead of rendered shapes, with a bigger encoder.",a:[0,1]},
+ {t:"test-time average",s:"Average the trained model's predictions over five sonifications of the same image at test time.",a:[4]}];
+var cur=-1,sel=[],split=false;
+var cardBox=$("cards"),levBox=$("levers");
+CARDS.forEach(function(c,i){var b=document.createElement("button");b.textContent=c.t;b.onclick=function(){cur=i;sel=[];split=false;$("own").value="";draw()};cardBox.appendChild(b)});
+L.forEach(function(n,i){var b=document.createElement("button");b.textContent=n;b.onclick=function(){var k=sel.indexOf(i);if(k<0)sel.push(i);else sel.splice(k,1);split=false;draw()};levBox.appendChild(b)});
+$("split").onclick=function(){if(sel.length>=2){split=true;draw()}};
+$("clr").onclick=function(){cur=-1;sel=[];split=false;$("own").value="";draw()};
+$("own").oninput=function(){if($("own").value.trim()){cur=-1;draw()}};
+function draw(){
+  Array.prototype.forEach.call(cardBox.children,function(b,i){b.className=i===cur?"on":""});
+  Array.prototype.forEach.call(levBox.children,function(b,i){b.className=sel.indexOf(i)>=0?"on":""});
+  var own=$("own").value.trim();
+  var idea=cur>=0?CARDS[cur].s:(own||"(no idea chosen yet)");
+  $("idea").innerHTML='<span class="n">idea</span><br>'+idea;
+  var n=sel.length,frozen=L.filter(function(x,i){return sel.indexOf(i)<0});
+  $("r1").textContent=n;$("r2").textContent=n===0?0:n;
+  $("r3").textContent=n===0?"all five":(frozen.length?frozen.join(", "):"nothing");
+  var v="",names=sel.map(function(i){return L[i]});
+  if(cur<0&&!own){v="Pick a card or write an idea, then tap the lever it moves."}
+  else if(n===0){v="Tap the lever this idea moves. If none fits, it is not yet an ML idea: back to canvas step 1."}
+  else if(n===1){
+    v='<span class="ok">One lever: '+names[0]+'.</span> One experiment. Frozen: '+frozen.join(", ")+'. Prediction shape: “on task T, the '+names[0]+' change beats the current '+names[0]+' by ≥ X on M.”';
+    if(cur>=0){var a=CARDS[cur].a;if(a.length===1&&a[0]===sel[0])v+=' <span class="ok">Agreed.</span>';else v+=' <span class="acc">We would say: '+a.map(function(i){return L[i]}).join(" + ")+'.</span>'}
+  } else {
+    v='<span class="bad">'+n+' levers = '+n+' experiments.</span> Whatever the result, you will not know which change made it. Tap <b>split</b>.';
+    if(cur>=0&&CARDS[cur].a.length===1)v+=' <span class="acc">We count only one here: '+L[CARDS[cur].a[0]]+'.</span>';
+    if(split){v+='<br><br>'+names.map(function(m,k){return '<b>Idea '+(k+1)+'</b>: change only <b>'+m+'</b>; keep '+L.filter(function(x){return x!==m}).join(", ")+' as they are.'}).join('<br>')+'<br>Run the <b>data</b> half first if it is one of them: a model cannot learn what it never saw.'}
+  }
+  $("verdict").innerHTML=v;
+}
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

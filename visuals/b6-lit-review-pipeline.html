@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Literature review pipeline stepper</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.steps{display:flex;gap:4px;margin:0 0 8px}
+.steps button{flex:1;font:inherit;font-size:12px;min-height:44px;padding:0 4px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.steps button.on{font-weight:700;border-width:2px;border-color:var(--acc)}
+.steps button.done{border-color:var(--ok)}
+.ctl{margin:4px 0}
+.ctl label{display:block;font-size:12px;color:var(--mut)}
+.ctl label b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+.ctl input{width:100%;min-height:44px;margin:0}
+.card{min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);border-left:4px solid var(--acc);margin:6px 0;font-size:13px}
+.card .cmd{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--mut);margin-top:4px;white-space:pre-wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 6px}
+.stat{text-align:center;padding:6px 2px;border-radius:10px;border:1px solid var(--line)}
+.stat b{display:block;font-size:18px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:10px;color:var(--mut)}
+.nav{display:flex;gap:6px;margin-top:6px}
+.nav button{flex:1;font:inherit;font-size:13px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:6px}
+.status.warn{border-left:4px solid var(--acc2)}.status.ok{border-left:4px solid var(--ok)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Four stages, one question</h1>
+<p class="hint">Set what each tool found and how many references fail a lookup, then step through the pipeline. Counts flow; nothing enters the summary before the verify stage.</p>
+<div class="ctl"><label>Deep Research references <b id="la"></b></label><input type="range" id="a" min="0" max="40" value="18"></div>
+<div class="ctl"><label>Claude Research references <b id="lb"></b></label><input type="range" id="b" min="0" max="40" value="14"></div>
+<div class="ctl"><label>found by both (overlap) <b id="lo"></b></label><input type="range" id="o" min="0" max="14" value="6"></div>
+<div class="ctl"><label>fail a lookup (invented or fused) <b id="lp"></b></label><input type="range" id="p" min="0" max="50" value="20"></div>
+<div class="steps" id="steps"><button class="on" data-s="0">1 Search</button><button data-s="1">2 Dedupe</button><button data-s="2">3 Verify</button><button data-s="3">4 Summarise</button></div>
+<div class="card" id="card"></div>
+<div class="stats"><div class="stat"><b id="s0">0</b><span>offered</span></div><div class="stat"><b id="s1">0</b><span>union</span></div><div class="stat"><b id="s2">0</b><span>verified</span></div><div class="stat"><b id="s3">0</b><span>in summary</span></div></div>
+<div class="status" id="st"></div>
+<div class="nav"><button id="back">Back</button><button id="next">Next stage</button></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>literature review pipeline</dt><dd>Search in both tools, merge and dedupe, verify every reference by identifier, summarise only what survived.</dd>
+<dt>union</dt><dd>Every reference either tool found, counted once: A + B − overlap.</dd>
+<dt>verified fraction</dt><dd>Verified ÷ offered, per tool. Here shared references fail at half the rate, since two tools agreeing is weak evidence a paper exists.</dd>
+<dt>lookup</dt><dd>Asking Crossref for a DOI or arXiv for an ID. The record comes back, or nothing does.</dd>
+</dl></details>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},stage=0;
+var ids=["a","b","o","p"];
+function vals(){var a=+$("a").value,b=+$("b").value,o=Math.min(+$("o").value,a,b),p=+$("p").value/100;
+ $("o").max=Math.min(a,b);$("o").value=o;
+ var fa=Math.round((a-o)*p),fb=Math.round((b-o)*p),fo=Math.round(o*p/2);
+ return{a:a,b:b,o:o,p:p,u:a+b-o,fa:fa,fb:fb,fo:fo,va:a-fa-fo,vb:b-fb-fo,v:a+b-o-fa-fb-fo}}
+function draw(){var v=vals();
+ $("la").textContent=v.a;$("lb").textContent=v.b;$("lo").textContent=v.o;$("lp").textContent=Math.round(v.p*100)+"%";
+ Array.prototype.forEach.call($("steps").children,function(x,i){x.className=(i===stage?"on":"")+(i<stage?" done":"")});
+ var c=$("card"),st=$("st"),s3=0;
+ if(stage===0){c.innerHTML="<b>Search.</b> One run per tool, same wording. Deep Research restricted to publisher sites; Claude Research with web search on. Both reports exported as Markdown.<span class=cmd>Deep Research → "+v.a+" refs · Claude Research → "+v.b+" refs</span>";
+  st.className="status";st.textContent="Offered so far: "+(v.a+v.b)+" lines, before removing what both tools found."}
+ if(stage===1){c.innerHTML="<b>Dedupe.</b> Merge by identifier; each line names every tool that found it.<span class=cmd>Goal: build refs.md from dr.md and cr.md.\nDone when: no identifier appears twice.</span>";
+  st.className="status";st.textContent="Union: "+v.a+" + "+v.b+" − "+v.o+" = "+v.u+" lines. Overlap "+v.o+": the two tools mostly found different papers."}
+ if(stage===2){c.innerHTML="<b>Verify.</b> A script looks every line up; the model only fixes the differs cases.<span class=cmd>python verify_refs.py refs.md → ok / differs / missing</span>";
+  st.className="status warn";st.textContent="Dropped "+(v.fa+v.fb+v.fo)+". Verified fraction: Deep Research "+v.va+"/"+v.a+" = "+pct(v.va,v.a)+" · Claude Research "+v.vb+"/"+v.b+" = "+pct(v.vb,v.b)+". Log these two numbers, not the report's polish."}
+ if(stage===3){s3=v.v;c.innerHTML="<b>Summarise.</b> Only refs-verified.md enters the Projects workspace; the summary is written from those lines.<span class=cmd>Draft the related-work paragraph from refs-verified.md only; write [verify] for anything else.</span>";
+  st.className="status ok";st.textContent=v.v+" of "+(v.a+v.b)+" offered references reach the document. Skipping stage 3 would have put "+(v.fa+v.fb+v.fo)+" invented or fused citations into a paper."}
+ $("s0").textContent=v.a+v.b;$("s1").textContent=stage>=1?v.u:"–";$("s2").textContent=stage>=2?v.v:"–";$("s3").textContent=stage>=3?s3:"–";
+ $("back").disabled=stage===0;$("next").textContent=stage===3?"Start over":"Next stage"}
+function pct(x,n){return n?Math.round(100*x/n)+"%":"–"}
+ids.forEach(function(i){$(i).addEventListener("input",draw)});
+$("steps").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;stage=+b.dataset.s;draw()});
+$("next").onclick=function(){stage=stage===3?0:stage+1;draw()};
+$("back").onclick=function(){if(stage>0)stage--;draw()};
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patches as tokens</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;margin:0 4px 6px 0}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.hint{font-size:12px;color:var(--mut);margin:0 0 6px}
+canvas#cv{display:block;width:100%;max-width:288px;aspect-ratio:1;margin:0 auto 6px;border-radius:10px;background:var(--card);touch-action:manipulation;cursor:pointer}
+canvas#seq{display:block;width:100%;height:28px;border-radius:6px;background:var(--card);margin:2px 0 8px}
+.read{font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px}
+.read div{padding:2px 0}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif}
+.read b{color:var(--acc2)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Cut a 64×64 image into patches; each patch becomes one token</h1>
+<div class="hint">Pick a patch size, tap a patch to read its place in the sequence. Shuffle scrambles the order the model would see without position vectors.</div>
+<div>
+<span class="hint">patch size</span>
+<button data-p="8">8</button><button data-p="16" class="on">16</button><button data-p="32">32</button>
+<button id="shuf">shuffle</button>
+</div>
+<canvas id="cv" aria-label="The image cut into a grid of patches. Tap a patch."></canvas>
+<div class="hint">the sequence, one square per token (mean colour of its patch):</div>
+<canvas id="seq"></canvas>
+<div class="read" id="read"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>patch</dt><dd>A square block of pixels cut from the image. With 64-pixel images and 16-pixel patches there are 4 × 4 = 16 of them.</dd>
+<dt>token</dt><dd>One element of the sequence a transformer reads. Here, one patch after flattening and a linear layer (the patch embedding).</dd>
+<dt>attention pairs</dt><dd>Attention compares every token with every other, so the work grows with tokens squared.</dd>
+<dt>position vector</dt><dd>A learned vector added to each token so the model can tell patch 5 from patch 6. Without it, shuffling changes nothing.</dd>
+</dl></details>
+<script>
+(function(){
+var N=64,P=16,perm=null,sel=null,img=document.createElement("canvas");img.width=N;img.height=N;
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),sq=document.getElementById("seq"),sctx=sq.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function paintImage(){var c=img.getContext("2d"),g=c.createLinearGradient(0,0,0,N);g.addColorStop(0,"#9fc5ff");g.addColorStop(1,"#e8f0ff");c.fillStyle=g;c.fillRect(0,0,N,N);
+  c.fillStyle="#6aa84f";c.fillRect(0,44,N,20);c.fillStyle="#f4a340";c.beginPath();c.arc(16,16,9,0,7);c.fill();
+  c.fillStyle="#4051b5";c.fillRect(34,24,22,22);c.fillStyle="#d9531e";c.beginPath();c.moveTo(32,24);c.lineTo(58,24);c.lineTo(45,10);c.closePath();c.fill();
+  c.fillStyle="#1d2330";c.fillRect(42,34,6,12)}
+function count(){return N/P}
+function order(){var n=count()*count(),i,o=[];for(i=0;i<n;i++)o.push(i);if(perm){for(i=n-1;i>0;i--){var j=Math.floor(perm[i]*(i+1)),t=o[i];o[i]=o[j];o[j]=t}}return o}
+function fit(){var r=window.devicePixelRatio||1,w=cv.clientWidth;cv.width=w*r;cv.height=w*r;ctx.setTransform(r,0,0,r,0,0);sq.width=sq.clientWidth*r;sq.height=28*r;sctx.setTransform(r,0,0,r,0,0);draw()}
+function draw(){
+  var w=cv.clientWidth,n=count(),cell=w/n,o=order(),k,i,j;ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,w,w);
+  for(k=0;k<n*n;k++){var src=o[k],sx=(src%n)*P,sy=Math.floor(src/n)*P,dx=(k%n)*cell,dy=Math.floor(k/n)*cell;ctx.drawImage(img,sx,sy,P,P,dx,dy,cell,cell)}
+  ctx.strokeStyle=css("--bg");ctx.lineWidth=1.5;for(i=1;i<n;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,w);ctx.moveTo(0,i*cell);ctx.lineTo(w,i*cell);ctx.stroke()}
+  if(sel!==null){ctx.strokeStyle=css("--acc2");ctx.lineWidth=3;ctx.strokeRect((sel%n)*cell+1.5,Math.floor(sel/n)*cell+1.5,cell-3,cell-3)}
+  var sw=sq.clientWidth,tw=sw/(n*n);sctx.clearRect(0,0,sw,28);var ic=img.getContext("2d");
+  for(k=0;k<n*n;k++){var s=o[k],d=ic.getImageData((s%n)*P,Math.floor(s/n)*P,P,P).data,r=0,g=0,b=0,m=P*P;for(i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}
+    sctx.fillStyle="rgb("+Math.round(r/m)+","+Math.round(g/m)+","+Math.round(b/m)+")";sctx.fillRect(k*tw,4,Math.max(1,tw-1),20);
+    if(k===sel){sctx.strokeStyle=css("--acc2");sctx.lineWidth=2;sctx.strokeRect(k*tw+1,1,Math.max(2,tw-2),26)}}
+  var T=n*n,per=P*P*3,txt="<div><span class='k'>patch size</span> "+P+" px → grid "+n+" × "+n+"</div>"+
+   "<div><span class='k'>tokens</span> <b>"+T+"</b></div>"+
+   "<div><span class='k'>numbers per patch (P·P·3)</span> "+per+" → patch embedding → 768</div>"+
+   "<div><span class='k'>attention pairs (tokens²)</span> <b>"+(T*T).toLocaleString()+"</b></div>"+
+   "<div><span class='k'>shape entering block 1</span> ("+(T+1)+", 768) with the class token</div>";
+  if(sel!==null){var src=o[sel];txt+="<div><span class='k'>tapped</span> sequence index "+sel+" of "+T+" · row "+Math.floor(src/n)+", col "+(src%n)+" of the original"+(perm?" (shuffled: source patch "+src+")":"")+"</div>"}
+  txt+="<div><span class='k'>order</span> "+(perm?"shuffled: every readout above is unchanged":"original")+"</div>";
+  document.getElementById("read").innerHTML=txt}
+Array.prototype.forEach.call(document.querySelectorAll("button[data-p]"),function(b){b.onclick=function(){P=+b.dataset.p;sel=null;perm=null;Array.prototype.forEach.call(document.querySelectorAll("button[data-p]"),function(x){x.className=x===b?"on":""});document.getElementById("shuf").className="";draw()}});
+document.getElementById("shuf").onclick=function(){if(perm){perm=null;this.className=""}else{perm=[];for(var i=0;i<count()*count();i++)perm.push(Math.random());this.className="on"}draw()};
+cv.addEventListener("pointerdown",function(e){var r=cv.getBoundingClientRect(),n=count(),c=Math.floor((e.clientX-r.left)/r.width*n),rw=Math.floor((e.clientY-r.top)/r.height*n);sel=Math.max(0,Math.min(n*n-1,rw*n+c));draw()});
+addEventListener("resize",fit);
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+paintImage();fit();
+})();
+</script>
+</body>
+</html>

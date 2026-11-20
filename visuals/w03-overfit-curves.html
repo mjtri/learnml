@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Overfitting slider</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+.sl{display:block;font-size:13px;color:var(--mut);margin:2px 0}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.sl input[type=range]{display:block;width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;border-radius:10px;background:var(--card);touch-action:pan-y;margin:6px 0}
+#fit{height:220px}#err{height:150px}
+.hint{font-size:12px;color:var(--mut);margin:4px 0;text-align:center}
+.read{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.read div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;font:14px ui-monospace,Menlo,Consolas,monospace}
+.read span{display:block;font:11px system-ui,sans-serif;color:var(--mut)}
+.tr{color:var(--acc)}.va{color:var(--acc2)}
+.verdict{font-size:13.5px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Bigger model, lower <span class="tr">training</span> error. And the <span class="va">validation</span> error?</h1>
+<label class="sl"><span>model size (polynomial degree)</span><output id="od"></output><input id="sd" type="range" min="0" max="12" step="1" value="1"></label>
+<label class="sl"><span>weight decay λ</span><output id="ol"></output><input id="sl" type="range" min="0" max="6" step="1" value="0"></label>
+<canvas id="fit" aria-label="Twenty training points, twenty validation points, and the fitted curve."></canvas>
+<div class="hint">Filled: 20 training points. Hollow: 20 validation points the fit never saw. Dashed: the true curve.</div>
+<div class="read"><div><span>train error</span><b id="rt" class="tr"></b></div><div><span>validation error</span><b id="rv" class="va"></b></div><div><span>gap</span><b id="rg"></b></div></div>
+<canvas id="err" aria-label="Training and validation error against model size."></canvas>
+<div class="hint">Error against model size at this λ; the dot is where you are.</div>
+<div class="verdict" id="vd" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>training / validation error</dt><dd>Mean squared error on the points used to fit, and on the held-back points. Only the second says how the fit will do on new data.</dd>
+<dt>overfitting</dt><dd>Training error keeps falling while validation error rises: the curve is memorising the noise in the training points.</dd>
+<dt>weight decay</dt><dd>A penalty λ on the size of the coefficients. Big wiggles need big coefficients, so the penalty smooths the curve.</dd>
+</dl></details>
+<script>
+(function(){
+var LAM=[0,1e-5,1e-4,1e-3,1e-2,1e-1,1],NP=20;
+var seed=777;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+function gauss(){var u=rnd()||1e-9,v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2831853*v)}
+function truth(x){return Math.sin(3*x)+0.4*x}
+function make(){var xs=[],ys=[];for(var i=0;i<NP;i++){var x=-1+2*rnd();xs.push(x);ys.push(truth(x)+0.3*gauss())}return{x:xs,y:ys}}
+var tr=make(),va=make();
+function solve(A,b){var n=b.length,i,j,k;for(i=0;i<n;i++){var p=i;for(j=i+1;j<n;j++)if(Math.abs(A[j][i])>Math.abs(A[p][i]))p=j;var t=A[i];A[i]=A[p];A[p]=t;t=b[i];b[i]=b[p];b[p]=t;
+  if(Math.abs(A[i][i])<1e-300)continue;for(j=i+1;j<n;j++){var f=A[j][i]/A[i][i];for(k=i;k<n;k++)A[j][k]-=f*A[i][k];b[j]-=f*b[i]}}
+  var w=new Array(n).fill(0);for(i=n-1;i>=0;i--){var s=b[i];for(j=i+1;j<n;j++)s-=A[i][j]*w[j];w[i]=Math.abs(A[i][i])<1e-300?0:s/A[i][i]}return w}
+function fitPoly(d,lam){var n=d+1,A=[],b=[],i,j,k;for(i=0;i<n;i++){A.push(new Array(n).fill(0));b.push(0)}
+  for(k=0;k<NP;k++){var x=tr.x[k],pw=[1];for(i=1;i<n;i++)pw.push(pw[i-1]*x);for(i=0;i<n;i++){b[i]+=pw[i]*tr.y[k];for(j=0;j<n;j++)A[i][j]+=pw[i]*pw[j]}}
+  for(i=1;i<n;i++)A[i][i]+=lam*NP;return solve(A,b)}
+function ev(w,x){var s=0,p=1;for(var i=0;i<w.length;i++){s+=w[i]*p;p*=x}return s}
+function mse(w,d){var s=0;for(var k=0;k<NP;k++){var e=ev(w,d.x[k])-d.y[k];s+=e*e}return s/NP}
+var sd=document.getElementById("sd"),sl=document.getElementById("sl"),c1=document.getElementById("fit"),c2=document.getElementById("err"),x1=c1.getContext("2d"),x2=c2.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function prep(c,ctx){var r=window.devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;c.width=W*r;c.height=H*r;ctx.setTransform(r,0,0,r,0,0);return[W,H]}
+function draw(){
+  var d=+sd.value,lam=LAM[+sl.value],w=fitPoly(d,lam),acc=css("--acc"),acc2=css("--acc2"),mut=css("--mut"),ln=css("--line");
+  document.getElementById("od").textContent=d;document.getElementById("ol").textContent=lam===0?"0":lam.toExponential(0);
+  var s=prep(c1,x1),W=s[0],H=s[1],X=function(v){return(v+1.05)/2.1*W},Y=function(v){return H/2-v*H/5.2};
+  x1.clearRect(0,0,W,H);x1.strokeStyle=ln;x1.beginPath();x1.moveTo(0,Y(0));x1.lineTo(W,Y(0));x1.moveTo(X(0),0);x1.lineTo(X(0),H);x1.stroke();
+  x1.setLineDash([5,5]);x1.strokeStyle=mut;x1.lineWidth=1.5;x1.beginPath();for(var i=0;i<=100;i++){var xx=-1.05+2.1*i/100;if(i)x1.lineTo(X(xx),Y(truth(xx)));else x1.moveTo(X(xx),Y(truth(xx)))}x1.stroke();x1.setLineDash([]);
+  x1.strokeStyle=acc;x1.lineWidth=2.5;x1.beginPath();for(i=0;i<=200;i++){xx=-1.05+2.1*i/200;var yy=Math.max(-3,Math.min(3,ev(w,xx)));if(i)x1.lineTo(X(xx),Y(yy));else x1.moveTo(X(xx),Y(yy))}x1.stroke();
+  x1.fillStyle=acc;tr.x.forEach(function(xv,k){x1.beginPath();x1.arc(X(xv),Y(tr.y[k]),4,0,7);x1.fill()});
+  x1.strokeStyle=acc2;x1.lineWidth=2;va.x.forEach(function(xv,k){x1.beginPath();x1.arc(X(xv),Y(va.y[k]),4,0,7);x1.stroke()});
+  var et=mse(w,tr),ev2=mse(w,va);
+  document.getElementById("rt").textContent=et.toFixed(3);document.getElementById("rv").textContent=ev2.toFixed(3);document.getElementById("rg").textContent=(ev2-et).toFixed(3);
+  var curves=[],best=0,bv=1e9;for(var k=0;k<=12;k++){var wk=fitPoly(k,lam),a=mse(wk,tr),b=mse(wk,va);curves.push([a,b]);if(b<bv){bv=b;best=k}}
+  s=prep(c2,x2);W=s[0];H=s[1];x2.clearRect(0,0,W,H);
+  var lo=Math.log(0.02),hi=Math.log(3),EX=function(k){return 24+k/12*(W-36)},EY=function(v){return H-14-(Math.log(Math.max(0.02,Math.min(3,v)))-lo)/(hi-lo)*(H-24)};
+  x2.strokeStyle=ln;x2.beginPath();[0.1,1].forEach(function(v){x2.moveTo(24,EY(v));x2.lineTo(W-12,EY(v))});x2.stroke();
+  x2.fillStyle=mut;x2.font="11px system-ui";x2.fillText("1",6,EY(1)+4);x2.fillText("0.1",2,EY(0.1)+4);x2.fillText("0.09 = noise floor",28,EY(0.09)-3);
+  x2.setLineDash([3,3]);x2.strokeStyle=mut;x2.beginPath();x2.moveTo(24,EY(0.09));x2.lineTo(W-12,EY(0.09));x2.stroke();x2.setLineDash([]);
+  [[acc,0],[acc2,1]].forEach(function(c){x2.strokeStyle=c[0];x2.lineWidth=2;x2.beginPath();curves.forEach(function(p,k){if(k)x2.lineTo(EX(k),EY(p[c[1]]));else x2.moveTo(EX(k),EY(p[c[1]]))});x2.stroke();
+    x2.fillStyle=c[0];x2.beginPath();x2.arc(EX(d),EY(curves[d][c[1]]),5,0,7);x2.fill()});
+  x2.fillStyle=mut;for(k=0;k<=12;k+=2)x2.fillText(k,EX(k)-3,H-2);
+  var v=document.getElementById("vd"),name=ev2-et>0.12&&et<0.1?"Overfitting":et>0.16&&ev2>0.16?"Underfitting":"About right";
+  v.innerHTML="<b>"+name+".</b> "+(name==="Overfitting"?"The curve threads the filled points and misses the hollow ones. Lower the degree, or raise λ.":name==="Underfitting"?"Too simple to follow the true curve; both errors are high. Raise the degree.":"Validation error is near its minimum. The noise floor (0.3² = 0.09) is as low as any honest fit can go.")+" Best degree at this λ: "+best+".";
+}
+sd.oninput=draw;sl.oninput=draw;window.redraw=draw;addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

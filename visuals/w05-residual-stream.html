@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Residual stream: a running sum</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.warn.on{background:var(--acc2);border-color:var(--acc2)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+canvas{display:block;width:100%;height:190px;border-radius:10px;background:var(--card)}
+.hint{font-size:12px;color:var(--mut);margin:4px 0 8px}
+.stream{margin-top:8px}
+.blk{width:100%;text-align:left;margin-top:6px;padding:8px 10px;font:13px ui-monospace,Menlo,Consolas,monospace;min-height:44px;line-height:1.4}
+.blk b{color:var(--acc2);font-weight:700}
+.blk .x{display:block;color:var(--fg)}
+.blk .w{display:block;color:var(--mut)}
+.blk.x0{border-color:var(--acc);cursor:default}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Blocks read the stream and add a note. Does the original embedding survive?</h1>
+<div class="row">
+  <button id="add">+ block</button>
+  <button id="rem">− last block</button>
+  <button id="res" class="on">residual: on</button>
+</div>
+<canvas id="cv" aria-label="Bars of the four stream values after each block"></canvas>
+<div class="hint">Bars: the 4 numbers of the stream after each stage. Tap a block below to remove just that one.</div>
+<div class="read">
+  <span class="k">blocks</span><span id="r0"></span>
+  <span class="k">final stream x<sub>L</sub></span><span id="r1"></span>
+  <span class="k">cosine similarity to x<sub>0</sub></span><span id="r2"></span>
+  <span class="k">size of stream |x<sub>L</sub>|</span><span id="r3"></span>
+</div>
+<div class="stream" id="stream"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>residual stream</dt><dd>The running sum: the embedding x₀ plus every note a block has added. With residual off, each block replaces the stream instead.</dd>
+<dt>block</dt><dd>One transformer block. Here it computes a small fixed function of the current stream and writes the result.</dd>
+<dt>cosine similarity</dt><dd>1 when two vectors point the same way, 0 when unrelated, −1 when opposite. Measures how much of x₀'s direction is left.</dd>
+</dl></details>
+<script>
+(function(){
+var X0=[1.0,0.0,2.0,-1.0],ids=[1,2,3,4],next=5,residual=true;
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),Wd=300,Ht=190;
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function rng(seed){var s=seed*9301+49297;return function(){s=(s*9301+49297)%233280;return s/233280}}
+function weights(id){var r=rng(id),W=[];for(var i=0;i<4;i++){W.push([]);for(var j=0;j<4;j++)W[i].push((r()-0.5)*1.6)}return W}
+function f(id,x){var W=weights(id),o=[];for(var i=0;i<4;i++){var s=0;for(var j=0;j<4;j++)s+=W[i][j]*x[j];o.push(0.6*Math.tanh(s))}return o}
+function run(){var x=X0.slice(),stages=[x.slice()],writes=[];
+  ids.forEach(function(id){var u=f(id,x);writes.push(u);x=residual?x.map(function(v,i){return v+u[i]}):u;stages.push(x.slice())});
+  return {stages:stages,writes:writes}}
+function dot(a,b){return a.reduce(function(s,v,i){return s+v*b[i]},0)}
+function norm(a){return Math.sqrt(dot(a,a))}
+function fmt(v){return v.map(function(n){return(n>=0?" ":"")+n.toFixed(2)}).join(" ")}
+function fit(){var r=window.devicePixelRatio||1;Wd=cv.clientWidth;Ht=cv.clientHeight;cv.width=Wd*r;cv.height=Ht*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function draw(){
+  var R=run(),S=R.stages,n=S.length,cols=[css("--acc"),css("--acc2"),css("--ok"),css("--bad")];
+  var mut=css("--mut"),ln=css("--line");
+  ctx.clearRect(0,0,Wd,Ht);
+  var mx=1.5;S.forEach(function(s){s.forEach(function(v){mx=Math.max(mx,Math.abs(v))})});
+  var pad=8,gw=(Wd-2*pad)/n,bw=Math.max(2,(gw-6)/4),mid=Ht*0.5,sc=(Ht*0.42)/mx;
+  ctx.strokeStyle=ln;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,mid);ctx.lineTo(Wd,mid);ctx.stroke();
+  S.forEach(function(s,k){var x0=pad+k*gw+3;
+    s.forEach(function(v,i){ctx.fillStyle=cols[i];var h=v*sc;ctx.fillRect(x0+i*bw,Math.min(mid,mid-h),bw-1,Math.abs(h)||1)});
+    ctx.fillStyle=mut;ctx.font="11px system-ui,sans-serif";ctx.textAlign="center";ctx.fillText(k===0?"x0":"x"+k,x0+gw/2-3,Ht-4)});
+  var L=S[n-1],cs=dot(L,X0)/(norm(L)*norm(X0)||1);
+  document.getElementById("r0").textContent=ids.length;
+  document.getElementById("r1").textContent=fmt(L);
+  var e=document.getElementById("r2");e.textContent=cs.toFixed(3);e.className=cs>=0.5?"ok":"bad";
+  document.getElementById("r3").textContent=norm(L).toFixed(2);
+  var box=document.getElementById("stream");box.innerHTML="";
+  var b0=document.createElement("button");b0.className="blk x0";b0.innerHTML='<b>embedding x0</b><span class="x">'+fmt(X0)+'</span>';box.appendChild(b0);
+  ids.forEach(function(id,k){var b=document.createElement("button");b.className="blk";
+    b.innerHTML='<b>block '+(k+1)+'</b> '+(residual?'writes':'replaces with')+'<span class="w">'+fmt(R.writes[k])+'</span><span class="x">x'+(k+1)+' = '+fmt(S[k+1])+'</span>';
+    b.setAttribute("aria-label","remove block "+(k+1));b.onclick=function(){ids.splice(k,1);draw()};box.appendChild(b)});
+  document.getElementById("res").textContent="residual: "+(residual?"on":"off");
+}
+window.redraw=draw;
+document.getElementById("add").onclick=function(){if(ids.length<12){ids.push(next++);draw()}};
+document.getElementById("rem").onclick=function(){ids.pop();draw()};
+document.getElementById("res").onclick=function(){residual=!residual;this.className=residual?"on":"warn on";draw()};
+addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>

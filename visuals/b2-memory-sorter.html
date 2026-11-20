@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory, instructions or context?</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.cards button{display:block;width:100%;margin:4px 0;font:inherit;font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;text-align:left}
+.cards button.sel{border:2px solid var(--acc);font-weight:700}
+.cards button.ok{border-left:5px solid var(--ok)}
+.cards button.bad{border-left:5px solid var(--bad)}
+.cards button span{color:var(--mut);font-size:11px;font-weight:400;display:block}
+.bins{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;position:sticky;bottom:0;background:var(--bg);padding:6px 0}
+.bins button{font:inherit;font-size:13px;min-height:44px;padding:0 6px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;flex:1 1 30%}
+.bins button.armed{border:2px solid var(--acc)}
+.bins button.reset{flex:0 0 auto;border-style:dashed}
+.meter{margin:8px 0 2px}
+.meter .lab{font-size:12px;color:var(--mut);margin-bottom:2px}
+.meter .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+progress{width:100%;height:10px;appearance:none;-webkit-appearance:none;border:0;border-radius:5px;overflow:hidden;background:var(--line)}
+progress::-webkit-progress-bar{background:var(--line)}progress::-webkit-progress-value{background:var(--ok)}progress::-moz-progress-bar{background:var(--ok)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:8px}
+.status.bad{border-left:4px solid var(--bad)}
+.status.ok{border-left:4px solid var(--ok)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Where does this fact belong?</h1>
+<p class="hint">Tap a card, then tap a bin. The readout says what each tool actually does with the fact where you put it.</p>
+<div class="cards" id="cards"></div>
+<div class="bins" id="bins"><button data-b="C">This conversation</button><button data-b="I">Instruction file</button><button data-b="M">Auto memory</button><button class="reset" id="reset">↺</button></div>
+<div class="meter"><div class="lab">Placed <b id="pn"></b> · right first time <b id="rn"></b></div><progress id="pg" max="8" value="0"></progress></div>
+<div class="status" id="st">Pick a card to start.</div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>this conversation</dt><dd>The context window of one session. Gone at /clear; may be summarised away by compaction.</dd>
+<dt>instruction file</dt><dd>AGENTS.md or CLAUDE.md: rules you write, loaded every session, paid for on every turn, never enforced.</dd>
+<dt>auto memory</dt><dd>Notes the agent writes for itself (Claude Code: MEMORY.md per repo; Codex: memories after a chat goes idle). A recall layer, not a rule book.</dd>
+</dl></details>
+<script>
+(function(){
+var K={rule:"I",pref:"M",task:"C",note:"M"};
+var CARDS=[
+ {t:"Run check_lessons.py before any commit.",k:"rule",why:"A rule that must always apply. In the file you can read and prune it; both tools load it every session."},
+ {t:"I prefer terse diffs and no emoji.",k:"pref",why:"A preference. Claude writes it to MEMORY.md by itself after you say it once; Codex saves it as a memory once the chat is idle."},
+ {t:"Reviewer 2 wants Fig. 3 on a log axis.",k:"task",why:"This task only. Put it in the prompt; when the figure is fixed nothing should still be carrying it."},
+ {t:"EditMode tests: Unity.exe -runTests -batchmode -projectPath . -testPlatform EditMode",k:"rule",why:"A command the agent cannot guess from the code: the classic instruction-file line."},
+ {t:"The failing test right now is Pulse90HzTest.",k:"task",why:"Context for this session. It is the Context part of a four-part prompt, not a durable fact."},
+ {t:"Never edit docs/index.md; it is generated.",k:"rule",why:"A never-touch rule. Every session needs it; Claude's auto memory deliberately skips what CLAUDE.md already says."},
+ {t:"The TM report draft is due 2026-10-15.",k:"note",why:"Ongoing work with a date: exactly what Claude's project-type memory holds. Not a rule, and stale by November."},
+ {t:"The ETRI TM template lives in the shared drive's 양식 folder.",k:"note",why:"Where to find something outside the project: Claude's reference-type memory. It would be a wasted line in every session's instructions."}
+];
+var WRONG={
+ "rule,C":"Lost at /clear, and maybe at compaction. You will type it again next session.",
+ "rule,M":"Memory is a recall layer: neither vendor promises it is applied, and Claude may not save what looks like a CLAUDE.md rule.",
+ "pref,I":"It works, but you wrote a line that costs context on every turn; Claude would have saved it to auto memory for free.",
+ "pref,C":"Retyped every session. Say it once as \"remember: ...\" and Claude keeps it; Codex too, with memories on.",
+ "task,I":"Paid for on every turn of every future session, long after Fig. 3 is fixed. Prune it now.",
+ "task,M":"Claude may note it as ongoing work, but this is a task detail for one prompt, not something to recall later.",
+ "note,I":"Not a rule. It goes stale, and until you delete it every session loads it.",
+ "note,C":"Gone at /clear. Claude's project and reference memories exist for exactly this kind of fact."
+};
+var LABEL={C:"conversation",I:"instruction file",M:"auto memory"};
+var sel=-1,placed=[],right=[];
+var cw=document.getElementById("cards");
+CARDS.forEach(function(c,i){var b=document.createElement("button");b.innerHTML=c.t+"<span></span>";b.onclick=function(){sel=i;draw();document.getElementById("st").textContent="Now tap a bin for: "+c.t};cw.appendChild(b)});
+document.getElementById("bins").addEventListener("click",function(e){var b=e.target.closest("button");if(!b||!b.dataset.b)return;
+ if(sel<0){document.getElementById("st").textContent="Tap a card first.";return}
+ var c=CARDS[sel],want=K[c.k],got=b.dataset.b,st=document.getElementById("st");
+ if(placed[sel]===undefined)right[sel]=(got===want);
+ placed[sel]=got;
+ if(got===want){st.className="status ok";st.textContent="Yes: "+LABEL[got]+". "+c.why}
+ else{st.className="status bad";st.textContent="In the "+LABEL[got]+": "+WRONG[c.k+","+got]+" Better: "+LABEL[want]+"."}
+ sel=-1;draw()});
+document.getElementById("reset").onclick=function(){sel=-1;placed=[];right=[];draw();document.getElementById("st").className="status";document.getElementById("st").textContent="Pick a card to start."};
+function draw(){
+ var n=0,r=0;
+ Array.prototype.forEach.call(cw.children,function(b,i){var p=placed[i];b.className=(i===sel?"sel ":"")+(p===undefined?"":(p===K[CARDS[i].k]?"ok":"bad"));b.lastChild.textContent=p===undefined?"":"→ "+LABEL[p];if(p!==undefined){n++;if(right[i])r++}});
+ Array.prototype.forEach.call(document.getElementById("bins").children,function(b){if(b.dataset.b)b.className=sel>=0?"armed":""});
+ document.getElementById("pn").textContent=n+" / 8";document.getElementById("rn").textContent=r+" / 8";
+ document.getElementById("pg").value=n;
+ if(n===8){var st=document.getElementById("st");if(st.className==="status ok"||st.className==="status bad")st.textContent+=" All eight placed: "+r+" right first time. Three rules, three memories, two prompt facts."}
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>

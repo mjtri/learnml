@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One epoch, step by step</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.sl{display:block;font-size:13px;color:var(--mut);margin:2px 0}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.sl input[type=range]{display:block;width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.read div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;font:14px ui-monospace,Menlo,Consolas,monospace}
+.read span{display:block;font:11px system-ui,sans-serif;color:var(--mut)}
+.code{background:var(--card);border-radius:10px;padding:6px 0;margin:8px 0;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.code div{padding:4px 10px;white-space:pre;border-left:4px solid transparent}
+.code div.on{border-left-color:var(--acc2);background:rgba(217,83,30,.12);font-weight:700}
+.state{font-size:13.5px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card)}
+.state b{color:var(--acc2)}
+.gr{font:13px ui-monospace,Menlo,Consolas,monospace;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px dashed var(--line)}
+.gr i{font-style:normal;color:var(--mut);font-family:system-ui,sans-serif}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>One epoch of the loop: batches, shapes, and when <code>.grad</code> changes</h1>
+<label class="sl"><span>batch size B</span><output id="ob"></output><input id="sb" type="range" min="0" max="9" step="1" value="4"></label>
+<label class="sl"><span>hidden width H</span><output id="oh"></output><input id="sh" type="range" min="0" max="6" step="1" value="4"></label>
+<div class="read"><div><span>batches / epoch</span><b id="rn"></b></div><div><span>last batch</span><b id="rl"></b></div><div><span>parameters</span><b id="rp"></b></div></div>
+<div class="code" id="code"></div>
+<div class="state" id="st" aria-live="polite"></div>
+<div class="gr"><i>weights:</i> <span id="gw"></span><br><i>.grad:</i> <span id="gg"></span></div>
+<div class="row"><button class="pri" id="step">Next line ▶</button><button id="fin">Finish epoch</button><button id="rst">Reset</button></div>
+<div class="read"><div><span>batch i</span><b id="ri">0</b></div><div><span>updates so far</span><b id="ru">0</b></div><div><span>epoch</span><b id="re">0</b></div></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>DataLoader</dt><dd>Shuffles the 60,000 examples and hands them out B at a time; the last batch holds whatever is left.</dd>
+<dt>epoch</dt><dd>One full pass over every example. Batches per epoch = 60,000 ÷ B, rounded up.</dd>
+<dt>.grad</dt><dd>The gradient stored on each parameter tensor. Empty until the first backward pass; the optimizer reads it.</dd>
+<dt>parameters</dt><dd>Every learnable number: for a 784→H→10 MLP that is 784·H + H + H·10 + 10.</dd>
+</dl></details>
+<script>
+(function(){
+var N=60000,BS=[1,8,16,32,64,100,128,256,512,1024],HS=[16,32,64,128,256,512,1024];
+var sb=document.getElementById("sb"),sh=document.getElementById("sh");
+var LINES=["for x, y in loader:","    logits = model(x)","    loss = F.cross_entropy(logits, y)","    opt.zero_grad()","    loss.backward()","    opt.step()"];
+var code=document.getElementById("code");
+LINES.forEach(function(t){var d=document.createElement("div");d.textContent=t;code.appendChild(d)});
+var line=-1,i=0,upd=0,ep=0,grad="none",wver=0;
+function B(){return BS[+sb.value]}function H(){return HS[+sh.value]}
+function nb(){return Math.ceil(N/B())}function last(){var r=N%B();return r===0?B():r}
+function fmt(n){return n.toLocaleString("en-US")}
+function params(){var h=H();return 784*h+h+h*10+10}
+function text(){
+  var b=B(),h=H(),bb=(i===nb()-1)?last():b;
+  if(line<0)return"Press <b>Next line</b>. Before you do: how many batches will one epoch take, and on which line do the weights move?";
+  switch(line){
+  case 0:return"Loader hands out batch "+(i+1)+" of "+nb()+": <b>x</b> is ("+bb+", 1, 28, 28), <b>y</b> is ("+bb+",). Nothing has been computed yet.";
+  case 1:return"Forward pass: ("+bb+", 784) → ("+bb+", "+h+") → ("+bb+", 10). <b>logits</b> has ten scores per image; the graph is recorded.";
+  case 2:return"<b>loss</b> is one number, shape (). It averages the surprise over the "+bb+" images.";
+  case 3:return"Every <b>.grad</b> is reset to zeros. Skip this line and the next backward pass would <em>add</em> to last batch's gradient.";
+  case 4:return"Backward pass fills <b>.grad</b> on all "+fmt(params())+" parameters. The weights themselves have not moved.";
+  case 5:return"<b>opt.step()</b>: w ← w − lr · w.grad on every parameter. Only now do the weights change; .grad still holds the old numbers.";
+  }return"";
+}
+function draw(){
+  document.getElementById("ob").textContent=B();document.getElementById("oh").textContent=H();
+  document.getElementById("rn").textContent=fmt(nb());document.getElementById("rl").textContent=last();
+  document.getElementById("rp").textContent=fmt(params());
+  Array.prototype.forEach.call(code.children,function(d,k){d.className=k===line?"on":""});
+  document.getElementById("st").innerHTML=text();
+  document.getElementById("gw").textContent="version "+wver+(wver?" (changed "+wver+"×)":" (as initialized)");
+  document.getElementById("gg").textContent=grad==="none"?"None: never computed":grad==="zero"?"all zeros":grad==="full"?"filled: "+fmt(params())+" numbers":"stale: last batch's numbers";
+  document.getElementById("ri").textContent=line<0?0:i+1;document.getElementById("ru").textContent=upd;document.getElementById("re").textContent=ep;
+}
+function step(){
+  line=(line+1)%6;
+  if(line===0){if(upd>0&&i===nb()-1){i=0;ep++}else if(upd>0)i++;}
+  if(line===3)grad="zero";if(line===4)grad="full";if(line===5){upd++;wver++;grad="stale"}
+  draw();
+}
+document.getElementById("step").onclick=step;
+document.getElementById("fin").onclick=function(){var left=nb()-(line<0?0:i)-(line===5?1:0);upd+=left;wver+=left;i=nb()-1;line=5;grad="stale";draw()};
+document.getElementById("rst").onclick=function(){line=-1;i=0;upd=0;ep=0;grad="none";wver=0;draw()};
+sb.oninput=function(){line=-1;i=0;upd=0;ep=0;grad="none";wver=0;draw()};
+sh.oninput=function(){line=-1;i=0;upd=0;ep=0;grad="none";wver=0;draw()};
+window.redraw=draw;
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

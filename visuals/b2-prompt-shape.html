@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prompt-shape rewriter</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+.row{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.row button{font:inherit;font-size:13px;min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation;flex:1 1 30%}
+.row button.on{font-weight:700;border:2px solid var(--acc)}
+.parts button{flex:1 1 44%}
+.parts button.on{border-color:var(--ok)}
+.card{margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--card);border-left:4px solid var(--bad);font-size:13px}
+.card.after{border-left-color:var(--ok)}
+.card h2{font-size:12px;margin:0 0 4px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.card p{margin:2px 0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;word-break:break-word}
+.card p.g{color:var(--mut)}
+.guess{margin:8px 0}
+.guess h2{font-size:12px;margin:0 0 4px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.guess ul{margin:0;padding-left:20px;font-size:13px}
+.guess li{margin:2px 0}
+.guess li b{color:var(--bad)}
+.meter{margin:8px 0 2px}
+.meter .lab{font-size:12px;color:var(--mut);margin-bottom:2px}
+.meter .lab b{color:var(--fg);font-family:ui-monospace,Menlo,Consolas,monospace}
+progress{width:100%;height:10px;appearance:none;-webkit-appearance:none;border:0;border-radius:5px;overflow:hidden;background:var(--line)}
+progress::-webkit-progress-bar{background:var(--line)}progress::-webkit-progress-value{background:var(--bad)}progress::-moz-progress-bar{background:var(--bad)}
+progress.ok::-webkit-progress-value{background:var(--ok)}progress.ok::-moz-progress-bar{background:var(--ok)}
+progress.warn::-webkit-progress-value{background:var(--acc2)}progress.warn::-moz-progress-bar{background:var(--acc2)}
+.status{font-size:13px;min-height:44px;padding:8px 10px;border-radius:10px;background:var(--card);margin-top:8px}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:10px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>From a vague prompt to a four-part prompt</h1>
+<p class="hint">Pick a task, then tap the parts to add them. Every part still missing is something the agent guesses for you.</p>
+<div class="row" id="scen"></div>
+<div class="card"><h2>Before</h2><p id="before"></p></div>
+<div class="row parts" id="parts"><button data-p="0">Goal</button><button data-p="1">Context</button><button data-p="2">Constraints</button><button data-p="3">Done when</button></div>
+<div class="card after"><h2>After</h2><div id="after"></div></div>
+<div class="guess"><h2>What the agent has to guess</h2><ul id="gl"></ul></div>
+<div class="meter"><div class="lab">Guesses left <b id="gn"></b> · prompt words <b id="wn"></b></div><progress id="pg" max="4" value="4"></progress></div>
+<div class="status" id="st"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>four-part prompt</dt><dd>Goal, Context, Constraints, Done when. OpenAI's recommended default; it maps onto Anthropic's advice to scope the task, point to sources and give a check.</dd>
+<dt>guess</dt><dd>A decision the agent makes because the prompt did not. A wrong one costs a correction, and the correction stays in the context for the rest of the session.</dd>
+<dt>Done when</dt><dd>The condition the agent can check itself before it stops: a test, a build, a checker script. Without it, "looks done" is the only signal.</dd>
+</dl></details>
+<script>
+(function(){
+var NAMES=["Goal","Context","Constraints","Done when"];
+var S=[
+ {n:"Unity haptics",v:"fix the haptic stutter",
+  p:["Goal: stop HapticController dropping pulses at 90 Hz.","Context: Assets/Scripts/Haptics/ and the failing PlayMode test Pulse90HzTest.","Constraints: public API unchanged; no new packages.","Done when: Pulse90HzTest passes and Pulse60HzTest still passes."],
+  g:["what \"stutter\" means and which symptom to chase","where the code is: it opens Assets/ and reads until something looks relevant","whether it may change the public API or add a package","when to stop: it stops when the code looks right, not when the test passes"]},
+ {n:"Reviewer response",v:"reply to reviewer 2",
+  p:["Goal: draft replies to Reviewer 2's three comments on the haptics paper.","Context: reviews/r2.txt; paper/main.tex sections 4 and 5; numbers in results/.","Constraints: English, polite but firm; promise no new experiments; under 400 words.","Done when: each comment has a numbered reply quoting the changed text and its page."],
+  g:["which reviewer, which paper, and whether this is a reply or a rebuttal","where the reviews and manuscript are: it may ask, or invent quotations","language, tone, and whether it may promise experiments","what a finished reply looks like: it stops after one paragraph"]},
+ {n:"This repo",v:"tighten AGENTS.md",
+  p:["Goal: shorten AGENTS.md so a fresh session can run the four LOOP.md commands from it.","Context: AGENTS.md, LOOP.md, LESSON_FORMAT.md.","Constraints: under 80 lines; keep the Commands section; do not duplicate LESSON_FORMAT.md.","Done when: a fresh session runs check_lessons.py and build_today.py from AGENTS.md alone."],
+  g:["what \"tighten\" means: shorter, stricter, or reorganised","which files describe the workflow: it reads the whole repo to find out","how short is short, and what it may delete","how to check its work: it declares victory after editing"]}
+];
+var si=0,on=[false,false,false,false];
+var sc=document.getElementById("scen");
+S.forEach(function(s,i){var b=document.createElement("button");b.textContent=s.n;b.onclick=function(){si=i;on=[false,false,false,false];draw()};sc.appendChild(b)});
+document.getElementById("parts").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var i=+b.dataset.p;on[i]=!on[i];draw()});
+function words(t){return t.split(/\s+/).filter(Boolean).length}
+function draw(){
+ var s=S[si];
+ Array.prototype.forEach.call(sc.children,function(b,i){b.className=i===si?"on":""});
+ Array.prototype.forEach.call(document.getElementById("parts").children,function(b,i){b.className=on[i]?"on":""});
+ document.getElementById("before").textContent=s.v;
+ var A=document.getElementById("after");A.innerHTML="";
+ var text=[],left=0,gl=document.getElementById("gl");gl.innerHTML="";
+ NAMES.forEach(function(nm,i){var p=document.createElement("p");
+  if(on[i]){p.textContent=s.p[i];text.push(s.p[i])}else{p.className="g";p.textContent=nm+": (missing)";left++;var l=document.createElement("li");l.innerHTML="<b>"+nm+":</b> "+s.g[i];gl.appendChild(l)}
+  A.appendChild(p)});
+ if(!left){var l=document.createElement("li");l.textContent="Nothing. The first reply can be a plan naming the files it will touch.";gl.appendChild(l)}
+ document.getElementById("gn").textContent=left+" of 4";
+ document.getElementById("wn").textContent=words(s.v)+" → "+(text.length?words(text.join(" ")):words(s.v));
+ var pg=document.getElementById("pg");pg.value=left;pg.className=left===0?"ok":left<=2?"warn":"";
+ var st=document.getElementById("st");
+ if(left===4)st.textContent="Four guesses. Each wrong one is a correction that stays in the context window for the rest of the session.";
+ else if(on[3]&&left)st.textContent="With a Done-when the agent can check itself; the remaining guesses cost exploration, not correctness.";
+ else if(!on[3])st.textContent="Still no Done-when: the agent stops when the work looks done. That is the one part it can never invent for you.";
+ else st.textContent="About "+words(text.join(" "))+" words bought a plan you can correct in one line. In plan mode, send this and read the file list before approving.";
+}
+draw();
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+})();
+</script>
+</body>
+</html>
