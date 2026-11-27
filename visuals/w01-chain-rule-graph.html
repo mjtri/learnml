@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Step through a backward pass</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+svg{display:block;width:100%;max-width:400px;margin:0 auto;height:auto}
+.node rect{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.node.hot rect{stroke:var(--acc2);stroke-width:2.5}
+.node text{font:12px system-ui,sans-serif;fill:var(--mut);text-anchor:middle}
+.node text.nm{font:700 13px ui-monospace,Menlo,Consolas,monospace;fill:var(--fg)}
+.node text.val{font:13px ui-monospace,Menlo,Consolas,monospace;fill:var(--acc)}
+.node text.gr{font:700 13px ui-monospace,Menlo,Consolas,monospace;fill:var(--acc2)}
+.edge{stroke:var(--mut);stroke-width:1.5;fill:none}
+.edge.hot{stroke:var(--acc2);stroke-width:3}
+.legend{font-size:12px;color:var(--mut);text-align:center;margin:2px 0 6px}
+.legend .v{color:var(--acc);font-weight:700}.legend .g{color:var(--acc2);font-weight:700}
+label{display:grid;grid-template-columns:20px 1fr 44px;align-items:center;gap:8px;font:700 14px ui-monospace,Menlo,Consolas,monospace}
+label output{text-align:right;font-weight:400}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.say{background:var(--card);border-radius:10px;padding:10px;font-size:13.5px;min-height:84px}
+.say b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>L = (a × b + c)²: forward fills values, backward fills gradients</h1>
+<svg id="g" viewBox="0 0 340 392" role="img" aria-label="Computation graph for L equals a times b plus c, squared"></svg>
+<div class="legend"><span class="v">blue = value (forward)</span> · <span class="g">orange = gradient ∂L/∂· (backward)</span></div>
+<label>a<input id="sa" type="range" min="-5" max="5" step="0.5" value="2"><output id="oa"></output></label>
+<label>b<input id="sb" type="range" min="-5" max="5" step="0.5" value="-3"><output id="ob"></output></label>
+<label>c<input id="sc" type="range" min="-10" max="10" step="0.5" value="10"><output id="oc"></output></label>
+<div class="btns">
+  <button class="pri" id="step">Backward step ▶</button>
+  <button id="reset">Hide gradients</button>
+  <button id="nudge">Nudge a +0.01</button>
+</div>
+<div class="say" id="say" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>forward pass</dt><dd>Compute values from inputs to output (blue numbers).</dd>
+<dt>backward pass</dt><dd>Walk from the output back to the inputs, computing how sensitive L is to each value (orange numbers).</dd>
+<dt>local derivative</dt><dd>One box's own sensitivity to its direct input, e.g. for d = a × b, nudging a moves d by b.</dd>
+<dt>chain rule</dt><dd>gradient of my input = local derivative × gradient of my output.</dd>
+</dl></details>
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("g"),step=0;
+var POS={a:[58,36],b:[170,36],c:[282,150],d:[114,150],e:[198,264],L:[198,356]};
+var LABEL={a:"a",b:"b",c:"c",d:"d = a × b",e:"e = d + c",L:"L = e²"};
+var EDGES=[["a","d"],["b","d"],["d","e"],["c","e"],["e","L"]];
+var REVEAL={L:1,e:2,d:3,c:3,a:4,b:4};
+var HOT={1:{n:["L"],e:[]},2:{n:["e"],e:["e-L"]},3:{n:["d","c"],e:["d-e","c-e"]},4:{n:["a","b"],e:["a-d","b-d"]}};
+function mk(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e}
+var els={},edgeEls={};
+EDGES.forEach(function(p){var A=POS[p[0]],B=POS[p[1]];var l=mk("line",{x1:A[0],y1:A[1]+30,x2:B[0],y2:B[1]-30,"class":"edge"});svg.appendChild(l);edgeEls[p[0]+"-"+p[1]]=l});
+Object.keys(POS).forEach(function(k){var p=POS[k],g=mk("g",{"class":"node",transform:"translate("+(p[0]-52)+","+(p[1]-30)+")"});
+  g.appendChild(mk("rect",{width:104,height:60,rx:10}));
+  g.appendChild(mk("text",{x:52,y:17,"class":"nm"},LABEL[k]));
+  var v=mk("text",{x:52,y:35,"class":"val"}),gr=mk("text",{x:52,y:52,"class":"gr"});
+  g.appendChild(v);g.appendChild(gr);svg.appendChild(g);els[k]={g:g,v:v,gr:gr}});
+function f(n){var s=(Math.round(n*100)/100).toString();return s==="-0"?"0":s}
+function vals(a,b,c){var d=a*b,e=d+c;return{a:a,b:b,c:c,d:d,e:e,L:e*e}}
+function inputs(){return[+document.getElementById("sa").value,+document.getElementById("sb").value,+document.getElementById("sc").value]}
+function render(msg){
+  var i=inputs(),V=vals(i[0],i[1],i[2]),ge=2*V.e,G={L:1,e:ge,d:ge,c:ge,a:ge*V.b,b:ge*V.a};
+  document.getElementById("oa").textContent=f(V.a);document.getElementById("ob").textContent=f(V.b);document.getElementById("oc").textContent=f(V.c);
+  Object.keys(els).forEach(function(k){
+    els[k].v.textContent="value "+f(V[k]);
+    els[k].gr.textContent="grad "+(step>=REVEAL[k]?f(G[k]):"?");
+    els[k].g.setAttribute("class","node"+(HOT[step]&&HOT[step].n.indexOf(k)>=0?" hot":""))});
+  Object.keys(edgeEls).forEach(function(k){edgeEls[k].setAttribute("class","edge"+(HOT[step]&&HOT[step].e.indexOf(k)>=0?" hot":""))});
+  var T=[
+   "Forward pass done: every box has a value. <b>Predict all the gradients</b>, then press Backward step.",
+   "Start at the output. How sensitive is L to itself? <b>1</b>. Every backward pass starts with a 1.",
+   "L = e². Local derivative: 2e = <b>"+f(2*V.e)+"</b>. Gradient of e = "+f(2*V.e)+" × 1 = <b>"+f(G.e)+"</b>.",
+   "e = d + c. Nudging d or c by 1 nudges e by 1, so the local derivative is 1 for both. <b>Add copies the gradient</b>: d and c both get <b>"+f(G.d)+"</b>.",
+   "d = a × b. Nudging a moves d by b, and vice versa. <b>Multiply swaps</b>: grad a = "+f(G.d)+" × b = <b>"+f(G.a)+"</b>; grad b = "+f(G.d)+" × a = <b>"+f(G.b)+"</b>."+(V.b===0?" With b = 0, a cannot influence L at all right now.":"")];
+  document.getElementById("say").innerHTML=msg||T[step];
+  document.getElementById("step").disabled=step>=4;
+  document.getElementById("nudge").disabled=step<4;
+}
+window.redraw=function(){render()};
+["sa","sb","sc"].forEach(function(id){document.getElementById(id).oninput=function(){step=0;render()}});
+document.getElementById("step").onclick=function(){if(step<4)step++;render()};
+document.getElementById("reset").onclick=function(){step=0;render()};
+document.getElementById("nudge").onclick=function(){
+  var i=inputs(),V=vals(i[0],i[1],i[2]),V2=vals(i[0]+.01,i[1],i[2]),ga=2*V.e*V.b;
+  render("Nudge a by 0.01. The gradient <b>predicts</b> L changes by "+f(ga)+" × 0.01 = <b>"+(ga*.01).toFixed(4)+"</b>.<br>Re-running the forward pass, L <b>actually</b> changes by <b>"+(V2.L-V.L).toFixed(4)+"</b>. The small gap is because the slope is only exact for an infinitely small nudge.")};
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light"}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Baseline ladder</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+canvas{display:block;width:100%;height:210px;border-radius:10px;background:var(--card)}
+label{display:grid;grid-template-columns:104px 1fr 52px;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+label output{font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg);text-align:right}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.hint{font-size:12px;color:var(--mut);margin:4px 0}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:14px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Three rungs your method must clear: trivial, strong (fairly tuned), same compute</h1>
+<canvas id="cv" aria-label="Ladder: three baseline rungs and your method's score as a marker"></canvas>
+<div class="hint">Task: balanced shape classification, accuracy in %. Grey rungs move when you starve the baseline of tuning or steps.</div>
+<label>classes<input id="sK" type="range" min="2" max="20" step="1" value="10"><output id="oK"></output></label>
+<label>your score %<input id="sY" type="range" min="0" max="100" step="1" value="71"><output id="oY"></output></label>
+<label>your tuning<input id="sT" type="range" min="1" max="8" step="1" value="6"><output id="oT"></output></label>
+<label>B tuning<input id="sB" type="range" min="1" max="8" step="1" value="1"><output id="oB"></output></label>
+<label>B steps %<input id="sS" type="range" min="25" max="100" step="5" value="100"><output id="oS"></output></label>
+<div class="read">
+  <span class="k">rung 1 · trivial (majority class)</span><span id="r1"></span>
+  <span class="k">rung 2 · strong B, as tuned by you</span><span id="r2"></span>
+  <span class="k">rung 2 · strong B, tuned as hard as yours</span><span id="r2f"></span>
+  <span class="k">rung 3 · same-compute B</span><span id="r3"></span>
+  <span class="k">your margin over the fair rung 3</span><span id="r4"></span>
+</div>
+<div class="verdict" id="verdict" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>baseline</dt><dd>The method B your idea must beat. A result is only ever a difference from a baseline.</dd>
+<dt>trivial baseline</dt><dd>Always predict the most common class: 100 / K for K balanced classes. If your model sits near it, the pipeline is broken.</dd>
+<dt>strong baseline</dt><dd>The best simple existing method, tuned as carefully as your own: same number of configurations tried.</dd>
+<dt>same-compute baseline</dt><dd>The strong baseline given the same steps, data and model size as your method.</dd>
+</dl></details>
+<script>
+(function(){
+function $(id){return document.getElementById(id)}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+var cv=$("cv"),ctx=cv.getContext("2d");
+function tuneF(t){return 0.82+0.18*(1-Math.exp(-(t-1)/2.2))/(1-Math.exp(-7/2.2))}
+function stepF(s){return Math.pow(s/100,0.45)}
+function model(){
+  var K=+$("sK").value,Y=+$("sY").value,T=+$("sT").value,B=+$("sB").value,S=+$("sS").value;
+  var triv=100/K,gain=0.62*(100-triv);
+  var Bseen=triv+gain*tuneF(B)*stepF(S);
+  var Bfair=triv+gain*tuneF(T)*stepF(S);
+  var Bsame=triv+gain*tuneF(T);
+  return {K:K,Y:Y,T:T,B:B,S:S,triv:triv,Bseen:Bseen,Bfair:Bfair,Bsame:Bsame}
+}
+function draw(){
+  var m=model(),r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);
+  var fg=css("--fg"),mut=css("--mut"),ln=css("--line"),acc=css("--acc"),acc2=css("--acc2"),ok=css("--ok"),bad=css("--bad");
+  ctx.clearRect(0,0,W,H);
+  var x0=40,x1=W-16,y0=14,y1=H-24;
+  function X(v){return x0+(x1-x0)*v/100}
+  ctx.strokeStyle=ln;ctx.lineWidth=1;ctx.beginPath();for(var g=0;g<=100;g+=20){ctx.moveTo(X(g),y0);ctx.lineTo(X(g),y1)}ctx.stroke();
+  ctx.fillStyle=mut;ctx.font="11px system-ui,sans-serif";ctx.textAlign="center";for(g=0;g<=100;g+=20)ctx.fillText(g+"%",X(g),H-8);
+  var rungs=[{v:m.triv,l:"1 trivial",c:mut},{v:m.Bseen,l:"2 strong (your tuning of B)",c:acc2},{v:m.Bsame,l:"3 same compute, fair",c:acc}];
+  var ys=[y0+22,y0+62,y0+102];
+  rungs.forEach(function(rg,i){var y=ys[i];ctx.strokeStyle=rg.c;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),y);ctx.lineTo(X(rg.v),y);ctx.stroke();
+    ctx.fillStyle=rg.c;ctx.beginPath();ctx.arc(X(rg.v),y,5,0,7);ctx.fill();
+    ctx.fillStyle=fg;ctx.textAlign="left";ctx.font="12px system-ui,sans-serif";ctx.fillText(rg.l+"  "+rg.v.toFixed(1)+"%",X(0)+4,y-8)});
+  var y=ys[2]+42;ctx.strokeStyle=m.Y>m.Bsame?ok:bad;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),y);ctx.lineTo(X(m.Y),y);ctx.stroke();
+  ctx.fillStyle=m.Y>m.Bsame?ok:bad;ctx.beginPath();ctx.arc(X(m.Y),y,6,0,7);ctx.fill();
+  ctx.fillStyle=fg;ctx.fillText("your method  "+m.Y+"%",X(0)+4,y-8);
+  $("oK").textContent=m.K;$("oY").textContent=m.Y;$("oT").textContent=m.T+" cfg";$("oB").textContent=m.B+" cfg";$("oS").textContent=m.S+"%";
+  $("r1").textContent=m.triv.toFixed(1)+"%";$("r2").textContent=m.Bseen.toFixed(1)+"%";$("r2f").textContent=m.Bfair.toFixed(1)+"%";$("r3").textContent=m.Bsame.toFixed(1)+"%";
+  var margin=m.Y-m.Bsame;$("r4").textContent=(margin>=0?"+":"")+margin.toFixed(1)+" pts";
+  var v;
+  if(m.Y<=m.triv+2)v='<span class="bad">No better than always guessing the majority class.</span> The task is not being learned; fix the pipeline before comparing anything.';
+  else if(m.Y<=m.Bseen)v='<span class="bad">Loses to the strong baseline even as you tuned it.</span> The idea is not needed yet.';
+  else if(m.B<m.T||m.S<100){
+    var parts=[];if(m.B<m.T)parts.push("B got "+m.B+" configuration"+(m.B>1?"s":"")+" to your "+m.T);if(m.S<100)parts.push("B trained for "+m.S+"% of your steps");
+    v='<span class="acc">Beats B, but B was starved: '+parts.join("; ")+'.</span> Fairly tuned and at the same compute, B scores '+m.Bsame.toFixed(1)+'%, so your real margin is '+(margin>=0?"+":"")+margin.toFixed(1)+' pts'+(margin>0?'.':' — <span class="bad">the gain was tuning and budget, not the idea.</span>');
+  } else v=margin>0?'<span class="ok">Clears all three rungs by '+margin.toFixed(1)+' pts.</span> Now the question is whether '+margin.toFixed(1)+' beats the seed spread (lesson 4).':'<span class="bad">Loses to the same-compute baseline.</span> The prediction failed; write that down.';
+  $("verdict").innerHTML=v;
+}
+window.redraw=draw;
+["sK","sY","sT","sB","sS"].forEach(function(id){$(id).oninput=draw});
+addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

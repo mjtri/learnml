@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Curve reader</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button.right{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:700}
+button.wrong{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.cap{font-size:12.5px;color:var(--mut);margin:8px 0 2px}
+canvas{display:block;width:100%;height:230px;border-radius:10px;background:var(--card)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:14px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:8px}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center}
+.verdict{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--card);min-height:44px;font-size:14px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.acc{color:var(--acc2);font-weight:700}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Seven runs of the same contrastive model, batch 64. Pick a run, read the numbers, name the diagnosis, then reveal</h1>
+<div class="row" id="runs"></div>
+<canvas id="cv" aria-label="Training loss (solid) and held-out retrieval accuracy (dashed) over 300 steps, with the chance line ln 64 marked."></canvas>
+<div class="read">
+  <span class="k">chance loss ln 64</span><span>4.16</span>
+  <span class="k">final training loss</span><span id="r1"></span>
+  <span class="k">held-out retrieval: peak → final</span><span id="r2" class="acc"></span>
+  <span class="k">latent sd (alive ≈ 0.18, collapsed &lt; 0.02)</span><span id="r3"></span>
+</div>
+<p class="cap">your diagnosis:</p>
+<div class="row" id="dx"></div>
+<div class="verdict" id="v">Tap a diagnosis, then <b>reveal</b>.</div>
+<div class="row"><button id="reveal">reveal</button></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>InfoNCE loss</dt><dd>The contrastive loss: how badly each image fails to pick its own sound out of the batch. With 64 in the batch, guessing scores ln 64 = 4.16.</dd>
+<dt>held-out retrieval</dt><dd>On pairs never trained on: the share of images whose own sound is the nearest held-out sound. Chance is 1 in 60 here, about 2%.</dd>
+<dt>latent sd</dt><dd>Spread of the unit-length latent vectors across a batch, averaged over dimensions. Near zero means every input maps to the same point: collapse.</dd>
+</dl></details>
+<script>
+(function(){
+var LNB=Math.log(64),STEPS=300,cur=0,pick=-1,revealed=false;
+function rng(seed){var s=seed;return function(){s=(s*1664525+1013904223)%4294967296;return s/4294967296-0.5}}
+function series(kind){var L=[],A=[],r=rng(kind*7+1);
+  for(var i=0;i<=STEPS;i+=10){var t=i/STEPS,loss,acc;
+    if(kind===0){loss=1.0+3.16*Math.exp(-4*t);acc=0.62*(1-Math.exp(-4.5*t))}
+    else if(kind===1){loss=0.05+4.1*Math.exp(-7*t);acc=t<0.45?0.55*(1-Math.exp(-8*t)):0.55-0.5*(t-0.45)}
+    else if(kind===2){loss=LNB-0.02*t;acc=0.017}
+    else if(kind===3){loss=LNB-0.03*Math.min(1,t*6);acc=0.017}
+    else if(kind===4){loss=t<0.3?1.5+2.66*Math.exp(-9*t):(t<0.4?1.6+ (t-0.3)*26:4.16+0.02);acc=t<0.3?0.5*(1-Math.exp(-7*t)):(t<0.4?0.47-(t-0.3)*4.4:0.017)}
+    else if(kind===5){loss=LNB-0.11*t;acc=0.017+0.05*t}
+    else{loss=0.005+4.15*Math.exp(-22*t);acc=t<0.1?1-Math.exp(-40*t):1}
+    L.push(loss+0.03*r());A.push(Math.max(0,Math.min(1,acc+0.012*r())))}
+  return {L:L,A:A}}
+var RUNS=[
+ {k:0,sd:0.16,dx:0,tell:"loss well below 4.16, held-out still rising at the end, latents spread: learning."},
+ {k:1,sd:0.15,dx:1,tell:"training loss near 0 but held-out peaked at step 130 and fell: the pairs were memorised. Fixed steps mean you report the final number and fix data or latent size for every row."},
+ {k:2,sd:0.17,dx:2,tell:"loss pinned at ln 64 while the space is alive (sd 0.17): nothing to learn, the pairs are mis-wired (images shuffled, sounds not)."},
+ {k:3,sd:0.01,dx:3,tell:"loss pinned at ln 64 AND latent sd 0.01: every latent points the same way. Collapse, not wiring."},
+ {k:4,sd:0.12,dx:4,tell:"learned fast, then the loss jumped back to chance and never recovered: learning rate too high."},
+ {k:5,sd:0.17,dx:2,tell:"loss creeps down by hundredths: a temperature near 1 flattens every softmax, so the gradient is tiny. Wiring/settings, not the model."},
+ {k:6,sd:0.17,dx:5,tell:"loss 0.00 and held-out 100% from step 50, space alive: nothing was hard. The pair is nearly an identity (the spectrogram is almost the image), so retrieval says nothing about the claim; Part D's rank correlation is the number. This is the notebook's SMOKE run."}];
+var ORDER=[1,3,6,0,5,2,4];
+var DX=["learning","memorising","wiring / settings bug","collapsed space","learning rate too high","too easy: pair is an identity"];
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function draw(){var r=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;cv.width=W*r;cv.height=H*r;ctx.setTransform(r,0,0,r,0,0);
+  var run=RUNS[ORDER[cur]],S=series(run.k),mut=css("--mut"),acc=css("--acc"),acc2=css("--acc2"),line=css("--line");
+  var L0=34,R0=W-36,T0=12,B0=H-22;ctx.clearRect(0,0,W,H);
+  function X(i){return L0+i/(S.L.length-1)*(R0-L0)}function YL(v){return B0-v/4.6*(B0-T0)}function YA(v){return B0-v*(B0-T0)}
+  ctx.strokeStyle=line;ctx.lineWidth=1;ctx.beginPath();[1,2,3,4].forEach(function(v){ctx.moveTo(L0,YL(v));ctx.lineTo(R0,YL(v))});ctx.stroke();
+  ctx.setLineDash([4,4]);ctx.strokeStyle=mut;ctx.beginPath();ctx.moveTo(L0,YL(LNB));ctx.lineTo(R0,YL(LNB));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=mut;ctx.font="11px system-ui,sans-serif";ctx.textAlign="left";ctx.fillText("chance ln 64",L0+4,YL(LNB)-4);
+  ctx.textAlign="right";[0,1,2,3,4].forEach(function(v){ctx.fillText(v,L0-4,YL(v)+4)});ctx.textAlign="left";[0,0.5,1].forEach(function(v){ctx.fillText(Math.round(v*100)+"%",R0+4,YA(v)+4)});
+  ctx.textAlign="center";ctx.fillText("step 0 → 300",(L0+R0)/2,H-6);
+  ctx.save();ctx.translate(9,(T0+B0)/2);ctx.rotate(-Math.PI/2);ctx.fillStyle=acc;ctx.fillText("train loss",0,0);ctx.restore();
+  ctx.save();ctx.translate(W-4,(T0+B0)/2);ctx.rotate(Math.PI/2);ctx.fillStyle=acc2;ctx.fillText("held-out retrieval",0,0);ctx.restore();
+  ctx.strokeStyle=acc;ctx.lineWidth=2.5;ctx.beginPath();S.L.forEach(function(v,i){i?ctx.lineTo(X(i),YL(v)):ctx.moveTo(X(i),YL(v))});ctx.stroke();
+  ctx.strokeStyle=acc2;ctx.setLineDash([6,4]);ctx.beginPath();S.A.forEach(function(v,i){i?ctx.lineTo(X(i),YA(v)):ctx.moveTo(X(i),YA(v))});ctx.stroke();ctx.setLineDash([]);
+  var peak=Math.max.apply(null,S.A),fin=S.A[S.A.length-1];
+  document.getElementById("r1").textContent=S.L[S.L.length-1].toFixed(2);
+  document.getElementById("r2").textContent=Math.round(peak*100)+"% → "+Math.round(fin*100)+"%";
+  var r3=document.getElementById("r3");r3.textContent=run.sd.toFixed(2);r3.className=run.sd<0.02?"bad":"";
+  Array.prototype.forEach.call(rbox.children,function(b,i){b.className=i===cur?"on":""});
+  Array.prototype.forEach.call(dbox.children,function(b,i){b.className=revealed?(i===run.dx?"right":(i===pick?"wrong":"")):(i===pick?"on":"")});
+  var v=document.getElementById("v");
+  if(revealed)v.innerHTML=(pick===run.dx?"<span class='ok'>Yes.</span> ":"<span class='bad'>No: "+DX[run.dx]+".</span> ")+"The tell: "+run.tell;
+  else v.textContent=pick<0?"Tap a diagnosis, then reveal.":"You said: "+DX[pick]+". Reveal to check.";
+}
+window.redraw=draw;
+var rbox=document.getElementById("runs"),dbox=document.getElementById("dx");
+ORDER.forEach(function(_,i){var b=document.createElement("button");b.textContent="run "+(i+1);b.onclick=function(){cur=i;pick=-1;revealed=false;draw()};rbox.appendChild(b)});
+DX.forEach(function(d,i){var b=document.createElement("button");b.textContent=d;b.onclick=function(){if(!revealed){pick=i;draw()}};dbox.appendChild(b)});
+document.getElementById("reveal").onclick=function(){if(pick<0){document.getElementById("v").textContent="Pick a diagnosis first: the point is to commit before looking.";return}revealed=true;draw()};
+addEventListener("resize",draw);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+draw();
+})();
+</script>
+</body>
+</html>

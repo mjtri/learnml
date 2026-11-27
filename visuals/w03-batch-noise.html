@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mini-batch noise</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 8px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.sl{display:block;font-size:13px;color:var(--mut);margin:2px 0}
+.sl output{float:right;font:14px ui-monospace,Menlo,Consolas,monospace;color:var(--fg)}
+.sl input[type=range]{display:block;width:100%;height:44px;margin:0;accent-color:var(--acc)}
+canvas{display:block;width:100%;max-width:400px;margin:0 auto;border-radius:10px;background:var(--card);touch-action:pan-y}
+.hint{font-size:12px;color:var(--mut);margin:6px 0;text-align:center}
+.read{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.read div{background:var(--card);border-radius:10px;padding:6px 4px;text-align:center;font:14px ui-monospace,Menlo,Consolas,monospace}
+.read span{display:block;font:11px system-ui,sans-serif;color:var(--mut)}
+.read .ok{color:var(--ok)}.read .tr{color:var(--acc2)}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{padding:13px 0;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>A batch of B examples: how close is its gradient to the <span style="color:var(--acc2)">full-data</span> gradient?</h1>
+<label class="sl"><span>batch size B</span><output id="ob"></output><input id="sb" type="range" min="0" max="10" step="1" value="0"></label>
+<canvas id="cv" aria-label="Arrows: the orange full-data gradient and green mini-batch estimates."></canvas>
+<div class="hint">Orange: the gradient over all 1,000 examples. Green: the estimate from one batch (latest is bold).</div>
+<div class="row"><button class="pri" id="one">Draw a batch</button><button id="many">Draw 20</button><button id="rst">Clear</button></div>
+<div class="read"><div><span>draws at this B</span><b id="rd">0</b></div><div><span>pointing uphill</span><b id="ru">–</b></div><div><span>latest error</span><b id="re">–</b></div></div>
+<div class="read"><div><span>measured spread</span><b id="rs" class="ok">–</b></div><div><span>predicted σ/√B</span><b id="rp" class="tr"></b></div><div><span>cost per step</span><b id="rc"></b></div></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>mini-batch</dt><dd>B examples drawn at random from the 1,000. Its gradient is the mean of their per-example gradients.</dd>
+<dt>spread</dt><dd>Typical distance between a batch estimate and the full-data gradient, over many draws (root mean square). Theory says it shrinks like 1/√B.</dd>
+<dt>uphill</dt><dd>An estimate pointing more than 90° away from the true gradient: a step along it would raise the loss.</dd>
+</dl></details>
+<script>
+(function(){
+var BS=[1,2,4,8,16,32,64,128,256,512,1000],N=1000,G=[1.0,0.45],SIG=1.6;
+var seed=12345;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+function gauss(){var u=rnd()||1e-9,v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2831853*v)}
+var ex=[];for(var i=0;i<N;i++)ex.push([G[0]+SIG*gauss(),G[1]+SIG*gauss()]);
+var mean=[0,0];ex.forEach(function(g){mean[0]+=g[0]/N;mean[1]+=g[1]/N});
+var sd=0;ex.forEach(function(g){sd+=((g[0]-mean[0])*(g[0]-mean[0])+(g[1]-mean[1])*(g[1]-mean[1]))/N});sd=Math.sqrt(sd);
+var sb=document.getElementById("sb"),cv=document.getElementById("cv"),ctx=cv.getContext("2d"),size=300,draws=[],R=3.2;
+function B(){return BS[+sb.value]}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function fit(){var w=Math.min(cv.parentNode.clientWidth-26,400),r=window.devicePixelRatio||1;size=w;cv.style.height=w+"px";cv.width=w*r;cv.height=w*r;ctx.setTransform(r,0,0,r,0,0);draw()}
+function px(p){return[size/2+p[0]/R*size/2,size/2-p[1]/R*size/2]}
+function arrow(p,col,w){var o=px([0,0]),q=px(p);ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(o[0],o[1]);ctx.lineTo(q[0],q[1]);ctx.stroke();
+  var a=Math.atan2(q[1]-o[1],q[0]-o[0]),h=5+w*2;ctx.beginPath();ctx.moveTo(q[0],q[1]);ctx.lineTo(q[0]-h*Math.cos(a-.5),q[1]-h*Math.sin(a-.5));ctx.lineTo(q[0]-h*Math.cos(a+.5),q[1]-h*Math.sin(a+.5));ctx.closePath();ctx.fill()}
+function draw(){
+  var ln=css("--line"),mut=css("--mut"),acc2=css("--acc2"),ok=css("--ok");
+  ctx.clearRect(0,0,size,size);
+  ctx.strokeStyle=ln;ctx.lineWidth=1;ctx.beginPath();for(var g=-3;g<=3;g++){var a=px([g,0]),b=px([0,g]);ctx.moveTo(a[0],0);ctx.lineTo(a[0],size);ctx.moveTo(0,b[1]);ctx.lineTo(size,b[1])}ctx.stroke();
+  ctx.strokeStyle=mut;ctx.beginPath();var o=px([0,0]);ctx.moveTo(0,o[1]);ctx.lineTo(size,o[1]);ctx.moveTo(o[0],0);ctx.lineTo(o[0],size);ctx.stroke();
+  ctx.globalAlpha=.35;draws.forEach(function(d,i){if(i<draws.length-1)arrow(d,ok,1.5)});ctx.globalAlpha=1;
+  if(draws.length)arrow(draws[draws.length-1],ok,3);
+  arrow(mean,acc2,3);
+  var n=draws.length,up=0,ss=0;
+  draws.forEach(function(d){var dx=d[0]-mean[0],dy=d[1]-mean[1];ss+=dx*dx+dy*dy;if(d[0]*mean[0]+d[1]*mean[1]<0)up++});
+  document.getElementById("ob").textContent=B();
+  document.getElementById("rd").textContent=n;
+  document.getElementById("ru").textContent=n?up+" / "+n:"–";
+  var l=draws[n-1];document.getElementById("re").textContent=l?Math.hypot(l[0]-mean[0],l[1]-mean[1]).toFixed(2):"–";
+  document.getElementById("rs").textContent=n>=2?Math.sqrt(ss/n).toFixed(2):"–";
+  document.getElementById("rp").textContent=(sd/Math.sqrt(B())).toFixed(2);
+  document.getElementById("rc").textContent=B()+"×";
+}
+function one(){var b=B(),s=[0,0];for(var k=0;k<b;k++){var g=ex[Math.floor(Math.random()*N)];s[0]+=g[0]/b;s[1]+=g[1]/b}draws.push(s);if(draws.length>200)draws.shift()}
+document.getElementById("one").onclick=function(){one();draw()};
+document.getElementById("many").onclick=function(){for(var k=0;k<20;k++)one();draw()};
+document.getElementById("rst").onclick=function(){draws=[];draw()};
+sb.oninput=function(){draws=[];draw()};
+window.redraw=draw;addEventListener("resize",fit);
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+fit();
+})();
+</script>
+</body>
+</html>

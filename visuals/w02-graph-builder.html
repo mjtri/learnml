@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build a Value graph</title>
+<style>
+:root{--bg:#fff;--fg:#1d2330;--mut:#5b6475;--line:#d8dde6;--card:#f3f5f9;--acc:#4051b5;--acc2:#d9531e;--ok:#1f9d63;--bad:#d23f3f}
+:root[data-theme=dark]{--bg:#1f222c;--fg:#e4e7ee;--mut:#9aa3b5;--line:#3a4050;--card:#282c38;--acc:#8fa2ff;--acc2:#ff9b73;--ok:#5fd39a;--bad:#ff7b7b}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;padding:12px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--fg);border:1px solid var(--line);border-radius:12px;overflow-x:hidden}
+h1{font-size:15px;margin:0 0 6px}
+button{font:inherit;font-size:13px;min-height:44px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;touch-action:manipulation}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.k{font-size:12px;color:var(--mut);margin-top:6px}
+svg{display:block;width:100%;max-width:400px;margin:4px auto;height:auto}
+.node rect{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.node.leaf rect{stroke:var(--acc)}
+.node.root rect{stroke:var(--acc2);stroke-width:2.5}
+.node.off{opacity:.35}
+.node text{font:12px system-ui,sans-serif;fill:var(--mut);text-anchor:middle}
+.node text.nm{font:700 13px ui-monospace,Menlo,Consolas,monospace;fill:var(--fg)}
+.node text.val{font:12px ui-monospace,Menlo,Consolas,monospace;fill:var(--acc)}
+.node text.gr{font:700 12px ui-monospace,Menlo,Consolas,monospace;fill:var(--acc2)}
+.edge{stroke:var(--mut);stroke-width:1.5;fill:none}
+label{display:grid;grid-template-columns:20px 1fr 44px;align-items:center;gap:8px;font:700 14px ui-monospace,Menlo,Consolas,monospace}
+label output{text-align:right;font-weight:400}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--acc)}
+.read{display:grid;grid-template-columns:1fr auto;gap:3px 12px;font:13px ui-monospace,Menlo,Consolas,monospace;background:var(--card);border-radius:10px;padding:10px;margin-top:6px}
+.read span:not(.k){overflow-wrap:anywhere;text-align:right}
+.read .k{color:var(--mut);font:12.5px system-ui,sans-serif;align-self:center;margin:0}
+.read .g{color:var(--acc2);font-weight:700}
+.say{background:var(--card);border-radius:10px;padding:10px;font-size:13.5px;min-height:64px;margin-top:6px}
+.say b{font-family:ui-monospace,Menlo,Consolas,monospace}
+details{margin-top:10px;font-size:13px;color:var(--mut)}
+summary{display:block;min-height:44px;line-height:44px;cursor:pointer}
+dt{font-weight:700;color:var(--fg);margin-top:4px}dd{margin:0}
+</style>
+</head>
+<body>
+<h1>Every tap makes one node that remembers its parents. Build, then run Backward.</h1>
+<div class="k">the current root, combined with a leaf:</div>
+<div class="btns" id="ops"></div>
+<div class="btns"><button id="undo">Undo</button><button id="reset">Reset</button><button class="pri" id="bw">Backward ▶</button></div>
+<svg id="g" viewBox="0 0 340 120" role="img" aria-label="Value graph built from the taps"></svg>
+<label>a<input id="sa" type="range" min="-5" max="5" step="0.5" value="2"><output id="oa"></output></label>
+<label>b<input id="sb" type="range" min="-5" max="5" step="0.5" value="-3"><output id="ob"></output></label>
+<label>c<input id="sc" type="range" min="-10" max="10" step="0.5" value="10"><output id="oc"></output></label>
+<div class="read">
+  <span class="k">expression</span><span id="r0"></span>
+  <span class="k">nodes in the graph</span><span id="r1"></span>
+  <span class="k">root value (forward)</span><span id="r2"></span>
+  <span class="k">topological order</span><span id="r3"></span>
+  <span class="k">∂root/∂a</span><span id="r4" class="g"></span>
+  <span class="k">∂root/∂b</span><span id="r5" class="g"></span>
+  <span class="k">∂root/∂c</span><span id="r6" class="g"></span>
+</div>
+<div class="say" id="say" aria-live="polite"></div>
+<details><summary>ⓘ Words used here</summary><dl>
+<dt>Value object</dt><dd>One number plus its history: the parents that made it and the operation that did.</dd>
+<dt>leaf / root</dt><dd>A leaf has no parents (an input or a weight). The root is the final output, the one you call backward on.</dd>
+<dt>topological order</dt><dd>Nodes listed so every node comes after its parents. Backward walks it in reverse.</dd>
+<dt>gradient</dt><dd>How much the root changes per tiny change of that node's value (orange numbers).</dd>
+</dl></details>
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("g"),say=document.getElementById("say");
+var ops=[],showGrad=false,MAX=6,NAMES="defghi";
+var OPS=[["+","a"],["+","b"],["+","c"],["×","a"],["×","b"],["×","c"],["×","self"],["tanh",null]];
+function V(d,prev,op,name){this.data=d;this.grad=0;this.prev=prev;this.op=op;this.name=name;this.back=function(){}}
+function add(x,y,n){var o=new V(x.data+y.data,[x,y],"+",n);o.back=function(){x.grad+=o.grad;y.grad+=o.grad};return o}
+function mul(x,y,n){var o=new V(x.data*y.data,[x,y],"×",n);o.back=function(){x.grad+=y.data*o.grad;y.grad+=x.data*o.grad};return o}
+function th(x,n){var t=Math.tanh(x.data),o=new V(t,[x],"tanh",n);o.back=function(){x.grad+=(1-t*t)*o.grad};return o}
+function build(){
+  var L={a:new V(+sa.value,[],"","a"),b:new V(+sb.value,[],"","b"),c:new V(+sc.value,[],"","c")};
+  var root=L.a,nodes=[],expr="a";
+  ops.forEach(function(op,i){var n=NAMES[i],prev=root;
+    if(op[0]==="tanh"){root=th(prev,n);root.desc=n+" = tanh("+prev.name+")";expr="tanh("+expr+")"}
+    else{var y=op[1]==="self"?prev:L[op[1]];root=op[0]==="+"?add(prev,y,n):mul(prev,y,n);
+      root.desc=n+" = "+prev.name+" "+op[0]+" "+y.name;expr="("+expr+" "+op[0]+" "+(op[1]==="self"?expr:op[1])+")"}
+    nodes.push(root)});
+  return{L:L,root:root,nodes:nodes,expr:expr}
+}
+function topo(root){var order=[],seen=[];(function visit(v){if(seen.indexOf(v)<0){seen.push(v);v.prev.forEach(visit);order.push(v)}})(root);return order}
+function mk(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e}
+function f(n){if(Math.abs(n)<5e-5)n=0;var s=(Math.round(n*1000)/1000).toString();return s}
+var LX={a:54,b:170,c:286},LY=34,CX=120;
+function ny(i){return 118+70*i}
+function node(cx,cy,cls,nm,val,gr){var g=mk("g",{"class":"node "+cls,transform:"translate("+(cx-52)+","+(cy-28)+")"});
+  g.appendChild(mk("rect",{width:104,height:56,rx:10}));g.appendChild(mk("text",{x:52,y:16,"class":"nm"},nm));
+  g.appendChild(mk("text",{x:52,y:32,"class":"val"},val));g.appendChild(mk("text",{x:52,y:48,"class":"gr"},gr));svg.appendChild(g)}
+function render(msg){
+  var g=build(),order=topo(g.root),H=ny(Math.max(ops.length-1,0))+40;
+  if(!ops.length)H=100;
+  svg.setAttribute("viewBox","0 0 340 "+H);while(svg.firstChild)svg.removeChild(svg.firstChild);
+  if(showGrad){order.forEach(function(v){v.grad=0});g.root.grad=1;for(var i=order.length-1;i>=0;i--)order[i].back()}
+  ops.forEach(function(op,i){var y=ny(i)-28,py=i?ny(i-1)+28:LY+28,px=i?CX:LX.a;
+    if(op[1]==="self"){svg.appendChild(mk("line",{x1:px-8,y1:py,x2:CX-8,y2:y,"class":"edge"}));svg.appendChild(mk("line",{x1:px+8,y1:py,x2:CX+8,y2:y,"class":"edge"}))}
+    else svg.appendChild(mk("line",{x1:px,y1:py,x2:CX,y2:y,"class":"edge"}));
+    if(op[1]&&op[1]!=="self"){var lx=LX[op[1]],mid=(LY+28+y)/2,ex=op[1]==="a"?CX-36:op[1]==="b"?CX+30:CX+44,cxp=op[1]==="a"?lx-14:lx+40;
+      svg.appendChild(mk("path",{d:"M"+lx+","+(LY+28)+" Q"+cxp+","+mid+" "+ex+","+y,"class":"edge"}))}});
+  ["a","b","c"].forEach(function(k){var v=g.L[k],used=order.indexOf(v)>=0,isRoot=g.root===v;
+    node(LX[k],LY,"leaf"+(used?"":" off")+(isRoot?" root":""),k,"value "+f(v.data),"grad "+(showGrad&&used?f(v.grad):"?"))});
+  g.nodes.forEach(function(v,i){node(CX,ny(i),v===g.root?"root":"",v.desc,"value "+f(v.data),"grad "+(showGrad?f(v.grad):"?"))});
+  document.getElementById("oa").textContent=f(+sa.value);document.getElementById("ob").textContent=f(+sb.value);document.getElementById("oc").textContent=f(+sc.value);
+  document.getElementById("r0").textContent=g.expr;document.getElementById("r1").textContent=order.length;
+  document.getElementById("r2").textContent=g.root.name+" = "+f(g.root.data);
+  document.getElementById("r3").textContent=order.map(function(v){return v.name}).join(" ");
+  ["a","b","c"].forEach(function(k,i){document.getElementById("r"+(4+i)).textContent=showGrad?(order.indexOf(g.L[k])>=0?f(g.L[k].grad):"0 (not in graph)"):"?"});
+  var full=ops.length>=MAX;
+  Array.prototype.forEach.call(document.getElementById("ops").children,function(b){b.disabled=full});
+  document.getElementById("undo").disabled=!ops.length;
+  if(msg)say.innerHTML=msg;
+  else if(!ops.length)say.innerHTML="The root is the leaf <b>a</b>. Tap an operation: it makes a new node whose parents are the current root and the leaf you chose. Grow a graph, predict its node count and root value, then press Backward.";
+  else if(showGrad)say.innerHTML="Backward walked the topological order in reverse, <b>"+order.map(function(v){return v.name}).reverse().join(" → ")+"</b>, starting with "+g.root.name+".grad = 1. Each node passed local derivative × its own gradient to its parents; a leaf used twice received two shares.";
+  else say.innerHTML="Node <b>"+g.root.name+"</b> was created by <b>"+g.root.desc+"</b>. Its parents are stored; its grad is still 0. "+(full?"Six operations is plenty for one screen: Undo or Reset.":"Keep tapping, or press Backward.");
+}
+var box=document.getElementById("ops");
+OPS.forEach(function(op){var b=document.createElement("button");b.textContent=op[0]==="tanh"?"tanh":op[0]+" "+(op[1]==="self"?"itself":op[1]);
+  b.onclick=function(){if(ops.length<MAX){ops.push(op);showGrad=false;render()}};box.appendChild(b)});
+document.getElementById("undo").onclick=function(){ops.pop();showGrad=false;render()};
+document.getElementById("reset").onclick=function(){ops=[];showGrad=false;render()};
+document.getElementById("bw").onclick=function(){showGrad=true;render()};
+var sa=document.getElementById("sa"),sb=document.getElementById("sb"),sc=document.getElementById("sc");
+[sa,sb,sc].forEach(function(s){s.oninput=function(){showGrad=false;render()}});
+window.redraw=function(){render()};
+
+/* theme + height: shared boilerplate */
+var root=document.documentElement;
+function theme(){var d=null;try{var s=parent!==window&&parent.document.body.getAttribute("data-md-color-scheme");if(s)d=s==="slate"}catch(e){}
+  if(d===null)d=matchMedia("(prefers-color-scheme: dark)").matches;root.dataset.theme=d?"dark":"light";if(window.redraw)window.redraw()}
+theme();try{if(parent!==window)new MutationObserver(theme).observe(parent.document.body,{attributes:true})}catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",theme);
+function reportH(){try{parent.postMessage({learnmlHeight:document.body.offsetHeight+2},"*")}catch(e){}}
+new ResizeObserver(reportH).observe(document.body);addEventListener("load",reportH);
+
+render();
+})();
+</script>
+</body>
+</html>
